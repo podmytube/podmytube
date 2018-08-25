@@ -1,0 +1,37 @@
+
+/*podmytube red*/
+$podmytube-red: #CE1701;
+
+body{
+
+    background:white;
+
+}
+
+a {
+    color:$podmytube-red;
+}
+
+a:hover {
+    color:black;
+}
+
+.dropdown-menu {
+    
+    background-color:#eee
+
+}
+
+.btn-primary {
+  background: #555;
+  border: solid 1px #555;
+  color: #eee;
+  margin: 10px 0;
+}
+
+.btn-primary:hover {
+  background: #eee;
+  border: solid 1px #555;
+  color: #CE1701;
+}
+
