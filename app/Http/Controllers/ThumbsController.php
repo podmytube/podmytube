@@ -26,14 +26,21 @@ class ThumbsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Channel $channel)
+    public function index(Channel $channel, Request $request)
     {
 
         $thumb = $channel->thumbs()->first();
 
-        $thumb_url = $thumb->get_url();
-        
-        return view('thumbs.index', compact('channel','thumb', 'thumb_url'));
+        try {
+            $thumb_url = $thumb->get_url();
+        } catch (\Exception $e) {
+            $thumb_url = null;            
+        }
+
+        return view(
+            'thumbs.index',
+            compact('channel', 'thumb', 'thumb_url')
+        );
 
     }
 

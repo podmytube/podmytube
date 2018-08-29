@@ -24,6 +24,11 @@ class Thumbs extends Model
     
     }  
 
+    /**
+     * This function is checking if one thumbnail is existing for a specific channel.
+     * 
+     * @return boolean true if thumb present false else.
+     */
     public function exists()
     {
         
