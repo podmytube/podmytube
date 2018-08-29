@@ -2,6 +2,7 @@
 # application pathes
 # ===============================================
 vendor
+node_modules
 composer.lock
 # ===============================================
 # dashboard
