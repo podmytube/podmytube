@@ -15,8 +15,8 @@ return [
     */
 
     'mailgun' => [
-        'domain' => env('MAILGUN_DOMAIN'),
-        'secret' => env('MAILGUN_SECRET'),
+        'domain' => env('mail.podmytube.com'),
+        'secret' => env('key-4e65674e4d0618e0015f01cb62cc814f'),
     ],
 
     'ses' => [
