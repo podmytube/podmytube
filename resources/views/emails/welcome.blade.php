@@ -14,14 +14,12 @@
                 color:#555555;
             }
 
-            #btn a,
             #logo img {
                 margin-left: auto;
                 margin-right: auto;
-            }
-            #logo img {
                 display: block;
             }
+            
             .button {
                 background-color: #858585;
                 border: none;
@@ -44,9 +42,7 @@
         <p> @lang('emails.welcome_p_first_line') </p>
         <p> @lang('emails.welcome_p_register') </p>
         
-        <div id="btn">
-            <a href="{{ url('/') }}" class="button"> @lang('emails.welcome_a_add_one_channel') </a>
-        </div>
+        <a href="{{ url('/') }}" class="button" style="color:white;"> @lang('emails.welcome_a_add_one_channel') </a>
         
     </body>
 </html>
