@@ -1,6 +1,7 @@
 # ===============================================
 # application pathes
 # ===============================================
+etc
 vendor
 node_modules
 composer.lock
