@@ -16,10 +16,20 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+/**
+ * Route to check emails ==========================
+ */
+Route::get('/mailable', function () {
+    $user = App\User::find(1);
+
+    return new App\Mail\WelcomeToPodmytube($user);
+});
+// ================================================
 
 //Route::get('/', function () { return view('welcome'); });
 
 Auth::routes();
+Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('setlocale/{locale}', function ($locale) {
 	if (in_array($locale, \Config::get('app.locales'))) {
@@ -28,7 +38,6 @@ Route::get('setlocale/{locale}', function ($locale) {
 	return redirect()->back();
 });
 
-Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/', 'HomeController@index')->name('root');
 
 Route::post('/channel/', 'ChannelCreateController@store')->name('channel.store'); 

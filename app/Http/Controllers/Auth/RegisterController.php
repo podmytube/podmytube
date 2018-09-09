@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\User;
+use App\Mail\WelcomeToPodmytube;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -31,33 +33,7 @@ class RegisterController extends Controller
      */
     protected $redirectTo = '/home';
 
-    /**
-     * Mailchimp service provider
-     *
-     * @var object mailchimp instance
-     */
-    protected $mailchimp;
-
-    /**
-     * mailchimp list id for  PodMyTube Users
-     *
-     * @var string
-     */
-    protected $listId = '91e8c5f2ee';        // Id of newsletter list
-
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct(\Mailchimp $mailchimp)
-    {
-        $this->middleware('guest');
-
-        $this->mailchimp = $mailchimp;
-    }
-
-    /**
+     /**
      * Get a validator for an incoming registration request.
      *
      * @param  array  $data
@@ -82,22 +58,6 @@ class RegisterController extends Controller
     }
 
     /**
-     * register the email into the subscriber list
-     * 
-     * @param string $email address
-     */
-    public function addEmailToList($email)
-    {
-        try {
-            $this->mailchimp->lists->subscribe($this->listId, ['email' => $email]);
-        } catch (\Mailchimp_List_AlreadySubscribed $e) {
-            // do something
-        } catch (\Mailchimp_Error $e) {
-            // do something
-        }
-    }
-
-    /**
      * Create a new user instance after a valid registration.
      *
      * @param  array  $data
@@ -108,22 +68,15 @@ class RegisterController extends Controller
         session()->flash('message', 'Account successfully updated !');
         session()->flash('alert-class', 'alert-success');
 
-        //$this->addEmailToList($data['email']);
-        Log::info(__CLASS__.'::'.__METHOD__);
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
+        
+        Mail::to($user)->send(new WelcomeToPodmytube($user));
 
-        return Auth::attempt(['email' => $data['email'], 'password' => $data['password']]);
-        /*
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
-        ]);
-        */
+        return Auth::attempt(['email' => $data['email'], 'password' => $data['password']]);        
     }
 
     /**
