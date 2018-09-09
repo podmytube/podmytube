@@ -56,8 +56,8 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'noreply@mail.podmytube.com'),
-        'name' => env('MAIL_FROM_NAME', 'Podmytube'),
+        'address' => env('MAIL_FROM_ADDRESS', 'frederick@podmytube.com'),
+        'name' => env('MAIL_FROM_NAME', 'Frederick'),
     ],
 
     /*
