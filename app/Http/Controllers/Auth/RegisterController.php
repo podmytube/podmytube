@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Auth;
 use App\User;
 use App\Mail\WelcomeToPodmytube;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\RegistersUsers;
-use Illuminate\Support\Facades\Log;
 
 class RegisterController extends Controller
 {
@@ -65,44 +65,14 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        session()->flash('message', 'Account successfully updated !');
-        session()->flash('alert-class', 'alert-success');
-
-        $user = User::create([
+     
+        return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
-        
-        Mail::to($user)->send(new WelcomeToPodmytube($user));
 
-        return Auth::attempt(['email' => $data['email'], 'password' => $data['password']]);        
     }
-
-    /**
-     * Handle a registration request for the application.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    /*
-    public function register(Request $request)
-    {
-        Log::info(__CLASS__.'::'.__METHOD__.' before validator');
-
-        $this->validator($request->all())->validate();
-
-        Log::info(__CLASS__.'::'.__METHOD__.' before registered');
-        event(new Registered($user = $this->create($request->all())));
-
-        Log::info(__CLASS__.'::'.__METHOD__.' before guard login');
-        $this->guard()->login($user);
-
-        Log::info(__CLASS__.'::'.__METHOD__.' before redirect');
-        return $this->registered($request, $user)
-                        ?: redirect($this->redirectPath());
-    }
-    */
 
     /**
      * The user has been registered.
@@ -111,18 +81,10 @@ class RegisterController extends Controller
      * @param  mixed  $user
      * @return mixed
      */
-/*
     protected function registered(Request $request, $user)
     {
-        if (Auth::loginUsingId($user->id)) {
-            Log::info(__CLASS__.'::'.__METHOD__.' logging ok');
-            return TRUE;
-        } else {
-            Log::info(__CLASS__.'::'.__METHOD__.' logging ko');
-            return FALSE;
-        }
+        
+        Mail::to($user)->send(new WelcomeToPodmytube($user));
 
-    }
-    */
-
+    }  
 }
