@@ -13,6 +13,7 @@ class WelcomeToPodmytube extends Mailable
 {
     use Queueable, SerializesModels;
     public $user;
+    public $logo = '/home/www/dashboard.podmytube.com/public/images/logo-small.png';
 
     /**
      * Create a new message instance.
@@ -31,8 +32,10 @@ class WelcomeToPodmytube extends Mailable
      */
     public function build()
     {
+        
         return $this->from('frederick@podmytube.com')
-            ->view('emails.welcome');
+            ->view('emails.welcome')
+            ->with('podmytubeLogo', $this->logo);
 
     }
 }

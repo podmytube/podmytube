@@ -19,10 +19,14 @@
 /**
  * Route to check emails ==========================
  */
-/*
 Route::get('/mailable', function () {
     $user = App\User::find(1);
     return new App\Mail\WelcomeToPodmytube($user);
+});
+use App\Mail\WelcomeToPodmytube;
+Route::get('/sendmail', function () {
+	$user = App\User::find(1);
+	Mail::to($user)->send(new WelcomeToPodmytube($user));    
 });
 // ================================================
 
