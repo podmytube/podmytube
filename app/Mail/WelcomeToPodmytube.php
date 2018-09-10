@@ -13,8 +13,8 @@ class WelcomeToPodmytube extends Mailable
 {
     use Queueable, SerializesModels;
     public $user;
-    public $logo = '/home/www/dashboard.podmytube.com/public/images/logo-small.png';
-
+    public $logo;
+    
     /**
      * Create a new message instance.
      *
@@ -22,6 +22,7 @@ class WelcomeToPodmytube extends Mailable
      */
     public function __construct(User $user)
     {
+        $this->logo = public_path('images/logo-small.png');
         $this->user = $user;        
     }
 
