@@ -1,5 +1,7 @@
 @extends('emails.layout')
 
+@section('mailTitle', 'chaton' )
+
 @section ('content')
 
 Chat 
