@@ -34,8 +34,7 @@ class WelcomeToPodmytube extends Mailable
     public function build()
     {
         
-        return $this->from('frederick@podmytube.com')
-            ->view('emails.welcome')
+        return $this->view('emails.welcome')
             ->with('podmytubeLogo', $this->logo);
 
     }
