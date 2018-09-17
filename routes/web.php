@@ -19,16 +19,16 @@
 /**
  * Route to check emails ==========================
  */
-use App\Mail\WelcomeToPodmytube;
-if (env('APP_ENV' != 'prod')) {
+use App\Mail\ChannelIsRegistered;
+if (env('APP_ENV') != 'prod') {
 	Route::get('/mailable', function () {
 		$user = App\User::find(1);
-		return new App\Mail\WelcomeToPodmytube($user);
+		return new App\Mail\ChannelIsRegistered($user);
 	});
 
 	Route::get('/sendmail', function () {
 		$user = App\User::find(1);
-		Mail::to($user)->send(new WelcomeToPodmytube($user));
+		Mail::to($user)->send(new ChannelIsRegistered($user));
 	});
 }
 // ================================================

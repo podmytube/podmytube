@@ -49,7 +49,6 @@ class Channel extends Model
     protected $fillable = [
         'channel_id',
         'channel_name',
-        'youtube_channel_id',
         'user_id',
         'authors',
         'email',
