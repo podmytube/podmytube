@@ -9,12 +9,13 @@
  * @author Frederick Tyteca <fred@podmytube.com>
  */
 namespace App\Http\Controllers;
-
-use Illuminate\Http\Request;
-
-use App\Channel;
-
 use Auth;
+use App\Channel;
+use App\User;
+use App\Mail\ChannelIsRegistered;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Mail;
 
 class ChannelCreateController extends Controller
 {
@@ -47,12 +48,14 @@ class ChannelCreateController extends Controller
 
         ]);
 
-        if (!$channel_id = \App\Channel::extractChannelIdFromUrl(request('channel_url'))) {
-            return back()->withErrors(__('messages.create_youtube_channel_url_error'));
+        if (!$channel_id = Channel::extractChannelIdFromUrl(request('channel_url'))) {
+            return Redirect::back()->withErrors([__('messages.flash_channel_id_is_invalid')]);
         }
 
-
-        Channel::create([
+        /**
+         * Channel creating
+         */
+        $channel = Channel::create([
             'user_id' => \Auth::user()->user_id,
 
             'channel_id' => $channel_id,
@@ -63,6 +66,20 @@ class ChannelCreateController extends Controller
 
         ]);
 
+        /**
+         * Getting current authenticated user
+         */
+        $user = User::find(\Auth::user()->user_id);
+        
+        /**
+         * Sending congratulations mail 
+         */
+        Mail::to($user)->send(new ChannelIsRegistered($user, $channel));
+
+        /**
+         * Displaying congratulations and redirect 
+         */
+        request()->session()->flash('status', __('messages.flash_channel_has_been_created'));
         return redirect('/home');
     }
 }

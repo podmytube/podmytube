@@ -32,6 +32,10 @@ return [
 
     // breadcrumb
     'page_title_home_breadcrumb' => 'Accueil',
+
+    // flash
+    'flash_channel_has_been_created' => "La chaine est désormais inscrite :)",
+    'flash_channel_id_is_invalid' => "L'adresse youtube saisie est invalide !",
     
     // commons
     'only_for_premiums_label' => "Cette partie n'est disponible que pour les abonnés premiums.",
@@ -73,7 +77,7 @@ return [
     // adding a channel part
     'channel_owner_warning_checkbox_label' => 'En cochant cette case, je certifie être bien le propriétaire de cette chaine',
     'channel_to_be_validated' => '--- EN ATTENTE DE VALIDATION ---',
-    'youtube_channel_url_label' => "L'adresse de votre chaine Youtube (par ex : https://www.youtube.com/channel/UCVeMw72tepFl1Zt5fvf9QKQ)",
+    'youtube_channel_url_label' => "L'adresse complete de votre chaine Youtube (par ex : https://www.youtube.com/channel/UCVeMw72tepFl1Zt5fvf9QKQ)",
     'create_youtube_channel_url_help' => "L'adresse de votre chaine Youtube doit ressembler à quelque chose comme cela https://www.youtube.com/channel/UCVeMw72tepFl1Zt5fvf9QKQ",
     'create_youtube_channel_url_error' => "L'adresse de votre chaine Youtube est invalide ! Elle devrait ressembler à quelque chose comme cela : https://www.youtube.com/channel/UCVeMw72tepFl1Zt5fvf9QKQ",
 
