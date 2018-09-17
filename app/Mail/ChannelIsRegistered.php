@@ -35,8 +35,7 @@ class ChannelIsRegistered extends Mailable
      */
     public function build()
     {
-        return $this->from('frederick@podmytube.com')
-        ->view('emails.channelRegistered')
+        return $this->view('emails.channelRegistered')
         ->with('podmytubeLogo', $this->logo);
     }
 }
