@@ -1,6 +1,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Success !</title>
+    <title>@yield('mailTitle') - PodMyTube</title>
     <style>
         body {
             margin: 0 20px;
