@@ -24,6 +24,12 @@ if (env('APP_ENV') != 'prod') {
 	Route::get('/stripe', function () {
 		return view('payment.index');
 	});
+	
+	Route::post('/subscribe', 'SubscribeController@store');
+
+	Route::get('/stripe', function () {
+		return view('payment.index');
+	});
 
 	Route::get('/mailable', function () {
 		$user = App\User::find(1);
