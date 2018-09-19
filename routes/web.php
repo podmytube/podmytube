@@ -21,6 +21,10 @@
  */
 use App\Mail\ChannelIsRegistered;
 if (env('APP_ENV') != 'prod') {
+	Route::get('/stripe', function () {
+		return view('payment.index');
+	});
+
 	Route::get('/mailable', function () {
 		$user = App\User::find(1);
 		$channel = App\Channel::find('UC-2EkisRV8h9KsHpslQ1gXA');
