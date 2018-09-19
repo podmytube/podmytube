@@ -6,6 +6,7 @@
 namespace App;
 
 use Illuminate\Notifications\Notifiable;
+use Laravel\Cashier\Billable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
@@ -15,6 +16,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable
 {
     use Notifiable;
+    use Billable;
 	
     /**
     * the way to specify users.user_id is the key (and not users.id)
