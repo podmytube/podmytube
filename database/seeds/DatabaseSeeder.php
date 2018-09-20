@@ -11,7 +11,7 @@ class DatabaseSeeder extends Seeder
 	 */
 	public function run()
 	{
-        if (App::environment('dev')) {
+        if (App::environment(['dev','local','rec'])) {
             // The environment is dev
             $this->call([
                 usersTableSeeder::class,
