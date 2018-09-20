@@ -13,7 +13,7 @@ class usersTableSeeder extends Seeder
 	 */
 	public function run()
 	{
-         // emptying table AppStats
+        // emptying table User
         User::truncate();
 
 		// creating my own user
@@ -39,7 +39,7 @@ class usersTableSeeder extends Seeder
 			->update(['user_id' => 1 ]);
 
 		/**
-		 * giving the Lola Lol Channel to me :)
+		 * giving another channel to Julia
 		 */
 		DB::table('channels')
 			->where('channel_id','UCBXJGoueIDn_uHpvMWv_cRQ')
