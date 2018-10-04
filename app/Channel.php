@@ -80,6 +80,16 @@ class Channel extends Model
     }
 
     /**
+     * define the relationship between one channel and one subscription
+     *
+     * @return model the current subscription
+     */
+    public function subscription()
+    {
+        return $this->hasOne(Subscription::class, 'user_id');
+    }
+
+    /**
      * define the relationship between one channel and its playlists
      *
      */
