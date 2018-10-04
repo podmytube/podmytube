@@ -22,8 +22,8 @@ class InstallingStripeRequisites extends Migration
             });
         }
 
-        if (!Schema::hasTable('subscriptions')) {
-            Schema::create('subscriptions', function ($table) {
+        if (!Schema::hasTable('stripe_subscriptions')) {
+            Schema::create('stripe_subscriptions', function ($table) {
                 $table->increments('id');
                 $table->unsignedInteger('user_id');
                 $table->string('name');
