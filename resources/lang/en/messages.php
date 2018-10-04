@@ -172,8 +172,8 @@ return [
 
 	// footer
 	'layout_footer_slogan' => '- Convert your youtube channel in a wonderful podcast in a snap !',
-	'layout_footer_legal_notice' => '',
-	'layout_footer_legal_notice_url' => '',
+	'layout_footer_legal_notice' => 'Legal Notice',
+	'layout_footer_legal_notice_url' => 'http://fr.podmytube.com/mentions-legales',
     
 ];
 
