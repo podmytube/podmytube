@@ -122,7 +122,7 @@ class Channel extends Model
      */
     public function thumbs()
     {
-        return $this->HasOne(Thumbs::class, 'channel_id');
+        return $this->HasOne("App\Thumbs", 'channel_id');
     }
 
 

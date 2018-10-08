@@ -10,6 +10,7 @@ use App\Channel;
 use Image;
 
 use Illuminate\Http\Request;
+use App\Services\ThumbService;
 
 class ThumbsController extends Controller
 {
@@ -32,9 +33,10 @@ class ThumbsController extends Controller
         $thumb = $channel->thumbs()->first();
 
         try {
-            $thumb_url = $thumb->get_url();
+            $thumb_url = ThumbService::getChannelThumbUrl($thumb);
         } catch (\Exception $e) {
-            $thumb_url = null;            
+                    ----AJOUT D'un message d'erreur "ajoute ton thumb" ---- 
+            $thumb_url = ThumbService::getDefaultThumbUrl();
         }
 
         return view(

@@ -27,7 +27,6 @@ class ThumbServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        var_dump("hello");
         $this->app->singleton('ThumbService', function($app) {
             return new ThumbService();
         });
