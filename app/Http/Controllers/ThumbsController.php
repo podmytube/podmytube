@@ -7,8 +7,6 @@ use App\Thumbs;
 
 use App\Channel;
 
-use Image;
-
 use Illuminate\Http\Request;
 use App\Services\ThumbService;
 
@@ -29,19 +27,23 @@ class ThumbsController extends Controller
      */
     public function index(Channel $channel, Request $request)
     {
-
-        $thumb = $channel->thumbs()->first();
-
-        try {
-            $thumb_url = ThumbService::getChannelThumbUrl($thumb);
-        } catch (\Exception $e) {
-                    ----AJOUT D'un message d'erreur "ajoute ton thumb" ---- 
+        $displayDefaultThumb = false;
+        $thumb_url=null;
+        if (($thumb = $channel->thumbs()->first())) {
+            try {                
+                $thumb_url = ThumbService::getChannelThumbUrl($thumb);
+            } catch (\Exception $e) {
+                $displayDefaultThumb = true;                
+            }            
+        } 
+        
+        if($displayDefaultThumb) {
             $thumb_url = ThumbService::getDefaultThumbUrl();
-        }
+        }            
 
         return view(
             'thumbs.index',
-            compact('channel', 'thumb', 'thumb_url')
+            compact('channel', 'thumb', 'thumb_url', 'displayDefaultThumb')
         );
 
     }
@@ -71,19 +73,19 @@ class ThumbsController extends Controller
             'required' => __('messages.thumbs_edit_error_image_required'),
             'dimensions' => __('messages.thumbs_edit_error_image_dimensions'),
         ];
-        
+
         $rules = [
             'new_thumb_file' => 'required|dimensions:min_width=1400,min_height=1400,max_width=3000,max_height=3000'
         ];
-        
+
         $this->validate($request, $rules, $messages);
 
-        
-        if (! $request->file('new_thumb_file')->isValid()) {
+
+        if (!$request->file('new_thumb_file')->isValid()) {
 
             throw new \Exception("A problem occurs during new thumb upload !");
-          
-        } 
+
+        }
 
         /**
          * new_thumb_file is the form field
@@ -94,13 +96,12 @@ class ThumbsController extends Controller
          */
         $file_path = $request->file('new_thumb_file')
             ->store($channel->channel_id, self::$file_disk);
-        
-        $file_name = explode( DIRECTORY_SEPARATOR , $file_path)[1];
+
+        $file_name = explode(DIRECTORY_SEPARATOR, $file_path)[1];
         
         // storing new/updated entry in db
-        Thumbs::updateOrCreate 
-        (
-            [   
+        $newThumb = Thumbs::updateOrCreate(
+            [
                 'channel_id' => $channel->channel_id
             ],
             [
@@ -111,23 +112,10 @@ class ThumbsController extends Controller
             ]
         );
 
-        // mini thumb to be used in dashboard creation
-        $thumb_path = $channel->channel_id . DIRECTORY_SEPARATOR . self::$dashboard_thumb_filename;
-
-        $thumbnail = Image::make($request->file('new_thumb_file'));
-
-        $thumbnail->fit(
-            self::$thumb_side,
-            self::$thumb_side,
-            function ($constraint) {
-                $constraint->aspectRatio();
-            }
-        );
-    
-        \Storage::disk(self::$file_disk)->put($thumb_path, (string) $thumbnail->encode());
+        ThumbService::createThumbVig($newThumb);
 
         return redirect()->route('channel.thumbs.index', ['channel' => $channel]);
-        
+
     }
 
     /**
@@ -149,7 +137,7 @@ class ThumbsController extends Controller
      */
     public function edit(Channel $channel)
     {
-        
+
         return view('thumbs.edit', compact('channel'));
 
     }

@@ -22,13 +22,14 @@
 
     @if ( count($channels) > 0 )
                 
-        <ul>
+        <div class="row"> 
 
         @foreach ($channels as $channel)
 
-            <li>
+            <div class="col">
             
-                <a href="/channel/<?= $channel->channel_id?>"><?= $channel->channel_name ?></a> 
+                <img src="{{ $channel->vigUrl }}">
+                <a href="/channel/{{ $channel->channel_id }}">{{ $channel->channel_name }}</a> 
                 (
                     @if ($channel->channel_premium == 0)
                     free
@@ -41,11 +42,11 @@
                     @endif
                 )
                 
-            </li>
+            </div>
 
         @endforeach
 
-        </ul>
+        </div> <!-- /row -->
 
     @else
 

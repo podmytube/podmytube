@@ -1,7 +1,5 @@
 
-<div class="col-xs-12" style="height:25px;"></div>
-
-<footer id="footer" class="bg-light">
+<footer id="footer" class="footer bg-light">
 
 	<p class="text-center">
 

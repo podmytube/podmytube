@@ -43,12 +43,12 @@ class HomeController extends Controller
              */
             $thumb = $channel->thumbs;
 
-            ThumbService::getChannelThumbUrl($thumb);
+            $channel->vigUrl = ThumbService::getChannelVignetteUrl($thumb);
             //\Debugbar::addMessage($thumb->file_name);
             //$channel->thumbs()->getChannelThumb();
             
         }
-
+        
         return view('home', compact('channels'));
     }
 }
