@@ -9,6 +9,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 /**
  * the channel controller class.
  * 
@@ -32,6 +33,14 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $channels = Auth::user()->channels;
+
+        foreach($channels as $channel) {
+            /**
+             * retrieve path to thumbnail
+             */
+        }
+
+        return view('home', compact('channels'));
     }
 }

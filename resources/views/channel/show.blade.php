@@ -23,7 +23,7 @@
 				<p>
 					<a href="{{ $channel->youtube_url }}" target="_blank"><img src="/images/youtube-32x32.png" /></a> 
 					<a href="{{ $channel->podcast_url }}" target="_blank"><img src="/images/itunes-32x32.png" /></a> 
-                    <a href="{{ route('medias_stats.index', $channel) }}"> <img src="/images/stats-icon32x32.png" alt="{{ __('messages.channel_show_stats_alt') }}" /> </a><br />
+          <br />
 					<span class="font-italic">
                         {{ __('messages.channel_podcast_created_label') }}
                     </span> : {{ $channel->channel_createdAt->format('d/m/Y à H:i') }}<br/>

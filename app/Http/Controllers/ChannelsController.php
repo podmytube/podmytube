@@ -9,8 +9,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Input;
-
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\ChannelRequest;
+
 
 use App\Channel;
 
@@ -33,8 +34,9 @@ class ChannelsController extends Controller
 	 */
 	public function index()
 	{
+		$channels = Auth::user()->channels;
 
-		return view('channel.index');
+        return view('channel.index', compact('channels'));
 
 	}
 

@@ -8,7 +8,11 @@
 
     <div class="col text-center">
 
-        <a href="{{ route('channel.create') }}"><button type="button" class="btn btn-primary">{{ __('messages.button_create_channel_label') }}</button></a>
+        <a href="{{ route('channel.create') }}">
+            <button type="button" class="btn btn-primary">
+                {{ __('messages.button_create_channel_label') }}
+            </button>
+        </a>
 
     </div> <!--/col-->
     
@@ -16,11 +20,11 @@
 
 <div class="container"> <!--channel container-->
 
-    @if ( count(Auth::user()->channels) > 0 )
+    @if ( count($channels) > 0 )
                 
         <ul>
 
-        @foreach (Auth::user()->channels as $channel)
+        @foreach ($channels as $channel)
 
             <li>
             
@@ -37,8 +41,6 @@
                     @endif
                 )
                 
-                <a href="{{ route('medias_stats.index', $channel) }}"> <img src="/images/stats-icon16x16.png" width="16"> </a>
-
             </li>
 
         @endforeach
