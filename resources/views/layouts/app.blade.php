@@ -12,9 +12,9 @@
 
 	@yield('content')
 
-	@include ('layouts.footer')
-	
 	</div> <!--/main container-->
 
+    @include ('layouts.footer')
+	
 </body>
 </html>

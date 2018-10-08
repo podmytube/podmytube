@@ -14,11 +14,11 @@ use Illuminate\Http\Request;
 class ThumbsController extends Controller
 {
 
-    protected $file_disk = 'thumbs';
+    protected static $file_disk = 'thumbs';
 
-    protected $thumb_side = 300; // it s a square
+    protected static $thumb_side = 300; // it s a square
 
-    protected $dashboard_thumb_filename = 'dashboard_thumb.jpg';
+    protected static $dashboard_thumb_filename = 'dashboard_thumb.jpg';
 
 
     /**
@@ -90,7 +90,8 @@ class ThumbsController extends Controller
          *      - the disk (config/filesystems) 
          * and return a unique filepath we split to get filename
          */
-        $file_path = $request->file('new_thumb_file')->store($channel->channel_id, $this->file_disk);
+        $file_path = $request->file('new_thumb_file')
+            ->store($channel->channel_id, self::$file_disk);
         
         $file_name = explode( DIRECTORY_SEPARATOR , $file_path)[1];
         
@@ -103,21 +104,25 @@ class ThumbsController extends Controller
             [
                 'channel_id' => $channel->channel_id,
                 'file_name' => $file_name,
-                'file_disk' => $this->file_disk,
-                'file_size' => \Storage::disk($this->file_disk)->size($file_path),
+                'file_disk' => self::$file_disk,
+                'file_size' => \Storage::disk(self::$file_disk)->size($file_path),
             ]
         );
 
         // mini thumb to be used in dashboard creation
-        $thumb_path = $channel->channel_id . DIRECTORY_SEPARATOR . $this->dashboard_thumb_filename;
+        $thumb_path = $channel->channel_id . DIRECTORY_SEPARATOR . self::$dashboard_thumb_filename;
 
         $thumbnail = Image::make($request->file('new_thumb_file'));
 
-        $thumbnail->fit($this->thumb_side, $this->thumb_side, function ($constraint) {
-            $constraint->aspectRatio();
-        });
+        $thumbnail->fit(
+            self::$thumb_side,
+            self::$thumb_side,
+            function ($constraint) {
+                $constraint->aspectRatio();
+            }
+        );
     
-        \Storage::disk($this->file_disk)->put($thumb_path, (string) $thumbnail->encode());
+        \Storage::disk(self::$file_disk)->put($thumb_path, (string) $thumbnail->encode());
 
         return redirect()->route('channel.thumbs.index', ['channel' => $channel]);
         
