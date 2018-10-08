@@ -10,8 +10,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
+use App\Services\ThumbService;
+
 /**
- * the channel controller class.
+ * the home controller class.
  * 
  */
 class HomeController extends Controller
@@ -34,11 +37,16 @@ class HomeController extends Controller
     public function index()
     {
         $channels = Auth::user()->channels;
-
         foreach($channels as $channel) {
             /**
              * retrieve path to thumbnail
              */
+            $thumb = $channel->thumbs;
+
+            ThumbService::getChannelThumbUrl($thumb);
+            //\Debugbar::addMessage($thumb->file_name);
+            //$channel->thumbs()->getChannelThumb();
+            
         }
 
         return view('home', compact('channels'));
