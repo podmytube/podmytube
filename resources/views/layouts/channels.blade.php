@@ -26,7 +26,7 @@
 
         @foreach ($channels as $channel)
 
-            <div class="col card">
+            <div class="col-4 card">
 
                 <img class="card-img-top" 
                     src="{{ $channel->vigUrl }}" 
