@@ -21,8 +21,6 @@
 
 	<h1>{{ __('messages.title_application_label') }}</h1>
 
-	<hr>
-
 	<div class="row">
 
 		<div class="col">

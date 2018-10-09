@@ -47,6 +47,8 @@ return [
     'button_update_label' => 'Update',
     'button_cancel_label' => 'Cancel',
     
+    'button_show_channel_label' => "View",
+    'button_edit_channel_label' => "Edit",
     'button_update_channel_label' => "Update my channel's information",
     'button_create_channel_label' => "Convert one new channel",
     'button_modify_label' => 'Modify',

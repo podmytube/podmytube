@@ -46,7 +46,8 @@ return [
 
     'button_update_label' => 'Mise à jour',
     'button_cancel_label' => 'Annuler',
-    
+    'button_show_channel_label' => "Voir",
+    'button_edit_channel_label' => "Modifier",
     'button_update_channel_label' => 'Modifier les informations de ma chaine',
     'button_create_channel_label' => 'Convertir une nouvelle chaine',
     'button_modify_label' => 'Modifier',

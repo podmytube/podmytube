@@ -35,18 +35,24 @@ class HomeController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
+    {        
         $channels = Auth::user()->channels;
         foreach($channels as $channel) {
             /**
-             * retrieve path to thumbnail
+             * Retrieve thumbs relation
              */
             $thumb = $channel->thumbs;
 
-            $channel->vigUrl = ThumbService::getChannelVignetteUrl($thumb);
-            //\Debugbar::addMessage($thumb->file_name);
-            //$channel->thumbs()->getChannelThumb();
-            
+            /**
+             * Getting vignette
+             */
+            try {
+                $channel->isDefaultVignette = false;
+                $channel->vigUrl = ThumbService::getChannelVignetteUrl($thumb);
+            } catch (\Exception $e) {
+                $channel->isDefaultVignette = true;
+                $channel->vigUrl = ThumbService::getDefaultVignetteUrl();
+            }
         }
         
         return view('home', compact('channels'));

@@ -26,23 +26,37 @@
 
         @foreach ($channels as $channel)
 
-            <div class="col">
-            
-                <img src="{{ $channel->vigUrl }}">
-                <a href="/channel/{{ $channel->channel_id }}">{{ $channel->channel_name }}</a> 
-                (
-                    @if ($channel->channel_premium == 0)
-                    free
-                    @elseif ($channel->channel_premium == 1)
-                    early
-                    @elseif ($channel->channel_premium == 2)
-                    premium
-                    @elseif ($channel->channel_premium == 3)
-                    vip
-                    @endif
-                )
-                
-            </div>
+            <div class="col card">
+
+                <img class="card-img-top" 
+                    src="{{ $channel->vigUrl }}" 
+                    alt="{{ __('messages.channel_vignette_alt') }}"
+                    >
+                <div class="card-body">
+                    <h5 class="card-title">
+                        @if ( $channel->podcast_title ) 
+                        {{ $channel->podcast_title }}
+                        @else
+                        {{ $channel->channel_name }}
+                        @endif
+                    </h5>
+                    <p>
+                        * le nombre d'épisodes convertis/nombre d'épisodes restants<br>
+                        * si le nombre d'épisodes restants est égal à 0 ET si des épisodes sont à convertir <br>
+                        * affichage d'un message "Pour inclure le(s) épisodes {liste des épisodes} vous devriez passer au programme " Lien vers page paiement <br>
+                    </p>
+                    <a href="{{ route('channel.show', $channel) }}">
+                        <button type="button" class="btn btn-primary">
+                            {{ __('messages.button_show_channel_label') }}
+                        </button>
+                    </a>
+                    <a href="{{ route('channel.edit', $channel) }}">
+                        <button type="button" class="btn btn-primary">
+                            {{ __('messages.button_edit_channel_label') }}
+                        </button>
+                    </a>                    
+                </div> <!-- /card body -->
+            </div> <!-- /col card -->
 
         @endforeach
 

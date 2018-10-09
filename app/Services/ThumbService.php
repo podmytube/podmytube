@@ -10,6 +10,7 @@ class ThumbService
 {
     protected const DEFAULT_THUMB_DISK = 'thumbs';
     protected const DEFAULT_THUMB_FILE = 'default_thumb.jpg';
+    protected const DEFAULT_VIGNETTE_FILE = 'default_vignette.jpg';
     protected const VIGNETTE_FILENAME = 'dashboard_thumb.jpg';
     protected const VIGNETTE_WIDTH = 300;
 
@@ -28,7 +29,7 @@ class ThumbService
 
     /**
      * return the url of a default thumb if user doesn't upload any.
-     * @param Thumbs $channel Channel model
+     * @return string the url of the default thumb
      */
     public static function getDefaultThumbUrl()
     {
@@ -37,6 +38,20 @@ class ThumbService
         }
         return \Storage::disk(self::DEFAULT_THUMB_DISK)->url(self::DEFAULT_THUMB_FILE);
     }
+    
+
+    /**
+     * return the url of a default vignette if user doesn't upload any.
+     * @return string the url of the default vignette
+     */
+    public static function getDefaultVignetteUrl()
+    {
+        if (!\Storage::disk(self::DEFAULT_THUMB_DISK)->exists(self::DEFAULT_VIGNETTE_FILE)) {
+            throw new \Exception("Default vignette {" . self::DEFAULT_VIGNETTE_FILE . "} does not exist on this server !");
+        }
+        return \Storage::disk(self::DEFAULT_THUMB_DISK)->url(self::DEFAULT_VIGNETTE_FILE);
+    }
+
 
     /**
      * return the url of the thumbs for the current channel.

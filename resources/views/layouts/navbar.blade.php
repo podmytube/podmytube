@@ -1,21 +1,8 @@
 <nav class="navbar navbar-expand-lg">
 	<!-- Branding Image -->
-	<a class="navbar-brand" href="{{ url('/') }}"> <img src="/images/logo-small.png" class="navbar-left" /> </a>
-	<!-- Left Side Of Navbar -->
-	<ul class="navbar-nav mr-auto">
-<!--
-		<li class="nav-item active">
-			<a class="nav-link">Left Link 1</a>
-		</li>
-		<li class="nav-item">
-			<a class="nav-link">Left Link 2</a>
-		</li>
--->
-	</ul>
-
-	<!-- Right Side Of Navbar -->
+	<a class="navbar-brand pmt-logo" href="{{ url('/') }}"> </a> <h1>Intramania l'intranet de Micromania</h1>
 	<!-- Authentication Links -->
-	<ul class="navbar-nav ml-auto">
+	<ul class="navbar-nav ml-auto userlinks">
 	@guest
 		<li class="nav-item"><a href="{{ route('login') }}" class="nav-link">{{ __('messages.page_title_user_login') }}</a></li>
 		<li class="nav-item"><a href="{{ route('register') }}" class="nav-link">{{__('messages.page_title_user_register')}}</a></li>
