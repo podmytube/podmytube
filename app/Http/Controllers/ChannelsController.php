@@ -11,7 +11,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\ChannelRequest;
-use App\Services\ThumbService;
+use App\Services\ChannelService;
 
 use App\Channel;
 
@@ -34,24 +34,7 @@ class ChannelsController extends Controller
 	 */
 	public function index()
 	{
-		$channels = Auth::user()->channels;
-		foreach($channels as $channel) {
-            /**
-             * Retrieve thumbs relation
-             */
-            $thumb = $channel->thumbs;
-
-            /**
-             * Getting vignette
-             */
-            try {
-                $channel->isDefaultVignette = false;
-                $channel->vigUrl = ThumbService::getChannelVignetteUrl($thumb);
-            } catch (\Exception $e) {
-                $channel->isDefaultVignette = true;
-                $channel->vigUrl = ThumbService::getDefaultVignetteUrl();
-            }
-        }
+		$channels = ChannelService::getAuthenticatedUserChannels(Auth::user());
 
         return view('channel.index', compact('channels'));
 

@@ -11,7 +11,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-use App\Services\ThumbService;
+use App\Services\ChannelService;
 
 /**
  * the home controller class.
@@ -36,24 +36,8 @@ class HomeController extends Controller
      */
     public function index()
     {        
-        $channels = Auth::user()->channels;
-        foreach($channels as $channel) {
-            /**
-             * Retrieve thumbs relation
-             */
-            $thumb = $channel->thumbs;
-
-            /**
-             * Getting vignette
-             */
-            try {
-                $channel->isDefaultVignette = false;
-                $channel->vigUrl = ThumbService::getChannelVignetteUrl($thumb);
-            } catch (\Exception $e) {
-                $channel->isDefaultVignette = true;
-                $channel->vigUrl = ThumbService::getDefaultVignetteUrl();
-            }
-        }
+        
+        $channels = ChannelService::getAuthenticatedUserChannels(Auth::user());
         
         return view('home', compact('channels'));
     }
