@@ -41,7 +41,12 @@ class Channel extends Model
     /**
      * those fields are converted into Carbon mutator
      */
-    protected $dates = ['channel_createdAt', 'channel_updatedAt', 'podcast_updatedAt', 'reject_video_too_old'];
+    protected $dates = [
+        'channel_createdAt', 
+        'channel_updatedAt', 
+        'podcast_updatedAt', 
+        'reject_video_too_old'
+    ];
 
     /**
      * the field that can be massAssignemented
