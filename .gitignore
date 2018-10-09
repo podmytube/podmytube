@@ -8,6 +8,8 @@ composer.lock
 # dashboard
 # ===============================================
 public/storage
+public/js
+public/css
 storage/*
 # ===============================================
 # not secured to commit these ones
