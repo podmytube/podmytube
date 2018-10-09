@@ -39,12 +39,7 @@
                         @else
                         {{ $channel->channel_name }}
                         @endif
-                    </h5>
-                    <p>
-                        * le nombre d'épisodes convertis/nombre d'épisodes restants<br>
-                        * si le nombre d'épisodes restants est égal à 0 ET si des épisodes sont à convertir <br>
-                        * affichage d'un message "Pour inclure le(s) épisodes {liste des épisodes} vous devriez passer au programme " Lien vers page paiement <br>
-                    </p>
+                    </h5>                    
                     <a href="{{ route('channel.show', $channel) }}">
                         <button type="button" class="btn btn-primary">
                             {{ __('messages.button_show_channel_label') }}
