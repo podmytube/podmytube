@@ -8,9 +8,13 @@
     <!-- End Google Tag Manager (noscript) -->
     <div id="app" class="container"> <!--main container-->
 
-	@include ('layouts.navbar')
+        @include ('layouts.navbar')
 
-	@yield('content')
+        @if (App::environment('micromania'))
+        @include ('micromania.top')
+        @endif
+
+        @yield('content')
 
 	</div> <!--/main container-->
 

@@ -24,16 +24,25 @@ body {
 a {
     color:$podmytube-red;
 }
-
 a:hover {
     color:black;
 }
 
-.dropdown-menu {
-    
-    background-color:#eee
-
+h1, h2, h3, h4, h5 {
+    color:$podmytube-red;
 }
+
+.pmt-logo {
+    background:url("/images/logo-small.png") no-repeat;
+    height:100px;
+    width:133px;
+    margin:2px 0;
+}
+
+.dropdown-menu {
+    background-color:#eee
+}
+
 
 .btn-primary {
   background: #555;
