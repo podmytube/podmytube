@@ -36,7 +36,7 @@ return [
     // flash
     'flash_channel_has_been_created' => "Channel has been successfully registered :)",
     'flash_channel_id_is_invalid' => "The youtube url you entered was invalid !",
-    
+
     // commons
     'only_for_premiums_label' => "Cette partie n'est disponible que pour les abonnés premiums.",
     'yes' => "yes",
@@ -53,12 +53,14 @@ return [
     'button_create_channel_label' => "Convert one new channel",
     'button_modify_label' => 'Modify',
     'button_submit_label' => 'Submit',
+    'button_upgrade_my_plan' => 'Upgrade my plan',
     
     // home part
     'no_channels_at_this_moment' => "You have no channel at this time.",
     'title_application_label' => 'Dashboard',
     'title_channel_index_label' => 'Your channels',
-
+    'danger_podcast_is_no_more_updated' => "Your podcast is no more updated, please consider upgrading your plan.",
+    
     // user part
     'button_update_user_label' => 'update',
 

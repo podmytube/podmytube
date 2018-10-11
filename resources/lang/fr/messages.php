@@ -52,11 +52,13 @@ return [
     'button_create_channel_label' => 'Convertir une nouvelle chaine',
     'button_modify_label' => 'Modifier',
     'button_submit_label' => 'Valider',
+    'button_upgrade_my_plan' => 'Modifier mon forfait',
     
     // home part
     'no_channels_at_this_moment' => 'Vous n\'avez enregistré aucune chaine à ce jour.',
     'title_application_label' => 'Tableau de bord',
     'title_channel_index_label' => 'Vos chaines',
+    'danger_podcast_is_no_more_updated' => "Ton podcast n'est plus mis à jour, passer au forfait supérieur devrait régler la question :).",
 
     // user part
     'button_update_user_label' => 'modifier',
