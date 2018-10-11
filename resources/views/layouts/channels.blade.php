@@ -39,7 +39,14 @@
                         @else
                         {{ $channel->channel_name }}
                         @endif
-                    </h5>                    
+                    </h5>
+
+                    @if ($channel->nbEpisodesGrabbedThisMonth > $channel->nbEpisodesAllowedThisMonth)
+                    <div class="alert alert-danger" role="alert">
+                        {{  __('messages.danger_podcast_is_no_more_updated') }}
+                    </div>
+                    @endif
+                    
                     <a href="{{ route('channel.show', $channel) }}">
                         <button type="button" class="btn btn-primary">
                             {{ __('messages.button_show_channel_label') }}
@@ -49,7 +56,12 @@
                         <button type="button" class="btn btn-primary">
                             {{ __('messages.button_edit_channel_label') }}
                         </button>
-                    </a>                    
+                    </a>
+                    <a href="{{ route('plans.index', $channel) }}">
+                        <button type="button" class="btn btn-success">
+                            {{ __('messages.button_upgrade_my_plan') }}
+                        </button>
+                    </a>
                 </div> <!-- /card body -->
             </div> <!-- /col card -->
 

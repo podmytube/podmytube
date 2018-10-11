@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 use App\Channel;
 use Carbon\Carbon;
+use App\Scopes\ChannelIdScope;
 
 class Medias extends Model
 {

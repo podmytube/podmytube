@@ -4,8 +4,11 @@ namespace App\Services;
 
 use App\Channel;
 use App\User;
+use App\Medias;
 
+use Carbon\Carbon;
 use App\Services\ThumbService;
+use Symfony\Component\HttpFoundation\Request;
 
 class ChannelService
 {
@@ -15,29 +18,19 @@ class ChannelService
      * @params string $channel_id the channel
      * @return int the number of episodes grabbed this month for this channel
      */
-    public function getNbEpisodesAlreadyDownloadedThisMonth(Channel $channel)
+    public static function getNbEpisodesAlreadyDownloadedThisMonth(Channel $channel)
     {
     
-        $monthBeginning = carbon::createMidnightDate(date('Y'), date('m'), 1);
+        //$monthBeginning = carbon::createMidnightDate(date('Y'), date('m'), 1);
+        $monthBeginning = carbon::createMidnightDate(date('Y'), 1, 1);
         $monthEnding = carbon::create()->endOfMonth();
         
-        $results = \DB::queryFirstRow("
-            SELECT count(*) as nbMediasGrabbed
-            FROM medias
-            WHERE channel_id = %s
-            AND grabbed_at between %t AND %t",
-            $channel_id, 
-            $monthBeginning->format('Y-m-d'),
-            $monthEnding->format('Y-m-d')
-        );
+        $nbMediasGrabbedThisMonth = Medias::grabbedBetween($monthBeginning, $monthEnding)
+            ->whereNotNull('grabbed_at')
+            ->where('channel_id', $channel->channel_id)
+            ->count();
 
-        if (\DB::count() <= 0) {
-            
-            throw new \Exception("Channel id {$channel_id} has no grabbed media this month.");
-
-        }
-
-        return $results['nbMediasGrabbed'];
+        return $nbMediasGrabbedThisMonth;
     }
 
     /**
@@ -53,6 +46,9 @@ class ChannelService
              * Retrieve thumbs relation
              */
             $thumb = $channel->thumbs;
+
+            $channel->nbEpisodesGrabbedThisMonth = self::getNbEpisodesAlreadyDownloadedThisMonth($channel);
+            $channel->nbEpisodesAllowedThisMonth = -1;
 
             /**
              * Getting vignette
