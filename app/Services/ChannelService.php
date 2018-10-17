@@ -92,20 +92,34 @@ class ChannelService
             $channel->nbEpisodesAllowedThisMonth = self::getMaximumNumberOfEpisodeByMonthAndType($channel);
 
             /**
-             * Getting vignette
+             * If podcast has a thumb
              */
+            $vignetteObtained = false;
+            
             if ($thumb = $channel->thumbs) {
-                try {
-                    $channel->isDefaultVignette = false;
+                try {                    
                     $channel->vigUrl = ThumbService::getChannelVignetteUrl($thumb);
+                    $vignetteObtained=true;
                 } catch (\Exception $e) {
-                    $channel->isDefaultVignette = true;
-                    $channel->vigUrl = ThumbService::getDefaultVignetteUrl();
+                    /**
+                     * No vignette may occur for early birds channel before the vignette creation. 
+                     * We are trying to create it. If we succeed we are using it.
+                     */
+                    try {
+                        if (ThumbService::createThumbVig($thumb)){
+                            $channel->vigUrl = ThumbService::getChannelVignetteUrl($thumb);
+                            $vignetteObtained=true;
+                        } 
+                    } catch (\Exception $e){}
                 }
-            } else {
+            }
+            if (!$vignetteObtained) {
                 $channel->isDefaultVignette = true;
                 $channel->vigUrl = ThumbService::getDefaultVignetteUrl();
+            } else {
+                $channel->isDefaultVignette = false;
             }
+
         }
 
         return $channels;
