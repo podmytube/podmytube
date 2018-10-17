@@ -12,10 +12,34 @@ use Symfony\Component\HttpFoundation\Request;
 
 class ChannelService
 {
+    /**
+     * Newly registered channel is 0 by default
+     */
+    protected const _CHANNEl_FREE = 0;
+    
+    /**
+     * First users and friends
+     */
+    protected const _CHANNEL_EARLY_BIRD = 1;    
+
+    /**
+     * Paying clients
+     */
+    protected const _CHANNEl_PREMIUM = 2;
+    protected const _CHANNEl_VIP = 3;
+
+    /**
+     * Number of episodes allowed by plan
+     */
+    protected const _FREE_PLAN_EPISODES_NUMBER_ALLOWED_IN_PODCAST = 2;
+    protected const _PREMIUM_PLAN_EPISODES_NUMBER_ALLOWED_IN_PODCAST = 10;
+    protected const _EARLY_AND_VIP_PLAN_EPISODES_NUMBER_ALLOWED_IN_PODCAST = 33;
+    
+    
 
     /**
      * This function will return the number of episodes already grabbed for one channel.
-     * @params string $channel_id the channel
+     * @params Channel $channel_id the channel
      * @return int the number of episodes grabbed this month for this channel
      */
     public static function getNbEpisodesAlreadyDownloadedThisMonth(Channel $channel)
@@ -34,6 +58,27 @@ class ChannelService
     }
 
     /**
+     * This function will return the maximum number of episodes one podcast may include by type.
+     * @params Channel $channel_type the kind of channel (free/premium/etc)
+     * @return int maximum number of episode by month for its type
+     */
+    public static function getMaximumNumberOfEpisodeByMonthAndType(Channel $channel)
+    {
+        switch ($channel->channel_premium) {
+            case self::_CHANNEl_FREE:
+                return self::_FREE_PLAN_EPISODES_NUMBER_ALLOWED_IN_PODCAST;
+                break;
+            case self::_CHANNEl_PREMIUM:
+                return self::_PREMIUM_PLAN_EPISODES_NUMBER_ALLOWED_IN_PODCAST;
+                break;
+            case self::_CHANNEL_EARLY_BIRD:
+            case self::_CHANNEl_VIP:
+                return self::_EARLY_AND_VIP_PLAN_EPISODES_NUMBER_ALLOWED_IN_PODCAST;
+                break;
+        }
+    }
+
+    /**
      * This function will retrieve all user's channels.
      * @param User $user the user we need channels
      * @return channels models with thumb/vignette
@@ -42,21 +87,22 @@ class ChannelService
     {
         $channels = $user->channels;
 		foreach($channels as $channel) {
-            /**
-             * Retrieve thumbs relation
-             */
-            $thumb = $channel->thumbs;
-
+            
             $channel->nbEpisodesGrabbedThisMonth = self::getNbEpisodesAlreadyDownloadedThisMonth($channel);
-            $channel->nbEpisodesAllowedThisMonth = -1;
+            $channel->nbEpisodesAllowedThisMonth = self::getMaximumNumberOfEpisodeByMonthAndType($channel);
 
             /**
              * Getting vignette
              */
-            try {
-                $channel->isDefaultVignette = false;
-                $channel->vigUrl = ThumbService::getChannelVignetteUrl($thumb);
-            } catch (\Exception $e) {
+            if ($thumb = $channel->thumbs) {
+                try {
+                    $channel->isDefaultVignette = false;
+                    $channel->vigUrl = ThumbService::getChannelVignetteUrl($thumb);
+                } catch (\Exception $e) {
+                    $channel->isDefaultVignette = true;
+                    $channel->vigUrl = ThumbService::getDefaultVignetteUrl();
+                }
+            } else {
                 $channel->isDefaultVignette = true;
                 $channel->vigUrl = ThumbService::getDefaultVignetteUrl();
             }
