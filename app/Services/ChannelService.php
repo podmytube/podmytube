@@ -34,8 +34,7 @@ class ChannelService
     protected const _FREE_PLAN_EPISODES_NUMBER_ALLOWED_IN_PODCAST = 2;
     protected const _PREMIUM_PLAN_EPISODES_NUMBER_ALLOWED_IN_PODCAST = 10;
     protected const _EARLY_AND_VIP_PLAN_EPISODES_NUMBER_ALLOWED_IN_PODCAST = 33;
-    
-    
+        
 
     /**
      * This function will return the number of episodes already grabbed for one channel.
@@ -45,8 +44,7 @@ class ChannelService
     public static function getNbEpisodesAlreadyDownloadedThisMonth(Channel $channel)
     {
     
-        //$monthBeginning = carbon::createMidnightDate(date('Y'), date('m'), 1);
-        $monthBeginning = carbon::createMidnightDate(date('Y'), 1, 1);
+        $monthBeginning = carbon::createMidnightDate(date('Y'), date('m'), 1);
         $monthEnding = carbon::create()->endOfMonth();
         
         $nbMediasGrabbedThisMonth = Medias::grabbedBetween($monthBeginning, $monthEnding)
@@ -110,7 +108,12 @@ class ChannelService
                             $channel->vigUrl = ThumbService::getChannelVignetteUrl($thumb);
                             $vignetteObtained=true;
                         } 
-                    } catch (\Exception $e){}
+                    } catch (\Exception $e){
+                        /**
+                         * Doing nothing. 
+                         * This may occur if there is a thumb in database but files have been removed/moved.
+                         */
+                    }
                 }
             }
             if (!$vignetteObtained) {
