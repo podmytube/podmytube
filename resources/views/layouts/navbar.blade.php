@@ -4,6 +4,7 @@
 	@if (App::environment('micromania'))
 		<h1>Intramania l'intranet de Micromania</h1>
 	@endif
+	<h1>@yield('pageTitle')</h1>
 	<!-- Authentication Links -->
 	<ul class="navbar-nav ml-auto userlinks">
 	@guest
