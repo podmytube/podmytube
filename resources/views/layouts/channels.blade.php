@@ -57,11 +57,13 @@
                             {{ __('messages.button_edit_channel_label') }}
                         </button>
                     </a>
+                    <!--
                     <a href="{{ route('plans.index', $channel) }}">
                         <button type="button" class="btn btn-success">
                             {{ __('messages.button_upgrade_my_plan') }}
                         </button>
                     </a>
+                    -->
                 </div> <!-- /card body -->
             </div> <!-- /col card -->
 
