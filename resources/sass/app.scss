@@ -29,6 +29,10 @@ a:hover {
 h1, h2, h3, h4, h5 {
     color:$podmytube-red;
 }
+nav h1{
+    margin: 0 auto;
+    text-align: center;
+}
 .pmt-logo {
     background:url("/images/logo-small.png") no-repeat;
     height:100px;
