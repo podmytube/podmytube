@@ -66,7 +66,7 @@ class ThumbService
         }
 
         if (!\Storage::disk($thumb->file_disk)
-            ->exists($thumb->channel_id . '/' . $thumb->file_name)) {
+            ->exists($thumb->channel_id . DIRECTORY_SEPARATOR . $thumb->file_name)) {
             throw new \Exception("Thumbs for this channel {$thumb->channel_id} does not exist");
         }
 
@@ -75,10 +75,9 @@ class ThumbService
 
 
     /**
-     * Get the channel vignette.
-     * @param Thumbs 
+     * Get the channel vignette url for the specified thumb.
+     * @param Thumbs $thumb the thumb model to retrieve 
      */
-
     public static function getChannelVignetteUrl(Thumbs $thumb)
     {
         try {
@@ -100,8 +99,7 @@ class ThumbService
      * From a Thumb model will return the thumb file path.
      * Typically will return something like 
      * UC9hHeywcPBnLglqnQRaNShQ/Qb3mks0ghLSKQBpLOHNz5gY850ZgFAetkIodFI2K.png
-     * @param Thumbs $thumb 
-     
+     * @param Thumbs $thumb      
      */
     public static function getThumbFilePath(Thumbs $thumb)
     {
@@ -117,8 +115,7 @@ class ThumbService
      */
     public static function getVignetteFilePath(Thumbs $thumb)
     {
-        $thumbPath = self::getThumbFilePath($thumb);
-        $fileInfos = pathinfo($thumbPath);
+        $fileInfos = pathinfo(self::getThumbFilePath($thumb));
         return $thumb->channel_id . DIRECTORY_SEPARATOR . $fileInfos['filename'].'_vig'. '.' . $fileInfos['extension'];
     }
 
