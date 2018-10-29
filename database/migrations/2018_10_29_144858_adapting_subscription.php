@@ -39,26 +39,25 @@ class AdaptingSubscription extends Migration
             
             Schema::rename('stripe_subscriptions', 'subscriptions');
 
-            Schema::table('subscriptions', function (Blueprint $table) {
-                
-                $table->dropColumn('user_id');
-                $table->dropColumn('name');
-                $table->dropColumn('stripe_id');
-                $table->dropColumn('stripe_plan');
-                $table->dropColumn('quantity');
-
-                $table->string('channel_id', 64)->after('id');
-                $table->string('plan_id', 64)->after('id');
-                $table->timestamp('started_at')->nullable()->after('trial_ends_at');
-
-                $table->foreign('channel_id')->references('channel_id')->on('channels');
-                $table->foreign('plan_id')->references('id')->on('plans');                    
-
-
-            });
-            
-            
         }
+
+        Schema::table('subscriptions', function (Blueprint $table) {
+            
+            $table->dropColumn('user_id');
+            $table->dropColumn('name');
+            $table->dropColumn('stripe_id');
+            $table->dropColumn('stripe_plan');
+            $table->dropColumn('quantity');
+
+            $table->string('channel_id', 64)->after('id');
+            $table->unsignedTinyInteger('plan_id')->after('channel_id');
+            $table->timestamp('started_at')->nullable()->after('trial_ends_at');
+
+            $table->foreign('channel_id')->references('channel_id')->on('channels');
+            $table->foreign('plan_id')->references('id')->on('plans');                    
+
+
+        });
     }
 
     /**
@@ -83,9 +82,6 @@ class AdaptingSubscription extends Migration
             $table->integer('quantity')->after('stripe_plan');
             
         });
-
-        Schema::rename('subscriptions', 'stripe_subscriptions');
-     
         
     }
 }

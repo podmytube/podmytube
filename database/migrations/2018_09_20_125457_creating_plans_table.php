@@ -14,7 +14,7 @@ class CreatingPlansTable extends Migration
     public function up()
     {
         Schema::create('plans', function (Blueprint $table) {
-            $table->increments('id');
+            $table->unsignedTinyInteger('id')->autoIncrement();
             $table->string('name');
             $table->unsignedTinyInteger('price_per_month');
             $table->timestamps();
