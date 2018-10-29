@@ -17,6 +17,7 @@ class CreatingPlansTable extends Migration
             $table->unsignedTinyInteger('id')->autoIncrement();
             $table->string('name');
             $table->unsignedTinyInteger('price_per_month');
+            $table->unsignedTinyInteger('nb_episodes_per_month');
             $table->timestamps();
         });
     }
