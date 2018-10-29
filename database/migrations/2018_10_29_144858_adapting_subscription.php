@@ -68,8 +68,8 @@ class AdaptingSubscription extends Migration
     public function down()
     {
         Schema::table('subscriptions', function (Blueprint $table) {
-            //$table->dropforeign('subscriptions_plan_id_foreign');
-            //$table->dropforeign('subscriptions_channel_id_foreign');
+            $table->dropforeign('subscriptions_plan_id_foreign');
+            $table->dropforeign('subscriptions_channel_id_foreign');
 
             $table->dropColumn('started_at');
             $table->dropColumn('plan_id');
