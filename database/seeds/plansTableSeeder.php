@@ -35,10 +35,20 @@ class plansTableSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=1');
 
         /**
+         * forever free 
+         */
+        Plan::insert([
+			'name'              => 'forever_free',
+            'price_per_month'   => 0,
+            'nb_episodes_per_month' => self::max_episodes_by_plan['free'],
+            'created_at'        => Carbon::createFromDate(2017,1,1),
+            'updated_at'        => Carbon::now(),
+        ]);
+        
+        /**
          * 2017 
          */
         Plan::insert([
-			'id'                => 1,
 			'name'              => 'early_bird_2017',
             'price_per_month'   => 0,
             'nb_episodes_per_month' => self::max_episodes_by_plan['vip_premium'],
@@ -47,7 +57,6 @@ class plansTableSeeder extends Seeder
 		]);
 
         Plan::insert([
-			'id'                => 2,
 			'name'              => 'premium_2017',
             'price_per_month'   => 6,
             'nb_episodes_per_month' => self::max_episodes_by_plan['standard_premium'],
@@ -60,7 +69,6 @@ class plansTableSeeder extends Seeder
          * September 2018
          */
         Plan::insert([
-			'id'                => 3,
 			'name'              => 'weekly_youtuber_sept_2018',
             'price_per_month'   => 9,
             'nb_episodes_per_month' => self::max_episodes_by_plan['standard_premium'],
@@ -69,24 +77,12 @@ class plansTableSeeder extends Seeder
         ]);
 
         Plan::insert([
-			'id'                => 4,
 			'name'              => 'daily_youtuber_sept_2018',
             'price_per_month'   => 29,
             'nb_episodes_per_month' => self::max_episodes_by_plan['vip_premium'],
             'created_at'        => Carbon::createFromDate(2018,9,1),
             'updated_at'        => Carbon::now(),
-        ]);
-
-        /**
-         * forever free 
-         */
-        Plan::insert([
-			'name'              => 'forever_free',
-            'price_per_month'   => 0,
-            'nb_episodes_per_month' => self::max_episodes_by_plan['free'],
-            'created_at'        => Carbon::createFromDate(2017,1,1),
-            'updated_at'        => Carbon::now(),
-		]);
+        ]);        
 
     }
 }
