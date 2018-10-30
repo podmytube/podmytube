@@ -25,7 +25,6 @@ class AdaptingSubscription extends Migration
      * channel_id    
      * plan_id
      * trial_ends_at
-     * started_at          
      * ends_at     
      * created_at  
      * updated_at  
@@ -51,8 +50,7 @@ class AdaptingSubscription extends Migration
 
             $table->string('channel_id', 64)->after('id');
             $table->unsignedTinyInteger('plan_id')->after('channel_id');
-            $table->timestamp('started_at')->nullable()->after('trial_ends_at');
-
+            
             $table->foreign('channel_id')->references('channel_id')->on('channels');
             $table->foreign('plan_id')->references('id')->on('plans');                    
 
