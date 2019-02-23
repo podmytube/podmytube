@@ -26,6 +26,7 @@
                     data-image="https://www.podmytube.com/pics/pmt2.png"
                     data-locale="auto"
                     data-currency="eur"
+                    data-zip-code="true"
                     data-panel-label="Subscribe for">
             </script>
           </form>
