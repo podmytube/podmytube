@@ -1,61 +1,55 @@
 @extends('layouts.app')
 
-@section('pageTitle', __('messages.page_title_channel_thumbs_index') )
+@section('pageTitle', __('plans.title_upgrade_your_plan') )
+
+@section('stripeJs')
+  <!-- Load Stripe.js on your website. -->
+  <script src="https://js.stripe.com/v3"></script>
+@endsection
 
 @section ('content')
 
-    <div class="container text-center">
+  <div class="mb-5">
+  </div>
 
-    <h1> {{ __('messages.plans_title_upgrade_your_plan') }} </h1>
+  <div class="container text-center">
+
     
-      <div class="row">
+    <div id="stripe-error-message"></div>
 
-        <div class="col">
-          <h2> {{ __('messages.plans_weekly_youtuber') }} </h2>
 
-          <form action="/subscribe" method="POST">
 
-            {{ csrf_field() }}
+    <div class="row">
+      <div class="col border rounded m-1 p-3">
 
-            <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-                    data-label="{{ __('messages.stripe_button_subscribe_to_weekly') }}"
-                    data-key="{{ config('services.stripe.key') }}"
-                    data-amount="900"
-                    data-name="Weekly youtuber 9€"
-                    data-description="Widget"
-                    data-image="https://www.podmytube.com/pics/pmt2.png"
-                    data-locale="auto"
-                    data-currency="eur"
-                    data-zip-code="true"
-                    data-panel-label="Subscribe for">
-            </script>
-          </form>
+        @include("layouts.partials.stripeButton", [
+          "planTitle" => __('plans.title_weekly_plan'),
+          "planFeatures" => __('plans.weekly_plan_features'),
+          "planLimits" => __('plans.weekly_plan_limits_reminder'),
+          "buttonId" => "weeklyCheckoutButton",
+          "planToSubscribe" => "weekly",
+          "planPrice" => "9€",
+          "successUrl" => "https://dashboard.podmytube.com/success",
+          "cancelUrl" => "https://dashboard.podmytube.com/canceled"
+        ])
 
-        </div>
-        <div class="col">
-            <h2> {{ __('messages.plans_daily_youtuber') }} </h2>
-  
-            <form action="/subscribe" method="POST">
-  
-              {{ csrf_field() }}
-  
-              <script src="https://checkout.stripe.com/checkout.js" class="stripe-button btn-success"
-                      data-label="{{ __('messages.stripe_button_subscribe_to_daily') }}"
-                      data-key="{{ config('services.stripe.key') }}"
-                      data-amount="2900"
-                      data-name="Daily youtuber 29€"
-                      data-description="Widget"
-                      data-image="https://www.podmytube.com/pics/pmt2.png"
-                      data-locale="auto"
-                      data-currency="eur"
-                      data-panel-label="Subscribe for">
-              </script>
-            </form>
-            
-          </div>
-      </div>
+      </div> <!-- /col-weekly -->
+      <div class="col border rounded m-1 p-3">
 
-    </div>
+          @include("layouts.partials.stripeButton", [
+            "planTitle" => __('plans.title_daily_plan'),
+            "planFeatures" => __('plans.daily_plan_features'),
+            "planLimits" => __('plans.daily_plan_limits_reminder'),
+            "buttonId" => "dailyCheckoutButton",
+            "planToSubscribe" => "daily",
+            "planPrice" => "29€",
+            "successUrl" => "https://dashboard.podmytube.com/success",
+            "cancelUrl" => "https://dashboard.podmytube.com/canceled"
+          ])
+
+      </div> <!-- /col-daily -->
+    </div> <!-- /row -->
+  </div>
 
 @endsection
 

@@ -18,7 +18,7 @@
     
     @yield('recaptcha')
 
-    @yield('charts_lib')
+    @yield('stripeJs')
 
     <!--Favicon-->
     <link rel="icon" type="image/png" href="/favicon.png" />
