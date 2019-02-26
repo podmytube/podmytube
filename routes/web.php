@@ -72,11 +72,16 @@ Route::get('/channel/{channel}/app_stats', 'AppStatsController@index')->name('ap
  * Plans
  */
 Route::get('/plans/{channel}', 'PlansController@index')->name('plans.index');
+Route::get('/success', 'SubscriptionResultController@success');
+Route::get('/canceled', 'SubscriptionResultController@failure');
+
+Route::post('stripewebhook', 'StripeWebhookController@receive');
 
 /**
  * Subscription
  */
 Route::post('/subscribe', 'SubscribeController@store');
+
 
 /**
  * Thumbs

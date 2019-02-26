@@ -17,8 +17,6 @@
     
     <div id="stripe-error-message"></div>
 
-
-
     <div class="row">
       <div class="col border rounded m-1 p-3">
 
@@ -29,8 +27,8 @@
           "buttonId" => "weeklyCheckoutButton",
           "planToSubscribe" => "weekly",
           "planPrice" => "9€",
-          "successUrl" => "https://dashboard.podmytube.com/success",
-          "cancelUrl" => "https://dashboard.podmytube.com/canceled"
+          "successUrl" => env("APP_URL")."/success",
+          "cancelUrl" => env("APP_URL")."/canceled"
         ])
 
       </div> <!-- /col-weekly -->
@@ -43,8 +41,8 @@
             "buttonId" => "dailyCheckoutButton",
             "planToSubscribe" => "daily",
             "planPrice" => "29€",
-            "successUrl" => "https://dashboard.podmytube.com/success",
-            "cancelUrl" => "https://dashboard.podmytube.com/canceled"
+            "successUrl" => env("APP_URL")."/success",
+            "cancelUrl" => env("APP_URL")."/canceled"
           ])
 
       </div> <!-- /col-daily -->
