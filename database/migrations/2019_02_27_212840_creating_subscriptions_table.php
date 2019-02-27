@@ -1,0 +1,54 @@
+<?php
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class CreatingSubscriptionsTable extends Migration
+{
+    const _DEFAULT_PLAN_ID_IS_WEEKLY_YOUTUBER_9_MONTH=4;
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        /**
+         * id 
+         * channel_id
+         * plan_id
+         * trial_ends_at
+         * ends_at
+         * created_at
+         * updated_at
+         */
+        Schema::create('subscriptions', function (Blueprint $table) {
+            $table->unsignedSmallInteger('id')->autoIncrement();
+            $table->string('channel_id');
+            $table->unsignedTinyInteger('plan_id')->default(self::_DEFAULT_PLAN_ID_IS_WEEKLY_YOUTUBER_9_MONTH);
+            $table->date('trial_ends_at');
+            $table->date('ends_at');
+            $table->timestamps(); //created_at && updated_at
+
+            $table->foreign('channel_id')
+                ->references('channel_id')->on('channels')
+                ->onDelete('cascade');
+            $table->foreign('plan_id')
+                ->references('id')->on('plans')
+                //->onDelete('null')
+                ->onUpdate('cascade');
+            
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('subscriptions');
+    }
+}
