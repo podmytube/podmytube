@@ -16,13 +16,6 @@ class DatabaseSeeder extends Seeder
             $this->call([
                 usersTableSeeder::class,
                 categoriesTableSeeder::class,
-                mediasStatsTableSeeder::class,
-                appStatsTableSeeder::class,
-                thumbsTableSeeder::class,
-            ]);
-        } else {
-            $this->call([
-                thumbsTableSeeder::class,
             ]);
         }
 
