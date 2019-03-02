@@ -15,8 +15,10 @@ class CreatingPlansTable extends Migration
     {
         Schema::create('plans', function (Blueprint $table) {
             $table->unsignedTinyInteger('id')->autoIncrement();
-            $table->string('name');
-            $table->unsignedTinyInteger('price_per_month');
+            $table->string('name',100);
+            $table->string('stripe_id',50)->nullable();
+            $table->unsignedTinyInteger('price');
+            $table->unsignedTinyInteger('billing_yearly')->default(false);
             $table->unsignedTinyInteger('nb_episodes_per_month');
             $table->timestamps();
         });

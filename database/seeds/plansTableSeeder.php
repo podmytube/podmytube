@@ -39,7 +39,7 @@ class plansTableSeeder extends Seeder
          */
         Plan::insert([
 			'name'              => 'forever_free',
-            'price_per_month'   => 0,
+            'price'             => 0,
             'nb_episodes_per_month' => self::max_episodes_by_plan['free'],
             'created_at'        => Carbon::createFromDate(2017,1,1),
             'updated_at'        => Carbon::now(),
@@ -49,16 +49,33 @@ class plansTableSeeder extends Seeder
          * 2017 
          */
         Plan::insert([
-			'name'              => 'early_bird_2017',
-            'price_per_month'   => 0,
+            'name'              => 'early_bird_2017',
+            'price'             => 0,
             'nb_episodes_per_month' => self::max_episodes_by_plan['vip_premium'],
             'created_at'        => Carbon::createFromDate(2017,1,1),
             'updated_at'        => Carbon::now(),
 		]);
 
+        /**
+         * first premium subscribers --- monthly
+         */
         Plan::insert([
-			'name'              => 'premium_2017',
-            'price_per_month'   => 6,
+            'name'              => 'promo_monthly',
+            'stripe_id'         => 'prod_EcuCa7nzUEs99w',
+            'price'             => 6,
+            'nb_episodes_per_month' => self::max_episodes_by_plan['standard_premium'],
+            'created_at'        => Carbon::createFromDate(2017,1,1),
+            'updated_at'        => Carbon::now(),
+        ]);
+
+        /**
+         * first premium subscribers --- yearly
+         */
+        Plan::insert([
+            'name'              => 'promo_yearly',
+            'stripe_id'         => 'prod_EcuIm5RX1hWja3',
+            'price'             => 66,
+            'billing_yearly'    => true,
             'nb_episodes_per_month' => self::max_episodes_by_plan['standard_premium'],
             'created_at'        => Carbon::createFromDate(2017,1,1),
             'updated_at'        => Carbon::now(),
@@ -69,16 +86,18 @@ class plansTableSeeder extends Seeder
          * September 2018
          */
         Plan::insert([
-			'name'              => 'weekly_youtuber_sept_2018',
-            'price_per_month'   => 9,
+            'name'              => 'weekly_youtuber_sept_2018',
+            'stripe_id'         => 'prod_EaIuVWIQFNqwZS',
+            'price'             => 9,
             'nb_episodes_per_month' => self::max_episodes_by_plan['standard_premium'],
             'created_at'        => Carbon::createFromDate(2018,9,1),
             'updated_at'        => Carbon::now(),
         ]);
 
         Plan::insert([
-			'name'              => 'daily_youtuber_sept_2018',
-            'price_per_month'   => 29,
+            'name'              => 'daily_youtuber_sept_2018',
+            'stripe_id'         => 'prod_DFs9CxPqBYxbd0',
+            'price'             => 29,
             'nb_episodes_per_month' => self::max_episodes_by_plan['vip_premium'],
             'created_at'        => Carbon::createFromDate(2018,9,1),
             'updated_at'        => Carbon::now(),
