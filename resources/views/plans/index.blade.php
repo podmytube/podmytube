@@ -25,7 +25,7 @@
           "planFeatures" => __('plans.weekly_plan_features'),
           "planLimits" => __('plans.weekly_plan_limits_reminder'),
           "buttonId" => "weeklyCheckoutButton",
-          "planToSubscribe" => "weekly",
+          "planToSubscribe" => "prod_EaIuVWIQFNqwZS",
           "planPrice" => "9€",
           "successUrl" => env("APP_URL")."/success",
           "cancelUrl" => env("APP_URL")."/canceled"
@@ -39,7 +39,7 @@
             "planFeatures" => __('plans.daily_plan_features'),
             "planLimits" => __('plans.daily_plan_limits_reminder'),
             "buttonId" => "dailyCheckoutButton",
-            "planToSubscribe" => "daily",
+            "planToSubscribe" => "prod_DFs9CxPqBYxbd0",
             "planPrice" => "29€",
             "successUrl" => env("APP_URL")."/success",
             "cancelUrl" => env("APP_URL")."/canceled"
