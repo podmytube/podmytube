@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
                 usersTableSeeder::class,
                 categoriesTableSeeder::class,
                 plansTableSeeder::class,
+                subscriptionTableSeeder::class,
             ]);
         }
 

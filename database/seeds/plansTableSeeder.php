@@ -11,6 +11,7 @@ class plansTableSeeder extends Seeder
     const max_episodes_by_plan = [
         'free' => 2,
         'standard_premium' => 10,
+        'accropolis' => 20, // to be removed ... when they will upgrade or leave
         'vip_premium' => 33,
         'early' => 33,
     ];
@@ -102,6 +103,18 @@ class plansTableSeeder extends Seeder
             'created_at'        => Carbon::createFromDate(2018,9,1),
             'updated_at'        => Carbon::now(),
         ]);        
+
+        /**
+         * Accropolis wart
+         */
+        Plan::insert([
+            'name'              => 'accropolis_6_euros',
+            'stripe_id'         => 'prod_Ecv3nuwS3VqK5j',
+            'price'             => 6,
+            'nb_episodes_per_month' => self::max_episodes_by_plan['accropolis'],
+            'created_at'        => Carbon::createFromDate(2017,1,1),
+            'updated_at'        => Carbon::now(),
+        ]);
 
     }
 }

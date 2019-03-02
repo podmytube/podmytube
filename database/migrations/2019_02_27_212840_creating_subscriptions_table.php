@@ -27,8 +27,8 @@ class CreatingSubscriptionsTable extends Migration
             $table->unsignedSmallInteger('id')->autoIncrement();
             $table->string('channel_id');
             $table->unsignedTinyInteger('plan_id')->default(self::_DEFAULT_PLAN_ID_IS_WEEKLY_YOUTUBER_9_MONTH);
-            $table->date('trial_ends_at');
-            $table->date('ends_at');
+            $table->date('trial_ends_at')->nullable();
+            $table->date('ends_at')->nullable();
             $table->timestamps(); //created_at && updated_at
 
             $table->foreign('channel_id')
