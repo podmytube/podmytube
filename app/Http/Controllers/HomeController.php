@@ -36,9 +36,11 @@ class HomeController extends Controller
      */
     public function index()
     {        
-        
+        /**
+         * Get user's channel(s)
+         */
         $channels = ChannelService::getAuthenticatedUserChannels(Auth::user());
-        
+
         return view('home', compact('channels'));
     }
 }

@@ -4,14 +4,13 @@ namespace App\Services;
 
 use App\Channel;
 use App\User;
-use App\Plan;
 use App\Medias;
 
 use Carbon\Carbon;
 use App\Services\ThumbService;
 use Symfony\Component\HttpFoundation\Request;
 
-class ChannelService
+class SubscriptionService
 {
     /**
      * Newly registered channel is 0 by default
@@ -63,9 +62,6 @@ class ChannelService
      */
     public static function getMaximumNumberOfEpisodeByMonthAndType(Channel $channel)
     {
-        /**
-         * Rechercher 
-         */
         switch ($channel->channel_premium) {
             case self::_CHANNEl_FREE:
                 return self::_FREE_PLAN_EPISODES_NUMBER_ALLOWED_IN_PODCAST;
