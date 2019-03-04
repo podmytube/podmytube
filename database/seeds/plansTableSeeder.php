@@ -39,6 +39,7 @@ class plansTableSeeder extends Seeder
          * forever free 
          */
         Plan::insert([
+            'id'                => 1,
 			'name'              => 'forever_free',
             'price'             => 0,
             'nb_episodes_per_month' => self::max_episodes_by_plan['free'],
@@ -50,6 +51,7 @@ class plansTableSeeder extends Seeder
          * 2017 
          */
         Plan::insert([
+            'id'                => 2,
             'name'              => 'early_bird_2017',
             'price'             => 0,
             'nb_episodes_per_month' => self::max_episodes_by_plan['vip_premium'],
@@ -61,6 +63,7 @@ class plansTableSeeder extends Seeder
          * first premium subscribers --- monthly
          */
         Plan::insert([
+            'id'                => 3,
             'name'              => 'promo_monthly',
             'stripe_id'         => 'prod_EcuCa7nzUEs99w',
             'price'             => 6,
@@ -73,6 +76,7 @@ class plansTableSeeder extends Seeder
          * first premium subscribers --- yearly
          */
         Plan::insert([
+            'id'                => 4,
             'name'              => 'promo_yearly',
             'stripe_id'         => 'prod_EcuIm5RX1hWja3',
             'price'             => 66,
@@ -87,6 +91,7 @@ class plansTableSeeder extends Seeder
          * September 2018
          */
         Plan::insert([
+            'id'                => 5,
             'name'              => 'weekly_youtuber_sept_2018',
             'stripe_id'         => 'prod_EaIuVWIQFNqwZS',
             'price'             => 9,
@@ -96,6 +101,7 @@ class plansTableSeeder extends Seeder
         ]);
 
         Plan::insert([
+            'id'                => 6,
             'name'              => 'daily_youtuber_sept_2018',
             'stripe_id'         => 'prod_DFs9CxPqBYxbd0',
             'price'             => 29,
@@ -110,7 +116,7 @@ class plansTableSeeder extends Seeder
         Plan::insert([
             'name'              => 'accropolis_6_euros',
             'stripe_id'         => 'prod_Ecv3nuwS3VqK5j',
-            'price'             => 6,
+            'price'             => 7,
             'nb_episodes_per_month' => self::max_episodes_by_plan['accropolis'],
             'created_at'        => Carbon::createFromDate(2017,1,1),
             'updated_at'        => Carbon::now(),
