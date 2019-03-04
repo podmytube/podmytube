@@ -11,10 +11,11 @@ SET FOREIGN_KEY_CHECKS=1;
 
 # insert sample into channels 
 INSERT INTO channels (channel_id, user_id, channel_name, channel_premium, active,accept_video_by_tag) VALUES
-    ('freeChannel', 0, 'The free users', 0, 1, 'Trailer'),
-    ('earlyChannel', 1, 'The first users that registered', 1, 1, null),
-    ('weeklyChannel', 2, 'Lowest price subscription', 2, 1, null),
-    ('dailyChannel', 3, 'Highest price subscription', 3, 1, null);
+    ('freeChannel', 1, 'Free users', 0, 1, null),
+    ('earlyChannel', 1, 'Early birds', 1, 1, null),
+    ('weeklyChannel', 1, 'Weekly youtuber', 2, 1, null),
+    ('dailyChannel', 1, 'Daily youtuber', 3, 1, null),
+    ('UCq80IvL314jsE7PgYsTdw7Q', 1, 'Accropolis', 3, 1, null);
 
 # insert sample into media 
 # getAudio is getting all medias ordered by published_at date
