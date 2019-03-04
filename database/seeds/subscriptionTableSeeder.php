@@ -1,10 +1,11 @@
 <?php
 
 use App\Channel;
-use App\Services\ChannelPremiumToSubscriptionService;
+use App\Subscription;
 use App\Exceptions\FreePlanDoNotNeedSubscriptionException;
-
+use App\Services\ChannelPremiumToSubscriptionService;
 use Illuminate\Database\Seeder;
+
 class subscriptionTableSeeder extends Seeder
 {
 
@@ -15,6 +16,11 @@ class subscriptionTableSeeder extends Seeder
      */
     public function run()
     {
+
+        if (App::environment(['dev', 'local', 'rec', 'testing'])) {
+            Subscription::truncate();
+        }
+
         /**
          * getting channels informations
          */

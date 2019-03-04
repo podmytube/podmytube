@@ -15,7 +15,9 @@ INSERT INTO channels (channel_id, user_id, channel_name, channel_premium, active
     ('earlyChannel', 1, 'Early birds', 1, 1, null),
     ('weeklyChannel', 1, 'Weekly youtuber', 2, 1, null),
     ('dailyChannel', 1, 'Daily youtuber', 3, 1, null),
-    ('UCq80IvL314jsE7PgYsTdw7Q', 1, 'Accropolis', 3, 1, null);
+    ('UCq80IvL314jsE7PgYsTdw7Q', 1, 'Accropolis', 3, 1, null),
+    ('UCnF1gaTK11ax2pWCIdUp8-w', 1, 'Monthly subscribers 6€/month - delphine dimanche', 3, 1, null),
+    ('UCnf8HI3gUteF1BKAvrDO9dQ', 1, 'Yearly subscribers 66€/year - alex borto', 3, 1, null);
 
 # insert sample into media 
 # getAudio is getting all medias ordered by published_at date

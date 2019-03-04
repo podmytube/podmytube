@@ -91,7 +91,7 @@ class Channel extends Model
      */
     public function subscription()
     {
-        return $this->hasOne(Subscription::class, 'user_id');
+        return $this->hasOne(Subscription::class, 'channel_id');
     }
 
     /**
