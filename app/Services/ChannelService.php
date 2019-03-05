@@ -3,13 +3,11 @@
 namespace App\Services;
 
 use App\Channel;
-use App\User;
-use App\Plan;
 use App\Medias;
-
-use Carbon\Carbon;
+use App\Plan;
 use App\Services\ThumbService;
-use Symfony\Component\HttpFoundation\Request;
+use App\User;
+use Carbon\Carbon;
 
 class ChannelService
 {
@@ -17,11 +15,11 @@ class ChannelService
      * Newly registered channel is 0 by default
      */
     protected const _CHANNEl_FREE = 0;
-    
+
     /**
      * First users and friends
      */
-    protected const _CHANNEL_EARLY_BIRD = 1;    
+    protected const _CHANNEL_EARLY_BIRD = 1;
 
     /**
      * Paying clients
@@ -35,7 +33,6 @@ class ChannelService
     protected const _FREE_PLAN_EPISODES_NUMBER_ALLOWED_IN_PODCAST = 2;
     protected const _PREMIUM_PLAN_EPISODES_NUMBER_ALLOWED_IN_PODCAST = 10;
     protected const _EARLY_AND_VIP_PLAN_EPISODES_NUMBER_ALLOWED_IN_PODCAST = 33;
-        
 
     /**
      * This function will return the number of episodes already grabbed for one channel.
@@ -44,10 +41,10 @@ class ChannelService
      */
     public static function getNbEpisodesAlreadyDownloadedThisMonth(Channel $channel)
     {
-    
+
         $monthBeginning = carbon::createMidnightDate(date('Y'), date('m'), 1);
         $monthEnding = carbon::create()->endOfMonth();
-        
+
         $nbMediasGrabbedThisMonth = Medias::grabbedBetween($monthBeginning, $monthEnding)
             ->whereNotNull('grabbed_at')
             ->where('channel_id', $channel->channel_id)
@@ -64,7 +61,7 @@ class ChannelService
     public static function getMaximumNumberOfEpisodeByMonthAndType(Channel $channel)
     {
         /**
-         * Rechercher 
+         * Rechercher
          */
         switch ($channel->channel_premium) {
             case self::_CHANNEl_FREE:
@@ -88,8 +85,8 @@ class ChannelService
     public static function getAuthenticatedUserChannels(User $user)
     {
         $channels = $user->channels;
-		foreach($channels as $channel) {
-            
+        foreach ($channels as $channel) {
+
             $channel->nbEpisodesGrabbedThisMonth = self::getNbEpisodesAlreadyDownloadedThisMonth($channel);
             $channel->nbEpisodesAllowedThisMonth = self::getMaximumNumberOfEpisodeByMonthAndType($channel);
 
@@ -97,24 +94,24 @@ class ChannelService
              * If podcast has a thumb
              */
             $vignetteObtained = false;
-            
+
             if ($thumb = $channel->thumbs) {
-                try {                    
+                try {
                     $channel->vigUrl = ThumbService::getChannelVignetteUrl($thumb);
-                    $vignetteObtained=true;
+                    $vignetteObtained = true;
                 } catch (\Exception $e) {
                     /**
-                     * No vignette may occur for early birds channel before the vignette creation. 
+                     * No vignette may occur for early birds channel before the vignette creation.
                      * We are trying to create it. If we succeed we are using it.
                      */
                     try {
-                        if (ThumbService::createThumbVig($thumb)){
+                        if (ThumbService::createThumbVig($thumb)) {
                             $channel->vigUrl = ThumbService::getChannelVignetteUrl($thumb);
-                            $vignetteObtained=true;
-                        } 
-                    } catch (\Exception $e){
+                            $vignetteObtained = true;
+                        }
+                    } catch (\Exception $e) {
                         /**
-                         * Doing nothing. 
+                         * Doing nothing.
                          * This may occur if there is a thumb in database but files have been removed/moved.
                          */
                     }
@@ -131,6 +128,18 @@ class ChannelService
 
         return $channels;
 
+    }
+
+    /**
+     * This function will return true if channel has no subscription.
+     * If no subscription it means that channel is free.
+     *
+     * @param Channel $channel
+     * @return boolean
+     */
+    public static function isFreeChannel(Channel $channel)
+    {
+        return App\Subscription::where('channel_id', $channel->channel_id)->doesntExist();
     }
 
 }

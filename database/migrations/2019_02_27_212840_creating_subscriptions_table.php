@@ -40,6 +40,10 @@ class CreatingSubscriptionsTable extends Migration
                 ->onUpdate('cascade');
             
         });
+
+        Artisan::call('db:seed', [
+            '--class' => subscriptionTableSeeder::class
+        ]);
     }
 
     /**

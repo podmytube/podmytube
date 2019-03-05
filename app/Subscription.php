@@ -7,11 +7,19 @@ use Illuminate\Database\Eloquent\Model;
 class Subscription extends Model
 {
     /**
-     * Define relation for one subscription with one plan.
-     * One subscription has only one plan. Else you should create another sub.
+     * One channel should have only one row in subscription table.
+     */
+    public function channel()
+    {
+        return $this->hasOne(Channel::class);
+    }
+
+    /**
+     * One subscription has only one plan possible.
      */
     public function plan()
     {
         return $this->hasOne(Plan::class);
     }
+    
 }

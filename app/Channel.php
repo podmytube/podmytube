@@ -8,6 +8,7 @@
  */
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -42,10 +43,10 @@ class Channel extends Model
      * those fields are converted into Carbon mutator
      */
     protected $dates = [
-        'channel_createdAt', 
-        'channel_updatedAt', 
-        'podcast_updatedAt', 
-        'reject_video_too_old'
+        'channel_createdAt',
+        'channel_updatedAt',
+        'podcast_updatedAt',
+        'reject_video_too_old',
     ];
 
     /**
@@ -73,7 +74,6 @@ class Channel extends Model
         'ftp_pasv',
     ];
 
-
     /**
      * define the relationship between one user and one channel
      *
@@ -85,18 +85,26 @@ class Channel extends Model
     }
 
     /**
-     * define the relationship between one channel and one subscription
+     * We are getting active subscriptions for the channel.
+     * free plan : If no subscription => free plan
+     * early bird : If ends_at is null => early
      *
      * @return model the current subscription
      */
     public function subscription()
     {
-        return $this->hasOne(Subscription::class, 'channel_id');
+        $start = new Carbon('first day of this month');
+        $end = new Carbon('last day of this month');
+
+        return $this->hasOne(Subscription::class, 'channel_id')
+            ->where(function ($query) use ($start, $end) {
+                $query->whereNull('ends_at')
+                    ->orWhereBetween('ends_at', [$start, $end]);
+            });
     }
 
     /**
      * define the relationship between one channel and its playlists
-     *
      */
     public function playlists()
     {
@@ -129,7 +137,6 @@ class Channel extends Model
     {
         return $this->HasOne(Thumbs::class, 'channel_id');
     }
-
 
     /**
      * Provides the channel global podcast url
@@ -191,8 +198,6 @@ class Channel extends Model
         }
     }
 
-
-
     /**
      * mutator in order to convert input received data from d/m/Y to Y-m-d before to send it in db
      *
@@ -206,8 +211,6 @@ class Channel extends Model
             $this->attributes['reject_video_too_old'] = null;
         }
     }
-
-
 
     /**
      * Providing all the apple itunes podcast categories

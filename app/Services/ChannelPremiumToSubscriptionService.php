@@ -101,12 +101,12 @@ class ChannelPremiumToSubscriptionService
 
             $plan = Plan::find($newPlanId);
             /**
-             * if plan has monthly billing we are fixing the end of subscription to first day of next month
-             * if billed yearly we are fixing it to first day of this month + 1 year
+             * if plan has monthly billing we are fixing the end of subscription to last day of this month
+             * if billed yearly we are fixing it to last day of this month + 1 year
              */
             $endsAt=null;
             if ($newPlanId != self::_EARLY_PLAN_ID) {
-                $endsAt = new Carbon('first day of next month');
+                $endsAt = new Carbon('last day of this month');
                 if($plan->billing_yearly==1){
                     $endsAt = $firstDayOfThisMonth->copy()->addYear();                
                 }                

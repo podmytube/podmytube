@@ -19,4 +19,9 @@ class Plan extends Model
     {
         return $this->HasMany(Subscription::class);
     } 
+
+    public function getNbEpisodesPerMonth()
+    {
+        
+    }
 }
