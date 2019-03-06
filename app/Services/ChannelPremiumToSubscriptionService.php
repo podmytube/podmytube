@@ -18,32 +18,9 @@ use Carbon\Carbon;
 class ChannelPremiumToSubscriptionService
 {
     /**
-     * Free plan
-     * channel_premium=0 => plans.id=1
-     */
-    const _FREE_PLAN_ID = 1;
-
-    /**
-     * Early bird
-     * channel_premium=1 => plans.id=2
-     */
-    const _EARLY_PLAN_ID = 2;
-
-    /**
-     * Weekly youtuber - weekly youtuber 9€ / month
-     */
-    const _WEEKLY_PLAN_ID = 5;
-
-    /**
-     * Daily youtuber - daily youtuber 29€ / month     
-     */
-    const _DAILY_PLAN_ID = 6;
-
-    /**
      * First premium users (6€) monthly
      * 'UCnF1gaTK11ax2pWCIdUp8-w', // | Delphine Dimanche => 6€/month
      */
-    const _PREMIUM_2017_MONTHLY_PLAN_ID = 3;
     const _OLD_MONTHLY_AT_6 = [
         'UCnF1gaTK11ax2pWCIdUp8-w', // Delphine Dimanche => 6€/month
     ];
@@ -53,15 +30,13 @@ class ChannelPremiumToSubscriptionService
      * of episodes converted / month was not limited before
      * 'UCq80IvL314jsE7PgYsTdw7Q', // | Accropolis Replays => 6€/month
      */
-    const _ACCROPOLIS_PLAN_ID = 7;
-
+    
     /**
      * First premium users yearly plan (66€) channel_premium
      * 'UCnf8HI3gUteF1BKAvrDO9dQ', // | Alex Borto 66€/year
      * 'UCU_gPhU-eAI56oUeFzVyUUQ', // | WP Marmite => 66€/year
      * 'UCNHFiyWgsnaSOsMtSoV_Q1A', // | Axiome => 66€/year
      */
-    const _PREMIUM_2017_YEARLY_PLAN_ID = 4;
     const _OLD_YEARLY_AT_66 = [
         'UCnf8HI3gUteF1BKAvrDO9dQ', // | Alex Borto 66€/year
         'UCU_gPhU-eAI56oUeFzVyUUQ', // | WP Marmite => 66€/year
@@ -105,7 +80,7 @@ class ChannelPremiumToSubscriptionService
              * if billed yearly we are fixing it to last day of this month + 1 year
              */
             $endsAt=null;
-            if ($newPlanId != self::_EARLY_PLAN_ID) {
+            if ($newPlanId != Plan::_EARLY_PLAN_ID) {
                 $endsAt = new Carbon('last day of this month');
                 if($plan->billing_yearly==1){
                     $endsAt = $firstDayOfThisMonth->copy()->addYear();                
@@ -134,20 +109,13 @@ class ChannelPremiumToSubscriptionService
      */
     public static function getPlanIdForChannel(Channel $channel)
     {
-        /**
-         * Free users
-         */
-        if ($channel->channel_premium == 0) {
-            // no subscription for free plan
-            throw new FreePlanDoNotNeedSubscriptionException("Channel {{$channel->channel_id}} has a free plan and does not need subscription.");
-        } 
         
         /**
          * Accropolis was set to channel_premium=3 once upon a time to increase
          * nb of episodes generated
          */
         if ($channel->channel_id == "UCq80IvL314jsE7PgYsTdw7Q") {
-            return self::_ACCROPOLIS_PLAN_ID;
+            return Plan::_ACCROPOLIS_PLAN_ID;
         }
 
         /**
@@ -157,29 +125,30 @@ class ChannelPremiumToSubscriptionService
             /**
              * 6€/monthly migration
              */
-            return self::_PREMIUM_2017_MONTHLY_PLAN_ID;
+            return Plan::_PROMO_MONTHLY_PLAN_ID;
 
         } elseif (in_array($channel->channel_id, self::_OLD_YEARLY_AT_66)) {
             /**
              * 66€/yearly migration
              */
-            return self::_PREMIUM_2017_YEARLY_PLAN_ID;
+            return Plan::_PROMO_YEARLY_PLAN_ID;
         } elseif (in_array($channel->channel_id, self::_OLD_MONTHLY_AT_29)) {
             /**
              * 29€/monthly migration
              */
-            return self::_DAILY_PLAN_ID;
+            return Plan::_DAILY_PLAN_ID;
         }
-        
+
+        /**
+         * Generic cases
+         */        
         switch ($channel->channel_premium) {
-            case 1: $newPlanId = self::_EARLY_PLAN_ID; break;    
-            case 2: $newPlanId = self::_WEEKLY_PLAN_ID; break;    
-            case 3: $newPlanId = self::_DAILY_PLAN_ID; break;
+            case 0: $newPlanId = Plan::_FREE_PLAN_ID; break;    
+            case 1: $newPlanId = Plan::_EARLY_PLAN_ID; break;    
+            case 2: $newPlanId = Plan::_WEEKLY_PLAN_ID; break;    
+            case 3: $newPlanId = Plan::_DAILY_PLAN_ID; break;
         }
         
-
-        
-
         return $newPlanId;
     }
 }

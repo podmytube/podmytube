@@ -20,21 +20,12 @@ class SubscriptionServiceTest extends TestCase
     }
 
     /**
-     * free channels have no subscription row in subscriptions table
-     * @test
-     */
-    public function freeChannelShouldHaveNoSubscription()
-    {
-        $this->assertFalse(SubscriptionService::hasSubscription(Channel::find('freeChannel')));
-    }
-
-    /**
      * other channels should have one subscription row in subscriptions table
      * @test
      */
     public function anyOtherChannelsShouldHaveSubscription()
     {
-        foreach (['weeklyChannel', 'dailyChannel'] as $channelName) {
+        foreach (['freeChannel', 'weeklyChannel', 'dailyChannel'] as $channelName) {
             $this->assertTrue(SubscriptionService::hasSubscription(Channel::find($channelName)));
         }
     }
