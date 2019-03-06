@@ -16,10 +16,12 @@ class Subscription extends Model
 
     /**
      * One subscription has only one plan possible.
+     * The belongTo means that subscription table has the plan_id foreign key within.
+     * @return object App\Plan
      */
     public function plan()
     {
-        return $this->hasOne(Plan::class);
+        return $this->belongsTo(Plan::class);
     }
     
 }

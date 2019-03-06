@@ -14,13 +14,12 @@ class Plan extends Model
     const _DAILY_PLAN_ID = 6;
     const _ACCROPOLIS_PLAN_ID = 7; // to be removed one day
 
+    /**
+     * One plan may be subscribed by many channels.
+     * @return object App\Subscription
+     */
     public function subscriptions () 
     {
         return $this->HasMany(Subscription::class);
     } 
-
-    public function getNbEpisodesPerMonth()
-    {
-        
-    }
 }

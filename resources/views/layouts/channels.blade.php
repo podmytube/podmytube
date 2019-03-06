@@ -41,6 +41,8 @@
                         @endif
                     </h5>
 
+                    {{$channel->nbEpisodesGrabbedThisMonth}}
+
                     @if ($channel->nbEpisodesGrabbedThisMonth > $channel->nbEpisodesAllowedThisMonth)
                     <div class="alert alert-danger" role="alert">
                         {{  __('messages.danger_podcast_is_no_more_updated') }}

@@ -96,11 +96,13 @@ class Channel extends Model
         $start = new Carbon('first day of this month');
         $end = new Carbon('last day of this month');
 
-        return $this->hasOne(Subscription::class, 'channel_id')
+        return $this->hasOne(Subscription::class, 'channel_id');
+        /*
             ->where(function ($query) use ($start, $end) {
                 $query->whereNull('ends_at')
                     ->orWhereBetween('ends_at', [$start, $end]);
             });
+        */
     }
 
     /**

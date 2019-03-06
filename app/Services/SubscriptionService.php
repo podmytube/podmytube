@@ -57,27 +57,6 @@ class SubscriptionService
     }
 
     /**
-     * This function will return the maximum number of episodes one podcast may include by type.
-     * @params Channel $channel_type the kind of channel (free/premium/etc)
-     * @return int maximum number of episode by month for its type
-     */
-    public static function getMaximumNumberOfEpisodeByMonthAndType(Channel $channel)
-    {
-        switch ($channel->channel_premium) {
-            case self::_CHANNEl_FREE:
-                return self::_FREE_PLAN_EPISODES_NUMBER_ALLOWED_IN_PODCAST;
-                break;
-            case self::_CHANNEl_PREMIUM:
-                return self::_PREMIUM_PLAN_EPISODES_NUMBER_ALLOWED_IN_PODCAST;
-                break;
-            case self::_CHANNEL_EARLY_BIRD:
-            case self::_CHANNEl_VIP:
-                return self::_EARLY_AND_VIP_PLAN_EPISODES_NUMBER_ALLOWED_IN_PODCAST;
-                break;
-        }
-    }
-
-    /**
      * This function will retrieve all user's channels.
      * @param User $user the user we need channels
      * @return channels models with thumb/vignette
@@ -88,7 +67,7 @@ class SubscriptionService
 		foreach($channels as $channel) {
             
             $channel->nbEpisodesGrabbedThisMonth = self::getNbEpisodesAlreadyDownloadedThisMonth($channel);
-            $channel->nbEpisodesAllowedThisMonth = self::getMaximumNumberOfEpisodeByMonthAndType($channel);
+            $channel->nbEpisodesAllowedThisMonth = self::getPlanForChannel($channel);
 
             /**
              * If podcast has a thumb
@@ -137,7 +116,7 @@ class SubscriptionService
      */
     public static function getPlanForChannel(Channel $channel)
     {
-        
+        return $channel->subscription->plan;
     }
 
     /**

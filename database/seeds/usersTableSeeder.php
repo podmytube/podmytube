@@ -13,8 +13,8 @@ class usersTableSeeder extends Seeder
 	 */
 	public function run()
 	{
-		if (App::environment(['dev','local','rec'])) {
-        	/**
+		if (App::environment(['dev','local','rec','testing'])) {
+			/**
 			 * emptying table User
 			 */
 			User::truncate();
