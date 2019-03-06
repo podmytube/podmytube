@@ -21,7 +21,7 @@ INSERT INTO channels (channel_id, user_id, channel_name, channel_premium, active
 
 # insert sample into media 
 # getAudio is getting all medias ordered by published_at date
-INSERT INTO medias (media_id, channel_id, title, published_at) VALUES
+INSERT INTO medias (media_id, channel_id, title, grabbed_at) VALUES
 ("invalidId1", "freeChannel",   "This media does not exist on YT", NOW()),
 ("invalidId2", "freeChannel",   "This media does not exist on YT", NOW()),
 ("invalidId3", "freeChannel",   "This media does not exist on YT", NOW()),
