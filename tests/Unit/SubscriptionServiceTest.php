@@ -3,7 +3,6 @@
 namespace Tests\Unit;
 
 use App\Channel;
-use App\Plan;
 use App\Services\SubscriptionService;
 use Tests\TestCase;
 
@@ -11,12 +10,15 @@ class SubscriptionServiceTest extends TestCase
 {
 
     /**
-     * 
+     *
      * @test
      */
     public function freeChannelShouldHaveOnlyNEpisodesPerMonth()
     {
-        $this->assertFalse(true);
+        $PlanModel = getPlanForChannel(Channel::find('freeChannel'));
+        $expected = 2;
+        $this->assertEquals($expected, $planModel->nb_episodes_per_month,
+            "Channel {{freeChannel}} should have only {$expected} episodes per month and result was {" . $planModel->nb_episodes_per_month . "}");
     }
 
     /**

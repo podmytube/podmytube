@@ -14,7 +14,6 @@ class Plan extends Model
     const _DAILY_PLAN_ID = 6;
     const _ACCROPOLIS_PLAN_ID = 7; // to be removed one day
 
-    
     public function subscriptions () 
     {
         return $this->HasMany(Subscription::class);

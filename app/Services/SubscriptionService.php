@@ -131,6 +131,16 @@ class SubscriptionService
     }
 
     /**
+     * This function will return the plan subscribed for the specified channel.
+     * @param object App\Channel $channel
+     * @return object App\Plan
+     */
+    public static function getPlanForChannel(Channel $channel)
+    {
+        
+    }
+
+    /**
      * This function will return true if channel has subscription.
      * If no subscription it means that channel is free.
      *
