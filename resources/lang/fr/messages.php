@@ -59,6 +59,8 @@ return [
     'title_application_label' => 'Tableau de bord',
     'title_channel_index_label' => 'Vos chaines',
     'danger_podcast_is_no_more_updated' => "Ton podcast n'est plus mis à jour, passer au forfait supérieur devrait régler la question :).",
+    'button_i_want_to_upgrade_now' => "J'upgrade mon compte",
+    'one_of_your_podcast_is_no_more_updated' => "un de tes podcasts n'est plus mis à jour et tes nouveaux épisodes ne seront plus ajoutés à ton podcast. Pense à passer au forfait supérieur.",
 
     // user part
     'button_update_user_label' => 'modifier',
