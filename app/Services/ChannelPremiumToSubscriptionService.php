@@ -6,9 +6,9 @@
 namespace App\Services;
 
 use App\Channel;
-use App\Exceptions\FreePlanDoNotNeedSubscriptionException;
 use App\Plan;
 use App\Subscription;
+
 use Carbon\Carbon;
 
 /**

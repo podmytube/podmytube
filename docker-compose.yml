@@ -1,0 +1,53 @@
+version: '3.3'
+services:
+  # ==============================================================
+  # composer is pulled then run composer install
+  # it is not restarted once done
+  # composer/docker is running into /app so you have to 
+  # mount the folder where is located composer.lock/composer.json
+  # here it is .:/app (host:docker)
+  composer:
+    container_name: composer_for_dashboard
+    restart: 'no'
+    image: composer:1.7
+    command: install
+    volumes:
+      - .:/app
+  # ==============================================================
+  # here we are building image from the .docker/Dockerfile
+  # this image is starting from a official php-apache docker
+  # and creating host dashboard-pmt
+  dashboard-pmt:
+    container_name: dashboard-pmt
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile
+    restart: always
+    image: dashboard-pmt
+    expose:
+        - "80"
+    # TODO : hostname should be set in variable
+    environment:
+      - VIRTUAL_HOST=${APP_URL:?set it in .env}
+    # we are copying files into /srv/app (into Dockerfile)
+    volumes:
+      - .:/srv/app
+    # health : checking if vendor/autoload exists
+    healthcheck:
+      test: bash -c "[ -f /srv/app/vendor/autoload.php ]"
+      timeout: 5s
+      retries: 20
+    # VERY IMPORTANT
+    # to work with mysql docker on service(revdb)
+    # both have to be on the same network
+    # the only thing that change if that in the .env 
+    # file we are changing 
+    # DB_HOST=127.0.0.1 to DB_HOST=revdb
+    # that s all
+    networks:
+      - nginx-proxy
+    
+
+networks:
+  nginx-proxy:
+    external: true

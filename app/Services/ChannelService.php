@@ -12,29 +12,7 @@ use Carbon\Carbon;
 
 class ChannelService
 {
-    /**
-     * Newly registered channel is 0 by default
-     */
-    protected const _CHANNEl_FREE = 0;
-
-    /**
-     * First users and friends
-     */
-    protected const _CHANNEL_EARLY_BIRD = 1;
-
-    /**
-     * Paying clients
-     */
-    protected const _CHANNEl_PREMIUM = 2;
-    protected const _CHANNEl_VIP = 3;
-
-    /**
-     * Number of episodes allowed by plan
-     */
-    protected const _FREE_PLAN_EPISODES_NUMBER_ALLOWED_IN_PODCAST = 2;
-    protected const _PREMIUM_PLAN_EPISODES_NUMBER_ALLOWED_IN_PODCAST = 10;
-    protected const _EARLY_AND_VIP_PLAN_EPISODES_NUMBER_ALLOWED_IN_PODCAST = 33;
-
+   
     /**
      * This function will return the number of episodes already grabbed for one channel.
      * @params Channel $channel_id the channel

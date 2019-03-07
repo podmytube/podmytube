@@ -2,7 +2,6 @@
 
 use App\Channel;
 use App\Subscription;
-use App\Exceptions\FreePlanDoNotNeedSubscriptionException;
 use App\Services\ChannelPremiumToSubscriptionService;
 use Illuminate\Database\Seeder;
 
@@ -35,9 +34,6 @@ class subscriptionTableSeeder extends Seeder
 
             try {
                 ChannelPremiumToSubscriptionService::transform($channel);
-            } catch (FreePlanDoNotNeedSubscriptionException $e) {
-                // message is logged
-                //echo $e->getMessage();
             } catch (\Exception $e) {
                 die("Channel subscription transformation has failed with message : {{$e->getMessage()}} ");
             }
