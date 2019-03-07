@@ -11,9 +11,6 @@
     <h2> {{ __('messages.page_title_user_show') }} </h2>
     
 	<hr> 
-
-	@include ('layouts.flash')
-
     
 	<div class="container">
 		<div class="row">

@@ -14,9 +14,6 @@
 
 	<hr> 
 
-	@include ('layouts.flash')
-
-
 	<div class="container">
 		<div class="row">
 			<div class="col-6">

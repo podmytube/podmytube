@@ -8,8 +8,6 @@
 		<div class="card-header">{{ __('messages.title_login_label') }}</div>
 			<div class="card-body">
 
-				@include ('layouts.flash')
-
 				@include ('layouts.errors')
 
 				<form class="form-horizontal" method="POST" action="{{ route('login') }}">

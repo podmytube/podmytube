@@ -38,7 +38,6 @@ return [
     'flash_channel_id_is_invalid' => "The youtube url you entered was invalid !",
 
     // commons
-    'only_for_premiums_label' => "Cette partie n'est disponible que pour les abonnés premiums.",
     'yes' => "yes",
     'no' => "no",
     'language_label' => "Language",
@@ -59,7 +58,9 @@ return [
     'no_channels_at_this_moment' => "You have no channel at this time.",
     'title_application_label' => 'Dashboard',
     'title_channel_index_label' => 'Your channels',
-    'danger_podcast_is_no_more_updated' => "Your podcast is no more updated, please consider upgrading your plan.",
+    'danger_podcast_is_no_more_updated' => 'Your podcast is no more updated, please consider upgrading your plan.',
+    'button_i_want_to_upgrade_now' => 'I want to upgrade now.',
+    'one_of_your_podcast_is_no_more_updated' => 'One of your podcast is no more updated, please consider upgrading your plan.',
     
     // user part
     'button_update_user_label' => 'update',

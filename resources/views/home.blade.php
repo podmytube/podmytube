@@ -2,9 +2,15 @@
 
 @section('pageTitle', __('messages.page_title_home_index') )
 
+@section('breadcrumbs') 
+
+	{{ Breadcrumbs::render('home') }}
+
+@endsection
+
 @section('content') 
 
-{{ Breadcrumbs::render('home') }}
+@include ('layouts.errors')
 
 <div class="container">
 	<!--home main container-->

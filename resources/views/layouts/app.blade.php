@@ -14,6 +14,10 @@
         @include ('micromania.top')
         @endif
 
+        @yield('breadcrumbs')
+
+        @include ('layouts.flash')
+
         @yield('content')
 
 	</div> <!--/main container-->

@@ -41,9 +41,16 @@
                         @endif
                     </h5>
 
-                    @if ($channel->nbEpisodesGrabbedThisMonth > $channel->subscription->plan->nb_episodes_per_month)
+                    @if ($channel->nbEpisodesGrabbedThisMonth >= $channel->subscription->plan->nb_episodes_per_month)
                     <div class="alert alert-danger" role="alert">
-                        {{  __('messages.danger_podcast_is_no_more_updated') }}
+                        <p>{{  __('messages.danger_podcast_is_no_more_updated') }}</p>
+                        <p class=" text-center">
+                            <a class="btn btn-success text-center" 
+                                href="{{ route('plans.index', ['channel' => $channel]) }}" 
+                                role="button">
+                                {{ __('messages.button_i_want_to_upgrade_now') }}
+                            </a>
+                        </p>
                     </div>
                     @endif
                     
