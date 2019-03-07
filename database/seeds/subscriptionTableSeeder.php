@@ -24,7 +24,6 @@ class subscriptionTableSeeder extends Seeder
          * getting channels informations
          */
         $channels = Channel::select(['channel_id', 'channel_name', 'channel_premium', 'channel_createdAt'])
-            ->where('active', 1)
             ->get();
 
         /**
