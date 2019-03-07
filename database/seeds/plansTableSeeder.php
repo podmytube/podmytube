@@ -23,14 +23,6 @@ class plansTableSeeder extends Seeder
      */
     public function run()
     {
-        /**
-         * creating old plans
-         * define('_CHANNEL_FREE', 0);
-         * define('_CHANNEL_EARLY_BIRD', 1);
-         * define('_CHANNEL_PREMIUM', 2);
-         * define('_CHANNEL_VIP', 3);
-         */
-
         DB::statement('SET FOREIGN_KEY_CHECKS=0');
         Plan::truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1');

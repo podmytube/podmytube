@@ -65,8 +65,7 @@ class ChannelService
         foreach ($channels as $channel) {
 
             $channel->nbEpisodesGrabbedThisMonth = self::getNbEpisodesAlreadyDownloadedThisMonth($channel);
-            //$channel->plan = SubscriptionService::getPlanForChannel($channel);
-
+            
             /**
              * If podcast has a thumb
              */

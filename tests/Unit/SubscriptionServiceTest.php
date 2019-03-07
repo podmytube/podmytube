@@ -15,10 +15,10 @@ class SubscriptionServiceTest extends TestCase
      */
     public function freeChannelShouldHaveOnly2EpisodesPerMonth()
     {
-        $planModel = SubscriptionService::getPlanForChannel(Channel::find('freeChannel'));
+        $result = Channel::find('freeChannel')->subscription->plan->nb_episodes_per_month;
         $expected = 2;
-        $this->assertEquals($expected, $planModel->nb_episodes_per_month,
-            "Channel {freeChannel} should have only {{$expected}} episodes per month and result was {{$planModel->nb_episodes_per_month}}");
+        $this->assertEquals($expected, $result,
+            "Channel {freeChannel} should have only {{$expected}} episodes per month and result was {{$result}}");
     }
 
     /**
@@ -28,10 +28,10 @@ class SubscriptionServiceTest extends TestCase
     public function earlyAndDailyChannelShouldHaveOnly33EpisodesPerMonth()
     {
         foreach (['earlyChannel', 'dailyChannel'] as $channelId) {
-            $planModel = SubscriptionService::getPlanForChannel(Channel::find($channelId));
+            $result = Channel::find($channelId)->subscription->plan->nb_episodes_per_month;
             $expected = 33;
-            $this->assertEquals($expected, $planModel->nb_episodes_per_month,
-                "Channel {{$channelId}} should have only {{$expected}} episodes per month and result was {{$planModel->nb_episodes_per_month}}");
+            $this->assertEquals($expected, $result,
+                "Channel {{$channelId}} should have only {{$expected}} episodes per month and result was {{$result}}");
         }
     }
 
@@ -42,10 +42,10 @@ class SubscriptionServiceTest extends TestCase
     public function weeklyAndPromosPlansChannelShouldHaveOnly10EpisodesPerMonth()
     {
         foreach (['weeklyChannel', 'UCnf8HI3gUteF1BKAvrDO9dQ', 'UCnF1gaTK11ax2pWCIdUp8-w'] as $channelId) {
-            $planModel = SubscriptionService::getPlanForChannel(Channel::find($channelId));
+            $result = Channel::find($channelId)->subscription->plan->nb_episodes_per_month;
             $expected = 10;
-            $this->assertEquals($expected, $planModel->nb_episodes_per_month,
-                "Channel {{$channelId}} should have only {{$expected}} episodes per month and result was {{$planModel->nb_episodes_per_month}}");
+            $this->assertEquals($expected, $result,
+                "Channel {{$channelId}} should have only {{$expected}} episodes per month and result was {{$result}}");
         }
     }
 
@@ -55,10 +55,10 @@ class SubscriptionServiceTest extends TestCase
      */
     public function accropolisPlansChannelShouldHaveOnly20EpisodesPerMonth()
     {
-        $planModel = SubscriptionService::getPlanForChannel(Channel::find('UCq80IvL314jsE7PgYsTdw7Q'));
+        $result = Channel::find('UCq80IvL314jsE7PgYsTdw7Q')->subscription->plan->nb_episodes_per_month;
         $expected = 20;
-        $this->assertEquals($expected, $planModel->nb_episodes_per_month,
-            "Channel {UCq80IvL314jsE7PgYsTdw7Q} (Accropolis) should have only {{$expected}} episodes per month and result was {{$planModel->nb_episodes_per_month}}");
+        $this->assertEquals($expected, $result,
+            "Channel {UCq80IvL314jsE7PgYsTdw7Q} (Accropolis) should have only {{$expected}} episodes per month and result was {{$result}}");
 
     }
 

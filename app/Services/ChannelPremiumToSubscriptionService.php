@@ -72,7 +72,7 @@ class ChannelPremiumToSubscriptionService
              * for early channels, the same
              * for yearly channels I will set end_at manually in many months/weeks
              */
-            $firstDayOfThisMonth = new Carbon('first day of this month');
+            $today = new Carbon();
 
             $plan = Plan::find($newPlanId);
             /**
@@ -81,9 +81,9 @@ class ChannelPremiumToSubscriptionService
              */
             $endsAt=null;
             if ($newPlanId != Plan::_EARLY_PLAN_ID) {
-                $endsAt = new Carbon('last day of this month');
+                $endsAt = $today->copy()->addMonth();
                 if($plan->billing_yearly==1){
-                    $endsAt = $firstDayOfThisMonth->copy()->addYear();                
+                    $endsAt = $today->copy()->addYear();                
                 }                
             }
             
@@ -93,7 +93,7 @@ class ChannelPremiumToSubscriptionService
                 'plan_id' => $newPlanId,
                 'trial_ends_at' => null,
                 'ends_at' => isset($endsAt) ? $endsAt->toDateTimeString() : null,
-                'created_at' => isset($channel->channel_createdAt) ? $channel->channel_createdAt : $firstDayOfThisMonth->toDateTimeString(),
+                'created_at' => isset($channel->channel_createdAt) ? $channel->channel_createdAt : $today->toDateTimeString(),
                 'updated_at' => Carbon::now(),
             ]);
         } catch (\Exception $e) {

@@ -13,29 +13,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 class SubscriptionService
 {
-    /**
-     * Newly registered channel is 0 by default
-     */
-    protected const _CHANNEl_FREE = 0;
-    
-    /**
-     * First users and friends
-     */
-    protected const _CHANNEL_EARLY_BIRD = 1;    
-
-    /**
-     * Paying clients
-     */
-    protected const _CHANNEl_PREMIUM = 2;
-    protected const _CHANNEl_VIP = 3;
-
-    /**
-     * Number of episodes allowed by plan
-     */
-    protected const _FREE_PLAN_EPISODES_NUMBER_ALLOWED_IN_PODCAST = 2;
-    protected const _PREMIUM_PLAN_EPISODES_NUMBER_ALLOWED_IN_PODCAST = 10;
-    protected const _EARLY_AND_VIP_PLAN_EPISODES_NUMBER_ALLOWED_IN_PODCAST = 33;
-        
 
     /**
      * This function will return the number of episodes already grabbed for one channel.
@@ -54,69 +31,6 @@ class SubscriptionService
             ->count();
 
         return $nbMediasGrabbedThisMonth;
-    }
-
-    /**
-     * This function will retrieve all user's channels.
-     * @param User $user the user we need channels
-     * @return channels models with thumb/vignette
-     */
-    public static function getAuthenticatedUserChannels(User $user)
-    {
-        $channels = $user->channels;
-		foreach($channels as $channel) {
-            
-            $channel->nbEpisodesGrabbedThisMonth = self::getNbEpisodesAlreadyDownloadedThisMonth($channel);
-            $channel->nbEpisodesAllowedThisMonth = self::getPlanForChannel($channel);
-
-            /**
-             * If podcast has a thumb
-             */
-            $vignetteObtained = false;
-            
-            if ($thumb = $channel->thumbs) {
-                try {                    
-                    $channel->vigUrl = ThumbService::getChannelVignetteUrl($thumb);
-                    $vignetteObtained=true;
-                } catch (\Exception $e) {
-                    /**
-                     * No vignette may occur for early birds channel before the vignette creation. 
-                     * We are trying to create it. If we succeed we are using it.
-                     */
-                    try {
-                        if (ThumbService::createThumbVig($thumb)){
-                            $channel->vigUrl = ThumbService::getChannelVignetteUrl($thumb);
-                            $vignetteObtained=true;
-                        } 
-                    } catch (\Exception $e){
-                        /**
-                         * Doing nothing. 
-                         * This may occur if there is a thumb in database but files have been removed/moved.
-                         */
-                    }
-                }
-            }
-            if (!$vignetteObtained) {
-                $channel->isDefaultVignette = true;
-                $channel->vigUrl = ThumbService::getDefaultVignetteUrl();
-            } else {
-                $channel->isDefaultVignette = false;
-            }
-
-        }
-
-        return $channels;
-
-    }
-
-    /**
-     * This function will return the plan subscribed for the specified channel.
-     * @param object App\Channel $channel
-     * @return object App\Plan
-     */
-    public static function getPlanForChannel(Channel $channel)
-    {
-        return $channel->subscription->plan;
     }
 
     /**

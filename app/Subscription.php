@@ -8,10 +8,11 @@ class Subscription extends Model
 {
     /**
      * One channel should have only one row in subscription table.
+     * Setting local_key and foreign key are required because of the channel_id primary key. 
      */
     public function channel()
     {
-        return $this->hasOne(Channel::class);
+        return $this->belongsTo(Channel::class, 'channel_id', 'channel_id');
     }
 
     /**
