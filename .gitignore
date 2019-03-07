@@ -17,3 +17,4 @@ storage/*
 .vscode
 .env
 .env.local
+.env.micromania
