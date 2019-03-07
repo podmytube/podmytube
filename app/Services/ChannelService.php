@@ -45,7 +45,7 @@ class ChannelService
             $channel->nbEpisodesGrabbedThisMonth = self::getNbEpisodesAlreadyDownloadedThisMonth($channel);
             if ($channel->nbEpisodesGrabbedThisMonth >= $channel->subscription->plan->nb_episodes_per_month){
                 session()->flash('message', __('messages.one_of_your_podcast_is_no_more_updated'));
-                session()->flash('messageClass', 'alert-danger');
+                session()->flash('messageClass', 'alert-info');
             }
             /**
              * If podcast has a thumb
