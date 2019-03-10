@@ -31,9 +31,20 @@ class CreatingSubscriptionsTable extends Migration
             $table->date('ends_at')->nullable();
             $table->timestamps(); //created_at && updated_at
 
+            /**
+             * One channel may have only one subscription
+             */
+            $table->unique('channel_id');	
+
+            /**
+             * If channels.channel_id is deleted we are removing subscription too
+             */
             $table->foreign('channel_id')
                 ->references('channel_id')->on('channels')
                 ->onDelete('cascade');
+            /**
+             * If plan.id is changing we are updating subscription.plan_id
+             */
             $table->foreign('plan_id')
                 ->references('id')->on('plans')
                 //->onDelete('null')
