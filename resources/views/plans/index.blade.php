@@ -15,7 +15,7 @@
   <div class="container text-center">
 
     
-    <div id="stripe-error-message"></div>
+    <div id="error-message"></div>
 
     <div class="row">
       <div class="col border rounded m-1 p-3">
