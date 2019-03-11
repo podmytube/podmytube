@@ -43,6 +43,10 @@ class ChannelService
         foreach ($channels as $channel) {
 
             $channel->nbEpisodesGrabbedThisMonth = self::getNbEpisodesAlreadyDownloadedThisMonth($channel);
+            if(!isset($channel->subscription)){
+                Log::error(" Channel {{$channel->channel_id}} has no subscription and that shouldn't be possible !! ");
+            }
+
             if ($channel->nbEpisodesGrabbedThisMonth >= $channel->subscription->plan->nb_episodes_per_month){
                 session()->flash('message', __('messages.one_of_your_podcast_is_no_more_updated'));
                 session()->flash('messageClass', 'alert-info');
@@ -87,16 +91,5 @@ class ChannelService
 
     }
 
-    /**
-     * This function will return true if channel has no subscription.
-     * If no subscription it means that channel is free.
-     *
-     * @param Channel $channel
-     * @return boolean
-     */
-    public static function isFreeChannel(Channel $channel)
-    {
-        return App\Subscription::where('channel_id', $channel->channel_id)->doesntExist();
-    }
 
 }
