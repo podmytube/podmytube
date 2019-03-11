@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
                 categoriesTableSeeder::class,
                 plansTableSeeder::class,
                 subscriptionTableSeeder::class,
+                stripePlansTableSeeder::class,
             ]);
         }
 
