@@ -19,7 +19,7 @@ class CreateStripePlans extends Migration
          */
         Schema::create('stripe_plans', function (Blueprint $table) {
             $table->unsignedSmallInteger('id')->autoIncrement(); // primary key
-            $table->string('plan_id'); // the internal id from the plan table
+            $table->unsignedTinyInteger('plan_id'); // the internal id from the plan table
             $table->string('stripe_id', 30); // the stripe plan id (ie "plan_EfubS6xkc5amyO")
             $table->unsignedTinyInteger('is_live')->default(0); // str
             $table->timestamps(); //created_at && updated_at
