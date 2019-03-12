@@ -24,12 +24,10 @@ class ChannelService
         $monthBeginning = carbon::createMidnightDate(date('Y'), date('m'), 1);
         $monthEnding = carbon::create()->endOfMonth();
 
-        $nbMediasGrabbedThisMonth = Medias::grabbedBetween($monthBeginning, $monthEnding)
+        return Medias::grabbedBetween($monthBeginning, $monthEnding)
             ->whereNotNull('grabbed_at')
             ->where('channel_id', $channel->channel_id)
             ->count();
-
-        return $nbMediasGrabbedThisMonth;
     }
 
     /**
@@ -44,7 +42,7 @@ class ChannelService
 
             $channel->nbEpisodesGrabbedThisMonth = self::getNbEpisodesAlreadyDownloadedThisMonth($channel);
             if(!isset($channel->subscription)){
-                Log::error(" Channel {{$channel->channel_id}} has no subscription and that shouldn't be possible !! ");
+                Log::error(" Channel {{$channel->channel_id}} has no subscription and that shouldn't be possible !!");
             }
 
             if ($channel->nbEpisodesGrabbedThisMonth >= $channel->subscription->plan->nb_episodes_per_month){
