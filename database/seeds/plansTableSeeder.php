@@ -57,7 +57,6 @@ class plansTableSeeder extends Seeder
         Plan::insert([
             'id'                => 3,
             'name'              => 'promo_monthly',
-            'stripe_id'         => 'prod_EcuCa7nzUEs99w',
             'price'             => 6,
             'nb_episodes_per_month' => self::max_episodes_by_plan['standard_premium'],
             'created_at'        => Carbon::createFromDate(2017,1,1),
@@ -70,7 +69,6 @@ class plansTableSeeder extends Seeder
         Plan::insert([
             'id'                => 4,
             'name'              => 'promo_yearly',
-            'stripe_id'         => 'prod_EcuIm5RX1hWja3',
             'price'             => 66,
             'billing_yearly'    => true,
             'nb_episodes_per_month' => self::max_episodes_by_plan['standard_premium'],
@@ -84,8 +82,7 @@ class plansTableSeeder extends Seeder
          */
         Plan::insert([
             'id'                => 5,
-            'name'              => 'weekly_youtuber_sept_2018',
-            'stripe_id'         => 'prod_EaIuVWIQFNqwZS',
+            'name'              => 'weekly_youtuber',
             'price'             => 9,
             'nb_episodes_per_month' => self::max_episodes_by_plan['standard_premium'],
             'created_at'        => Carbon::createFromDate(2018,9,1),
@@ -94,8 +91,7 @@ class plansTableSeeder extends Seeder
 
         Plan::insert([
             'id'                => 6,
-            'name'              => 'daily_youtuber_sept_2018',
-            'stripe_id'         => 'prod_DFs9CxPqBYxbd0',
+            'name'              => 'daily_youtuber',
             'price'             => 29,
             'nb_episodes_per_month' => self::max_episodes_by_plan['vip_premium'],
             'created_at'        => Carbon::createFromDate(2018,9,1),
@@ -107,7 +103,6 @@ class plansTableSeeder extends Seeder
          */
         Plan::insert([
             'name'              => 'accropolis_6_euros',
-            'stripe_id'         => 'prod_Ecv3nuwS3VqK5j',
             'price'             => 7,
             'nb_episodes_per_month' => self::max_episodes_by_plan['accropolis'],
             'created_at'        => Carbon::createFromDate(2017,1,1),
