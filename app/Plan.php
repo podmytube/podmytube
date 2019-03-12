@@ -22,4 +22,12 @@ class Plan extends Model
     {
         return $this->HasMany(Subscription::class);
     } 
+
+    /**
+     * @return object App\Subscription
+     */
+    public function stripePlan () 
+    {
+        return $this->HasMany(StripePlan::class);
+    }
 }
