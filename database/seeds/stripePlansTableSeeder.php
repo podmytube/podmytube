@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use App\Plan;
-use App\stripePlans;
+use App\StripePlan;
 use Carbon\Carbon;
 
 class stripePlansTableSeeder extends Seeder
@@ -15,7 +15,7 @@ class stripePlansTableSeeder extends Seeder
     public function run()
     {
         DB::statement('SET FOREIGN_KEY_CHECKS=0');
-        stripePlans::truncate();
+        StripePlan::truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1');
 
         /**
@@ -24,7 +24,7 @@ class stripePlansTableSeeder extends Seeder
          * ======================================
          * test
          */
-        stripePlans::insert(            
+        StripePlan::insert(            
             [
                 'plan_id' => Plan::_PROMO_MONTHLY_PLAN_ID,
                 'stripe_id' => 'plan_EfYDgsuNMdj8Sb',
@@ -35,7 +35,7 @@ class stripePlansTableSeeder extends Seeder
         /**
          * prod
          */
-        stripePlans::insert(
+        StripePlan::insert(
             [
                 'plan_id' => Plan::_PROMO_MONTHLY_PLAN_ID,
                 'stripe_id' => 'plan_EcuGg9SyUBw97i',
@@ -51,7 +51,7 @@ class stripePlansTableSeeder extends Seeder
          * ======================================
          * test
          */
-        stripePlans::insert(            
+        StripePlan::insert(            
             [
                 'plan_id' => Plan::_PROMO_YEARLY_PLAN_ID,
                 'stripe_id' => 'plan_EfYBFztmlQ3u4C',
@@ -62,7 +62,7 @@ class stripePlansTableSeeder extends Seeder
         /**
          * prod
          */
-        stripePlans::insert(
+        StripePlan::insert(
             [
                 'plan_id' => Plan::_PROMO_YEARLY_PLAN_ID,
                 'stripe_id' => 'plan_EcuJ2npV5EMrCg',
@@ -78,7 +78,7 @@ class stripePlansTableSeeder extends Seeder
          * ======================================
          * test
          */        	
-        stripePlans::insert(            
+        StripePlan::insert(            
             [
                 'plan_id' => Plan::_WEEKLY_PLAN_ID,
                 'stripe_id' => 'plan_EfudBu6TCXHWEg',
@@ -89,7 +89,7 @@ class stripePlansTableSeeder extends Seeder
         /**
          * prod
          */
-        stripePlans::insert(
+        StripePlan::insert(
             [
                 'plan_id' => Plan::_WEEKLY_PLAN_ID,
                 'stripe_id' => 'plan_EaIv2XTMGtuY5g',
@@ -105,7 +105,7 @@ class stripePlansTableSeeder extends Seeder
          * ======================================
          * test
          */        	
-        stripePlans::insert(            
+        StripePlan::insert(            
             [
                 'plan_id' => Plan::_DAILY_PLAN_ID,
                 'stripe_id' => 'plan_EfuceKVUwJTt5O',
@@ -116,7 +116,7 @@ class stripePlansTableSeeder extends Seeder
         /**
          * prod
          */
-        stripePlans::insert(
+        StripePlan::insert(
             [
                 'plan_id' => Plan::_DAILY_PLAN_ID,
                 'stripe_id' => 'plan_DFsB9U76WaSaR3',
@@ -133,7 +133,7 @@ class stripePlansTableSeeder extends Seeder
          * test
          */   
         	     	
-        stripePlans::insert(            
+        StripePlan::insert(            
             [
                 'plan_id' => Plan::_ACCROPOLIS_PLAN_ID,
                 'stripe_id' => 'plan_EfubS6xkc5amyO',
@@ -144,7 +144,7 @@ class stripePlansTableSeeder extends Seeder
         /**
          * prod
          */
-        stripePlans::insert(
+        StripePlan::insert(
             [
                 'plan_id' => Plan::_ACCROPOLIS_PLAN_ID,
                 'stripe_id' => 'plan_Ecv3k67W6rsSKk',
