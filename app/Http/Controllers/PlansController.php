@@ -26,7 +26,7 @@ class PlansController extends Controller
                     Plan::_WEEKLY_PLAN_ID,
                     Plan::_DAILY_PLAN_ID,
                 ],
-                env('APP_ENV') == 'Prod' ? true : false
+                env('APP_ENV') == 'prod' ? true : false
             );
         } catch (\Exception $e) {
             session()->flash('message', __('messages.a_problem_occur'));
