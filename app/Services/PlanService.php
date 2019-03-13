@@ -6,15 +6,40 @@ use App\Plan;
 
 class PlanService
 {
-
-    public static function getStripePlan(int $plan_id, bool $is_live = false)
+    /**
+     * This function will retrieve the plan to apply on the "Subscribe page" according to the env.
+     *
+     * @param integer $planId
+     * @param boolean $isLive
+     * @return void
+     */
+    public static function getStripePlans(array $plansId, bool $isLive = true)
     {
+        $results = [];
         try {
-            return Plan::find($plan_id)->stripePlan->where('is_live',$is_live)->stripe_id;
+            foreach ($plansId as $planId) {
+                $results[$planId] = self::getStripePlan($planId, $isLive);
+            }
         } catch (\Exception $e) {
             throw $e;
         }
-        return false;
+        return $results;
+    }
+
+    /**
+     * This function will retrieve the plan to apply on the "Subscribe page" according to the env.
+     *
+     * @param integer $planId
+     * @param boolean $isLive
+     * @return void
+     */
+    public static function getStripePlan(int $planId, bool $isLive = true)
+    {
+        try {
+            return Plan::find($planId)->stripePlan->where('is_live', $isLive)->first()->stripe_id;
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
 
 }
