@@ -19,13 +19,13 @@
 
     <div class="row">
       <div class="col border rounded m-1 p-3">
-
+        
         @include("layouts.partials.stripeButton", [
           "planTitle" => __('plans.title_weekly_plan'),
           "planFeatures" => __('plans.weekly_plan_features'),
           "planLimits" => __('plans.weekly_plan_limits_reminder'),
           "buttonId" => "weeklyCheckoutButton",
-          "planToSubscribe" => "plan_EaIv2XTMGtuY5g",
+          "planToSubscribe" => $stripePlans[$weekly],
           "planPrice" => "9€",
           "successUrl" => env("APP_URL")."/success",
           "cancelUrl" => env("APP_URL")."/canceled"
@@ -39,7 +39,7 @@
             "planFeatures" => __('plans.daily_plan_features'),
             "planLimits" => __('plans.daily_plan_limits_reminder'),
             "buttonId" => "dailyCheckoutButton",
-            "planToSubscribe" => "plan_DFsB9U76WaSaR3",
+            "planToSubscribe" => $stripePlans[$daily],
             "planPrice" => "29€",
             "successUrl" => env("APP_URL")."/success",
             "cancelUrl" => env("APP_URL")."/canceled"
