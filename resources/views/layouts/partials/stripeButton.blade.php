@@ -1,10 +1,3 @@
-
-<h3>{{ $planTitle }}</h3>
-
-<p class="font-weight-bold">{{ $planFeatures }}</p>
-
-<p class="font-italic">{{ $planLimits }}</p>
-
 <!-- Create a button that your customers click to complete their purchase. -->
 <button id="{{ $buttonId }}" class="btn btn-success" role="link">subscribe</button>
 
