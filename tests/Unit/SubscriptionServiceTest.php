@@ -10,7 +10,17 @@ class SubscriptionServiceTest extends TestCase
 {
 
     /**
-     *
+     * @test
+     */
+    public function getSubscriptionForFreeChannelShouldBeFreeForeverPlan()
+    {
+        $result = SubscriptionService::getActivePlan('freeChannel');
+        $expected = 2;
+        $this->assertEquals($expected, $result,
+            "Channel {freeChannel} should have only {{$expected}} episodes per month and result was {{$result}}");
+    }
+
+    /**
      * @test
      */
     public function freeChannelShouldHaveOnly2EpisodesPerMonth()
