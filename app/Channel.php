@@ -93,8 +93,10 @@ class Channel extends Model
      */
     public function subscription()
     {
+        /*
         $start = new Carbon('first day of this month');
         $end = new Carbon('last day of this month');
+        */
 
         return $this->hasOne(Subscription::class, 'channel_id');
         /*
