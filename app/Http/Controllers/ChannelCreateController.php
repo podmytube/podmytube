@@ -36,7 +36,7 @@ class ChannelCreateController extends Controller
      * @return void
      * @todo remove youtube_channel_id USELESS but mandatory
      */
-    public function store()
+    public function store(Request $request)
     {
         /**
          * The only field required is the channel id. We are asking for the url channel
@@ -65,6 +65,7 @@ class ChannelCreateController extends Controller
             'youtube_channel_id' => $channel_id,
 
         ]);
+        $channel->subscription->create(request()->all());
 
         /**
          * Getting current authenticated user
