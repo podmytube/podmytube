@@ -26,9 +26,10 @@ services:
     image: dashboard-pmt
     expose:
         - "80"
-    # TODO : hostname should be set in variable
+    # VIRTUAL_HOST should be only the domain (without http://)
+    # by example : www.example.com or sub.domain.fr
     environment:
-      - VIRTUAL_HOST=${APP_URL:?set it in .env}
+      - VIRTUAL_HOST=${VIRTUAL_HOST:?set it in .env}
     # we are copying files into /srv/app (into Dockerfile)
     volumes:
       - .:/srv/app
