@@ -20,6 +20,7 @@ class PlanServiceTest extends TestCase
     ];
 
     /**
+     * Asking for 2 plans in prod mode should return one array with the 2 stripe plans.
      * @test
      */
     public function gettingSomeProdPlansShouldBeGood()
@@ -29,15 +30,16 @@ class PlanServiceTest extends TestCase
             Plan::_DAILY_PLAN_ID,
         ]);
         $expected = [
-            Plan::_PROMO_YEARLY_PLAN_ID=>'plan_EcuGg9SyUBw97i',
+            Plan::_PROMO_YEARLY_PLAN_ID=>'plan_EcuJ2npV5EMrCg',
             Plan::_DAILY_PLAN_ID=>'plan_DFsB9U76WaSaR3',
         ];
         $this->assertEquals($expected, $result,
-            "Asking for some stripe plans in dev mode has failed !");
+            "Asking for some stripe plans in prod mode has failed !");
 
     }
 
     /**
+     * Asking for 2 plans in dev mode should return one array with the 2 stripe plans.
      * @test
      */
     public function gettingSomeDevPlansShouldBeGood()
@@ -56,6 +58,7 @@ class PlanServiceTest extends TestCase
     }
 
     /**
+     * Checking each plans in DEV mode
      * @test
      */
     public function stripePlansShouldBeValidInDev()
@@ -69,6 +72,7 @@ class PlanServiceTest extends TestCase
     }
 
     /**
+     * Checking each plans in prod mode
      * @test
      */
     public function stripePlansShouldBeValidInProdToo()
