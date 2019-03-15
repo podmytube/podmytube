@@ -12,12 +12,34 @@ class SubscriptionServiceTest extends TestCase
     /**
      * @test
      */
-    public function getSubscriptionForFreeChannelShouldBeFreeForeverPlan()
+    public function getSubscribedPlanForChannelsShouldBeOk()
     {
-        $result = SubscriptionService::getActivePlan('freeChannel');
-        $expected = 2;
-        $this->assertEquals($expected, $result,
-            "Channel {freeChannel} should have only {{$expected}} episodes per month and result was {{$result}}");
+        $channelIdsAndPlans = [
+            'freeChannel' => 1,
+            'earlyChannel' => 2,
+            'UCnF1gaTK11ax2pWCIdUp8-w' => 3,
+            'UCnf8HI3gUteF1BKAvrDO9dQ' => 4,
+            'weeklyChannel' => 5,
+            'dailyChannel' => 6,
+            'UCq80IvL314jsE7PgYsTdw7Q' => 7,
+        ];
+        foreach ($channelIdsAndPlans as $channeId => $expectedPlanId) {
+            $channel = Channel::find($channeId);
+            $result = SubscriptionService::getActivePlan($channel)->id;
+            $this->assertEquals($expectedPlanId, $result,
+                "Channel {{$channel->channel_id}} should have plan {{$expectedPlanId}} and result was {{$result}}");
+        }
+    }
+
+    /**
+     * This test is/was only to check that if one channel has no subscription, getActivePlan throw an exception.
+     * @test
+     * @expectedException Exception
+     */
+    public function getSubscribedPlanForInvalidChannelsShouldFail()
+    {
+        $channel = Channel::find('invalidChannel');
+        SubscriptionService::getActivePlan($channel);            
     }
 
     /**
