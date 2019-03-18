@@ -103,7 +103,7 @@ class plansTableSeeder extends Seeder
          */
         Plan::insert([
             'name'              => 'accropolis_6_euros',
-            'price'             => 7,
+            'price'             => 6,
             'nb_episodes_per_month' => self::max_episodes_by_plan['accropolis'],
             'created_at'        => Carbon::createFromDate(2017,1,1),
             'updated_at'        => Carbon::now(),
