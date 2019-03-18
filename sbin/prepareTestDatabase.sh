@@ -26,8 +26,12 @@ if [ "$?" != "0" ]; then
     exit 1	
 fi
 
-
-
+echo "creating errors to be tested"
+./sbin/createErrorsToBeTested.sh
+if [ "$?" != "0" ]; then
+    echo "Creation of errors to be tested has failed"
+    exit 1	
+fi
 
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
 echo "script duration : ${ELAPSED_TIME}sec"
