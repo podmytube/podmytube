@@ -14,6 +14,8 @@ class Plan extends Model
     const _DAILY_PLAN_ID = 6;
     const _ACCROPOLIS_PLAN_ID = 7; // to be removed one day
 
+    const _DEFAULT_PLAN_ID = self::_FREE_PLAN_ID;
+
     /**
      * One plan may be subscribed by many channels.
      * @return object App\Subscription
