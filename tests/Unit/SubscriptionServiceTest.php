@@ -12,6 +12,38 @@ class SubscriptionServiceTest extends TestCase
     /**
      * @test
      */
+    public function getSubscriptionForChannelsShouldBeOk()
+    {
+        $channelIdsAndPlans = [
+            'freeChannel' => 1,
+            'earlyChannel' => 2,
+            'UCnF1gaTK11ax2pWCIdUp8-w' => 3,
+            'UCnf8HI3gUteF1BKAvrDO9dQ' => 4,
+            'weeklyChannel' => 5,
+            'dailyChannel' => 6,
+            'UCq80IvL314jsE7PgYsTdw7Q' => 7,
+        ];
+        foreach ($channelIdsAndPlans as $channeId => $expectedPlanId) {
+            $channel = Channel::find($channeId);
+            $result = SubscriptionService::getActiveSubscription($channel)->plan_id;
+            $this->assertEquals($expectedPlanId, $result,
+                "Channel {{$channel->channel_id}} should have plan {{$expectedPlanId}} and result was {{$result}}");
+        }
+    }
+
+    /**
+     * @test
+     * @expectedException Exception
+     */
+    public function noSubscriptionForChannelShouldThrowOneException()
+    {
+        $channel = Channel::find('invalidChannel');
+        $result = SubscriptionService::getActiveSubscription($channel)->plan_id;
+    }
+
+    /**
+     * @test
+     */
     public function getSubscribedPlanForChannelsShouldBeOk()
     {
         $channelIdsAndPlans = [
@@ -39,7 +71,7 @@ class SubscriptionServiceTest extends TestCase
     public function getSubscribedPlanForInvalidChannelsShouldFail()
     {
         $channel = Channel::find('invalidChannel');
-        SubscriptionService::getActivePlan($channel);            
+        SubscriptionService::getActivePlan($channel);
     }
 
     /**

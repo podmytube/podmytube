@@ -38,6 +38,16 @@ class ChannelCreateController extends Controller
      */
     public function store(Request $request)
     {
+        /**
+         * The only field required is the channel id. We are asking for the url channel
+         * It should be 26 characters long too contain at least http://youtube.com/channel/
+         */
+        $this->validate(request(), [
+
+            'channel_url' => 'required|string|min:27',
+
+        ]);
+        
         try {
             CreateChannelService::create($request);
         } catch (\Exception $e) {

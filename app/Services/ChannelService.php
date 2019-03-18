@@ -8,6 +8,7 @@ use App\Plan;
 use App\Services\SubscriptionService;
 use App\Services\ThumbService;
 use App\User;
+use App\Log;
 use Carbon\Carbon;
 
 class ChannelService
@@ -34,21 +35,26 @@ class ChannelService
      * This function will retrieve all user's channels.
      * @param User $user the user we need channels
      * @return channels models with thumb/vignette
+     * @todo should send an alert email to me
      */
     public static function getAuthenticatedUserChannels(User $user)
     {
         $channels = $user->channels;
         foreach ($channels as $channel) {
 
-            $channel->nbEpisodesGrabbedThisMonth = self::getNbEpisodesAlreadyDownloadedThisMonth($channel);
-            if(!isset($channel->subscription)){
-                Log::error(" Channel {{$channel->channel_id}} has no subscription and that shouldn't be possible !!");
+            $nbEpisodesGrabbedThisMonth = self::getNbEpisodesAlreadyDownloadedThisMonth($channel);
+            try {
+                $subscription = SubscriptionService::getActiveSubscription($channel);
+                $episodesPerMonth=$subscription->plan->nb_episodes_per_month;
+            } catch (\Exception $e) {
+                $episodesPerMonth=(Plan::find(Plan::_DEFAULT_PLAN_ID))->nb_episodes_per_month;
+                /**
+                 * @todo should send an alert email to me
+                 */                
             }
 
-            if ($channel->nbEpisodesGrabbedThisMonth >= $channel->subscription->plan->nb_episodes_per_month){
-                session()->flash('message', __('messages.one_of_your_podcast_is_no_more_updated'));
-                session()->flash('messageClass', 'alert-info');
-            }
+            $channel->isQuotaExceeded = $nbEpisodesGrabbedThisMonth >= $episodesPerMonth ? true : false;
+                        
             /**
              * If podcast has a thumb
              */

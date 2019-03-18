@@ -41,7 +41,7 @@
                         @endif
                     </h5>
 
-                    @if ($channel->nbEpisodesGrabbedThisMonth >= $channel->subscription->plan->nb_episodes_per_month)
+                    @if ($channel->isQuotaExceeded)
                     <div class="alert alert-danger" role="alert">
                         <p>{{  __('messages.danger_podcast_is_no_more_updated') }}</p>
                         <p class=" text-center">

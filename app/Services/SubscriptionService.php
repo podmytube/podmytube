@@ -18,10 +18,24 @@ class SubscriptionService
      * This function will return active plan for Channel object
      *
      * @param object App\Channel $channel
+     * @return object App\Subscription
+     */
+    public static function getActiveSubscription(Channel $channel){
+        if (!isset($channel->subscription)){
+            throw new \Exception("Channel {{$channel->channel_id}} has no subscription and it is not normal");
+        }
+        return $channel->subscription;
+    }
+
+
+    /**
+     * This function will return active plan for Channel object
+     *
+     * @param object App\Channel $channel
      * @return object App\Plan
      */
     public static function getActivePlan(Channel $channel){
-        if (!isset($channel->subscription->plan)){
+        if (!isset($channel->subscription) || !isset($channel->subscription->plan)){
             throw new \Exception("Channel {{$channel->channel_id}} has no subscription and it is not normal");
         }
         return $channel->subscription->plan;
