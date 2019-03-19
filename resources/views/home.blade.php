@@ -13,17 +13,9 @@
 @include ('layouts.errors')
 
 <div class="container">
-	<!--home main container-->
-	@if (session('status'))
-	<div class="alert alert-success" role="alert">
-		{{ session('status') }}
-	</div>
-	@endif 
-	
-	@if (session('success'))
-		<h3>{{ Session::get('success') }}</h3>
-	@endif
 
+	<!--home main container-->
+	
 	<div class="row">
 
 		<div class="col">

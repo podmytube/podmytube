@@ -34,7 +34,7 @@ return [
     'page_title_home_breadcrumb' => 'Home',
 
     // flash
-    'flash_channel_has_been_created' => "Channel has been successfully registered :)",
+    'flash_channel_has_been_created' => "Channel :channel has been successfully registered :)",
     'flash_channel_id_is_invalid' => "The youtube url you entered was invalid !",
 
     // commons

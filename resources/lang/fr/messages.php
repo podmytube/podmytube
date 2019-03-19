@@ -34,8 +34,8 @@ return [
     'page_title_home_breadcrumb' => 'Accueil',
 
     // flash
-    'flash_channel_has_been_created' => "La chaine est désormais inscrite :)",
-    'flash_channel_id_is_invalid' => "L'adresse youtube saisie est invalide !",
+    'flash_channel_has_been_created' => "La chaine :channel est désormais inscrite :)",
+    'flash_channel_id_is_invalid' => "L'adresse Youtube saisie est invalide !",
     
     // commons
     'only_for_premiums_label' => "Cette partie n'est disponible que pour les abonnés premiums.",

@@ -9,7 +9,10 @@
 namespace App;
 
 use Carbon\Carbon;
+
+use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
+
 
 /**
  * the channel class and its functions
@@ -93,18 +96,7 @@ class Channel extends Model
      */
     public function subscription()
     {
-        /*
-        $start = new Carbon('first day of this month');
-        $end = new Carbon('last day of this month');
-        */
-
-        return $this->hasOne(Subscription::class, 'channel_id');
-        /*
-            ->where(function ($query) use ($start, $end) {
-                $query->whereNull('ends_at')
-                    ->orWhereBetween('ends_at', [$start, $end]);
-            });
-        */
+        return $this->hasOne(Subscription::class, 'channel_id');        
     }
 
     /**
@@ -182,24 +174,24 @@ class Channel extends Model
      *
      * @return string the channel id
      */
-    public static function extractChannelIdFromUrl($url)
+    public static function extractChannelIdFromUrl(Request $request)
     {
         /**
          * url should be one
          */
-        if (!filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED)) {
-            return false;
+        if (!filter_var($request->channel_url, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED)) {
+            throw new \InvalidArgumentException("flash_channel_id_is_invalid");
         }
 
         /**
          * checking the url given.
          * It should contain one youtube url the channel path and the channel_id
          */
-        if (!preg_match("/^https?:\/\/(youtube.com|www.youtube.com)\/channel\/(?'channel'[\w\-]*)$/", $url, $matches)) {
-            return false;
-        } else {
-            return $matches['channel'];
-        }
+        if (!preg_match("/^https?:\/\/(youtube.com|www.youtube.com)\/channel\/(?'channel'[\w\-]*)$/", $request->channel_url, $matches)) {
+            throw new \InvalidArgumentException("flash_channel_id_is_invalid");
+        } 
+
+        return $matches['channel'];        
     }
 
     /**
