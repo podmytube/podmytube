@@ -13,7 +13,8 @@ RUN     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezo
 RUN     apt-get update -y && \
         apt-get install -y sendmail \
             libpng-dev \
-            git 
+            git \
+            mysql-client
 RUN     rm -rf /var/lib/apt/lists/*;
 
 # installing required php modules
@@ -32,7 +33,13 @@ COPY    .docker/vhost.conf /etc/apache2/sites-available/000-default.conf
 # getting dotfiles from github
 RUN     cp /etc/skel/.bashrc ~/
 RUN     git clone https://github.com/tyteck/dotfiles.git /root/dotfiles
-RUN     ln -s dotfiles/.bash_aliases ~/.bash_aliases && touch /root/dotfiles/.creds
+RUN     ln -s dotfiles/.bash_aliases ~/.bash_aliases 
+
+# creds to access db from mycl client within container
+RUN     echo '#!/bin/bash\n\
+export PMTDB_CREDS="-uroot -proot"\n\
+export PMTESTDB_CREDS="-uroot -proot"'\
+> /root/dotfiles/.creds
 
 
 WORKDIR /srv/app
