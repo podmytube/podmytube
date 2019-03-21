@@ -16,14 +16,25 @@ return [
     'weekly_plan_features' => "Pour les youtubeurs publient une vidéo par semaine",
     'weekly_plan_limits_reminder' => "(jusqu'à 10 vidéos converties par mois)",
 
-
     'daily_plan_features' => "Pour les youtubeurs publiant plus ou moins une vidéo par jour",
     'daily_plan_limits_reminder' => "(jusqu'à 10 vidéos converties par mois)",
 
+    /**
+     * Pricing
+     */
     'pricing_h2_pricing' => 'Tarifs',
     'pricing_p_customized_offer' => 'Si vous souhaitez une offre personnalisée',
     'pricing_a_contact_us' => 'contactez moi',
     'pricing_a_prices_in_euros' => 'Les prix sont en €uros',    
+
+    'pricing_li_free_plan' => 'Gratuit (toujours)',
+    'pricing_li_free_plan_radio_button_label' => 'je publie 2 vidéos par mois',
+    'pricing_li_free_plan_monthly_price' => '9 €',
+
+    'pricing_li_N_new_epidodes_per_month' => '<strong>:number nouveaux épisodes</strong> ajoutés à mon podcast par mois.',
+    'pricing_li_data_podcast_filtering' => 'Filtrer les vidéos que vous voulez ajouter à votre podcast directement depuis Youtube.',
+    'pricing_li_I_may_filter_videos_to_be_added_to_my_podcast' => 'Je peux filtrer les vidéos qui seront ajoutés à mon podcast.',
+    'pricing_li_I_can_convert_N_of_my_playlist_into_a_podcast' => 'Je peux convertir <strong>:playlistNumber playlist(s)</strong>en podcast également.',
 
     'pricing_li_weekly_youtuber' => 'Youtubeur Hebdo',
     'pricing_li_weekly_youtuber_intro' => "Vous publiez <u>jusqu'à 10</u> vidéos <u>par mois</u>",
@@ -32,6 +43,11 @@ return [
     'pricing_li_daily_youtuber' => 'Youtubeur Quotidien',
     'pricing_li_daily_youtuber_intro' => "Vous publiez <u>1 vidéo par jour</u><br/><i>(jusqu'à 33 vidéos par mois)</i>",
     'pricing_li_daily_youtuber_monthly_price' => '29 €',
+
+    'pricing_li_I_choose_this_plan' => 'Je choisis cet abonnement !',
+    'pricing_li_I_deserve_this_plan' => 'Je mérite cet abonnement !',
+    'pricing_li_I_prefer_this_one' => 'Je préfère celui-là !',
+
 
     'pricing_li_per_month' => '/ mois',
     'pricing_li_data_only_some_episodes' => 'Seulement quelques épisodes seront convertis lors du lancement de votre podcast puis tous les suivants le seront.',

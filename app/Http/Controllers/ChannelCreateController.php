@@ -43,7 +43,7 @@ class ChannelCreateController extends Controller
          * It should be 26 characters long too contain at least http://youtube.com/channel/
          */
         $request->validate([
-            'channel_url' => 'required|string|min:27',
+            'channel_url' => 'required|string|min:27',            
         ]);
 
         try {
@@ -70,7 +70,8 @@ class ChannelCreateController extends Controller
             $request->session()->flash('message',__('messages.flash_channel_id_is_invalid'));
             $request->session()->flash('messageClass','alert-danger');
         }
-        //$subscription = Subscription::create($request);
+        
+        $subscription = Subscription::create($request);
 
         /**
          * Sending congratulations mail
