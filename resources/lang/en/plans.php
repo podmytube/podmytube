@@ -29,8 +29,7 @@ return [
     'pricing_a_prices_in_euros' => 'Prices in € Euros',
     
     'pricing_li_free_plan' => 'Free (forever)',
-    'pricing_li_free_plan_radio_button_label' => 'I publish only 2 videos per month',
-    'pricing_li_free_plan_monthly_price' => '9 €',
+    'pricing_li_free_plan_radio_button_label' => 'I publish only 2 videos per month',    
 
     'pricing_li_N_new_epidodes_per_month' => 'My podcast will get <strong>:number new episodes</strong> each month',
     'pricing_li_data_podcast_filtering' => 'Filter the videos you want to convert by youtube tag ou by keyword',
