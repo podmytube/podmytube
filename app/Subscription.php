@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Subscription extends Model
 {
+    protected $fillable = [
+        'channel_id',
+        'plan_id',
+    ];
     /**
      * One channel should have only one row in subscription table.
      * Setting local_key and foreign key are required because of the channel_id primary key. 
