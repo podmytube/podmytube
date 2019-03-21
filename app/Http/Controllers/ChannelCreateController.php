@@ -51,7 +51,6 @@ class ChannelCreateController extends Controller
          */
         $request->validate([
             'channel_url' => 'required|string|min:27',
-            'chosenPlan' => 'required|integer|min:1',
         ]);
 
         try {
@@ -111,11 +110,6 @@ class ChannelCreateController extends Controller
         /**
          * Redirect to home if free plan
          */
-        if ($request->chosenPlan == Plan::_FREE_PLAN_ID) {
-            return redirect()->route('home');
-        } else {
-            return redirect()->route('plans.index', ['channel' => $channel_id]);
-        }
-
+        return redirect()->route('home');
     }
 }
