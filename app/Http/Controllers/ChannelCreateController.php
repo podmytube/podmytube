@@ -10,9 +10,11 @@
  */
 namespace App\Http\Controllers;
 
-use App\User;
 use App\Channel;
 use App\Mail\ChannelIsRegistered;
+use App\Plan;
+use App\Subscription;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -28,7 +30,12 @@ class ChannelCreateController extends Controller
 
     public function create()
     {
-        return view('channel.create');
+        $plans = [
+            'free' => Plan::_FREE_PLAN_ID,
+            'weekly' => Plan::_WEEKLY_PLAN_ID,
+            'daily' => Plan::_DAILY_PLAN_ID,
+        ];
+        return view('channel.create', compact('plans'));
     }
 
     /**
@@ -43,7 +50,8 @@ class ChannelCreateController extends Controller
          * It should be 26 characters long too contain at least http://youtube.com/channel/
          */
         $request->validate([
-            'channel_url' => 'required|string|min:27',            
+            'channel_url' => 'required|string|min:27',
+            'chosenPlan' => 'required|integer|min:1',
         ]);
 
         try {
@@ -58,20 +66,36 @@ class ChannelCreateController extends Controller
         $user = Auth::user();
 
         /**
+         * @todo get Channel_name
+         */
+
+        /**
          * Channel creating
          */
         try {
             $channel = Channel::create([
                 'user_id' => $user->user_id,
                 'channel_id' => $channel_id,
-                'channel_name' => __('messages.channel_to_be_validated')
+                'channel_name' => __('messages.channel_to_be_validated'),
             ]);
-        } catch (\Exception $e) { 
-            $request->session()->flash('message',__('messages.flash_channel_id_is_invalid'));
-            $request->session()->flash('messageClass','alert-danger');
+        } catch (\Exception $e) {
+            $request->session()->flash('message', __('messages.flash_channel_id_is_invalid'));
+            $request->session()->flash('messageClass', 'alert-danger');
         }
-        
-        $subscription = Subscription::create($request);
+
+        /**
+         * Creating subscription on one free plan (default)
+         * We will update it once paid.
+         */
+        try {
+            $subscription = Subscription::create([
+                'channel_id' => $channel_id,
+                'plan_id' => Plan::_FREE_PLAN_ID,
+            ]);
+        } catch (\Exception $e) {
+            $request->session()->flash('message', __('messages.flash_subscription_creation_has_failed'));
+            $request->session()->flash('messageClass', 'alert-danger');
+        }
 
         /**
          * Sending congratulations mail
@@ -81,12 +105,17 @@ class ChannelCreateController extends Controller
         /**
          * All went fine
          */
-        $request->session()->flash('message',__('messages.flash_channel_has_been_created', ['channel' => $channel_id]));
-        $request->session()->flash('messageClass','alert-success');
-        
+        $request->session()->flash('message', __('messages.flash_channel_has_been_created', ['channel' => $channel_id]));
+        $request->session()->flash('messageClass', 'alert-success');
+
         /**
-         * Redirect to home
+         * Redirect to home if free plan
          */
-        return redirect()->route('home');
+        if ($request->chosenPlan == Plan::_FREE_PLAN_ID) {
+            return redirect()->route('home');
+        } else {
+            return redirect()->route('plans.index', ['channel' => $channel_id]);
+        }
+
     }
 }

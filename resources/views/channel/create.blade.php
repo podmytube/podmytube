@@ -41,7 +41,9 @@
         
             <div class="container">
                 <div class="row pricing">
-                    <div class="col border rounded m-1 p-3 "> <!-- free forever -->
+                    
+                    <!-- free forever -->
+                    <div class="col border rounded m-1 p-3 ">
                         <h3>{{ __('plans.pricing_li_free_plan') }}</h3>
                         <div class="alert alert-secondary text-center" role="alert">
                             {!! __('plans.pricing_li_free_plan_monthly_price') !!}
@@ -53,13 +55,15 @@
                             <li>{!! __('plans.pricing_li_setup_once_and_forget') !!}</li>
                         </ul>
                         <div class="form-check text-center">
-                            <input class="form-check-input" type="radio" name="chosenPlan" id="chosenPlan1" value="1" checked>
+                            <input class="form-check-input" type="radio" name="chosenPlan" id="chosenPlan1" value="{{ $plans['free'] }}" checked>
                             <label class="form-check-label" for="chosenPlan1">
                                 {{ __('plans.pricing_li_I_choose_this_plan') }}
                             </label>
                         </div>
                     </div> <!-- /free forever -->
-                    <div class="col border rounded m-1 p-3"> <!-- weekly -->
+
+                    <!-- weekly -->
+                    <div class="col border rounded m-1 p-3"> 
                         <h3>{{ __('plans.pricing_li_weekly_youtuber') }}</h3>
                         <div class="alert alert-success text-center" role="alert">
                             {!! __('plans.pricing_li_monthly_price',['pricePerMonth'=>9]) !!}
@@ -72,13 +76,15 @@
                             <li>{!! __('plans.pricing_li_setup_once_and_forget') !!}</li>
                         </ul>
                         <div class="form-check text-center">
-                            <input class="form-check-input" type="radio" name="chosenPlan" id="chosenPlan2" value="2">
+                            <input class="form-check-input" type="radio" name="chosenPlan" id="chosenPlan2" value="{{ $plans['weekly'] }}">
                             <label class="form-check-label" for="chosenPlan2">
                                 {{ __('plans.pricing_li_I_deserve_this_plan') }}
                             </label>
                         </div>
                     </div> <!-- /weekly -->
-                    <div class="col border rounded m-1 p-3"> <!-- daily -->
+
+                    <!-- daily -->
+                    <div class="col border rounded m-1 p-3"> 
                         <h3>{{ __('plans.pricing_li_daily_youtuber') }}</h3>
                         <div class="alert alert-success text-center" role="alert">
                             {!! __('plans.pricing_li_monthly_price',['pricePerMonth'=>29]) !!}
@@ -92,7 +98,7 @@
                             <li>{!! __('plans.pricing_li_setup_once_and_forget') !!}</li>
                         </ul>
                         <div class="form-check text-center">
-                            <input class="form-check-input" type="radio" name="chosenPlan" id="chosenPlan3" value="3">
+                            <input class="form-check-input" type="radio" name="chosenPlan" id="chosenPlan3" value="{{ $plans['daily'] }}">
                             <label class="form-check-label" for="chosenPlan3">
                                 {{ __('plans.pricing_li_I_prefer_this_one') }}
                             </label>
@@ -101,7 +107,7 @@
                 </div>
             </div> <!-- plans container -->
 
-            <div class="form-group">
+            <div class="form-group text-center">
                 <button type="submit" class="btn btn-primary">{{ __('messages.button_submit_label') }}</button>
             </div>
         </form>
