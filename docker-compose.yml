@@ -18,12 +18,12 @@ services:
   # this image is starting from a official php-apache docker
   # and creating host dashboard-pmt
   dashboard-pmt:
-    container_name: dashboard-pmt
+    container_name: dashboard.pmt
     build:
       context: .
       dockerfile: .docker/Dockerfile
-    restart: always
-    image: dashboard-pmt
+    image: dashboard.pmt
+    restart: always    
     expose:
         - "80"
     # VIRTUAL_HOST should be only the domain (without http://)
