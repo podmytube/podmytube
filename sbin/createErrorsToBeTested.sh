@@ -1,16 +1,29 @@
 #!/bin/bash
 # this script will only create some errors to be tested
-
 START_TIME=$SECONDS
 
-DST_DB="podmytubeTests"
+if [ -f ~/dotfiles/.bash_functions ]; then
+	source ~/dotfiles/.bash_functions
+fi
 
-echo "Removing subscription for invalidChannel"
-mysql --login-path=root $DST_DB -e "delete from subscriptions where channel_id='invalidChannel'"
+title "Inserting errors to be tested"
+
+if [ -z "${PMTESTDB_CREDS}" ]; then
+	error "Test database credentials {$PMTDB_CREDS} is empty. It shouldn't ..."
+	exit 1
+fi
+
+if [ -z ${PMTEST_DB} ] || [ -z ${PMTEST_HOST} ]; then
+	error "Either test database name {$PMTEST_DB} or host {$PMTEST_HOST} is empty. It shouldn't ..."
+	exit 1
+fi
+
+notice "Removing subscription for invalidChannel into ${PMTEST_DB} (host : ${PMTEST_HOST})"
+mysql -h${PMTEST_HOST} ${PMTESTDB_CREDS} ${PMTEST_DB} -e "delete from subscriptions where channel_id='invalidChannel'"
 if [ "$?" != "0" ]; then
-    echo "La suppression de la subscription de la chaine invalidChannel dans la base de test a echoue !"
+    error "La suppression de la subscription de la chaine invalidChannel dans la base de test a echoue !"
     exit 1	
 fi
 
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
-echo "script duration : ${ELAPSED_TIME}sec"
+notice "script duration : ${ELAPSED_TIME}sec"
