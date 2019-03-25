@@ -129,7 +129,7 @@ class Channel extends Model
      * define the relationship between one channel and its playlists
      *
      */
-    public function thumbs()
+    public function thumb()
     {
         return $this->HasOne(Thumbs::class, 'channel_id');
     }

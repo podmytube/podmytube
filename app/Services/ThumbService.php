@@ -1,8 +1,9 @@
 <?php
 namespace App\Services;
 
-use App\Thumbs;
 use App\Channel;
+use App\Thumbs;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Image;
 
@@ -11,19 +12,19 @@ class ThumbService
     /**
      * Thumb is the full sized image that illustrate podcast
      */
-    protected const DEFAULT_THUMB_DISK = 'thumbs';
-    protected const DEFAULT_THUMB_FILE = 'default_thumb.jpg';
+    const DEFAULT_THUMB_DISK = 'thumbs';
+    const DEFAULT_THUMB_FILE = 'default_thumb.jpg';
 
     /**
      * Vignette file is the same thumb resized to go on dashboard page
      */
-    protected const DEFAULT_VIGNETTE_FILE = 'default_vignette.jpg';
-    protected const VIGNETTE_WIDTH = 300;
+    const DEFAULT_VIGNETTE_FILE = 'default_vignette.jpg';
+    const VIGNETTE_WIDTH = 300;
 
     /**
      * This function is checking is thumb folder exist for current Thumb model.
      */
-    public static function thumbFolderExists(Thumbs $thumb)
+    public static function thumbExists(Thumbs $thumb)
     {
         if (!Storage::disk($thumb->file_disk)->exists($thumb->channel_id . '/' . $thumb->file_name)) {
             throw new \Exception("This channel {$thumb->channel_id} has no thumb folder !");
@@ -57,14 +58,26 @@ class ThumbService
 
     /**
      * return the url of the thumbs for the current channel.
-     * @param Thumbs $channel Channel model
+     * @param Channel $channel Channel model
      */
-    public static function getChannelThumbUrl(Thumbs $thumb)
+    public static function getChannelThumbUrl(Channel $channel)
     {
+        /**
+         * If channel has no thumb => returning default one
+         */
+        if (empty($channel->thumb)) {
+            return self::getDefaultThumbUrl();
+        }
+
+        $thumb = $channel->thumb;
+        /**
+         * If channel has a database entry into thumbs but no files => => returning default one
+         */
         try {
-            self::thumbFolderExists($thumb);
+            self::thumbExists($thumb);
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            Log::error("Channel {{$channel->channel_id}} has an entry in database but no file is thumb folder.");
+            return self::getDefaultThumbUrl();
         }
 
         if (!Storage::disk($thumb->file_disk)

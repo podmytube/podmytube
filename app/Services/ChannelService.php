@@ -60,7 +60,7 @@ class ChannelService
              */
             $vignetteObtained = false;
 
-            if ($thumb = $channel->thumbs) {
+            if ($thumb = $channel->thumb) {
                 try {
                     $channel->vigUrl = ThumbService::getChannelVignetteUrl($thumb);
                     $vignetteObtained = true;
