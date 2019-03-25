@@ -22,12 +22,21 @@ if [ -z ${PMTEST_DB} ] || [ -z ${PMTEST_HOST} ]; then
 	exit 1
 fi
 
-FIXTURE_FILE="$__DIR__/../tests/fixtures/datasets/SampleChannelsMediasAndSubscriptions.sql"
+FIXTURE_FILE="${__DIR__}/../tests/fixtures/datasets/SampleChannelsMediasAndSubscriptions.sql"
 
 notice "importing fixture data into ${PMTEST_DB} (host : ${PMTEST_HOST})"
 mysql -h${PMTEST_HOST} ${PMTESTDB_CREDS} ${PMTEST_DB} < $FIXTURE_FILE 
 if [ "$?" != "0" ]; then
     echo "L importation des donnees de test dans la base de test a echoue !"
+    exit 1	
+fi
+
+# copying sample thumb
+SAMPLE_THUMB_FILE="${__DIR__}/../tests/fixtures/images/sampleThumb.jpg"
+SAMPLE_THUMB_FOLDER="${__DIR__}/../storage/app/public/thumbs/earlyChannel/"
+mkdir ${SAMPLE_THUMB_FOLDER} && cp ${SAMPLE_THUMB_FILE} ${SAMPLE_THUMB_FOLDER} && chown -R www-data 
+if [ "$?" != "0" ]; then
+    echo "La copie du sample thumb a echoue !"
     exit 1	
 fi
 

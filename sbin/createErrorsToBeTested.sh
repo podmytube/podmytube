@@ -25,5 +25,12 @@ if [ "$?" != "0" ]; then
     exit 1	
 fi
 
+notice "Creating false entry into thumbs table "
+mysql -h${PMTEST_HOST} ${PMTESTDB_CREDS} ${PMTEST_DB} -e "insert into thumbs (channel_id, file_name, file_disk, file_size) values ('freeChannel', 'thumbFileNameThatDontExists.jpg', 'thumbs', '120')"
+if [ "$?" != "0" ]; then
+    error "L insertion d'un faux thumb dans la base de test a echoue !"
+    exit 1	
+fi
+
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
 notice "script duration : ${ELAPSED_TIME}sec"

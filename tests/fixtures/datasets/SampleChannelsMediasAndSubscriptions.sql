@@ -73,3 +73,7 @@ INSERT INTO medias (media_id, channel_id, title, grabbed_at) VALUES
 #     ('dailyChannel', 3, 'Highest price subscription', 3, 1, null);
 
 # playlist_id,channel_id,playlist_title,playlist_description,playlist_thumbnail,playlist_publishedAt,playlist_updatedAt,playlist_active
+
+# inserting one thumb for earlyChannel
+INSERT INTO thumbs (channel_id, file_name, file_disk, file_size) VALUES
+    ("earlyChannel", "sampleThumb.jpg",   "thumbs", 91405);
