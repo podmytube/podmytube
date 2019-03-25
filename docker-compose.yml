@@ -18,11 +18,11 @@ services:
   # this image is starting from a official php-apache docker
   # and creating host dashboard-pmt
   dashboard-pmt:
-    container_name: dashboard.pmt
+    container_name: dash.pmt
     build:
       context: .
       dockerfile: .docker/Dockerfile
-    image: dashboard.pmt
+    image: dash.pmt
     restart: always    
     expose:
         - "80"
