@@ -6,10 +6,18 @@ LABEL   maintainer="Frederick Tyteca"
 ENV     APACHE_RUN_USER=www-data
 ENV     APACHE_RUN_GROUP=www-data
 
+# default vhost replaced by custom one
+# mainly documentRoot /srv/app/public
+COPY    .docker/vhost.conf /etc/apache2/sites-available/000-default.conf
+
+# enabling mod rewrite
+RUN     a2enmod rewrite
+
 # setting timezone
 ENV     TZ=Europe/Paris
 RUN     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
+# updating to add git, mysql-client and sendmail
 RUN     apt-get update -y && \
         apt-get install -y sendmail \
             libpng-dev \
@@ -25,10 +33,8 @@ RUN     docker-php-ext-install pdo \
 # copying all files (but .dockerignore(d)) in /srv/app
 COPY    . /srv/app
 RUN     chown -R www-data:www-data /srv/app
-
-# default vhost replaced by custom one
-# mainly documentRoot /srv/app/public
-COPY    .docker/vhost.conf /etc/apache2/sites-available/000-default.conf
+# Adding phpunit to Path
+ENV     PATH="/srv/app/vendor/phpunit/phpunit:${PATH}"
 
 # getting dotfiles from github
 RUN     cp /etc/skel/.bashrc ~/
@@ -41,8 +47,5 @@ export PMTDB_CREDS="-uroot -proot"\n\
 export PMTESTDB_CREDS="-uroot -proot"'\
 > /root/dotfiles/.creds
 
-
 WORKDIR /srv/app
 
-# enabling mod rewrite
-RUN     a2enmod rewrite
