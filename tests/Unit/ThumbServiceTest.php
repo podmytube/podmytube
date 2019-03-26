@@ -13,7 +13,8 @@ class ThumbServiceTest extends TestCase
     protected const STORAGE_THUMBS_PATH = "/storage/thumbs/";
 
     protected const VALID_CHANNEL = "earlyChannel";
-    protected const VALID_SAMPLE_FILE = "sampleThumb.jpg";
+    protected const VALID_SAMPLE_THUMB_FILE = "sampleThumb.jpg";
+    protected const VALID_SAMPLE_VIG_FILE = "sampleVig.jpg";
 
     public function setUp()
     {
@@ -22,13 +23,26 @@ class ThumbServiceTest extends TestCase
         $this->expectedVigUrl = env('APP_URL') . self::STORAGE_THUMBS_PATH . ThumbService::DEFAULT_VIGNETTE_FILE;
     }
 
+
+    /**
+     * Creating a vignette from a thumb should be ok too
+     */
+    public function testCreateVigFromThumb()
+    {
+        $channel = Channel::find(self::VALID_CHANNEL);
+        $result = ThumbService::createThumbVig($channel->thumb);
+        $this->assertTrue($result);
+        //$this->assertFileExists();
+
+    }
+
     /**
      * This channel has one thumb in db but file is not present => default thumb should be returned
      */
-    public function testEarlyChannelHasEverythingOk()
+    public function testEarlyChannelHasItsThumbOk()
     {
         $channel = Channel::find(self::VALID_CHANNEL);
-        $expected = env('APP_URL') . self::STORAGE_THUMBS_PATH . $channel->channel_id . '/' . self::VALID_SAMPLE_FILE;
+        $expected = env('APP_URL') . self::STORAGE_THUMBS_PATH . $channel->channel_id . '/' . self::VALID_SAMPLE_THUMB_FILE;
         $result = ThumbService::getChannelThumbUrl($channel);
         $this->assertEquals(
             $expected,

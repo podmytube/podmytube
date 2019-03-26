@@ -142,7 +142,7 @@ class ThumbService
         // mini thumb to be used in dashboard creation
         $thumbPath = self::getThumbFilePath($thumb);
         $vignettePath = self::getVignetteFilePath($thumb);
-
+        
         /**
          * Grabbing thumb file (if exists)
          */
@@ -150,16 +150,19 @@ class ThumbService
             throw new \Exception("Thumb file {$thumbPath} does not exist");
         }
 
+        //$thumbFullPath = Storage::disk($thumb->file_disk)->path($thumbPath);
+        
         /**
          * Getting Thumb data
          */
         $thumbData = Storage::disk($thumb->file_disk)->get($thumbPath);
-
+        
         /**
          * Converting it as an image
          */
         $thumbnail = Image::make($thumbData);
-
+        //$thumbnail = Image::make($thumbFullPath);
+        
         /**
          * creating vignette
          */
