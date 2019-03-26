@@ -21,9 +21,15 @@ RUN     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezo
 RUN     apt-get update -y && \
         apt-get install -y sendmail \
             libpng-dev \
+            libjpeg-dev \
             git \
             mysql-client
 RUN     rm -rf /var/lib/apt/lists/*;
+
+RUN docker-php-ext-configure gd \
+        --with-png-dir=/usr/lib/ \
+        --with-jpeg-dir=/usr/lib/ \
+        --with-gd
 
 # installing required php modules
 RUN     docker-php-ext-install pdo \
