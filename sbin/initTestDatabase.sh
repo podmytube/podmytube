@@ -9,13 +9,6 @@ fi
 
 title "Init tests database"
 
-# colors
-red="\[\033[38;5;196m\]"
-green="\[\033[38;5;10m\]"
-
-# font weight
-normal="\[$(tput sgr0)\]"
-
 if [ -z ${PMT_DB} ] || [ -z ${PMT_HOST} ]; then
 	error "Either pmt database name {$PMT_DB} or host {$PMT_HOST} is empty. It shouldn't ..."
 	exit 1
@@ -45,9 +38,11 @@ TABLES_TO_EXPORT_WITH_DATA="plans stripe_plans"
 TABLES_TO_TRUNCATE="${TABLES_TO_EXPORT_STRUCT_ONLY} ${TABLES_TO_EXPORT_WITH_DATA}"
 
 notice "creating $SRC_DB dump with those tables : $TABLES_TO_EXPORT_STRUCT_ONLY"
-mysqldump $SRC_BASE_PARAMS --no-data $TABLES_TO_EXPORT_STRUCT_ONLY > $DUMP_FILE
+CMD="mysqldump $SRC_BASE_PARAMS --no-data $TABLES_TO_EXPORT_STRUCT_ONLY > $DUMP_FILE"
+$($CMD)
 if [ "$?" != "0" ]; then
-    echo "La creation du dump de $SRC_DB a echoue ! Inutile de continuer."
+    error "La creation du dump de $SRC_DB a echoue ! Inutile de continuer. "
+    error "la commande : $CMD"
     exit 1	
 fi
 
