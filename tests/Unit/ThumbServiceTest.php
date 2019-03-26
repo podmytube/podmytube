@@ -31,9 +31,7 @@ class ThumbServiceTest extends TestCase
     {
         $channel = Channel::find(self::VALID_CHANNEL);
         $result = ThumbService::createThumbVig($channel->thumb);
-        $this->assertTrue($result);
-        //$this->assertFileExists();
-
+        $this->assertFileExists($result);
     }
 
     /**

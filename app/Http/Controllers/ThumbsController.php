@@ -100,7 +100,11 @@ class ThumbsController extends Controller
             ]
         );
 
-        ThumbService::createThumbVig($newThumb);
+        try {
+            ThumbService::createThumbVig($newThumb);
+        } catch (\Exception $e) {
+            throw new \Exception("A problem occurs during new thumb upload !");
+        }
 
         return redirect()->route('channel.thumbs.index', ['channel' => $channel]);
 

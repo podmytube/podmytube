@@ -179,7 +179,9 @@ class ThumbService
          */
         Storage::disk($thumb->file_disk)->put($vignettePath, (string) $thumbnail->encode());
 
-        return true;
+        /**
+         * Return full path of the vig
+         */
+        return Storage::disk($thumb->file_disk)->path($vignettePath);        
     }
-
 }
