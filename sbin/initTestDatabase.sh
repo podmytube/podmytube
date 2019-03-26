@@ -38,11 +38,9 @@ TABLES_TO_EXPORT_WITH_DATA="plans stripe_plans"
 TABLES_TO_TRUNCATE="${TABLES_TO_EXPORT_STRUCT_ONLY} ${TABLES_TO_EXPORT_WITH_DATA}"
 
 notice "creating $SRC_DB dump with those tables : $TABLES_TO_EXPORT_STRUCT_ONLY"
-CMD="mysqldump $SRC_BASE_PARAMS --no-data $TABLES_TO_EXPORT_STRUCT_ONLY > $DUMP_FILE"
-$($CMD)
+mysqldump $SRC_BASE_PARAMS --no-data $TABLES_TO_EXPORT_STRUCT_ONLY > $DUMP_FILE
 if [ "$?" != "0" ]; then
     error "La creation du dump de $SRC_DB a echoue ! Inutile de continuer. "
-    error "la commande : $CMD"
     exit 1	
 fi
 

@@ -31,10 +31,14 @@ if [ "$?" != "0" ]; then
     exit 1	
 fi
 
-# copying sample thumb
+# copying sample thumb in easychannel thumb
 SAMPLE_THUMB_FILE="${__DIR__}/../tests/fixtures/images/sampleThumb.jpg"
 SAMPLE_THUMB_FOLDER="${__DIR__}/../storage/app/public/thumbs/earlyChannel/"
-mkdir ${SAMPLE_THUMB_FOLDER} && cp ${SAMPLE_THUMB_FILE} ${SAMPLE_THUMB_FOLDER} && chown -R www-data 
+if [ ! -d ${SAMPLE_THUMB_FOLDER} ]; then
+	mkdir ${SAMPLE_THUMB_FOLDER} 
+fi
+
+cp ${SAMPLE_THUMB_FILE} ${SAMPLE_THUMB_FOLDER} && chown -R www-data:www-data ${SAMPLE_THUMB_FOLDER}
 if [ "$?" != "0" ]; then
     echo "La copie du sample thumb a echoue !"
     exit 1	
