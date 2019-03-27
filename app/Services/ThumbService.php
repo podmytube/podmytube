@@ -95,7 +95,7 @@ class ThumbService
     public static function getChannelVignetteUrl(Thumbs $thumb)
     {
         try {
-            self::thumbFolderExists($thumb);
+            self::thumbExists($thumb);
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }
