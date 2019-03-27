@@ -6,10 +6,6 @@ LABEL   maintainer="Frederick Tyteca"
 ENV     APACHE_RUN_USER=www-data
 ENV     APACHE_RUN_GROUP=www-data
 
-# default vhost replaced by custom one
-# mainly documentRoot /srv/app/public
-COPY    .docker/vhost.conf /etc/apache2/sites-available/000-default.conf
-
 # enabling mod rewrite
 RUN     a2enmod rewrite
 
@@ -36,11 +32,20 @@ RUN     docker-php-ext-install pdo \
             pdo_mysql \
             gd
 
+# default vhost replaced by custom one
+# mainly documentRoot /srv/app/public
+COPY    .docker/vhost.conf /etc/apache2/sites-available/000-default.conf
+
 # copying all files (but .dockerignore(d)) in /srv/app
 COPY    . /srv/app
 RUN     chown -R www-data:www-data /srv/app
 # Adding phpunit to Path
 ENV     PATH="/srv/app/vendor/phpunit/phpunit:${PATH}"
+
+WORKDIR /srv/app
+
+# symlink for storage (the same that is created with "artisan storage:link")
+RUN     ln -s /srv/app/storage/app/public public/storage
 
 # getting dotfiles from github
 RUN     cp /etc/skel/.bashrc ~/
@@ -52,6 +57,4 @@ RUN     echo '#!/bin/bash\n\
 export PMTDB_CREDS="-uroot -proot"\n\
 export PMTESTDB_CREDS="-uroot -proot"'\
 > /root/dotfiles/.creds
-
-WORKDIR /srv/app
 
