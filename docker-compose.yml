@@ -23,7 +23,7 @@ services:
       context: .
       dockerfile: .docker/Dockerfile
     image: dash.pmt
-    restart: always    
+    restart: always
     expose:
         - "80"
     # VIRTUAL_HOST should be only the domain (without http://)
