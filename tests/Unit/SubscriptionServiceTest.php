@@ -33,10 +33,10 @@ class SubscriptionServiceTest extends TestCase
 
     /**
      * @test
-     * @expectedException Exception
      */
     public function noSubscriptionForChannelShouldThrowOneException()
     {
+        $this->expectException(\Exception::class);
         $channel = Channel::find('invalidChannel');
         $result = SubscriptionService::getActiveSubscription($channel)->plan_id;
     }
@@ -66,10 +66,10 @@ class SubscriptionServiceTest extends TestCase
     /**
      * This test is/was only to check that if one channel has no subscription, getActivePlan throw an exception.
      * @test
-     * @expectedException Exception
      */
     public function getSubscribedPlanForInvalidChannelsShouldFail()
     {
+        $this->expectException(\Exception::class);
         $channel = Channel::find('invalidChannel');
         SubscriptionService::getActivePlan($channel);
     }

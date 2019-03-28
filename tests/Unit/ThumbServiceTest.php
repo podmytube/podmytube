@@ -16,13 +16,12 @@ class ThumbServiceTest extends TestCase
     protected const VALID_SAMPLE_THUMB_FILE = "sampleThumb.jpg";
     protected const VALID_SAMPLE_VIG_FILE = "sampleVig.jpg";
 
-    public function setUp()
+    protected function setUp():void
     {
         parent::setUp();
         $this->expectedThumbUrl = env('APP_URL') . self::STORAGE_THUMBS_PATH . ThumbService::DEFAULT_THUMB_FILE;
         $this->expectedVigUrl = env('APP_URL') . self::STORAGE_THUMBS_PATH . ThumbService::DEFAULT_VIGNETTE_FILE;
     }
-
 
     /**
      * Creating a vignette from a thumb should be ok too
