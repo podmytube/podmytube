@@ -45,7 +45,7 @@ ENV     PATH="/srv/app/vendor/phpunit/phpunit:${PATH}"
 WORKDIR /srv/app
 
 # symlink for storage (the same that is created with "artisan storage:link")
-RUN     ln -s /srv/app/storage/app/public public/storage
+RUN     if [ ! -L public/storage ]; then ln -s /srv/app/storage/app/public public/storage; fi
 
 # getting dotfiles from github
 RUN     cp /etc/skel/.bashrc ~/
