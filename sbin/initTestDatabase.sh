@@ -73,7 +73,7 @@ if [ "$?" != "0" ]; then
 fi
 
 notice deleting dump file
-#rm -f $DUMP_FILE
+rm -f $DUMP_FILE
 
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
 notice "script duration : ${ELAPSED_TIME}sec"
