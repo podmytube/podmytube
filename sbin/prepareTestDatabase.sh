@@ -14,13 +14,13 @@ __DIR__="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 ./sbin/initTestDatabase.sh
 if [ "$?" != "0" ]; then
-    error "Initializing test database ${PMT_TEST_DB} has failed !"
+    error "Initializing test database has failed !"
     exit 1	
 fi
 
 ./sbin/importTestFixtures.sh
 if [ "$?" != "0" ]; then
-    error "Test data importation into ${PMT_TEST_DB} has failed !"
+    error "Test data importation into has failed !"
     exit 1	
 fi
 
@@ -39,4 +39,4 @@ fi
 
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
 notice "script duration : ${ELAPSED_TIME}sec"
-success "La base de tests est prête à être utilisée."
+success "Tests DB is ready to use."

@@ -12,15 +12,15 @@ title "Importing tests fixtures"
 # script __DIR__ location
 __DIR__="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-if [ -z ${MYSQLSERVER_CREDS} ]; then
-	error "Credentials {$MYSQLSERVER_CREDS} for accessing mysqlServer container is empty. You should set a dotfiles/.creds"
+if [ -z ${MYSQLSERVER_ROOT_PASSWORD} ]; then
+	error "Credentials {${MYSQLSERVER_ROOT_PASSWORD}} for accessing mysqlServer container is empty. It shouldn't ..."
 	exit 1
 fi
 
 FIXTURE_FILE="${__DIR__}/../tests/fixtures/datasets/SampleChannelsMediasAndSubscriptions.sql"
 
 notice "importing fixture data into pmtests (host : mysqlServer)"
-mysql -hmysqlServer ${PMTESTDB_CREDS} pmtests < $FIXTURE_FILE 
+mysql -hmysqlServer -uroot -p${MYSQLSERVER_ROOT_PASSWORD} pmtests < $FIXTURE_FILE 
 if [ "$?" != "0" ]; then
     echo "L importation des donnees de test dans la base de test a echoue !"
     exit 1	

@@ -1,6 +1,6 @@
 
 # to be sure
-USE podmytubeTests;
+USE pmtests;
 
 # before erasing all data
 SET FOREIGN_KEY_CHECKS=0;
