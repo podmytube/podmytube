@@ -19,7 +19,8 @@ RUN     apt-get update -y && \
             libpng-dev \
             libjpeg-dev \
             git \
-            mysql-client
+            mysql-client \ 
+            vim
 RUN     rm -rf /var/lib/apt/lists/*;
 
 RUN docker-php-ext-configure gd \
@@ -51,10 +52,4 @@ RUN     if [ ! -L public/storage ]; then ln -s /srv/app/storage/app/public publi
 RUN     cp /etc/skel/.bashrc ~/
 RUN     git clone https://github.com/tyteck/dotfiles.git /root/dotfiles
 RUN     ln -s dotfiles/.bash_aliases ~/.bash_aliases 
-
-# creds to access db from mycl client within container
-RUN     echo '#!/bin/bash\n\
-export PMTDB_CREDS="-uroot -proot"\n\
-export PMTESTDB_CREDS="-uroot -proot"'\
-> /root/dotfiles/.creds
 
