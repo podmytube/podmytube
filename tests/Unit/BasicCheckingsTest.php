@@ -16,7 +16,7 @@ class BasicCheckingsTest extends TestCase
     {
         $this->assertEquals(env("APP_ENV"), "testing");
         $this->assertTrue(env("APP_DEBUG"), "DEBUG in .env.testing should be set to true");
-        $this->assertEquals(env("DB_DATABASE"), "podmytubeTests");       
+        $this->assertEquals(env("DB_DATABASE"), "pmtests");       
         
     }
 }
