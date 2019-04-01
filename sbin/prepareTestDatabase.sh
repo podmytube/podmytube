@@ -24,12 +24,17 @@ if [ "$?" != "0" ]; then
     exit 1	
 fi
 
-title "seeding subscriptions"
-php artisan db:seed --env=testing --class=subscriptionTableSeeder
-if [ "$?" != "0" ]; then
-    error "Seeding subscriptions has failed"
-    exit 1	
-fi
+TABLES2SEED="subscriptionTableSeeder usersTableSeeder"
+title "Seeding ..."
+for TABLE2SEED in ${TABLES2SEED}
+do
+    notice "Seeding $TABLE2SEED."
+    php artisan db:seed --env=testing --class=$TABLE2SEED
+    if [ "$?" != "0" ]; then
+        error "Seeding $TABLE2SEED has failed"
+        exit 1	
+    fi    
+done
 
 ./sbin/createErrorsToBeTested.sh
 if [ "$?" != "0" ]; then
