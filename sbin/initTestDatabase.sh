@@ -23,8 +23,7 @@ CONNECTION_PARAMS="-hmysqlServer -uroot -p${MYSQLSERVER_ROOT_PASSWORD}"
 DUMP_FILE="mydump.sql"
 
 TABLES_TO_EXPORT_STRUCT_ONLY="channels users medias quotas thumbs scripts_duration subscriptions"
-#TABLES_TO_EXPORT_WITH_DATA="plans stripe_plans"
-TABLES_TO_EXPORT_WITH_DATA="plans"
+TABLES_TO_EXPORT_WITH_DATA="plans stripe_plans"
 TABLES_TO_TRUNCATE="${TABLES_TO_EXPORT_STRUCT_ONLY} ${TABLES_TO_EXPORT_WITH_DATA}"
 
 notice "creating $SRC_DB dump with those tables : $TABLES_TO_EXPORT_STRUCT_ONLY"
