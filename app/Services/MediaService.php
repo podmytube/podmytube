@@ -45,7 +45,6 @@ class MediaService
         }
 
         return Medias::publishedBetween($monthBeginning, $monthEnding)
-            ->whereNotNull('grabbed_at')
             ->where('channel_id', $channel->channel_id)
             ->count();
     }
