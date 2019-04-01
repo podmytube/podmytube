@@ -23,8 +23,8 @@ class ChannelService
     {
 
         $monthBeginning = carbon::createMidnightDate(date('Y'), date('m'), 1);
-        $monthEnding = carbon::create()->endOfMonth();
-
+        $monthEnding = carbon::today()->endOfMonth();
+        
         return Medias::grabbedBetween($monthBeginning, $monthEnding)
             ->whereNotNull('grabbed_at')
             ->where('channel_id', $channel->channel_id)
