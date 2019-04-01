@@ -7,30 +7,13 @@ use App\Medias;
 use App\Plan;
 use App\Services\SubscriptionService;
 use App\Services\ThumbService;
+use App\Services\MediaService;
 use App\User;
 use App\Log;
 use Carbon\Carbon;
 
 class ChannelService
-{
-   
-    /**
-     * This function will return the number of episodes already grabbed for one channel.
-     * @params Channel $channel_id the channel
-     * @return int the number of episodes grabbed this month for this channel
-     */
-    public static function getNbEpisodesAlreadyDownloadedThisMonth(Channel $channel)
-    {
-
-        $monthBeginning = carbon::createMidnightDate(date('Y'), date('m'), 1);
-        $monthEnding = carbon::today()->endOfMonth();
-        
-        return Medias::grabbedBetween($monthBeginning, $monthEnding)
-            ->whereNotNull('grabbed_at')
-            ->where('channel_id', $channel->channel_id)
-            ->count();
-    }
-
+{   
     /**
      * This function will retrieve all user's channels.
      * @param User $user the user we need channels
@@ -40,9 +23,13 @@ class ChannelService
     public static function getAuthenticatedUserChannels(User $user)
     {
         $channels = $user->channels;
+        if ($channels->isEmpty()){
+            throw new \Exception ("User {$user->user_id} has no channel.");
+        }
+        
         foreach ($channels as $channel) {
 
-            $nbEpisodesGrabbedThisMonth = self::getNbEpisodesAlreadyDownloadedThisMonth($channel);
+            $nbEpisodesGrabbedThisMonth = MediaService::getNbEpisodesAlreadyDownloadedThisMonth($channel);
             try {
                 $subscription = SubscriptionService::getActiveSubscription($channel);
                 $episodesPerMonth=$subscription->plan->nb_episodes_per_month;

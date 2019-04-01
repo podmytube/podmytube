@@ -8,6 +8,26 @@ use Tests\TestCase;
 
 class ChannelServiceTest extends TestCase
 {
+    protected $fakeUser = null;
+
+    protected function setUp():void 
+    {
+        parent::setUp();
+        /**
+         * Creating fake user
+         */
+        $this->fakeUser = factory(User::class)->create();
+    }
+
+    protected function tearDown():void 
+    {
+        parent::tearDown();
+        /**
+         * deleting fake user
+         */
+        $this->fakeUser->delete();
+    }
+
     public function testOnlyTheOwnerShouldSeeHisChannels()
     {
         $expectedChannelIds = [
@@ -26,4 +46,11 @@ class ChannelServiceTest extends TestCase
             $obtainedChannelsIds,
             "Channels ids for owner 1 should be {".implode(', ', $expectedChannelIds)."} and we received {".implode(', ', $obtainedChannelsIds)."}");
     }
+
+    public function testUserWithNoChannelShouldntSeeAny() 
+    {
+        $this->expectException(\Exception::class);
+        $userChannels = ChannelService::getAuthenticatedUserChannels($this->fakeUser);
+    }
+
 }
