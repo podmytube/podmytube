@@ -16,9 +16,6 @@
                         
             <img src="{{ $thumb_url }}" height="1400" class="img-fluid" alt="Responsive image">    
             
-            
-            
-            
         </div>
     </div>
 
