@@ -6,6 +6,7 @@ USE pmtests;
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE channels;
 TRUNCATE medias;
+TRUNCATE thumbs;
 SET FOREIGN_KEY_CHECKS=1;
 
 # insert sample into channels 
@@ -21,12 +22,14 @@ INSERT INTO channels (channel_id, user_id, channel_name, channel_premium, active
 
 # insert sample into media 
 # getAudio is getting all medias ordered by published_at date
-INSERT INTO medias (media_id, channel_id, title, grabbed_at) VALUES
-("YsBVu6f8pR8", "freeChannel",   "This video is eligible",   DATE_SUB(NOW() , INTERVAL 1 HOUR)),
-("KsSPMDe_YWY", "freeChannel",   "This video is eligible",   DATE_SUB(NOW() , INTERVAL 2 HOUR)),
-("hKjtoNByLAI", "freeChannel",   "This video is NOT eligible - tags", DATE_SUB(NOW() , INTERVAL 3 HOUR)),
-("Aks6eKumi3c", "freeChannel",   "This video is NOT eligible - too long ago", DATE_SUB(NOW(), INTERVAL 2 MONTH)),
+# freeChannel has 4 videos published but only should be grabbed
+INSERT INTO medias (media_id, channel_id, title, published_at, grabbed_at) VALUES
+("YsBVu6f8pR8", "freeChannel",   "This video is eligible",   DATE_SUB(NOW() , INTERVAL 2 HOUR), DATE_SUB(NOW() , INTERVAL 1 HOUR)),
+("KsSPMDe_YWY", "freeChannel",   "This video is eligible",   DATE_SUB(NOW() , INTERVAL 4 HOUR), DATE_SUB(NOW() , INTERVAL 2 HOUR)),
+("hKjtoNByLAI", "freeChannel",   "This video is NOT eligible - tags", DATE_SUB(NOW() , INTERVAL 3 HOUR), NULL),
+("Aks6eKumi3c", "freeChannel",   "This video is NOT eligible - too long ago", DATE_SUB(NOW(), INTERVAL 2 MONTH), NULL);
 
+INSERT INTO medias (media_id, channel_id, title, grabbed_at) VALUES
 ("invalidId1", "earlyChannel",   "This media does not exist on YT", NOW()),
 ("invalidId2", "earlyChannel",   "This media does not exist on YT", NOW()),
 ("invalidId3", "earlyChannel",   "This media does not exist on YT", NOW()),
