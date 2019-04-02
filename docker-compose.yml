@@ -30,7 +30,7 @@ services:
     # by example : www.example.com or sub.domain.fr
     environment:
       - VIRTUAL_HOST=${VIRTUAL_HOST:?set it in .env}
-      # SECURITY TROUBLE BUT NO NMORE TIME TO LOSE
+      # SECURITY TROUBLE BUT NO MORE TIME TO LOSE
       # accessing as root on mysqlServer
       - MYSQLSERVER_ROOT_PASSWORD=${MYSQLSERVER_ROOT_PASSWORD:?set it in .env}
     # we are copying files into /srv/app (into Dockerfile)
