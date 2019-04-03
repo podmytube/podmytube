@@ -34,7 +34,7 @@ class MediaServiceTest extends TestCase
     
     public function testGetPublishedMediasFor()
     {
-        $expectedMediaIdsPublished = ['YsBVu6f8pR8','KsSPMDe_YWY','hKjtoNByLAI','Aks6eKumi3c'];
+        $expectedMediaIdsPublished = ['YsBVu6f8pR8','KsSPMDe_YWY','hKjtoNByLAI'];
         $channel = Channel::find('freeChannel');
         $result = (MediaService::getPublishedMediasFor($channel,date('m')))->pluck('media_id')->toArray();        
 

@@ -6,12 +6,8 @@ use App\Channel;
 use App\Medias;
 use Carbon\Carbon;
 
-use Illuminate\Support\Collection;
-
 class MediaService
 {
-    protected static $monthBeginning = null;
-    protected static $monthEnding = null;
     /**
      * This function will return the number of episodes already grabbed for one channel.
      * @param Channel $channel_id the channel
@@ -19,14 +15,14 @@ class MediaService
      */
     public static function getNbEpisodesAlreadyDownloadedThisMonth(Channel $channel)
     {
-
-        $monthBeginning = carbon::createMidnightDate(date('Y'), date('m'), 1);
-        $monthEnding = carbon::today()->endOfMonth();
-
-        return Medias::grabbedBetween($monthBeginning, $monthEnding)
-            ->whereNotNull('grabbed_at')
-            ->where('channel_id', $channel->channel_id)
-            ->count();
+        try {
+            return Medias::grabbedBetween(self::getMonthBeginning(date('m')), self::getMonthEnding(date('m')))
+                ->whereNotNull('grabbed_at')
+                ->where('channel_id', $channel->channel_id)
+                ->count();
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
 
     /**
@@ -36,12 +32,14 @@ class MediaService
      */
     public static function getGrabbedMediasFor(Channel $channel, int $month)
     {
-        self::setMonthLimits($month);
-
-        return Medias::grabbedBetween(self::$monthBeginning, self::$monthEnding)
-            ->whereNotNull('grabbed_at')
-            ->where('channel_id', $channel->channel_id)
-            ->get();
+        try {
+            return Medias::grabbedBetween(self::getMonthBeginning($month), self::getMonthEnding($month))
+                ->whereNotNull('grabbed_at')
+                ->where('channel_id', $channel->channel_id)
+                ->get();
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
 
     /**
@@ -52,27 +50,43 @@ class MediaService
      */
     public static function getPublishedMediasFor(Channel $channel, int $month)
     {
-        self::setMonthLimits($month);
-
-        return Medias::publishedBetween(self::$monthBeginning, self::$monthEnding)
+        return Medias::publishedBetween(self::getMonthBeginning($month), self::getMonthEnding($month))
             ->where('channel_id', $channel->channel_id)
             ->get();
     }
 
-    protected static function setMonthLimits($month)
+    protected static function getMonthBeginning($month, $year = null): Carbon
     {
         if ($month < 1 && 12 < $month) {
-            throw new \Exception ("Monthes are from 1 to 12 only. There is no month like {$month} for now !");
+            throw new \Exception("Monthes are from 1 to 12 only. There is no month like {$month} for now !");
+        }
+
+        if (empty($year)) {
+            $year = date('Y');
         }
 
         try {
-            self::$monthBeginning = carbon::createMidnightDate(date('Y'), $month, 1);
-            self::$monthEnding = self::$monthBeginning->endOfMonth();
+            return carbon::createMidnightDate($year, $month, 1);
         } catch (\Exception $e) {
             throw $e;
         }
+    }
 
-        return true;
+    protected static function getMonthEnding($month, $year = null): Carbon
+    {
+        if ($month < 1 && 12 < $month) {
+            throw new \Exception("Monthes are from 1 to 12 only. There is no month like {$month} for now !");
+        }
+
+        if (empty($year)) {
+            $year = date('Y');
+        }
+                
+        try {
+            return (new Carbon("$year-$month-1"))->modify('last day of this month')->setTime(23,59,59);
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
 
 }
