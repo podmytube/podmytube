@@ -37,10 +37,21 @@ class MediaServiceTest extends TestCase
         $expectedMediaIdsPublished = ['YsBVu6f8pR8','KsSPMDe_YWY','hKjtoNByLAI'];
         $channel = Channel::find('freeChannel');
         $result = (MediaService::getPublishedMediasFor($channel,date('m')))->pluck('media_id')->toArray();        
-
         $this->assertEqualsCanonicalizing(
             $expectedMediaIdsPublished,
             $result,
             "For channel {freeChannel} published videos are {".implode(', ', $expectedMediaIdsPublished)."} and we received {".implode(', ', $result)."}");
+    }
+
+    /**
+     * I don t want to use Carbon features that calculate the date according to your error.
+     * IE : 2019-0-01 would return 2018-12-01 and I don't want that
+     */
+    public function testInvalidMonthShouldThrowOneException()
+    {
+        $this->expectException(\Exception::class);
+        $channel = Channel::find('freeChannel');
+        $result = MediaService::getPublishedMediasFor($channel,0);        
+        
     }
 }

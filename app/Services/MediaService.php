@@ -16,7 +16,7 @@ class MediaService
     public static function getNbEpisodesAlreadyDownloadedThisMonth(Channel $channel)
     {
         try {
-            return Medias::grabbedBetween(self::getMonthBeginning(date('m')), self::getMonthEnding(date('m')))
+            return Medias::grabbedBetween(self::getMonthBeginning(date('n')), self::getMonthEnding(date('n')))
                 ->whereNotNull('grabbed_at')
                 ->where('channel_id', $channel->channel_id)
                 ->count();
@@ -50,17 +50,22 @@ class MediaService
      */
     public static function getPublishedMediasFor(Channel $channel, int $month)
     {
+        try {
         return Medias::publishedBetween(self::getMonthBeginning($month), self::getMonthEnding($month))
             ->where('channel_id', $channel->channel_id)
             ->get();
+        } catch (\Exception $e){
+            throw $e;
+        }
     }
 
     protected static function getMonthBeginning($month, $year = null): Carbon
     {
-        if ($month < 1 && 12 < $month) {
+        
+        if ( 1 > $month  || $month > 12) {
             throw new \Exception("Monthes are from 1 to 12 only. There is no month like {$month} for now !");
         }
-
+        
         if (empty($year)) {
             $year = date('Y');
         }
