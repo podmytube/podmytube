@@ -84,7 +84,7 @@ class Channel extends Model
      */
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id', 'user_id');
     }
 
     /**
@@ -102,10 +102,12 @@ class Channel extends Model
     /**
      * define the relationship between one channel and its playlists
      */
+    /*
     public function playlists()
     {
         return $this->HasMany(Playlist::class, 'channel_id');
     }
+    */
 
     /**
      * define the relationship between one channel and its medias
@@ -114,15 +116,6 @@ class Channel extends Model
     public function medias()
     {
         return $this->HasMany(Medias::class, 'channel_id');
-    }
-
-    /**
-     * one channel has many medias stats
-     *
-     */
-    public function medias_stats()
-    {
-        return $this->HasMany(MediasStats::class, 'channel_id');
     }
 
     /**
