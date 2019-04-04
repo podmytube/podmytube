@@ -1,18 +1,5 @@
 version: '3.3'
-services:
-  # ==============================================================
-  # composer is pulled then run composer install
-  # it is not restarted once done
-  # composer/docker is running into /app so you have to 
-  # mount the folder where is located composer.lock/composer.json
-  # here it is .:/app (host:docker)
-  composer:
-    container_name: composer_for_dashboard
-    restart: 'no'
-    image: composer:1.7
-    command: install
-    volumes:
-      - .:/app
+services:  
   # ==============================================================
   # here we are building image from the .docker/Dockerfile
   # this image is starting from a official php-apache docker

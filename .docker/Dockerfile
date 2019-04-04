@@ -13,14 +13,14 @@ RUN     a2enmod rewrite
 ENV     TZ=Europe/Paris
 RUN     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# updating to add git, mysql-client and sendmail
+# updating to add git, curl, mysql-client and sendmail
 RUN     apt-get update -y && \
         apt-get install -y sendmail \
             libpng-dev \
             libjpeg-dev \
-            git \
-            mysql-client \ 
-            vim
+            wget \
+            zip \
+            git
 RUN     rm -rf /var/lib/apt/lists/*;
 
 RUN docker-php-ext-configure gd \
@@ -45,11 +45,13 @@ ENV     PATH="/srv/app/vendor/phpunit/phpunit:${PATH}"
 
 WORKDIR /srv/app
 
+# adding composer
+COPY    .docker/installComposer.sh /var/opt/installComposer.sh
+RUN     chmod +x /var/opt/installComposer.sh
+RUN     /var/opt/installComposer.sh
+RUN     composer install
+
 # symlink for storage (the same that is created with "artisan storage:link")
 RUN     if [ ! -L public/storage ]; then ln -s /srv/app/storage/app/public public/storage; fi
 
-# getting dotfiles from github
-RUN     cp /etc/skel/.bashrc ~/
-RUN     git clone https://github.com/tyteck/dotfiles.git /root/dotfiles
-RUN     ln -s dotfiles/.bash_aliases ~/.bash_aliases 
 
