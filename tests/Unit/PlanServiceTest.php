@@ -86,11 +86,11 @@ class PlanServiceTest extends TestCase
     }
 
     /**
-     * @expectedException ErrorException
      * @test
      */
     public function InvalidPlanShouldThrowInvalidArgumentException()
     {
+        $this->expectException(\Exception::class);
         $result = PlanService::getStripePlan(99999);
     }
 }

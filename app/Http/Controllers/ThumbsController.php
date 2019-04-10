@@ -27,23 +27,11 @@ class ThumbsController extends Controller
      */
     public function index(Channel $channel, Request $request)
     {
-        $displayDefaultThumb = false;
-        $thumb_url=null;
-        if (($thumb = $channel->thumbs()->first())) {
-            try {                
-                $thumb_url = ThumbService::getChannelThumbUrl($thumb);
-            } catch (\Exception $e) {
-                $displayDefaultThumb = true;                
-            }            
-        } 
-        
-        if($displayDefaultThumb) {
-            $thumb_url = ThumbService::getDefaultThumbUrl();
-        }            
+        $thumb_url = ThumbService::getChannelThumbUrl($channel);
 
         return view(
             'thumbs.index',
-            compact('channel', 'thumb', 'thumb_url', 'displayDefaultThumb')
+            compact('channel', 'thumb_url')
         );
 
     }
@@ -112,7 +100,11 @@ class ThumbsController extends Controller
             ]
         );
 
-        ThumbService::createThumbVig($newThumb);
+        try {
+            ThumbService::createThumbVig($newThumb);
+        } catch (\Exception $e) {
+            throw new \Exception("A problem occurs during new thumb upload !");
+        }
 
         return redirect()->route('channel.thumbs.index', ['channel' => $channel]);
 

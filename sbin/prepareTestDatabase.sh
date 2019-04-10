@@ -3,35 +3,45 @@
 
 START_TIME=$SECONDS
 
+if [ -f ~/dotfiles/.bash_functions ]; then
+	source ~/dotfiles/.bash_functions
+fi
+
+title "Importing tests fixtures"
+
 # script __DIR__ location
 __DIR__="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 ./sbin/initTestDatabase.sh
 if [ "$?" != "0" ]; then
-    echo "Initializing test database ${PMT_TEST_DB} has failed !"
+    error "Initializing test database has failed !"
     exit 1	
 fi
 
-echo "importing test fixtures"
 ./sbin/importTestFixtures.sh
 if [ "$?" != "0" ]; then
-    echo "Test data importation into ${PMT_TEST_DB} has failed !"
+    error "Test data importation into has failed !"
     exit 1	
 fi
 
-echo "seeding subscriptions"
-php artisan db:seed --env=testing --class=subscriptionTableSeeder
-if [ "$?" != "0" ]; then
-    echo "Seeding subscriptions has failed"
-    exit 1	
-fi
+TABLES2SEED="subscriptionTableSeeder usersTableSeeder"
+title "Seeding ..."
+for TABLE2SEED in ${TABLES2SEED}
+do
+    notice "Seeding $TABLE2SEED."
+    php artisan db:seed --env=testing --class=$TABLE2SEED
+    if [ "$?" != "0" ]; then
+        error "Seeding $TABLE2SEED has failed"
+        exit 1	
+    fi    
+done
 
-echo "creating errors to be tested"
 ./sbin/createErrorsToBeTested.sh
 if [ "$?" != "0" ]; then
-    echo "Creation of errors to be tested has failed"
+    error "Creation of errors to be tested has failed"
     exit 1	
 fi
 
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
-echo "script duration : ${ELAPSED_TIME}sec"
+notice "script duration : ${ELAPSED_TIME}sec"
+success "Tests DB is ready to use."

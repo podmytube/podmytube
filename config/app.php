@@ -182,6 +182,11 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\ThumbServiceProvider::class,
 
+        /**
+         * ForestAdmin
+         */
+        ForestAdmin\ForestLaravel\ForestServiceProvider::class,
+
     ],
 
     /*

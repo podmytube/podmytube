@@ -1,11 +1,12 @@
 
 # to be sure
-USE podmytubeTests;
+USE pmtests;
 
 # before erasing all data
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE channels;
 TRUNCATE medias;
+TRUNCATE thumbs;
 SET FOREIGN_KEY_CHECKS=1;
 
 # insert sample into channels 
@@ -14,19 +15,21 @@ INSERT INTO channels (channel_id, user_id, channel_name, channel_premium, active
     ('earlyChannel', 1, 'Early birds', 1, 1, null),
     ('weeklyChannel', 1, 'Weekly youtuber', 2, 1, null),
     ('dailyChannel', 1, 'Daily youtuber', 3, 1, null),
-    ('UCq80IvL314jsE7PgYsTdw7Q', 1, 'Accropolis', 3, 1, null),
-    ('UCnF1gaTK11ax2pWCIdUp8-w', 1, 'Monthly subscribers 6€/month - delphine dimanche', 3, 1, null),
-    ('UCnf8HI3gUteF1BKAvrDO9dQ', 1, 'Yearly subscribers 66€/year - alex borto', 3, 1, null),
-    ('invalidChannel', 1, 'Invalid channel', 0, 1, null);
+    ('UCq80IvL314jsE7PgYsTdw7Q', 2, 'Accropolis', 3, 1, null),
+    ('UCnF1gaTK11ax2pWCIdUp8-w', 2, 'Monthly subscribers 6€/month - delphine dimanche', 3, 1, null),
+    ('UCnf8HI3gUteF1BKAvrDO9dQ', 2, 'Yearly subscribers 66€/year - alex borto', 3, 1, null),
+    ('invalidChannel', 2, 'Invalid channel', 0, 1, null);
 
 # insert sample into media 
 # getAudio is getting all medias ordered by published_at date
-INSERT INTO medias (media_id, channel_id, title, grabbed_at) VALUES
-("YsBVu6f8pR8", "freeChannel",   "This video is eligible",   DATE_SUB(NOW() , INTERVAL 1 HOUR)),
-("KsSPMDe_YWY", "freeChannel",   "This video is eligible",   DATE_SUB(NOW() , INTERVAL 2 HOUR)),
-("hKjtoNByLAI", "freeChannel",   "This video is NOT eligible - tags", DATE_SUB(NOW() , INTERVAL 3 HOUR)),
-("Aks6eKumi3c", "freeChannel",   "This video is NOT eligible - too long ago", DATE_SUB(NOW(), INTERVAL 2 MONTH)),
+# freeChannel has 4 videos published but only should be grabbed
+INSERT INTO medias (media_id, channel_id, title, published_at, grabbed_at) VALUES
+("YsBVu6f8pR8", "freeChannel",   "This video is eligible",   DATE_SUB(NOW() , INTERVAL 2 HOUR), DATE_SUB(NOW() , INTERVAL 1 HOUR)),
+("KsSPMDe_YWY", "freeChannel",   "This video is eligible",   DATE_SUB(NOW() , INTERVAL 4 HOUR), DATE_SUB(NOW() , INTERVAL 2 HOUR)),
+("hKjtoNByLAI", "freeChannel",   "This video is NOT eligible - tags", DATE_SUB(NOW() , INTERVAL 5 HOUR), NULL),
+("Aks6eKumi3c", "freeChannel",   "This video is NOT eligible - too long ago", DATE_SUB(NOW(), INTERVAL 2 MONTH), NULL);
 
+INSERT INTO medias (media_id, channel_id, title, grabbed_at) VALUES
 ("invalidId1", "earlyChannel",   "This media does not exist on YT", NOW()),
 ("invalidId2", "earlyChannel",   "This media does not exist on YT", NOW()),
 ("invalidId3", "earlyChannel",   "This media does not exist on YT", NOW()),
@@ -73,3 +76,7 @@ INSERT INTO medias (media_id, channel_id, title, grabbed_at) VALUES
 #     ('dailyChannel', 3, 'Highest price subscription', 3, 1, null);
 
 # playlist_id,channel_id,playlist_title,playlist_description,playlist_thumbnail,playlist_publishedAt,playlist_updatedAt,playlist_active
+
+# inserting one thumb for earlyChannel
+INSERT INTO thumbs (channel_id, file_name, file_disk, file_size) VALUES
+    ("earlyChannel", "sampleThumb.jpg",   "thumbs", 91405);

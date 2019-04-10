@@ -14,15 +14,7 @@
                 </button>
             </a>
                         
-            @if ($displayDefaultThumb)
-                <div class="alert alert-primary" role="alert">
-                    {{ __('thumbs_messages.your_podcast_has_no_thumb_yet') }}
-                </div>
-            @endif
             <img src="{{ $thumb_url }}" height="1400" class="img-fluid" alt="Responsive image">    
-            
-            
-            
             
         </div>
     </div>

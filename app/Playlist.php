@@ -20,13 +20,5 @@ class Playlist extends Model
 	 * the way to specify users.user_id is the key (and not users.id)
 	 */
 	protected $primaryKey = 'playlist_id';
-
-	/** 
-	 * Thic function defines the relation between one playlist and its channel (the channel it is belonging to)  
-	 * @return Object Channel 
-	 */
-	public function channel()
-	{
-		return $this->belongsTo(Channel::class, 'channel_id');
-	}  
+	
 }
