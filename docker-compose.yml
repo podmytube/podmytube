@@ -35,7 +35,7 @@ services:
       - LETSENCRYPT_EMAIL=frederick@podmytube.com
       # SECURITY TROUBLE BUT NO MORE TIME TO LOSE
       # accessing as root on mysqlServer
-      - MYSQLSERVER_ROOT_PASSWORD=${MYSQLSERVER_ROOT_PASSWORD:?set it in .env}
+      #- MYSQLSERVER_ROOT_PASSWORD=${MYSQLSERVER_ROOT_PASSWORD:?set it in .env}
     # we are copying files into /srv/app (into Dockerfile)
     volumes:
       - .:/srv/app
