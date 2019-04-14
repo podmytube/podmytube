@@ -45,11 +45,10 @@ ENV     PATH="/srv/app/vendor/phpunit/phpunit:${PATH}"
 
 WORKDIR /srv/app
 
-# adding composer
+# adding composer (just in case)
 COPY    .docker/installComposer.sh /var/opt/installComposer.sh
 RUN     chmod +x /var/opt/installComposer.sh
 RUN     /var/opt/installComposer.sh
-RUN     composer install
 
 # symlink for storage (the same that is created with "artisan storage:link")
 RUN     if [ ! -L public/storage ]; then ln -s /srv/app/storage/app/public public/storage; fi

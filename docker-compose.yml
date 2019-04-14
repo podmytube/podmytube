@@ -1,5 +1,18 @@
 version: '3.3'
-services:  
+services:
+  # ==============================================================
+  # composer is pulled then run composer install
+  # it is not restarted once done
+  # composer/docker is running into /app so you have to 
+  # mount the folder where is located composer.lock/composer.json
+  # here it is .:/app (host:docker)
+  composer:
+    container_name: compodash
+    restart: 'no'
+    image: composer:1.7
+    command: install
+    volumes:
+      - .:/app
   # ==============================================================
   # here we are building image from the .docker/Dockerfile
   # this image is starting from a official php-apache docker
@@ -13,10 +26,13 @@ services:
     restart: always
     expose:
         - "80"
+        - "443"
     # VIRTUAL_HOST should be only the domain (without http://)
     # by example : www.example.com or sub.domain.fr
     environment:
       - VIRTUAL_HOST=${VIRTUAL_HOST:?set it in .env}
+      - LETSENCRYPT_HOST=${VIRTUAL_HOST:?set it in .env}
+      - LETSENCRYPT_EMAIL=frederick@podmytube.com
       # SECURITY TROUBLE BUT NO MORE TIME TO LOSE
       # accessing as root on mysqlServer
       - MYSQLSERVER_ROOT_PASSWORD=${MYSQLSERVER_ROOT_PASSWORD:?set it in .env}
