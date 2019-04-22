@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# this function will display one title the way we can't miss it on term
+title() {
+	MESSAGE=$1
+	format="\e[1;100m"
+	normal="\e[0m"
+	echo -e "$format=== $MESSAGE ===$normal"
+}
+
+# Error (white on red) will precede the message
+error() {
+	MESSAGE=$1
+	format="\e[1;41m"
+	normal="\e[0m"
+	echo -e "${format}Error :$normal $MESSAGE"
+}
+
+# Warning (white on orange) will precede the message
+warning() {
+	MESSAGE=$1
+	format="\e[30;48;5;166m"
+	normal="\e[0m"
+	echo -e "${format}Warning :$normal $MESSAGE"
+}
+
+# success message
+success() {
+	MESSAGE=$1
+	format="\e[30;48;5;82m"
+	normal="\e[0m"
+	echo -e "${format}Success :$normal $MESSAGE"
+}
+
+# single notice
+notice() {
+	MESSAGE=$1
+	format="\e[1;44m"
+	normal="\e[0m"
+	echo -e "${format}Notice :$normal $MESSAGE"
+}

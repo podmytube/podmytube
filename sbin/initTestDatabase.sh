@@ -3,9 +3,12 @@
 # without touching the original database :)
 START_TIME=$SECONDS
 
-if [ -f ~/dotfiles/.bash_functions ]; then
-	source ~/dotfiles/.bash_functions
-fi
+# script __DIR__ location
+__DIR__="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+# bash text color and formatting
+source $__DIR__/.bash_library
+
 
 title "Init tests database"
 
@@ -13,9 +16,6 @@ if [ -z ${MYSQLSERVER_ROOT_PASSWORD} ]; then
 	error "Credentials {${MYSQLSERVER_ROOT_PASSWORD}} for accessing mysqlServer container is empty. It shouldn't ..."
 	exit 1
 fi
-
-# script __DIR__ location
-__DIR__="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 SRC_DB="pmt"
 DST_DB="pmtests"
