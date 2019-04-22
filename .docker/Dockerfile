@@ -13,14 +13,21 @@ RUN     a2enmod rewrite
 ENV     TZ=Europe/Paris
 RUN     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# updating to add git, curl, mysql-client and sendmail
+# stuff to install
+# libpng-dev --- used with laravel lib to resize/work with images
+# libjpeg-dev --- used with laravel lib to resize/work with images
+# wget --- used for the composer install
+# zip --- is used by composer 
+# git --- is used by composer 
+# mysql-client --- is used to get mysqldump (used for creating pmtests)
 RUN     apt-get update -y && \
         apt-get install -y sendmail \
             libpng-dev \
             libjpeg-dev \
             wget \
             zip \
-            git
+            git \
+            mysql-client
 RUN     rm -rf /var/lib/apt/lists/*;
 
 RUN docker-php-ext-configure gd \
