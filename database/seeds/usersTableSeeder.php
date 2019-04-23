@@ -16,7 +16,9 @@ class usersTableSeeder extends Seeder
             /**
              * emptying table User
              */
+            DB::statement('SET FOREIGN_KEY_CHECKS=0');
             User::truncate();
+            DB::statement('SET FOREIGN_KEY_CHECKS=1');
 
             /**
              * creating my own user
@@ -33,9 +35,9 @@ class usersTableSeeder extends Seeder
                 'name' => 'Julia',
                 'email' => 'juliactx@gmail.com',
                 'password' => '$2y$10$qhdmxqbOtTOHyGqw8AoLSuigHDsg9gdxULMMOefUXfigSTrG6tfO6',
-			]);
-			
-			/**
+            ]);
+
+            /**
              * giving the Lola Lol Channel to me :)
              */
             DB::table('channels')
