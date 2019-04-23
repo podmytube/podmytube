@@ -9,6 +9,10 @@ TRUNCATE medias;
 TRUNCATE thumbs;
 SET FOREIGN_KEY_CHECKS=1;
 
+INSERT INTO users (user_id, name, email, password) VALUES
+    (1,'Fred','frederick@podmytube.com','$2y$10$c5.Md.ZOCYFv70pPv/3nAeNSsXzV3ttFguIu.GzEFYhaijHh988se'),
+    (2,'Julia','julia@podmytube.com','$2y$10$qhdmxqbOtTOHyGqw8AoLSuigHDsg9gdxULMMOefUXfigSTrG6tfO6');
+
 # insert sample into channels 
 INSERT INTO channels (channel_id, user_id, channel_name, channel_premium, active,accept_video_by_tag) VALUES
     ('freeChannel', 1, 'Free users', 0, 1, null),
