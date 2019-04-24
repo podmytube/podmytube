@@ -17,12 +17,6 @@ if [ "$?" != "0" ]; then
     exit 1	
 fi
 
-./sbin/importTestFixtures.sh
-if [ "$?" != "0" ]; then
-    error "Test data importation into has failed !"
-    exit 1	
-fi
-
 TABLES2SEED="subscriptionTableSeeder usersTableSeeder"
 title "Seeding ..."
 for TABLE2SEED in ${TABLES2SEED}
@@ -34,6 +28,12 @@ do
         exit 1	
     fi    
 done
+
+./sbin/importTestFixtures.sh
+if [ "$?" != "0" ]; then
+    error "Test data importation into has failed !"
+    exit 1	
+fi
 
 ./sbin/createErrorsToBeTested.sh
 if [ "$?" != "0" ]; then
