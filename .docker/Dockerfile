@@ -46,11 +46,13 @@ COPY    .docker/vhost.conf /etc/apache2/sites-available/000-default.conf
 
 # copying all files (but .dockerignore(d)) in /srv/app
 COPY    . /srv/app
-RUN     chown -R www-data:www-data /srv/app
+WORKDIR /srv/app
+#RUN     chown -R www-data:www-data /srv/app
+RUN 	chown -R www-data:www-data storage bootstrap/cache
+RUN 	chmod -R ug+rwx storage bootstrap/cache
 # Adding phpunit to Path
 ENV     PATH="/srv/app/vendor/phpunit/phpunit:${PATH}"
 
-WORKDIR /srv/app
 
 # adding composer (just in case)
 COPY    .docker/installComposer.sh /var/opt/installComposer.sh
