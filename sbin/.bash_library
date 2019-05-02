@@ -39,3 +39,9 @@ notice() {
 	normal="\e[0m"
 	echo -e "${format}Notice :$normal $MESSAGE"
 }
+
+read_var() {
+    VAR=$(grep $1 $2 | xargs)
+    IFS="=" read -ra VAR <<< "$VAR"
+    echo ${VAR[1]}
+}
