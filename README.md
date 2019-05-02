@@ -15,6 +15,7 @@ Dashboard interface for podmytube
 
 ## test everything is ok
 
+1. `docker exec -it dash sbin/prepareTestDatabase.sh` (`dokexec dash sbin/prepareTestDatabase.sh`)
 1. `docker exec -it dash phpunit` (`dokexec dash phpunit`)
 
 
