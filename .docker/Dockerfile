@@ -45,8 +45,8 @@ RUN     docker-php-ext-install pdo \
 COPY    .docker/vhost.conf /etc/apache2/sites-available/000-default.conf
 
 # copying all files (but .dockerignore(d)) in /srv/app
-COPY    . /srv/app
-RUN     chown -R www-data:www-data /srv/app
+COPY    --chown=www-data:www-data . /srv/app
+
 # Adding phpunit to Path
 ENV     PATH="/srv/app/vendor/phpunit/phpunit:${PATH}"
 
@@ -56,6 +56,9 @@ WORKDIR /srv/app
 COPY    .docker/installComposer.sh /var/opt/installComposer.sh
 RUN     chmod +x /var/opt/installComposer.sh
 RUN     /var/opt/installComposer.sh
+
+# adding ll
+RUN     sed -i "s/# alias ll='ls \$LS_OPTIONS -l'/alias ll='ls -lsa'/" /root/.bashrc
 
 # symlink for storage (the same that is created with "artisan storage:link")
 RUN     if [ ! -L public/storage ]; then ln -s /srv/app/storage/app/public public/storage; fi
