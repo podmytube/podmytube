@@ -25,7 +25,9 @@ if [ "$?" != "0" ]; then
     exit 1	
 fi
 
+
 # migrating from channel_premium to subs
+title "Seeding subscriptions for fixtures channels"
 php artisan db:seed --class=subscriptionTableSeeder --env=testing
 
 # import small errors to be checked for
