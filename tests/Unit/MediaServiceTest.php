@@ -8,12 +8,34 @@ use Tests\TestCase;
 
 class MediaServiceTest extends TestCase
 {
+    public function testGetMediasStatusByPeriodForFreeChannel()
+    {
+        $expectedResults = [
+            "YsBVu6f8pR8" => 1,
+            "KsSPMDe_YWY" => 1,
+            "hKjtoNByLAI" => 0,
+        ];
+        $results = MediaService::getMediasStatusByPeriodForChannel(Channel::find('freeChannel'), date('m'), date('Y'));
+        foreach ($results as $result) {
+            $this->assertEquals(
+                $expectedResults[$result->media_id],
+                $result->grabbed,
+                "For channel {freeChannel} media {{$result->media_id}} grabbed status should be {{$expectedResults[$result->media_id]}} and is equal to {{$result->grabbed}}"
+            );
+        }
+        $this->assertCount(count($expectedResults), $results->toArray());
+    }
+
+    public function testGetMediasStatusWithWrongPeriodShouldFail()
+    {
+        $this->expectException(\Exception::class);
+        $results = MediaService::getMediasStatusByPeriodForChannel(Channel::find('freeChannel'), 1555);        
+    }
 
     public function testGetGrabbedMediaForFreeChannelShouldReturn2()
     {
         $expectedNumberOfVideosDownloaded = 2;
-        $channel = Channel::find('freeChannel');
-        $result = MediaService::getNbEpisodesAlreadyDownloadedThisMonth($channel);
+        $result = MediaService::getNbEpisodesAlreadyDownloadedThisMonth(Channel::find('freeChannel'));
         $this->assertEquals(
             $expectedNumberOfVideosDownloaded,
             $result,
@@ -23,24 +45,22 @@ class MediaServiceTest extends TestCase
 
     public function testGetGrabbedMediasFor()
     {
-        $expectedMediaIdsDownloaded = ['YsBVu6f8pR8','KsSPMDe_YWY'];
-        $channel = Channel::find('freeChannel');
-        $result = (MediaService::getGrabbedMediasFor($channel,date('m')))->pluck('media_id')->toArray();        
+        $expectedMediaIdsDownloaded = ['YsBVu6f8pR8', 'KsSPMDe_YWY'];
+        $result = (MediaService::getGrabbedMediasFor(Channel::find('freeChannel'), date('m')))->pluck('media_id')->toArray();
         $this->assertEqualsCanonicalizing(
             $expectedMediaIdsDownloaded,
             $result,
-            "For channel {freeChannel} we should have grabbed {".implode(', ', $expectedMediaIdsDownloaded)."} and we received {".implode(', ', $result)."}");
+            "For channel {freeChannel} we should have grabbed {" . implode(', ', $expectedMediaIdsDownloaded) . "} and we received {" . implode(', ', $result) . "}");
     }
-    
+
     public function testGetPublishedMediasFor()
     {
-        $expectedMediaIdsPublished = ['YsBVu6f8pR8','KsSPMDe_YWY','hKjtoNByLAI'];
-        $channel = Channel::find('freeChannel');
-        $result = (MediaService::getPublishedMediasFor($channel,date('m')))->pluck('media_id')->toArray();        
+        $expectedMediaIdsPublished = ['YsBVu6f8pR8', 'KsSPMDe_YWY', 'hKjtoNByLAI'];
+        $result = (MediaService::getPublishedMediasFor(Channel::find('freeChannel'), date('m')))->pluck('media_id')->toArray();
         $this->assertEqualsCanonicalizing(
             $expectedMediaIdsPublished,
             $result,
-            "For channel {freeChannel} published videos are {".implode(', ', $expectedMediaIdsPublished)."} and we received {".implode(', ', $result)."}");
+            "For channel {freeChannel} published videos are {" . implode(', ', $expectedMediaIdsPublished) . "} and we received {" . implode(', ', $result) . "}");
     }
 
     /**
@@ -50,8 +70,7 @@ class MediaServiceTest extends TestCase
     public function testInvalidMonthShouldThrowOneException()
     {
         $this->expectException(\Exception::class);
-        $channel = Channel::find('freeChannel');
-        $result = MediaService::getPublishedMediasFor($channel,0);        
-        
+        $result = MediaService::getPublishedMediasFor(Channel::find('freeChannel'), 0);
     }
+
 }
