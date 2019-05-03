@@ -48,7 +48,7 @@ COPY    .docker/vhost.conf /etc/apache2/sites-available/000-default.conf
 COPY    --chown=www-data:www-data . /srv/app
 
 # Adding phpunit to Path
-ENV     PATH="/srv/app/vendor/phpunit/phpunit:${PATH}"
+ENV     PATH="/srv/app/vendor/bin:${PATH}"
 
 WORKDIR /srv/app
 
