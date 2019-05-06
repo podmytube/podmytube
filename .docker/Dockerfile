@@ -63,4 +63,6 @@ RUN     sed -i "s/# alias ll='ls \$LS_OPTIONS -l'/alias ll='ls -lsa'/" /root/.ba
 # symlink for storage (the same that is created with "artisan storage:link")
 RUN     if [ ! -L public/storage ]; then ln -s /srv/app/storage/app/public public/storage; fi
 
+RUN     chown -R $APACHE_RUN_USER:$APACHE_RUN_GROUP /srv/app/storage/logs
+
 
