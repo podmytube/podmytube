@@ -24,10 +24,14 @@ RUN     apt-get update -y && \
         apt-get install -y sendmail \
             libpng-dev \
             libjpeg-dev \
+            cur \
             wget \
             zip \
             git \
             mysql-client
+# installing nodejs
+RUN     curl -sL https://deb.nodesource.com/setup_10.x | bash -
+RUN     apt-get install -y nodejs
 RUN     rm -rf /var/lib/apt/lists/*;
 
 RUN docker-php-ext-configure gd \
@@ -52,6 +56,10 @@ ENV     PATH="/srv/app/vendor/bin:${PATH}"
 
 WORKDIR /srv/app
 
+# compiling app.css and js
+RUN     npm install && npm update
+RUN     npm run production
+
 # adding composer (just in case)
 COPY    .docker/installComposer.sh /var/opt/installComposer.sh
 RUN     chmod +x /var/opt/installComposer.sh
@@ -62,5 +70,7 @@ RUN     sed -i "s/# alias ll='ls \$LS_OPTIONS -l'/alias ll='ls -lsa'/" /root/.ba
 
 # symlink for storage (the same that is created with "artisan storage:link")
 RUN     if [ ! -L public/storage ]; then ln -s /srv/app/storage/app/public public/storage; fi
+
+RUN     chown -R www-data:www-data /srv/app/storage
 
 
