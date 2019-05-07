@@ -11,15 +11,19 @@ source $__DIR__/.bash_library
 
 title "Importing tests fixtures"
 
-if [ -z ${MYSQLSERVER_ROOT_PASSWORD} ]; then
-	error "Credentials {${MYSQLSERVER_ROOT_PASSWORD}} for accessing mysqlServer container is empty. It shouldn't ..."
-	exit 1
-fi
+# getting info from .env.testing file
+ENV_FILE=".env.testing"
+DST_DB_USER=$(read_var DB_USERNAME ${ENV_FILE})
+DST_DB_PASS=$(read_var DB_PASSWORD ${ENV_FILE})
+DST_DB_NAME=$(read_var DB_DATABASE ${ENV_FILE})
+DST_DB_HOST=$(read_var DB_HOST ${ENV_FILE})
+
+CONNECTION_PARAMS="-h${DST_DB_HOST} -u${DST_DB_USER} -p${DST_DB_PASS} ${DST_DB_NAME} "
 
 FIXTURE_FILE="${__DIR__}/../tests/fixtures/datasets/SampleChannelsMediasAndSubscriptions.sql"
 
-notice "importing fixture data into pmtests (host : mysqlServer)"
-mysql -hmysqlServer -uroot -p${MYSQLSERVER_ROOT_PASSWORD} pmtests < $FIXTURE_FILE 
+notice "importing fixture data into ${DST_DB_NAME} (host : mysqlServer)"
+mysql ${CONNECTION_PARAMS} < $FIXTURE_FILE 
 if [ "$?" != "0" ]; then
     echo "L importation des donnees de test dans la base de test a echoue !"
     exit 1	

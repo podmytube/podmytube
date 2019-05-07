@@ -10,20 +10,24 @@ source $__DIR__/.bash_library
 
 title "Inserting errors to be tested"
 
-if [ -z ${MYSQLSERVER_ROOT_PASSWORD} ]; then
-	error "Credentials {${MYSQLSERVER_ROOT_PASSWORD}} for accessing mysqlServer container is empty. It shouldn't ..."
-	exit 1
-fi
+# getting info from .env.testing file
+ENV_FILE=".env.testing"
+DST_DB_USER=$(read_var DB_USERNAME ${ENV_FILE})
+DST_DB_PASS=$(read_var DB_PASSWORD ${ENV_FILE})
+DST_DB_NAME=$(read_var DB_DATABASE ${ENV_FILE})
+DST_DB_HOST=$(read_var DB_HOST ${ENV_FILE})
 
-notice "Removing subscription for invalidChannel into pmtests (host : mysqlServer)"
-mysql -hmysqlServer -uroot -p${MYSQLSERVER_ROOT_PASSWORD} pmtests -e "delete from subscriptions where channel_id='invalidChannel'"
+CONNECTION_PARAMS="-h${DST_DB_HOST} -u${DST_DB_USER} -p${DST_DB_PASS} ${DST_DB_NAME}"
+
+notice "Removing subscription for invalidChannel into ${DST_DB_NAME} (host : mysqlServer)"
+mysql ${CONNECTION_PARAMS} -e "delete from subscriptions where channel_id='invalidChannel'"
 if [ "$?" != "0" ]; then
     error "La suppression de la subscription de la chaine invalidChannel dans la base de test a echoue !"
     exit 1	
 fi
 
 notice "Creating false entry into thumbs table "
-mysql -hmysqlServer -uroot -p${MYSQLSERVER_ROOT_PASSWORD} pmtests -e "insert into thumbs (channel_id, file_name, file_disk, file_size) values ('freeChannel', 'thumbFileNameThatDontExists.jpg', 'thumbs', '120')"
+mysql ${CONNECTION_PARAMS} -e "insert into thumbs (channel_id, file_name, file_disk, file_size) values ('freeChannel', 'thumbFileNameThatDontExists.jpg', 'thumbs', '120')"
 if [ "$?" != "0" ]; then
     error "L insertion d'un faux thumb dans la base de test a echoue !"
     exit 1	

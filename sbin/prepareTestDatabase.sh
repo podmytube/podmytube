@@ -11,30 +11,26 @@ source $__DIR__/.bash_library
 
 title "Importing tests fixtures"
 
+# dumping source and creating tests database 
 ./sbin/initTestDatabase.sh
 if [ "$?" != "0" ]; then
     error "Initializing test database has failed !"
     exit 1	
 fi
 
-TABLES2SEED="subscriptionTableSeeder usersTableSeeder"
-title "Seeding ..."
-for TABLE2SEED in ${TABLES2SEED}
-do
-    notice "Seeding $TABLE2SEED."
-    php artisan db:seed --env=testing --class=$TABLE2SEED
-    if [ "$?" != "0" ]; then
-        error "Seeding $TABLE2SEED has failed"
-        exit 1	
-    fi    
-done
-
+# import testing data
 ./sbin/importTestFixtures.sh
 if [ "$?" != "0" ]; then
     error "Test data importation into has failed !"
     exit 1	
 fi
 
+
+# migrating from channel_premium to subs
+title "Seeding subscriptions for fixtures channels"
+php artisan db:seed --class=subscriptionTableSeeder --env=testing
+
+# import small errors to be checked for
 ./sbin/createErrorsToBeTested.sh
 if [ "$?" != "0" ]; then
     error "Creation of errors to be tested has failed"

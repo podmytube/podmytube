@@ -2,12 +2,37 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\DB;
+
 use App\Channel;
 use App\Medias;
 use Carbon\Carbon;
 
 class MediaService
 {
+    /**
+     * This function will get list of medias ordered by status (grabbed or not).
+     * @param Channel $channel the channel object we want medias
+     * @param integer $month to define wanted period (by default current month)
+     * @param integer $year to define wanted period (by default current year)
+     * @return array 
+     */
+    public static function getMediasStatusByPeriodForChannel(Channel $channel, $month=null, $year=null)
+    {
+        if (empty($month)) {$month = date('n');}
+        if (empty($year)) {$year = date('Y');}
+        try {
+            return Medias::publishedBetween(self::getMonthBeginning($month,$year), self::getMonthEnding($month,$year))
+            ->select('media_id', 'title', DB::raw("if(ISNULL(grabbed_at), 0, 1) as grabbed"))
+            ->where('channel_id', $channel->channel_id)
+            ->orderBy('published_at', 'asc')
+            ->get();        
+        } catch (\Exception $e) {
+            throw $e;
+        }
+        
+    }
+
     /**
      * This function will return the number of episodes already grabbed for one channel.
      * @param Channel $channel_id the channel
@@ -28,6 +53,7 @@ class MediaService
     /**
      * This function will return the episodes already grabbed for one channel during the specified month.
      * @param Channel $channel_id the channel
+     * @param integer $month month num wanted
      * @return int the number of episodes grabbed this month for this channel
      */
     public static function getGrabbedMediasFor(Channel $channel, int $month)
@@ -51,24 +77,22 @@ class MediaService
     public static function getPublishedMediasFor(Channel $channel, int $month)
     {
         try {
-        return Medias::publishedBetween(self::getMonthBeginning($month), self::getMonthEnding($month))
-            ->where('channel_id', $channel->channel_id)
-            ->get();
-        } catch (\Exception $e){
+            return Medias::publishedBetween(self::getMonthBeginning($month), self::getMonthEnding($month))
+                ->where('channel_id', $channel->channel_id)
+                ->get();
+        } catch (\Exception $e) {
             throw $e;
         }
     }
 
     protected static function getMonthBeginning($month, $year = null): Carbon
     {
-        
-        if ( 1 > $month  || $month > 12) {
+
+        if (1 > $month || $month > 12) {
             throw new \Exception("Monthes are from 1 to 12 only. There is no month like {$month} for now !");
         }
-        
-        if (empty($year)) {
-            $year = date('Y');
-        }
+
+        if (empty($year)) {$year = date('Y');}
 
         try {
             return carbon::createMidnightDate($year, $month, 1);
@@ -86,9 +110,9 @@ class MediaService
         if (empty($year)) {
             $year = date('Y');
         }
-                
+
         try {
-            return (new Carbon("$year-$month-1"))->modify('last day of this month')->setTime(23,59,59);
+            return (new Carbon("$year-$month-1"))->modify('last day of this month')->setTime(23, 59, 59);
         } catch (\Exception $e) {
             throw $e;
         }
