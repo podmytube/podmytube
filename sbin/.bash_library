@@ -39,3 +39,17 @@ notice() {
 	normal="\e[0m"
 	echo -e "${format}Notice :$normal $MESSAGE"
 }
+
+# extract one value from .env file 
+# @param $1 variable name
+# @param $2 file where is set this variable (default .env)
+read_var() {
+	VAR_NAME=$1
+	FILE_NAME=$2
+	if [ -z $FILE_NAME ];then
+		FILE_NAME='.env'
+	fi
+	VAR=$(grep $VAR_NAME $FILE_NAME | xargs)
+    IFS="=" read -ra VAR <<< "$VAR"
+    echo ${VAR[1]}
+}

@@ -20,14 +20,20 @@ RUN     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezo
 # zip --- is used by composer 
 # git --- is used by composer 
 # mysql-client --- is used to get mysqldump (used for creating pmtests)
+# curl is used to download npm
 RUN     apt-get update -y && \
-        apt-get install -y sendmail \
+        apt-get install -y -qq sendmail \
             libpng-dev \
             libjpeg-dev \
+            curl \
             wget \
             zip \
             git \
             mysql-client
+
+# installing nodejs
+RUN     curl -sL https://deb.nodesource.com/setup_10.x | bash -
+RUN     apt-get install -y nodejs
 RUN     rm -rf /var/lib/apt/lists/*;
 
 RUN docker-php-ext-configure gd \
@@ -51,15 +57,24 @@ WORKDIR /srv/app
 RUN 	chown -R www-data:www-data storage bootstrap/cache
 RUN 	chmod -R ug+rwx storage bootstrap/cache
 # Adding phpunit to Path
-ENV     PATH="/srv/app/vendor/phpunit/phpunit:${PATH}"
+ENV     PATH="/srv/app/vendor/bin:${PATH}"
 
+
+# compiling app.css and js
+RUN     npm install && npm update
+RUN     npm run production
 
 # adding composer (just in case)
 COPY    .docker/installComposer.sh /var/opt/installComposer.sh
 RUN     chmod +x /var/opt/installComposer.sh
 RUN     /var/opt/installComposer.sh
 
+# adding ll
+RUN     sed -i "s/# alias ll='ls \$LS_OPTIONS -l'/alias ll='ls -lsa'/" /root/.bashrc
+
 # symlink for storage (the same that is created with "artisan storage:link")
 RUN     if [ ! -L public/storage ]; then ln -s /srv/app/storage/app/public public/storage; fi
+
+RUN     chown -R www-data:www-data /srv/app/storage
 
 

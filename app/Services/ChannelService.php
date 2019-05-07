@@ -22,9 +22,11 @@ class ChannelService
      */
     public static function getAuthenticatedUserChannels(User $user)
     {
+
         $channels = $user->channels;
         if ($channels->isEmpty()){
-            throw new \Exception ("User {$user->user_id} has no channel.");
+            //throw new \Exception ("User {$user->user_id} has no channel.");
+            return [];
         }
         
         foreach ($channels as $channel) {

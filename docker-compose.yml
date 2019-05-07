@@ -19,6 +19,7 @@ services:
   # and creating host dashboard-pmt
   dashboard-pmt:
     container_name: dash
+    
     build:
       context: .
       dockerfile: .docker/Dockerfile
@@ -26,16 +27,10 @@ services:
     restart: always
     expose:
         - "80"
-        - "443"
     # VIRTUAL_HOST should be only the domain (without http://)
     # by example : www.example.com or sub.domain.fr
     environment:
-      - VIRTUAL_HOST=${VIRTUAL_HOST:?set it in .env}
-      - LETSENCRYPT_HOST=${VIRTUAL_HOST:?set it in .env}
-      - LETSENCRYPT_EMAIL=frederick@podmytube.com
-      # SECURITY TROUBLE BUT NO MORE TIME TO LOSE
-      # accessing as root on mysqlServer
-      - MYSQLSERVER_ROOT_PASSWORD=${MYSQLSERVER_ROOT_PASSWORD:?set it in .env}
+      - VIRTUAL_HOST=${VIRTUAL_HOST:?set it in .env}      
     # we are copying files into /srv/app (into Dockerfile)
     volumes:
       - .:/srv/app
