@@ -10,7 +10,8 @@ node_modules
 public/storage
 public/js
 public/css
-storage/*
+storage/app
+storage/debugbar
 # ===============================================
 # not secured to commit these ones
 # ===============================================
