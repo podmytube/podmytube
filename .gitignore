@@ -8,8 +8,6 @@ node_modules
 # dashboard
 # ===============================================
 public/storage
-public/js
-public/css
 storage/app
 storage/debugbar
 # ===============================================
