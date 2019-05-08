@@ -2,10 +2,6 @@ FROM    php:7.2-apache
 
 LABEL   maintainer="Frederick Tyteca"
 
-# setting apache user
-ENV     APACHE_RUN_USER=www-data
-ENV     APACHE_RUN_GROUP=www-data
-
 # enabling mod rewrite
 RUN     a2enmod rewrite
 
@@ -32,7 +28,7 @@ RUN     apt-get update -y && \
             mysql-client
 
 # installing nodejs
-RUN     curl -sL https://deb.nodesource.com/setup_10.x | bash -
+RUN     curl -sL https://deb.nodesource.com/setup_12.x | bash -
 RUN     apt-get install -y nodejs
 RUN     rm -rf /var/lib/apt/lists/*;
 
@@ -61,8 +57,8 @@ ENV     PATH="/srv/app/vendor/bin:${PATH}"
 
 
 # compiling app.css and js
-RUN     npm install && npm update
-RUN     npm run production
+RUN     npm install && \
+        npm run production
 
 # adding composer (just in case)
 COPY    .docker/installComposer.sh /var/opt/installComposer.sh
