@@ -31,6 +31,8 @@ services:
     # by example : www.example.com or sub.domain.fr
     environment:
       - VIRTUAL_HOST=${VIRTUAL_HOST:?set it in .env}      
+      - LETSENCRYPT_HOST=${VIRTUAL_HOST:?set it in .env}
+      - LETSENCRYPT_EMAIL=frederick@podmytube.com
       - APACHE_RUN_USER=www-data
       - APACHE_RUN_GROUP=www-data
     # we are copying files into /srv/app (into Dockerfile)
