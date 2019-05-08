@@ -81,7 +81,7 @@ return [
     
 
     // adding a channel part
-    'channel_owner_warning_checkbox_label' => "By checking this case, I certify to be the owner of this chain",
+    'channel_owner_warning_checkbox_label' => "By checking this case, I certify to be the owner of this channel",
     'channel_to_be_validated' => '--- VALIDATION WAITING ---',
 	'youtube_channel_url_label' => "Your youtube channel url (by ex : https://www.youtube.com/channel/UCVeMw72tepFl1Zt5fvf9QKQ)",
 	'create_youtube_channel_url_help' => "Your youtube channel url should look like this one https://www.youtube.com/channel/UCVeMw72tepFl1Zt5fvf9QKQ",
