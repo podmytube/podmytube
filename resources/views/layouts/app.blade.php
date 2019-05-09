@@ -8,11 +8,11 @@
     <!-- End Google Tag Manager (noscript) -->
     <div id="app" class="container"> <!--main container-->
 
-        @include ('layouts.navbar')
-
         @if (App::environment('micromania'))
         @include ('micromania.top')
         @endif
+
+        @include ('layouts.navbar')
 
         @yield('breadcrumbs')
 
