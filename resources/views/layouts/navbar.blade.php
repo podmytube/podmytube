@@ -1,10 +1,9 @@
 <nav class="navbar navbar-expand-lg">
 	<!-- Branding Image -->
 	<a class="navbar-brand pmt-logo" href="{{ url('/') }}"> </a> 
-	@if (App::environment('micromania'))
-		<h1>Intramania l'intranet de Micromania</h1>
+	@if (!App::environment('micromania'))
+		<h1>@yield('pageTitle')</h1>
 	@endif
-	<h1>@yield('pageTitle')</h1>
 	<!-- Authentication Links -->
 	<ul class="navbar-nav ml-auto userlinks">
 	@guest

@@ -20,7 +20,7 @@
 
 <div class="container"> <!--channel container-->
 
-    @if ( count($channels) > 0 )
+    @if ( !empty($channels) )
                 
         <div class="row"> 
 
