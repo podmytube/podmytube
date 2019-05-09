@@ -1,21 +1,19 @@
 <?php
 /**
  * the home controller. Only used to display the welcome page project for now.
- * 
+ *
  * @package PodMyTube
  * @author Frederick Tyteca <fred@podmytube.com>
  */
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-
 use App\Services\ChannelService;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * the home controller class.
- * 
+ *
  */
 class HomeController extends Controller
 {
@@ -35,11 +33,15 @@ class HomeController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {        
+    {
         /**
          * Get user's channel(s)
          */
-        $channels = ChannelService::getAuthenticatedUserChannels(Auth::user());
+        try {
+            $channels = ChannelService::getAuthenticatedUserChannels(Auth::user());
+        } catch (\Exception $e) {
+            $channels = null;
+        }
 
         return view('home', compact('channels'));
     }
