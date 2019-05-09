@@ -25,8 +25,7 @@ class ChannelService
 
         $channels = $user->channels;
         if ($channels->isEmpty()){
-            //throw new \Exception ("User {$user->user_id} has no channel.");
-            return [];
+            throw new \Exception ("User {$user->user_id} has no channel.");
         }
         
         foreach ($channels as $channel) {
