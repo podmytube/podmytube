@@ -63,7 +63,7 @@
                             <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
                         </div>
 
-                        @if (env('APP_ENV') != 'dev')
+                        @if (env('APP_ENV') == 'prod')
                         {!! NoCaptcha::display() !!}
                         @endif
 
