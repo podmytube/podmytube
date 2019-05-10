@@ -50,7 +50,7 @@ class RegisterController extends Controller
         /**
          * if in dev mode there's no captcha displayed
          */
-        if (env('APP_ENV' != 'dev')) {
+        if (env('APP_ENV') == 'prod') {
             $data_to_valid['g-recaptcha-response'] = 'required|captcha';
         }
 
