@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<phpdoc>
+	<title>PodMyTube Dashboard Documentation</title>
+	<parser>
+		<target>documentation</target>
+	</parser>
+	<transformer>
+		<target>documentation</target>
+	</transformer>
+	<files>
+		<directory>.</directory>		<!-- Scan and parse all the php files except those found in the paths below -->
+		<ignore>vendor/*</ignore>
+	</files>
+</phpdoc>
