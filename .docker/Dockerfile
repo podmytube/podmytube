@@ -52,6 +52,7 @@ WORKDIR /srv/app
 #RUN     chown -R www-data:www-data /srv/app
 RUN 	chown -R www-data:www-data storage bootstrap/cache
 RUN 	chmod -R ug+rwx storage bootstrap/cache
+RUN     chmod g+s storage/logs
 # Adding phpunit to Path
 ENV     PATH="/srv/app/vendor/bin:${PATH}"
 
