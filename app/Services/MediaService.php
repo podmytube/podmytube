@@ -2,11 +2,10 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\DB;
-
 use App\Channel;
 use App\Medias;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class MediaService
 {
@@ -15,22 +14,22 @@ class MediaService
      * @param Channel $channel the channel object we want medias
      * @param integer $month to define wanted period (by default current month)
      * @param integer $year to define wanted period (by default current year)
-     * @return array 
+     * @return array
      */
-    public static function getMediasStatusByPeriodForChannel(Channel $channel, $month=null, $year=null)
+    public static function getMediasStatusByPeriodForChannel(Channel $channel, $month = null, $year = null)
     {
         if (empty($month)) {$month = date('n');}
         if (empty($year)) {$year = date('Y');}
         try {
-            return Medias::publishedBetween(self::getMonthBeginning($month,$year), self::getMonthEnding($month,$year))
-            ->select('media_id', 'title', DB::raw("if(ISNULL(grabbed_at), 0, 1) as grabbed"))
-            ->where('channel_id', $channel->channel_id)
-            ->orderBy('published_at', 'asc')
-            ->get();        
+            return Medias::publishedBetween(self::getMonthBeginning($month, $year), self::getMonthEnding($month, $year))
+                ->select('media_id', 'title', DB::raw("if(ISNULL(grabbed_at), 0, 1) as grabbed"))
+                ->where('channel_id', $channel->channel_id)
+                ->orderBy('published_at', 'asc')
+                ->get();
         } catch (\Exception $e) {
             throw $e;
         }
-        
+
     }
 
     /**
@@ -56,10 +55,10 @@ class MediaService
      * @param integer $month month num wanted
      * @return int the number of episodes grabbed this month for this channel
      */
-    public static function getGrabbedMediasFor(Channel $channel, int $month)
+    public static function getGrabbedMediasFor(Channel $channel, int $month, int $year = null)
     {
         try {
-            return Medias::grabbedBetween(self::getMonthBeginning($month), self::getMonthEnding($month))
+            return Medias::grabbedBetween(self::getMonthBeginning($month, $year), self::getMonthEnding($month, $year))
                 ->whereNotNull('grabbed_at')
                 ->where('channel_id', $channel->channel_id)
                 ->get();
@@ -69,15 +68,16 @@ class MediaService
     }
 
     /**
-     * This function will return the number of episodes published by month for one channel.
+     * This function will return the episodes list published for one channel for one period.
      * @param Channel $channel_id the channel
-     * @param
-     * @return int the number of episodes grabbed this month for this channel
+     * @param int $month the numeric version of the month to obtain
+     * @param int|null $year the numeric version of the month to obtain (default will be current year)
+     * @return model the list of published episodes during this month for this channel
      */
-    public static function getPublishedMediasFor(Channel $channel, int $month)
+    public static function getPublishedMediasFor(Channel $channel, int $month, int $year = null)
     {
         try {
-            return Medias::publishedBetween(self::getMonthBeginning($month), self::getMonthEnding($month))
+            return Medias::publishedBetween(self::getMonthBeginning($month, $year), self::getMonthEnding($month, $year))
                 ->where('channel_id', $channel->channel_id)
                 ->get();
         } catch (\Exception $e) {
@@ -85,6 +85,11 @@ class MediaService
         }
     }
 
+    /**
+     * This function will set one month beginning period (IE first day of the month at 00h00)
+     * @param int $month the numeric version month to get the end
+     * @param int|null $year the numeric version of the end
+     */
     protected static function getMonthBeginning($month, $year = null): Carbon
     {
 
@@ -101,6 +106,11 @@ class MediaService
         }
     }
 
+    /**
+     * This function will set one month ending period (IE last day of the month at 23h59)
+     * @param int $month the numeric version month to get the end
+     * @param int|null $year the numeric version of the end
+     */
     protected static function getMonthEnding($month, $year = null): Carbon
     {
         if ($month < 1 && 12 < $month) {

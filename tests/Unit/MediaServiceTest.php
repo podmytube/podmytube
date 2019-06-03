@@ -8,6 +8,14 @@ use Tests\TestCase;
 
 class MediaServiceTest extends TestCase
 {
+    protected $curMonth;
+
+    public function setUp() : void{
+        $this->curMonth = (int) date('m');
+        parent::setUp();
+    }
+
+
     public function testGetMediasStatusByPeriodForFreeChannel()
     {
         $expectedResults = [
@@ -26,11 +34,13 @@ class MediaServiceTest extends TestCase
         $this->assertCount(count($expectedResults), $results->toArray());
     }
 
+
     public function testGetMediasStatusWithWrongPeriodShouldFail()
     {
         $this->expectException(\Exception::class);
-        $results = MediaService::getMediasStatusByPeriodForChannel(Channel::find('freeChannel'), 1555);        
+        $results = MediaService::getMediasStatusByPeriodForChannel(Channel::find('freeChannel'), 1555);
     }
+
 
     public function testGetGrabbedMediaForFreeChannelShouldReturn2()
     {
@@ -43,30 +53,29 @@ class MediaServiceTest extends TestCase
         );
     }
 
+
     public function testGetGrabbedMediasFor()
     {
         $expectedMediaIdsDownloaded = ['YsBVu6f8pR8', 'KsSPMDe_YWY'];
-        $result = (MediaService::getGrabbedMediasFor(Channel::find('freeChannel'), date('m')))->pluck('media_id')->toArray();
+        $result = (MediaService::getGrabbedMediasFor(Channel::find('freeChannel'), $this->curMonth))->pluck('media_id')->toArray();
         $this->assertEqualsCanonicalizing(
             $expectedMediaIdsDownloaded,
             $result,
             "For channel {freeChannel} we should have grabbed {" . implode(', ', $expectedMediaIdsDownloaded) . "} and we received {" . implode(', ', $result) . "}");
     }
 
+
     public function testGetPublishedMediasFor()
     {
         $expectedMediaIdsPublished = ['YsBVu6f8pR8', 'KsSPMDe_YWY', 'hKjtoNByLAI'];
-        $result = (MediaService::getPublishedMediasFor(Channel::find('freeChannel'), date('m')))->pluck('media_id')->toArray();
+        $result = (MediaService::getPublishedMediasFor(Channel::find('freeChannel'), $this->curMonth))->pluck('media_id')->toArray();
         $this->assertEqualsCanonicalizing(
             $expectedMediaIdsPublished,
             $result,
             "For channel {freeChannel} published videos are {" . implode(', ', $expectedMediaIdsPublished) . "} and we received {" . implode(', ', $result) . "}");
     }
 
-    /**
-     * I don t want to use Carbon features that calculate the date according to your error.
-     * IE : 2019-0-01 would return 2018-12-01 and I don't want that
-     */
+    
     public function testInvalidMonthShouldThrowOneException()
     {
         $this->expectException(\Exception::class);
