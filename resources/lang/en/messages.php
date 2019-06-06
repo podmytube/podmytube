@@ -50,10 +50,11 @@ return [
     'button_edit_channel_label' => "Edit",
     'button_update_channel_label' => "Update my channel's information",
     'button_create_channel_label' => "Convert one new channel",
+    'button_need_assistance_label' => "Contact me",
     'button_modify_label' => 'Modify',
     'button_submit_label' => 'Submit',
     'button_upgrade_my_plan' => 'Upgrade my plan',
-    
+        
     // home part
     'no_channels_at_this_moment' => "You have no channel at this time.",
     'title_application_label' => 'Dashboard',
