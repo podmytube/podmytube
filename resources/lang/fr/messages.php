@@ -50,6 +50,7 @@ return [
     'button_edit_channel_label' => "Modifier",
     'button_update_channel_label' => 'Modifier les informations de ma chaine',
     'button_create_channel_label' => 'Convertir une nouvelle chaine',
+    'button_need_assistance_label' => "Contact",
     'button_modify_label' => 'Modifier',
     'button_submit_label' => 'Valider',
     'button_upgrade_my_plan' => 'Modifier mon forfait',
