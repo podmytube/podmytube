@@ -8,14 +8,12 @@
  */
 namespace App;
 
-use Carbon\Carbon;
-
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
 
 
 /**
- * the channel class and its functions
+ * the channel model and its functions
  */
 class Channel extends Model
 {
@@ -164,7 +162,7 @@ class Channel extends Model
     /**
      * extract the id from a youtube channel url after checkingits valid
      * https://www.youtube.com/channel/UCZ0o1IeuSSceEixZbSATWtw => UCZ0o1IeuSSceEixZbSATWtw
-     *
+     * @param Request $request the request object 
      * @return string the channel id
      */
     public static function extractChannelIdFromUrl(Request $request)
