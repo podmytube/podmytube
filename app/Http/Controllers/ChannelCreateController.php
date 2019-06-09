@@ -15,6 +15,7 @@ use App\Mail\ChannelIsRegistered;
 use App\Plan;
 use App\Subscription;
 use App\User;
+use App\Services\YoutubeChannelCheckingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -65,9 +66,14 @@ class ChannelCreateController extends Controller
         $user = Auth::user();
 
         /**
-         * @todo get Channel_name
+         * Getting same basic channel informations
          */
-
+        try {
+            $channelName = YoutubeChannelCheckingService::getChannelName($channel_id);
+        } catch (\InvalidArgumentException $e) {
+            return Redirect::back()->withErrors($e->getMessage());
+        }
+        
         /**
          * Channel creating
          */
@@ -75,7 +81,7 @@ class ChannelCreateController extends Controller
             $channel = Channel::create([
                 'user_id' => $user->user_id,
                 'channel_id' => $channel_id,
-                'channel_name' => __('messages.channel_to_be_validated'),
+                'channel_name' => $channelName,
             ]);
         } catch (\Exception $e) {
             $request->session()->flash('message', __('messages.flash_channel_id_is_invalid'));
@@ -104,7 +110,7 @@ class ChannelCreateController extends Controller
         /**
          * All went fine
          */
-        $request->session()->flash('message', __('messages.flash_channel_has_been_created', ['channel' => $channel_id]));
+        $request->session()->flash('message', __('messages.flash_channel_has_been_created', ['channel' => $channelName]));
         $request->session()->flash('messageClass', 'alert-success');
 
         /**
