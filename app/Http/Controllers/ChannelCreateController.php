@@ -110,7 +110,7 @@ class ChannelCreateController extends Controller
         /**
          * All went fine
          */
-        $request->session()->flash('message', __('messages.flash_channel_has_been_created', ['channel' => $channel_id]));
+        $request->session()->flash('message', __('messages.flash_channel_has_been_created', ['channel' => $channelName]));
         $request->session()->flash('messageClass', 'alert-success');
 
         /**
