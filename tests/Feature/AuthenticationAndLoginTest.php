@@ -22,6 +22,7 @@ class AuthenticationAndLoginTest extends TestCase
         $response->assertRedirect('/home');
     }
 
+    /*
     public function testUserWithCorrectCredentialsWillAuthenticate()
     {
         $user = factory(User::class)->create([
@@ -34,6 +35,7 @@ class AuthenticationAndLoginTest extends TestCase
         $response->assertRedirect('/home');
         $this->assertAuthenticatedAs($user);
     }
+    */
     
     public function testUserWithIncorrectPasswordShouldNotBeAbleToAuthenticate()
     {
