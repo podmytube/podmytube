@@ -191,7 +191,22 @@ class categoriesTableSeeder extends Seeder
          * Sports categories
          */
         $parentId = Categories::where('name', 'sports')->first()->id;
-
+        Categories::insert(['parent_id' => $parentId, 'name' => 'baseball']);
+        Categories::insert(['parent_id' => $parentId, 'name' => 'basketball']);
+        Categories::insert(['parent_id' => $parentId, 'name' => 'cricket']);
+        Categories::insert(['parent_id' => $parentId, 'name' => 'fantasySports']);
+        Categories::insert(['parent_id' => $parentId, 'name' => 'football']);
+        Categories::insert(['parent_id' => $parentId, 'name' => 'golf']);
+        Categories::insert(['parent_id' => $parentId, 'name' => 'hockey']);
+        Categories::insert(['parent_id' => $parentId, 'name' => 'rugby']);
+        Categories::insert(['parent_id' => $parentId, 'name' => 'running']);
+        Categories::insert(['parent_id' => $parentId, 'name' => 'soccer']);
+        Categories::insert(['parent_id' => $parentId, 'name' => 'swimming']);
+        Categories::insert(['parent_id' => $parentId, 'name' => 'tennis']);
+        Categories::insert(['parent_id' => $parentId, 'name' => 'volleyball']);
+        Categories::insert(['parent_id' => $parentId, 'name' => 'wilderness']);
+        Categories::insert(['parent_id' => $parentId, 'name' => 'wrestling']);
+        
         /**
          * Techology categories
          */
@@ -208,6 +223,10 @@ class categoriesTableSeeder extends Seeder
          * TV & Film categories
          */
         $parentId = Categories::where('name', 'tvFilm')->first()->id;
-
+        Categories::insert(['parent_id' => $parentId, 'name' => 'afterShows']);
+        Categories::insert(['parent_id' => $parentId, 'name' => 'filmHistory']);
+        Categories::insert(['parent_id' => $parentId, 'name' => 'filmInterviews']);
+        Categories::insert(['parent_id' => $parentId, 'name' => 'filmReviews']);
+        Categories::insert(['parent_id' => $parentId, 'name' => 'tvReviews']);
     }
 }
