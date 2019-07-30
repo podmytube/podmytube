@@ -154,17 +154,39 @@ class categoriesTableSeeder extends Seeder
          * Religion & Spirtuality categories
          */
         $parentId = Categories::where('name', 'religionSpirituality')->first()->id;
-
+        Categories::insert(['parent_id' => $parentId, 'name' => 'buddhism']);
+        Categories::insert(['parent_id' => $parentId, 'name' => 'christianity']);
+        Categories::insert(['parent_id' => $parentId, 'name' => 'hinduism']);
+        Categories::insert(['parent_id' => $parentId, 'name' => 'islam']);
+        Categories::insert(['parent_id' => $parentId, 'name' => 'judaism']);
+        Categories::insert(['parent_id' => $parentId, 'name' => 'religion']);
+        Categories::insert(['parent_id' => $parentId, 'name' => 'spirituality']);
+        
         /**
          * Science categories
          */
         $parentId = Categories::where('name', 'science')->first()->id;
+        Categories::insert(['parent_id' => $parentId, 'name' => 'astronomy']);
+        Categories::insert(['parent_id' => $parentId, 'name' => 'chemistry']);
+        Categories::insert(['parent_id' => $parentId, 'name' => 'earthSciences']);
+        Categories::insert(['parent_id' => $parentId, 'name' => 'lifeSciences']);
+        Categories::insert(['parent_id' => $parentId, 'name' => 'mathematics']);
+        Categories::insert(['parent_id' => $parentId, 'name' => 'naturalSciences']);
+        Categories::insert(['parent_id' => $parentId, 'name' => 'nature']);
+        Categories::insert(['parent_id' => $parentId, 'name' => 'physics']);
+        Categories::insert(['parent_id' => $parentId, 'name' => 'socialSciences']);
+        
 
         /**
          * Society & Culture categories
          */
         $parentId = Categories::where('name', 'societyCulture')->first()->id;
-
+        Categories::insert(['parent_id' => $parentId, 'name' => 'documentary']);
+        Categories::insert(['parent_id' => $parentId, 'name' => 'personalJournals']);
+        Categories::insert(['parent_id' => $parentId, 'name' => 'philosophy']);
+        Categories::insert(['parent_id' => $parentId, 'name' => 'placesTravel']);
+        Categories::insert(['parent_id' => $parentId, 'name' => 'relationships']);
+        
         /**
          * Sports categories
          */
