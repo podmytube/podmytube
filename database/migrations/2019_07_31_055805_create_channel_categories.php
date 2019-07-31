@@ -16,7 +16,7 @@ class CreateChannelCategories extends Migration
         Schema::create('channel_categories', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('channel_id');
-            $table->unsignedBigInteger('category_id');
+            $table->unsignedInteger('category_id');
             $table->timestamps();
 
             /**
