@@ -14,7 +14,7 @@ INSERT INTO users (user_id, name, email, password) VALUES
     (2,'Julia','julia@podmytube.com','$2y$10$qhdmxqbOtTOHyGqw8AoLSuigHDsg9gdxULMMOefUXfigSTrG6tfO6');
 
 # insert sample into channels 
-INSERT INTO channels (channel_id, user_id, channel_name, channel_premium, active,accept_video_by_tag) VALUES
+INSERT INTO channels (channel_id, user_id, channel_name, channel_premium, active, accept_video_by_tag) VALUES
     ('freeChannel', 1, 'Free users', 0, 1, null),
     ('earlyChannel', 1, 'Early birds', 1, 1, null),
     ('weeklyChannel', 1, 'Weekly youtuber', 2, 1, null),

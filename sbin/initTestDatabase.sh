@@ -25,7 +25,7 @@ DST_DB_HOST=$(read_var DB_HOST ${ENV_FILE})
 # connections params
 CONNECTION_PARAMS="-h${DST_DB_HOST} -u${DST_DB_USER} -p${DST_DB_PASS}"
 
-TABLES_TO_EXPORT_STRUCT_ONLY="channels users medias quotas thumbs scripts_duration subscriptions"
+TABLES_TO_EXPORT_STRUCT_ONLY="channels users medias quotas thumbs scripts_duration subscriptions channel_categories"
 TABLES_TO_EXPORT_WITH_DATA="plans stripe_plans categories"
 TABLES_TO_TRUNCATE="${TABLES_TO_EXPORT_STRUCT_ONLY} ${TABLES_TO_EXPORT_WITH_DATA}"
 
