@@ -1,55 +1,93 @@
 #!/bin/bash
 
+#
+# Globals used in this lib
+SCRIPT_NAME=$(basename ${0})
+
+# levels
+SUCCESS_LEVEL=0
+NOTICE_LEVEL=1
+WARNING_LEVEL=2
+ERROR_LEVEL=3
+
+# colored formats used in this lib
+NORMAL_FORMAT="\e[0m"
+NOTICE_FORMAT="\e[1;44m"
+ERROR_FORMAT="\e[1;41m"
+WARNING_FORMAT="\e[30;48;5;166m"
+SUCCESS_FORMAT="\e[30;48;5;82m"
+TITLE_FORMAT="\e[1;100m"
+
+# this function will display one colored text
+colorText() {
+	MESSAGE=$1
+	LOG_LEVEL=$2
+
+	case ${LOG_LEVEL} in
+	$SUCCESS_LEVEL)
+		COLOR_FORMAT=$SUCCESS_FORMAT
+		MESSAGE_LEVEL="Success"
+		;;
+	$NOTICE_LEVEL)
+		COLOR_FORMAT=$NOTICE_FORMAT
+		MESSAGE_LEVEL="Notice"
+		;;
+	$WARNING_LEVEL)
+		COLOR_FORMAT=$WARNING_FORMAT
+		MESSAGE_LEVEL="Warning"
+		;;
+	$ERROR_LEVEL)
+		COLOR_FORMAT=$ERROR_FORMAT
+		MESSAGE_LEVEL="Error"
+		;;
+	*)
+		MESSAGE_LEVEL='¸,ø¤º°`°º¤ø,¸ undefined ¸,ø¤º°`°º¤ø,¸'
+		;;
+	esac
+
+	echo -e "${COLOR_FORMAT}${MESSAGE_LEVEL} -- ${SCRIPT_NAME}${NORMAL_FORMAT} : ${MESSAGE}"
+}
+
 # this function will display one title the way we can't miss it on term
 title() {
 	MESSAGE=$1
-	format="\e[1;100m"
-	normal="\e[0m"
-	echo -e "$format=== $MESSAGE ===$normal"
+	echo -e "$TITLE_FORMAT=== ${MESSAGE} ===${NORMAL_FORMAT}"
 }
 
 # Error (white on red) will precede the message
 error() {
 	MESSAGE=$1
-	format="\e[1;41m"
-	normal="\e[0m"
-	echo -e "${format}Error :$normal $MESSAGE"
+	colorText "${MESSAGE}" "${ERROR_LEVEL}"
 }
 
 # Warning (white on orange) will precede the message
 warning() {
 	MESSAGE=$1
-	format="\e[30;48;5;166m"
-	normal="\e[0m"
-	echo -e "${format}Warning :$normal $MESSAGE"
+	colorText "${MESSAGE}" "${WARNING_LEVEL}"
 }
 
 # success message
 success() {
 	MESSAGE=$1
-	format="\e[30;48;5;82m"
-	normal="\e[0m"
-	echo -e "${format}Success :$normal $MESSAGE"
+	colorText "${MESSAGE}" "${SUCCESS_LEVEL}"
 }
 
 # single notice
 notice() {
 	MESSAGE=$1
-	format="\e[1;44m"
-	normal="\e[0m"
-	echo -e "${format}Notice :$normal $MESSAGE"
+	colorText "${MESSAGE}" "${NOTICE_LEVEL}"
 }
 
-# extract one value from .env file 
+# extract one value from .env file
 # @param $1 variable name
 # @param $2 file where is set this variable (default .env)
 read_var() {
 	VAR_NAME=$1
 	FILE_NAME=$2
-	if [ -z $FILE_NAME ];then
+	if [ -z $FILE_NAME ]; then
 		FILE_NAME='.env'
 	fi
 	VAR=$(grep $VAR_NAME $FILE_NAME | xargs)
-    IFS="=" read -ra VAR <<< "$VAR"
-    echo ${VAR[1]}
+	IFS="=" read -ra VAR <<<"$VAR"
+	echo ${VAR[1]}
 }
