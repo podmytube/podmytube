@@ -38,6 +38,10 @@ class CreateChannelCategories extends Migration
                 ->references('id')->on('categories')
                 ->onDelete('cascade');
         });
+
+        Artisan::call('db:seed', [
+            '--class' => channelCategoriesTableSeeder::class,
+        ]);
     }
 
     /**
