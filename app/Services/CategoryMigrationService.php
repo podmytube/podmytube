@@ -29,15 +29,17 @@ class CategoryMigrationService
             /**
              * Getting category that fit to the old one
              */
-            $newCategoryId = self::getVersion2019Category($channel);
+            $newCategoryId = self::getVersion2019Category($channel->category);
 
             /**
              * Insert one row in channelCategories
              */
-            ChannelCategories::insert([
-                'channel_id' => $channel->channel_id,
-                'category_id' => $newCategoryId,                
-            ]);
+            ChannelCategories::insert(
+                [
+                    'channel_id' => $channel->channel_id,
+                    'category_id' => $newCategoryId,
+                ]
+            );
 
         } catch (\Exception $e) {
             throw $e;
@@ -50,41 +52,55 @@ class CategoryMigrationService
      * @param object App\Channel $channel model object
      * @return integer newPlanId
      */
-    protected static function getVersion2019Category(Channel $channel)
+    public static function getVersion2019Category(String $previousCategory)
     {
-        switch ($channel->category) {
-            case "Arts":$categoryId = Categories::where("name", "arts")->first()->id;
+        switch ($previousCategory) {
+            case "Arts":
+                $categoryId = Categories::where("name", "arts")->first()->id;
                 break;
-            case "Business":$categoryId = Categories::where("name", "business")->first()->id;
+            case "Business":
+                $categoryId = Categories::where("name", "business")->first()->id;
                 break;
-            case "Comedy":$categoryId = Categories::where("name", "comedy")->first()->id;
+            case "Comedy":
+                $categoryId = Categories::where("name", "comedy")->first()->id;
                 break;
-            case "Education":$categoryId = Categories::where("name", "education")->first()->id;
+            case "Education":
+                $categoryId = Categories::where("name", "education")->first()->id;
                 break;
-            case "Games &amp; Hobbies":$categoryId = Categories::where("name", "games")->first()->id;
+            case "Games &amp; Hobbies":
+                $categoryId = Categories::where("name", "games")->first()->id;
                 break;
-            case "Health":$categoryId = Categories::where("name", "healthFitness")->first()->id;
+            case "Health":
+                $categoryId = Categories::where("name", "healthFitness")->first()->id;
                 break;
-            case "Music":$categoryId = Categories::where("name", "music")->first()->id;
+            case "Music":
+                $categoryId = Categories::where("name", "music")->first()->id;
                 break;
             case "News &amp; Politics":
             case "News & Politics":
                 $categoryId = Categories::where("name", "news")->first()->id;
                 break;
-            case "Religion &amp; Spirituality":$categoryId = Categories::where("name", "religionSpirituality")->first()->id;
+            case "Religion &amp; Spirituality":
+                $categoryId = Categories::where("name", "religionSpirituality")->first()->id;
                 break;
-            case "Science &amp; Medicine":$categoryId = Categories::where("name", "science")->first()->id;
+            case "Science &amp; Medicine":
+                $categoryId = Categories::where("name", "science")->first()->id;
                 break;
-            case "Technology":$categoryId = Categories::where("name", "technology")->first()->id;
+            case "Technology":
+                $categoryId = Categories::where("name", "technology")->first()->id;
                 break;
-            case "TV &amp; Film":$categoryId = Categories::where("name", "tvFilm")->first()->id;
+            case "TV &amp; Film":
+                $categoryId = Categories::where("name", "tvFilm")->first()->id;
                 break;
             case "Society &amp; Culture":
             case "Society & Culture":
                 $categoryId = Categories::where("name", "societyCulture")->first()->id;
                 break;
-            case "Sports &amp; Recreation":$categoryId = Categories::where("name", "sports")->first()->id;
+            case "Sports &amp; Recreation":
+                $categoryId = Categories::where("name", "sports")->first()->id;
                 break;
+            default:
+                throw new \Exception("This category {{$previousCategory}} is unknown.");
         }
 
         return $categoryId;
