@@ -8,7 +8,7 @@ class ChannelCategories extends Model
 {
     protected $fillable = [
         'channel_id',
-        'plan_id',
+        'category_id',
     ];
     /**
      * One channel should have only one row in channelCategories table.
