@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-use App\Channel;
-use App\Medias;
 use App\Plan;
 use App\Services\SubscriptionService;
 use App\Services\ThumbService;

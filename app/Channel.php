@@ -113,7 +113,7 @@ class Channel extends Model
      */
     public function medias()
     {
-        return $this->HasMany(Medias::class, 'channel_id');
+        return $this->HasMany(Media::class, 'channel_id');
     }
 
     /**

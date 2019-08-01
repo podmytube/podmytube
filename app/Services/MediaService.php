@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Channel;
-use App\Medias;
+use App\Media;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -21,7 +21,7 @@ class MediaService
         if (empty($month)) {$month = date('n');}
         if (empty($year)) {$year = date('Y');}
         try {
-            return Medias::publishedBetween(self::getMonthBeginning($month, $year), self::getMonthEnding($month, $year))
+            return Media::publishedBetween(self::getMonthBeginning($month, $year), self::getMonthEnding($month, $year))
                 ->select('media_id', 'title', DB::raw("if(ISNULL(grabbed_at), 0, 1) as grabbed"))
                 ->where('channel_id', $channel->channel_id)
                 ->orderBy('published_at', 'asc')
@@ -40,7 +40,7 @@ class MediaService
     public static function getNbEpisodesAlreadyDownloadedThisMonth(Channel $channel)
     {
         try {
-            return Medias::grabbedBetween(self::getMonthBeginning(date('n')), self::getMonthEnding(date('n')))
+            return Media::grabbedBetween(self::getMonthBeginning(date('n')), self::getMonthEnding(date('n')))
                 ->whereNotNull('grabbed_at')
                 ->where('channel_id', $channel->channel_id)
                 ->count();
@@ -58,7 +58,7 @@ class MediaService
     public static function getGrabbedMediasFor(Channel $channel, int $month, int $year = null)
     {
         try {
-            return Medias::grabbedBetween(self::getMonthBeginning($month, $year), self::getMonthEnding($month, $year))
+            return Media::grabbedBetween(self::getMonthBeginning($month, $year), self::getMonthEnding($month, $year))
                 ->whereNotNull('grabbed_at')
                 ->where('channel_id', $channel->channel_id)
                 ->get();
@@ -77,7 +77,7 @@ class MediaService
     public static function getPublishedMediasFor(Channel $channel, int $month, int $year = null)
     {
         try {
-            return Medias::publishedBetween(self::getMonthBeginning($month, $year), self::getMonthEnding($month, $year))
+            return Media::publishedBetween(self::getMonthBeginning($month, $year), self::getMonthEnding($month, $year))
                 ->where('channel_id', $channel->channel_id)
                 ->get();
         } catch (\Exception $e) {
