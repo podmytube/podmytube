@@ -3,6 +3,9 @@
 namespace Tests\Unit;
 
 use App\Channel;
+use App\Media;
+use Carbon\Carbon;
+use Faker\Factory as Faker;
 use App\Services\MediaService;
 use Tests\TestCase;
 
@@ -10,14 +13,25 @@ class MediaServiceTest extends TestCase
 {
     protected $curMonth;
 
-    public function setUp() : void{
+    public function setUp(): void
+    {
         $this->curMonth = (int) date('m');
         parent::setUp();
     }
 
-
     public function testGetMediasStatusByPeriodForFreeChannel()
     {
+        $faker = Faker::create();
+        $startDate = carbon::createMidnightDate(date('Y'), date('m'), 1);
+        $endDate = carbon::createFromDate(date('Y'), date('m'), date('d'));
+        dd($faker->dateTimeBetween($startDate, $endDate));
+
+        Media::insert([
+            'media_id' => "YsBVu6f8pR8",
+            'title' => "This video is eligible",
+            'created_at' => Carbon::createFromDate(2017, 1, 1),
+            'updated_at' => Carbon::now(),
+        ]);
         $expectedResults = [
             "YsBVu6f8pR8" => 1,
             "KsSPMDe_YWY" => 1,
@@ -34,13 +48,11 @@ class MediaServiceTest extends TestCase
         $this->assertCount(count($expectedResults), $results->toArray());
     }
 
-
     public function testGetMediasStatusWithWrongPeriodShouldFail()
     {
         $this->expectException(\Exception::class);
         $results = MediaService::getMediasStatusByPeriodForChannel(Channel::find('freeChannel'), 1555);
     }
-
 
     public function testGetGrabbedMediaForFreeChannelShouldReturn2()
     {
@@ -53,7 +65,6 @@ class MediaServiceTest extends TestCase
         );
     }
 
-
     public function testGetGrabbedMediasFor()
     {
         $expectedMediaIdsDownloaded = ['YsBVu6f8pR8', 'KsSPMDe_YWY'];
@@ -63,7 +74,6 @@ class MediaServiceTest extends TestCase
             $result,
             "For channel {freeChannel} we should have grabbed {" . implode(', ', $expectedMediaIdsDownloaded) . "} and we received {" . implode(', ', $result) . "}");
     }
-
 
     public function testGetPublishedMediasFor()
     {
@@ -75,7 +85,6 @@ class MediaServiceTest extends TestCase
             "For channel {freeChannel} published videos are {" . implode(', ', $expectedMediaIdsPublished) . "} and we received {" . implode(', ', $result) . "}");
     }
 
-    
     public function testInvalidMonthShouldThrowOneException()
     {
         $this->expectException(\Exception::class);

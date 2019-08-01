@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 use App\Channel;
 use Carbon\Carbon;
-use App\Scopes\ChannelIdScope;
 
-class Medias extends Model
+class Media extends Model
 {
+    protected $table = 'medias';
+
     /**
      * define the relationship between media and its channel
      */

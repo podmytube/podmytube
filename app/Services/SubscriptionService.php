@@ -3,13 +3,7 @@
 namespace App\Services;
 
 use App\Channel;
-use App\User;
-use App\Medias;
 use App\Subscription;
-
-use Carbon\Carbon;
-use App\Services\ThumbService;
-use Symfony\Component\HttpFoundation\Request;
 
 class SubscriptionService
 {
