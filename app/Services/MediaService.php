@@ -86,18 +86,22 @@ class MediaService
     }
 
     /**
-     * This function will set one month beginning period (IE first day of the month at 00h00)
+     * This function will set one month beginning period (IE last day of previous month at 00h00)
      * @param int $month the numeric version month to get the end
      * @param int|null $year the numeric version of the end
      */
-    protected static function getMonthBeginning($month, $year = null): Carbon
+    protected static function getMonthBeginning(int $month, $year = null): Carbon
     {
 
         if (1 > $month || $month > 12) {
             throw new \Exception("Monthes are from 1 to 12 only. There is no month like {$month} for now !");
         }
 
+
         if (empty($year)) {$year = date('Y');}
+        
+
+        $startDate = carbon::createFromDate($year, $month);
 
         try {
             return carbon::createMidnightDate($year, $month, 1);

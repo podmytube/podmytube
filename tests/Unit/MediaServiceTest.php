@@ -12,26 +12,29 @@ use Tests\TestCase;
 class MediaServiceTest extends TestCase
 {
     protected $curMonth;
+    protected $faker;
 
     public function setUp(): void
     {
         $this->curMonth = (int) date('m');
+        $this->faker = Faker::create();
         parent::setUp();
+    }
+
+    protected function getStartDate()
+    {
+        $startDate = carbon::createMidnightDate(date('Y'), date('m'), 1);
+    }
+
+    protected function getEndDate()
+    {
+        return carbon::createFromDate(date('Y'), date('m'), date('d'));
     }
 
     public function testGetMediasStatusByPeriodForFreeChannel()
     {
-        $faker = Faker::create();
         $startDate = carbon::createMidnightDate(date('Y'), date('m'), 1);
-        $endDate = carbon::createFromDate(date('Y'), date('m'), date('d'));
-        dd($faker->dateTimeBetween($startDate, $endDate));
-
-        Media::insert([
-            'media_id' => "YsBVu6f8pR8",
-            'title' => "This video is eligible",
-            'created_at' => Carbon::createFromDate(2017, 1, 1),
-            'updated_at' => Carbon::now(),
-        ]);
+        
         $expectedResults = [
             "YsBVu6f8pR8" => 1,
             "KsSPMDe_YWY" => 1,
@@ -72,7 +75,8 @@ class MediaServiceTest extends TestCase
         $this->assertEqualsCanonicalizing(
             $expectedMediaIdsDownloaded,
             $result,
-            "For channel {freeChannel} we should have grabbed {" . implode(', ', $expectedMediaIdsDownloaded) . "} and we received {" . implode(', ', $result) . "}");
+            "For channel {freeChannel} we should have grabbed {" . implode(', ', $expectedMediaIdsDownloaded) . "} and we received {" . implode(', ', $result) . "}"
+        );
     }
 
     public function testGetPublishedMediasFor()
@@ -82,7 +86,8 @@ class MediaServiceTest extends TestCase
         $this->assertEqualsCanonicalizing(
             $expectedMediaIdsPublished,
             $result,
-            "For channel {freeChannel} published videos are {" . implode(', ', $expectedMediaIdsPublished) . "} and we received {" . implode(', ', $result) . "}");
+            "For channel {freeChannel} published videos are {" . implode(', ', $expectedMediaIdsPublished) . "} and we received {" . implode(', ', $result) . "}"
+        );
     }
 
     public function testInvalidMonthShouldThrowOneException()
@@ -90,5 +95,4 @@ class MediaServiceTest extends TestCase
         $this->expectException(\Exception::class);
         $result = MediaService::getPublishedMediasFor(Channel::find('freeChannel'), 0);
     }
-
 }
