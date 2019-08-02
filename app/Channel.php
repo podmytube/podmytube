@@ -6,6 +6,7 @@
  * @package PodMyTube
  * @author Frederick Tyteca <fred@podmytube.com>
  */
+
 namespace App;
 
 use Illuminate\Http\Request;
@@ -86,15 +87,21 @@ class Channel extends Model
     }
 
     /**
+     * Channel should have only one category.
+     */
+    public function channelCategory()
+    {
+        return $this->hasOne(ChannelCategories::class, 'channel_id');
+    }
+
+    /**
      * We are getting active subscriptions for the channel.
-     * free plan : If no subscription => free plan
-     * early bird : If ends_at is null => early
      *
      * @return model the current subscription
      */
     public function subscription()
     {
-        return $this->hasOne(Subscription::class, 'channel_id');        
+        return $this->hasOne(Subscription::class, 'channel_id');
     }
 
     /**
@@ -180,9 +187,9 @@ class Channel extends Model
          */
         if (!preg_match("/^https?:\/\/(youtube.com|www.youtube.com)\/channel\/(?'channel'[\w\-]*)$/", $request->channel_url, $matches)) {
             throw new \InvalidArgumentException("flash_channel_id_is_invalid");
-        } 
+        }
 
-        return $matches['channel'];        
+        return $matches['channel'];
     }
 
     /**
