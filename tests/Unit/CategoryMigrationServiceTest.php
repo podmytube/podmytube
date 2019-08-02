@@ -4,7 +4,6 @@ namespace Tests\Unit;
 
 use App\Category;
 use App\Channel;
-use App\ChannelCategories;
 use App\Services\CategoryMigrationService;
 use Tests\TestCase;
 
@@ -20,13 +19,11 @@ class CategoryMigrationServiceTest extends TestCase
         $expectedCategoryId = Category::where("name", "news")->first()->id;
         CategoryMigrationService::transform($channel);
 
-        $channelCategory = ChannelCategories::where("channel_id", "freeChannel")->first();
         $this->assertEquals(
             $expectedCategoryId,
-            $channelCategory->category_id,
-            "The expected categoryId was {{$expectedCategoryId}}, result was {{$channelCategory->category_id}}."
-        );
-        $channelCategory->delete();
+            $channel->category_id,
+            "The expected categoryId was {{$expectedCategoryId}}, result was {{$channel->category_id}}."
+        );        
     }
 
     /**
