@@ -1,13 +1,14 @@
 <?php
+
 /**
  * This class will be used (for a short time) to convert old
  * channel premium registration to subscription model registration
  */
+
 namespace App\Services;
 
 use App\Category;
 use App\Channel;
-use App\ChannelCategories;
 
 /**
  * This class will be used (for a short time) to convert old
@@ -24,7 +25,6 @@ class CategoryMigrationService
      */
     public static function transform(Channel $channel)
     {
-
         try {
             /**
              * Getting category that fit to the old one
@@ -34,12 +34,8 @@ class CategoryMigrationService
             /**
              * Insert one row in channelCategories
              */
-            ChannelCategories::insert(
-                [
-                    'channel_id' => $channel->channel_id,
-                    'category_id' => $newCategoryId,
-                ]
-            );
+            $channel->category_id = $newCategoryId;
+            $channel->save();
 
         } catch (\Exception $e) {
             throw $e;

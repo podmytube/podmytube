@@ -1,7 +1,6 @@
 <?php
 
 use App\Channel;
-use App\ChannelCategories;
 use App\Services\CategoryMigrationService;
 use Illuminate\Database\Seeder;
 
@@ -14,10 +13,6 @@ class channelCategoriesTableSeeder extends Seeder
      */
     public function run()
     {
-        if (!App::environment(['prod'])) {
-            ChannelCategories::truncate();
-        }
-
         /**
          * getting channels informations
          */
@@ -29,11 +24,10 @@ class channelCategoriesTableSeeder extends Seeder
          * for each channel add a subscription according to its channel_premium state
          */
         foreach ($channels as $channel) {
-
             try {
                 CategoryMigrationService::transform($channel);
             } catch (\Exception $e) {
-                die("Channel category transformation has failed with message : {{$e->getMessage()}} ");
+                throw $e;
             }
         }
     }
