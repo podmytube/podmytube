@@ -4,6 +4,7 @@ USE pmtests;
 
 # before erasing all data
 SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE users;
 TRUNCATE channels;
 TRUNCATE medias;
 TRUNCATE thumbs;
@@ -23,6 +24,11 @@ INSERT INTO channels (channel_id, user_id, channel_name, channel_premium, active
     ('UCnF1gaTK11ax2pWCIdUp8-w', 2, 'Monthly subscribers 6€/month - delphine dimanche', 3, 1, null),
     ('UCnf8HI3gUteF1BKAvrDO9dQ', 2, 'Yearly subscribers 66€/year - alex borto', 3, 1, null),
     ('invalidChannel', 2, 'Invalid channel', 0, 1, null);
+
+INSERT INTO channel_categories (channel_id, category_id) VALUES 
+    ('freeChannel', 12), # news
+    ('earlyChannel', 1); # arts
+
 
 # insert sample into media 
 # getAudio is getting all medias ordered by published_at date
