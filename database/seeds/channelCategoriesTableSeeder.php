@@ -14,7 +14,7 @@ class channelCategoriesTableSeeder extends Seeder
      */
     public function run()
     {
-        if (App::environment(['dev', 'local', 'rec', 'testing'])) {
+        if (!App::environment(['prod'])) {
             ChannelCategories::truncate();
         }
 
