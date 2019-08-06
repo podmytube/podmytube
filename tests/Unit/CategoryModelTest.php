@@ -7,10 +7,17 @@ use Tests\TestCase;
 
 class CategoryModelTest extends TestCase
 {
-    public function testThatIGetAllChildrenCategories()
+    public function testThatIGetAllCategories()
     {
+        $expectedArtsCategories = [
 
-        $expectedChildrenCategories = range(88,102);
+        ];
+        $results = Category::find(1)->with('children')->get();
+        foreach ($results as $parentCategory){
+            
+
+            
+        }
     }
 
     public function testThatIGetRightParentId()
