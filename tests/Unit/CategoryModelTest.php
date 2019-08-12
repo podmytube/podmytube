@@ -23,6 +23,18 @@ class CategoryModelTest extends TestCase
         parent::setUp();
     }
 
+    public function testListingCategories(){
+        $expectedCategory = Category::find(1);
+        $categoriesList = Category::list();
+        
+        
+        
+    }
+
+    /**
+     * Testing that the parent relationShip is working fine.
+     * food (id : 23) parent is arts (id : 1)
+     */
     public function testSimpleParentRelationShipShouldBeOk()
     {
         $expectedCategory = Category::find(1);
