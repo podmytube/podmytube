@@ -8,11 +8,14 @@ use Tests\TestCase;
 
 class CategoryModelTest extends TestCase
 {
-    protected $artsCategoryChildren;
+    protected static $artsCategoryId = 1;
+    protected static $artsCategoryChildren;
+    protected static $musicCategoryId = 11;
+    protected static $musicCategoryChildren;
 
     public function setUp(): void
     {
-        $this->artsCategoryChildren = collect([
+        self::$artsCategoryChildren = collect([
             ["id" => 20, "name" => "books"],
             ["id" => 21, "name" => "design"],
             ["id" => 22, "name" => "fashionAndBeauty"],
@@ -20,14 +23,34 @@ class CategoryModelTest extends TestCase
             ["id" => 24, "name" => "performingArts"],
             ["id" => 25, "name" => "visualArts"],
         ]);
+
+        self::$musicCategoryChildren = collect([
+            ["id" => 57, "name" => "musicCommentary"],
+            ["id" => 58, "name" => "musicHistory"],
+            ["id" => 59, "name" => "musicInterviews"],
+        ]);
+
         parent::setUp();
     }
 
-    public function testListingCategories(){
-        $expectedCategory = Category::find(1);
+    public function testListingCategories()
+    {
+        $expectedCategory = Category::find(self::$artsCategoryId);
         $categoriesList = Category::list();
+        $wantedCategories = [self::$artsCategoryId, self::$musicCategoryId];
         
-        
+        $results = $categoriesList->filter(function ($item) use ($wantedCategories) {
+            if (in_array($item->id, $wantedCategories)) {
+                return $item;
+            }
+        });
+
+        dd($results->pluck('name'));
+
+        $this->assertEqualsCanonicalizing(
+            self::$artsCategoryChildren->pluck('name'),
+            $results->children->pluck('name')
+        );
         
     }
 
@@ -37,7 +60,7 @@ class CategoryModelTest extends TestCase
      */
     public function testSimpleParentRelationShipShouldBeOk()
     {
-        $expectedCategory = Category::find(1);
+        $expectedCategory = Category::find(self::$artsCategoryId);
         $this->assertEquals(
             $expectedCategory->name,
             Category::find(23)->parent->name
@@ -52,14 +75,14 @@ class CategoryModelTest extends TestCase
     public function testGetCategoryByNameShouldBeValid()
     {
         $results = Category::byName("arts");
-        $expectedCategoryId = 1;
+        $expectedCategoryId = self::$artsCategoryId;
         $this->assertEquals(
             $expectedCategoryId,
             $results->id
         );
 
         $this->assertEqualsCanonicalizing(
-            $this->artsCategoryChildren->pluck('name'),
+            self::$artsCategoryChildren->pluck('name'),
             $results->children->pluck('name')
         );
     }
@@ -67,9 +90,9 @@ class CategoryModelTest extends TestCase
     public function testThatIGetAllCategories()
     {
         $expectedCategories = collect([
-            "id" => 1,
+            "id" => self::$artsCategoryId,
             "name" => "arts",
-            "children" => $this->artsCategoryChildren
+            "children" => self::$artsCategoryChildren
         ]);
         $results = Category::find(1)->with('children')->first();
         $this->assertInstanceOf(Category::class, $results);
@@ -112,7 +135,7 @@ class CategoryModelTest extends TestCase
         $this->assertEquals(
             1,
             Category::where('name', 'arts')->first()->id,
-            "Arts category should be 1, was {{Category::where('name','arts')->first()->id}}"
+            "Arts category should be {{" . self::$artsCategoryId . "}}, was {{Category::where('name','arts')->first()->id}}"
         );
     }
 }
