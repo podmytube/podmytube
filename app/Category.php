@@ -3,7 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use PhpParser\ErrorHandler\Collecting;
+use Illuminate\Support\Collection;
 
 class Category extends Model
 {
