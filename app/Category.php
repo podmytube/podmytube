@@ -7,6 +7,10 @@ use Illuminate\Support\Collection;
 
 class Category extends Model
 {
+    protected $casts = [
+        'parent_id' => 'integer',
+    ];
+
     /**
      * One category by ask for its parent category.
      */
