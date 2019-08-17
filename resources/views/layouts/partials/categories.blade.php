@@ -3,13 +3,16 @@
 </option>
 @if ( count ($categories) > 0 )
     @foreach ($categories as $category)
-        <option value="{{ $category->id }}"{{ htmlspecialchars($channelSelectedCategory) == $category ? ' selected' : '' }}>
+        <option value="{{ $category->id }}"{{ $channelSelectedCategory == $category->id ? ' selected' : '' }}>
             {{ $category->name }}
         </option>
         @if ($category->children)
             @foreach ($category->children as $child)
-            <option value="{{$child->id}}"{{ htmlspecialchars($channelSelectedCategory) == $category ? ' selected' : '' }} >
-                -- {{__("categories.".$child->name)}}
+            <option 
+                value="{{$child->id}}"
+                {{ $channelSelectedCategory == $category->id ? ' selected' : '' }} 
+                >
+                -- {{ __("categories.".$child->name) }}
             </option>
             @endforeach
         @endif
