@@ -101,8 +101,8 @@
 					
 				</th>
 				<td>
-				<select name="category" class="custom-select">
-					@include('layouts.categories', ['selCat' => $channel->category])
+				<select name="category_id" class="custom-select">
+					@include('layouts.partials.categories', ['channelSelectedCategory' => $channel->category])
 				</select>
 				
 				</td>
