@@ -67,7 +67,9 @@ class categoriesTableSeeder extends Seeder
          * Comedy categories
          */
         $parentId = Category::where("name", "comedy")->first()->id;
-        /** no subcategories */
+        Category::insert(['parent_id' => $parentId, 'name' => 'comedyInterviews']);
+        Category::insert(['parent_id' => $parentId, 'name' => 'improv']);
+        Category::insert(['parent_id' => $parentId, 'name' => 'standUp']);
 
         /**
          * Education categories
