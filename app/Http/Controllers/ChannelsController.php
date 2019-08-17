@@ -8,6 +8,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Category;
 use App\Channel;
 use App\Http\Requests\ChannelRequest;
 use App\Services\ChannelService;
@@ -71,9 +72,8 @@ class ChannelsController extends Controller
      */
     public function edit(ChannelRequest $request, Channel $channel)
     {
-
-        return view('channel.edit', compact('channel'));
-
+        $categories = Category::list();
+        return view('channel.edit', compact(['channel', 'categories']));
     }
 
     /**
