@@ -25,11 +25,6 @@ INSERT INTO channels (channel_id, user_id, channel_name, channel_premium, active
     ('UCnf8HI3gUteF1BKAvrDO9dQ', 2, 'Yearly subscribers 66€/year - alex borto', 3, 1, null),
     ('invalidChannel', 2, 'Invalid channel', 0, 1, null);
 
-INSERT INTO channel_categories (channel_id, category_id) VALUES 
-    ('freeChannel', 12), # news
-    ('earlyChannel', 1); # arts
-
-
 # insert sample into media 
 # getAudio is getting all medias ordered by published_at date
 # freeChannel has 4 videos published but only should be grabbed
