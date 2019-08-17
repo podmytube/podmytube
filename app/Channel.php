@@ -60,6 +60,7 @@ class Channel extends Model
         'user_id',
         'authors',
         'email',
+        'category_id',
         'category',
         'subcategory',
         'link',
@@ -89,9 +90,9 @@ class Channel extends Model
     /**
      * Channel should have only one category.
      */
-    public function category()
+    public function category2()
     {
-        return $this->hasOne(Category::class);
+        return $this->hasOne(Category::class, 'id', 'category_id');
     }
 
     /**
