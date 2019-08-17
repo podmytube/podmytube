@@ -126,8 +126,8 @@
 				
 			</th>
 		  <td>
-					@if ($channel->category)
-					{{ $channel->category }}
+					@if ($channel->category2)
+					{{ __("categories.".$channel->category2->name) }}
 					@else
 					{{ __('messages.no_category_defined_label') }} 
 					@endif
