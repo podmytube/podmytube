@@ -17,7 +17,7 @@ return [
      */
     'arts' => 'Arts',
     'business' => 'Business',
-    'comedy' => 'Comedie',
+    'comedy' => 'Comédie',
     'education' => 'Education',
     'fiction' => 'Fiction',
     'government' => 'Gouvernment',
@@ -38,43 +38,43 @@ return [
     /**
      * Arts
      */
-    "books" => 'Books',
+    "books" => 'Livres',
     "design" => 'Design',
-    "fashionAndBeauty" => 'Fashion & Beauty',
-    "food" => 'Food',
-    "performingArts" => 'Performing Arts',
-    "visualArts" => 'Visual Arts',
+    "fashionAndBeauty" => 'Mode & Beauté',
+    "food" => 'Nourriture',
+    "performingArts" => 'Performance Artistique',
+    "visualArts" => 'Arts Visuels',
 
     /**
      * Business
      */
-    "careers" => "Careers",
-    "entrepreneurShip" => "Entrepreneurship",
-    "investing" => "Investing",
+    "careers" => "Carrières",
+    "entrepreneurShip" => "Entrepreneuriat",
+    "investing" => "Investir",
     "management" => "Management",
     "marketing" => "Marketing",
-    "nonProfit" => "NonProfit",
+    "nonProfit" => "Organisations Charitatives",
 
     /**
      * Comedy
      */
-    "comedyInterviews" => "Comedy Interviews",
-    "improv" => "Improv",
-    "standUp" => "Stand-Up",
+    "comedyInterviews" => "Interviews",
+    "improv" => "Improvisations",
+    "standUp" => "One Man Show",
 
     /**
      * Education
      */    
-    "courses" => "Courses",
+    "courses" => "Cours",
     "howTo" => "How To",
-    "languageLearning" => "Language Learning",
-    "selfImprovement" => "Self-Improvement",
+    "languageLearning" => "Cours de langues",
+    "selfImprovement" => "Auto formation",
 
     /**
      * Fiction
      */
-    "comedyFiction" => "Comedy Fiction",
-    "drama" => "Drama",
+    "comedyFiction" => "Comédie",
+    "drama" => "Drame",
     "scienceFiction" => "Science Fiction",
 
     /**
@@ -88,83 +88,83 @@ return [
     /**
      * Health & Fitness
      */
-    "alternativeHealth" => "Alternative Health",
+    "alternativeHealth" => "Santé Alternative",
     "fitness" => "Fitness",
-    "medicine" => "Medicine",
-    "mentalHealth" => "Mental Health",
+    "medicine" => "Medecine",
+    "mentalHealth" => "Santé Mentale",
     "nutrition" => "Nutrition",
-    "sexuality" => "Sexuality",
+    "sexuality" => "Sexualité",
 
     /**
      * Kids & Family
      */
-    "educationForKids" => "Education for Kids",
-    "parenting" => "Parenting",
-    "petsAnimals" => "Pets & Animals",
-    "storiesForKids" => "Stories For Kids",
+    "educationForKids" => "Education pour enfants",
+    "parenting" => "Parentalité",
+    "petsAnimals" => "Animaux Domestiques",
+    "storiesForKids" => "Histoires pour Enfants",
 
     /**
      * Leisure
      */
     "animationManga" => "Animation & Manga",
-    "automotive" => "Automotive",
+    "automotive" => "Automobile",
     "aviation" => "Aviation",
-    "crafts" => "Crafts",
-    "games" => "Games",
-    "hobbies" => "Hobbies",
-    "homeGarden" => "Home & Garden",
-    "videoGames" => "Video Games",
+    "crafts" => "Artisanat",
+    "games" => "Jeux",
+    "hobbies" => "Loisirs/Hobbies",
+    "homeGarden" => "Maison & Jardin",
+    "videoGames" => "Jeux Vidéo",
 
     /**
      * Music
      */
-    "musicCommentary" => "Music Commentary",
-    "musicHistory" => "Music History",
-    "musicInterviews" => "Music Interviews",
+    "musicCommentary" => "Critique Musical",
+    "musicHistory" => "Histoire de la Musique",
+    "musicInterviews" => "Interviews Musicaux",
 
     /**
      * News
      */
-    "businessNews" => "Business News",
-    "dailyNews" => "Daily News",
-    "entertainmentNews" => "Entertainment News",
-    "newsCommentary" => "News Commentary",
-    "politics" => "Politics",
-    "sportsNews" => "Sports News",
-    "techNews" => "Tech News",
+    "businessNews" => "News Business",
+    "dailyNews" => "Actualités",
+    "entertainmentNews" => "News Divertissement",
+    "newsCommentary" => "Commentaires d'actualités",
+    "politics" => "Politique",
+    "sportsNews" => "Actualités Sportives",
+    "techNews" => "Actualités Tech",
 
     /**
      * Religion & Spirituality
      */
-    "buddhism" => "Buddhism",
-    "christianity" => "Christianity",
-    "hinduism" => "Hinduism",
+    "buddhism" => "bouddhisme",
+    "christianity" => "Christianisme",
+    "hinduism" => "Hindouisme",
     "islam" => "Islam",
-    "judaism" => "Judaism",
+    "judaism" => "Judaïsme",
     "religion" => "Religion",
-    "spirituality" => "Spirituality",
+    "spirituality" => "Spiritualité",
 
     /**
      * Science
      */
-    "astronomy" => "Astronomy",
-    "chemistry" => "Chemistry",
-    "earthSciences" => "Earth Sciences",
-    "lifeSciences" => "Life Sciences",
-    "mathematics" => "Mathematics",
-    "naturalSciences" => "Natural Sciences",
+    "astronomy" => "Astronomie",
+    "chemistry" => "Chimie",
+    "earthSciences" => "Sciences de la Terre",
+    "lifeSciences" => "Sciences de la Vie",
+    "mathematics" => "Mathematiques",
+    "naturalSciences" => "Sciences Naturelles",
     "nature" => "Nature",
-    "physics" => "Physics",
-    "socialSciences" => "Social Sciences",
+    "physics" => "Physique",
+    "socialSciences" => "Sciences Sociales",
 
     /**
      * Society & Culture
      */
-    "documentary" => "Documentary",
-    "personalJournals" => "Personal Journals",
-    "philosophy" => "Philosophy",
-    "placesTravel" => "Places & Travel",
-    "relationships" => "Relationships",
+    "documentary" => "Documentaires",
+    "personalJournals" => "Journaux Personels",
+    "philosophy" => "Philosophie",
+    "placesTravel" => "Lieux & Voyage",
+    "relationships" => "Relations/Rencontres",
 
     /**
      * Sports
@@ -173,17 +173,17 @@ return [
     "basketball" => "Basketball",
     "cricket" => "Cricket",
     "fantasySports" => "Fantasy Sports",
-    "football" => "Football",
+    "football" => "Football Américain",
     "golf" => "Golf",
     "hockey" => "Hockey",
     "rugby" => "Rugby",
-    "running" => "Running",
-    "soccer" => "Soccer",
-    "swimming" => "Swimming",
+    "running" => "Course à pied",
+    "soccer" => "Football",
+    "swimming" => "Natation",
     "tennis" => "Tennis",
     "volleyball" => "Volleyball",
-    "wilderness" => "Wilderness",
-    "wrestling" => "Wrestling",
+    "wilderness" => "Vie sauvage",
+    "wrestling" => "Catch",
 
     /**
      * Technology is alone
@@ -196,9 +196,9 @@ return [
     /**
      * Tv & Film
      */
-    "afterShows" => "After Shows",
-    "filmHistory" => "Film History",
-    "filmInterviews" => "Film Interviews",
-    "filmReviews" => "Film Reviews",
-    "tvReviews" => "Tv Reviews",
+    "afterShows" => "Après Spectacle",
+    "filmHistory" => "Histoire de Film",
+    "filmInterviews" => "Interviews de Film",
+    "filmReviews" => "Critique de Film",
+    "tvReviews" => "Critique Tv",
 ];
