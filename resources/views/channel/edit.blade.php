@@ -102,21 +102,11 @@
 				</th>
 				<td>
 				<select name="category_id" class="custom-select">
-					@include('layouts.partials.categories', ['channelSelectedCategory' => $channel->category])
+					@include('layouts.partials.categories', ['channelSelectedCategory' => $channel->category_id])
 				</select>
 				
 				</td>
 			</tr>
-			{{-- Waiting for subcategory part
-			<tr>
-				<th scope="row">Sous catégorie</th>
-				<td>
-					<select name="subcategory" class="custom-select">
-					@include('layouts.categories', ['selCat' => $channel->subcategory])
-					</select>
-				</td>
-			</tr>
-			--}}
 			<tr>
 				<th scope="row">
 					
