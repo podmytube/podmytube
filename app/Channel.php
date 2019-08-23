@@ -88,7 +88,7 @@ class Channel extends Model
     /**
      * Channel should have only one category.
      */
-    public function category2()
+    public function category()
     {
         return $this->hasOne(Category::class, 'id', 'category_id');
     }
