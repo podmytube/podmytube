@@ -41,7 +41,7 @@ return [
     'only_for_premiums_label' => "Cette partie n'est disponible que pour les abonnés premiums.",
     'yes' => "oui",
     'no' => "non",
-    'language_label' => "Langue",
+    'language_label' => "Langue du podcast",
     'channel_show_stats_alt' => "Voir les stats de ma chaine",
 
     'button_update_label' => 'Mise à jour',
@@ -133,7 +133,7 @@ return [
     'no_category_defined_label' => "Aucune categorie n'a été renseignée.",
     'no_filter_defined_label' => "Aucun filtre n'a été renseigné.",
     
-    'channel_lang_label' => "Langue",
+    'channel_lang_label' => "Langue du podcast",
     'channel_lang_help' => "La langue de votre podcast.",
 
     'channel_explicit_label' => "Podcast destiné à un public majeur et averti",

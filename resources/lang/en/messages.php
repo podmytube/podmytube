@@ -40,7 +40,7 @@ return [
     // commons
     'yes' => "yes",
     'no' => "no",
-    'language_label' => "Language",
+    'language_label' => "Podcast Language",
     'channel_show_stats_alt' => "Show my my stats",
 
     'button_update_label' => 'Update',
@@ -134,7 +134,7 @@ return [
     'no_category_defined_label' => "No categories have been completed.",
     'no_filter_defined_label' => "No filter has been entered.",
     
-    'channel_lang_label' => "Language",
+    'channel_lang_label' => "Podcast Language",
     'channel_lang_help' => "Your podcast language.",
 
     'channel_explicit_label' => "This podcast uses an explicit language.",
