@@ -61,8 +61,6 @@ class Channel extends Model
         'authors',
         'email',
         'category_id',
-        'category',
-        'subcategory',
         'link',
         'lang',
         'podcast_title',
