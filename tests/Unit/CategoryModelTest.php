@@ -10,7 +10,7 @@ use App\Providers\AppServiceProvider;
 class CategoryModelTest extends TestCase
 {
     protected static $expectedCategories;
-    protected static $expectedTotalNumberOfCategories = 107;
+    protected static $expectedTotalNumberOfCategories = 110;
     protected static $expectedNumberOfParentCategories = 19;
     protected static $categoriesWithoutChildren = [
         "comedy" => ["id" => 3],
@@ -46,9 +46,9 @@ class CategoryModelTest extends TestCase
                 'id' => 11,
                 'name' => 'music',
                 "children" => [
-                    ["id" => 57, "name" => "musicCommentary"],
-                    ["id" => 58, "name" => "musicHistory"],
-                    ["id" => 59, "name" => "musicInterviews"],
+                    ["id" => 60, "name" => "musicCommentary"],
+                    ["id" => 61, "name" => "musicHistory"],
+                    ["id" => 62, "name" => "musicInterviews"],
                 ]
             ]
         ];
