@@ -17,7 +17,7 @@ INSERT INTO users (user_id, name, email, password) VALUES
 # insert sample into channels 
 INSERT INTO channels (channel_id, user_id, channel_name, channel_premium, active, category_id, accept_video_by_tag) VALUES
     ('freeChannel', 1, 'Free users', 0, 1, null, null),
-    ('earlyChannel', 1, 'Early birds', 1, 1, 47, null),
+    ('earlyChannel', 1, 'Early birds', 1, 1, 50, null),
     ('weeklyChannel', 1, 'Weekly youtuber', 2, 1, 1, null),
     ('dailyChannel', 1, 'Daily youtuber', 3, 1, 43, null),
     ('UCq80IvL314jsE7PgYsTdw7Q', 2, 'Accropolis', 3, 1, 54, null),
