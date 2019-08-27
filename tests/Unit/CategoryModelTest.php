@@ -38,6 +38,16 @@ class CategoryModelTest extends TestCase
                     ["id" => 25, "name" => "visualArts"],
                 ]
             ],
+            "kidsFamily" => [
+                'id' => 9,
+                'name' => 'kidsFamily',
+                "children" => [
+                    ["id" => 48, "name" => "educationForKids"],
+                    ["id" => 49, "name" => "parenting"],
+                    ["id" => 50, "name" => "petsAnimals"],
+                    ["id" => 51, "name" => "storiesForKids"],
+                ]
+            ],
             "government" => [
                 'id' => 6,
                 'name' => 'government',
