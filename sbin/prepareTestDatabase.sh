@@ -28,7 +28,10 @@ fi
 
 # migrating from channel_premium to subs
 title "Seeding subscriptions for fixtures channels"
+echo "seeding subscriptions"
 php artisan db:seed --class=subscriptionTableSeeder --env=testing
+echo "seeding categories"
+php artisan db:seed --class=categoriesTableSeeder --env=testing
 
 # import small errors to be checked for
 ./sbin/createErrorsToBeTested.sh
