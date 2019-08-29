@@ -25,9 +25,13 @@ class AddCategoryId extends Migration
                 ->onUpdate('cascade');
         });
 
-        Artisan::call('db:seed', [
-            '--class' => channelCategoriesTableSeeder::class
-        ]);
+        try {
+            Artisan::call('db:seed', [
+                '--class' => channelCategoriesTableSeeder::class
+            ]);
+        } catch (\Exception $e) {
+            echo $e->getMessage() . PHP_EOL;
+        }
     }
 
     /**
@@ -39,6 +43,7 @@ class AddCategoryId extends Migration
     {
         Schema::table('channels', function (Blueprint $table) {
             $table->dropForeign('channels_category_id_foreign');
+            $table->dropIndex('channels_category_id_foreign');
             $table->dropColumn('category_id');
         });
     }
