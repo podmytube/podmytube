@@ -2,16 +2,16 @@
 
 return [
 
-    /*
-    |--------------------------------------------------------------------------
-    | Authentication Language Lines
-    |--------------------------------------------------------------------------
-    |
-    | The following language lines are used during authentication for various
-    | messages that we need to display to the user. You are free to modify
-    | these language lines according to your application's requirements.
-    |
-    */
+    'newCategories_hello' => "Hello :name",
+    'newCategories_body' => "Recently apple has made a big categories update on its podcast catalog." .
+        "These categories are now available on the dashboard for your podcast to update." .
+        "You should do this as soon as possible to avoid being misclassified.",
+    'newCategories_explanations' => "To do so, all you need is :" .
+        "<ul>" .
+        "<li>connecting on the dashboard</li>," .
+        "<li>edit your channels details</li>" .
+        "<li>and set the category you want.</li>" .
+        "</ul>",
 
     'welcome_h1_welcome' => 'Welcome :name,',
     'welcome_p_first_line' => "I'm delighted by your interest in my service !",
