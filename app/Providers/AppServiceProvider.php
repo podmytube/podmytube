@@ -22,12 +22,6 @@ class AppServiceProvider extends ServiceProvider
                 return $value;
             });
         });
-        
-        view()->composer('layouts.categories', function ($view) {
-
-            $view->with('categories', \App\Channel::categories());
-
-        });
     }
 
     /**
