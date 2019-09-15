@@ -1,5 +1,6 @@
 #!/bin/bash
 # This script will do what is needed to run tests
+echo "YOU SHOULD NOT DOING THIS !!!"
 
 START_TIME=$SECONDS
 
