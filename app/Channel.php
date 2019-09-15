@@ -204,30 +204,4 @@ class Channel extends Model
             $this->attributes['reject_video_too_old'] = null;
         }
     }
-
-    /**
-     * Providing all the apple itunes podcast categories
-     *
-     */
-    public static function categories()
-    {
-        return [
-            'Arts',
-            'Business',
-            'Comedy',
-            'Education',
-            'Games &amp; Hobbies',
-            'Government &amp; Organizations',
-            'Health',
-            'Kids &amp; Family',
-            'Music',
-            'News &amp; Politics',
-            'Religion &amp; Spirituality',
-            'Science &amp; Medicine',
-            'Society &amp; Culture',
-            'Sports &amp; Recreation',
-            'Technology',
-            'TV &amp; Film',
-        ];
-    }
 }
