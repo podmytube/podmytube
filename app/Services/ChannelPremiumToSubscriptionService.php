@@ -17,6 +17,7 @@ use Carbon\Carbon;
  */
 class ChannelPremiumToSubscriptionService
 {
+    const _ACCROPOLIS_CHANNEL_ID = 'UCq80IvL314jsE7PgYsTdw7Q';
     /**
      * First premium users (6€) monthly
      * 'UCnF1gaTK11ax2pWCIdUp8-w', // | Delphine Dimanche => 6€/month
@@ -114,7 +115,7 @@ class ChannelPremiumToSubscriptionService
          * Accropolis was set to channel_premium=3 once upon a time to increase
          * nb of episodes generated
          */
-        if ($channel->channel_id == "UCq80IvL314jsE7PgYsTdw7Q") {
+        if ($channel->channel_id == self::_ACCROPOLIS_CHANNEL_ID) {
             return Plan::_ACCROPOLIS_PLAN_ID;
         }
 
