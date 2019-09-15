@@ -93,7 +93,7 @@ class ChannelCreateController extends Controller
          * We will update it once paid.
          */
         try {
-            $subscription = Subscription::create([
+            Subscription::create([
                 'channel_id' => $channel_id,
                 'plan_id' => Plan::_FREE_PLAN_ID,
             ]);
