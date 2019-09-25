@@ -51,14 +51,14 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'url' => env('APP_URL') . '/storage',
             'visibility' => 'public',
         ],
 
         'thumbs' => [
             'driver' => 'local',
             'root' => storage_path('app/public/thumbs'),
-            'url' => env('APP_URL').'/storage/thumbs',
+            'url' => env('APP_URL') . '/storage/thumbs',
             'visibility' => 'public',
         ],
 
@@ -66,13 +66,21 @@ return [
             'driver' => 'local',
             'root'   => '../www/thumbs',
         ],
-        
-        's3' => [
-            'driver' => 's3',
-            'key' => env('AWS_KEY'),
-            'secret' => env('AWS_SECRET'),
-            'region' => env('AWS_REGION'),
-            'bucket' => env('AWS_BUCKET'),
+
+        'sftpThumb' => [
+            'driver' => 'sftp',
+            'host' => 'ns3309553.ip-5-135-160.eu',
+            'username' => 'fred',
+            //'password' => 'your-password',
+
+            // Settings for SSH key based authentication...
+            'privateKey' => './.ssh/SFTPthumb',
+            // 'password' => 'encryption-password',
+
+            // Optional SFTP Settings...
+            // 'port' => 22,
+            // 'root' => '',
+            // 'timeout' => 30,
         ],
 
     ],
