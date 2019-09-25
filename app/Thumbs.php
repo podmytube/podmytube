@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Thumbs extends Model
 {
+    public const _LOCAL_STORAGE_DISK = 'thumbs';
+    public const _SFTP_STORAGE_DISK = 'thumbs';
 
     protected $fillable = [
         'channel_id',
