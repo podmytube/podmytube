@@ -67,6 +67,11 @@ return [
             'root'   => '../www/thumbs',
         ],
 
+        'appTmp' => [
+            'driver' => 'local',
+            'root' => base_path('tmp'),
+        ],
+
         'sftpThumb' => [
             'driver' => 'sftp',
             'host' => 'ns3309553.ip-5-135-160.eu',
