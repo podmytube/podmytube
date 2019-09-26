@@ -43,18 +43,18 @@ RUN     docker-php-ext-install pdo \
             gd
 
 # default vhost replaced by custom one
-# mainly documentRoot /srv/app/public
+# mainly documentRoot /app/public
 COPY    .docker/vhost.conf /etc/apache2/sites-available/000-default.conf
 
-# copying all files (but .dockerignore(d)) in /srv/app
-COPY    . /srv/app
-WORKDIR /srv/app
-#RUN     chown -R www-data:www-data /srv/app
+# copying all files (but .dockerignore(d)) in /app
+COPY    . /app
+WORKDIR /app
+#RUN     chown -R www-data:www-data /app
 RUN 	chown -R www-data:www-data storage bootstrap/cache
 RUN 	chmod -R ug+rwx storage bootstrap/cache
 RUN     chmod g+s storage/logs
 # Adding phpunit to Path
-ENV     PATH="/srv/app/vendor/bin:${PATH}"
+ENV     PATH="/app/vendor/bin:${PATH}"
 
 
 # compiling app.css and js
@@ -66,12 +66,9 @@ COPY    .docker/installComposer.sh /var/opt/installComposer.sh
 RUN     chmod +x /var/opt/installComposer.sh
 RUN     /var/opt/installComposer.sh
 
-# adding ll
-RUN     sed -i "s/# alias ll='ls \$LS_OPTIONS -l'/alias ll='ls -lsa'/" /root/.bashrc
-
 # symlink for storage (the same that is created with "artisan storage:link")
-RUN     if [ ! -L public/storage ]; then ln -s /srv/app/storage/app/public public/storage; fi
+RUN     if [ ! -L public/storage ]; then ln -s /app/storage/app/public public/storage; fi
 
-RUN     chown -R www-data:www-data /srv/app/storage
+RUN     chown -R www-data:www-data /app/storage
 
 
