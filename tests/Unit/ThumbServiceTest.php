@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Channel;
 use App\Services\ThumbService;
+use App\Thumb;
 use Tests\TestCase;
 
 class ThumbServiceTest extends TestCase
@@ -16,16 +17,25 @@ class ThumbServiceTest extends TestCase
     protected const VALID_SAMPLE_THUMB_FILE = "sampleThumb.jpg";
     protected const VALID_SAMPLE_VIG_FILE = "sampleVig.jpg";
 
+    public static function setUpBeforeClass():void{
+        //parent::setUpBeforeClass();
+        //$thumb = factory(Thumb::class)->make();
+        //dd($thumb);
+    }
     protected function setUp():void
     {
         parent::setUp();
+        $thumb = factory(Thumb::class)->make();
         $this->expectedThumbUrl = env('APP_URL') . self::STORAGE_THUMBS_PATH . ThumbService::DEFAULT_THUMB_FILE;
         $this->expectedVigUrl = env('APP_URL') . self::STORAGE_THUMBS_PATH . ThumbService::DEFAULT_VIGNETTE_FILE;
     }
 
-    /**
-     * Creating a vignette from a thumb should be ok too
-     */
+    public function testfoo ()
+    {
+        $this->assertFalse(false);
+    }
+    
+/*
     public function testCreateVigFromThumb()
     {
         $channel = Channel::find(self::VALID_CHANNEL);
@@ -33,9 +43,6 @@ class ThumbServiceTest extends TestCase
         $this->assertFileExists($result);
     }
 
-    /**
-     * This channel has one thumb in db but file is not present => default thumb should be returned
-     */
     public function testEarlyChannelHasItsThumbOk()
     {
         $channel = Channel::find(self::VALID_CHANNEL);
@@ -48,9 +55,6 @@ class ThumbServiceTest extends TestCase
         );
     }
 
-    /**
-     * This channel has one thumb in db but file is not present => default thumb should be returned
-     */
     public function testFreeChannelHasAThumbInDBButNoFileIsPresent()
     {
         $channel = Channel::find("freeChannel");
@@ -62,9 +66,6 @@ class ThumbServiceTest extends TestCase
         );
     }
 
-    /**
-     * This channel has no thumb associated => default thumb should be returned
-     */
     public function testInvalidChannelShouldHaveDefaultThumb()
     {
         $channel = Channel::find("invalidChannel");
@@ -75,4 +76,5 @@ class ThumbServiceTest extends TestCase
             "Channel {{$channel->channel_id}} should have default thumb {{$this->expectedThumbUrl}} and result was {{$result}}"
         );
     }
+*/
 }

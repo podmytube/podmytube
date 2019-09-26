@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 
-use App\Thumbs;
+use App\Thumb;
 
 use App\Channel;
 
@@ -88,7 +88,7 @@ class ThumbsController extends Controller
         $file_name = explode(DIRECTORY_SEPARATOR, $file_path)[1];
         
         // storing new/updated entry in db
-        $newThumb = Thumbs::updateOrCreate(
+        $newThumb = Thumb::updateOrCreate(
             [
                 'channel_id' => $channel->channel_id
             ],
@@ -113,10 +113,10 @@ class ThumbsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Thumbs  $thumbs
+     * @param  \App\Thumb  $thumb
      * @return \Illuminate\Http\Response
      */
-    public function show(Thumbs $thumbs)
+    public function show(Thumb $thumb)
     {
         $this->index();
     }
@@ -138,10 +138,10 @@ class ThumbsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Thumbs  $thumbs
+     * @param  \App\Thumb  $thumb
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Thumbs $thumbs)
+    public function update(Request $request, Thumb $thumb)
     {
         //
     }
@@ -149,10 +149,10 @@ class ThumbsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Thumbs  $thumbs
+     * @param  \App\Thumb  $thumbs
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Thumbs $thumbs)
+    public function destroy(Thumb $thumb)
     {
         //
     }
