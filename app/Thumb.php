@@ -4,10 +4,11 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Thumbs extends Model
+class Thumb extends Model
 {
+    public const _TEMP_STORAGE_DISK = 'appTmp';
     public const _LOCAL_STORAGE_DISK = 'thumbs';
-    public const _SFTP_STORAGE_DISK = 'thumbs';
+    public const _SFTP_STORAGE_DISK = 'sftpThumb';
 
     protected $fillable = [
         'channel_id',
@@ -47,7 +48,7 @@ class Thumbs extends Model
 
         if (!$this->exists()) {
 
-            throw new \Exception('Thumbs for this channel does not exist');
+            throw new \Exception('Thumb for this channel does not exist');
 
         }
 

@@ -128,7 +128,7 @@ class Channel extends Model
      */
     public function thumb()
     {
-        return $this->HasOne(Thumbs::class, 'channel_id');
+        return $this->HasOne(Thumb::class, 'channel_id');
     }
 
     /**

@@ -84,7 +84,7 @@ Route::post('/subscribe', 'SubscribeController@store');
 
 
 /**
- * Thumbs
+ * Thumb
  */
 Route::get('/channel/{channel}/thumbs', 'ThumbsController@index')->name('channel.thumbs.index');
 Route::get('/channel/{channel}/thumbs/edit', 'ThumbsController@edit')->name('channel.thumbs.edit');

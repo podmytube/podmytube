@@ -2,7 +2,7 @@
 namespace App\Services;
 
 use App\Channel;
-use App\Thumbs;
+use App\Thumb;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Image;
@@ -24,7 +24,7 @@ class ThumbService
     /**
      * This function is checking is thumb folder exist for current Thumb model.
      */
-    public static function thumbExists(Thumbs $thumb)
+    public static function thumbExists(Thumb $thumb)
     {
         if (!Storage::disk($thumb->file_disk)->exists($thumb->channel_id . '/' . $thumb->file_name)) {
             throw new \Exception("This channel {$thumb->channel_id} has no thumb folder !");
@@ -82,7 +82,7 @@ class ThumbService
 
         if (!Storage::disk($thumb->file_disk)
             ->exists($thumb->channel_id . DIRECTORY_SEPARATOR . $thumb->file_name)) {
-            throw new \Exception("Thumbs for this channel {$thumb->channel_id} does not exist");
+            throw new \Exception("Thumb for this channel {$thumb->channel_id} does not exist");
         }
 
         return Storage::disk($thumb->file_disk)->url($thumb->channel_id . '/' . $thumb->file_name);
@@ -90,9 +90,9 @@ class ThumbService
 
     /**
      * Get the channel vignette url for the specified thumb.
-     * @param Thumbs $thumb the thumb model to retrieve
+     * @param Thumb $thumb the thumb model to retrieve
      */
-    public static function getChannelVignetteUrl(Thumbs $thumb)
+    public static function getChannelVignetteUrl(Thumb $thumb)
     {
         try {
             self::thumbExists($thumb);
@@ -103,7 +103,7 @@ class ThumbService
         $vignettePath = self::getVignetteFilePath($thumb);
 
         if (!Storage::disk($thumb->file_disk)->exists($vignettePath)) {
-            throw new \Exception('Thumbs for this channel does not exist');
+            throw new \Exception('Thumb for this channel does not exist');
         }
 
         return Storage::disk($thumb->file_disk)->url($vignettePath);
@@ -113,9 +113,9 @@ class ThumbService
      * From a Thumb model will return the thumb file path.
      * Typically will return something like
      * UC9hHeywcPBnLglqnQRaNShQ/Qb3mks0ghLSKQBpLOHNz5gY850ZgFAetkIodFI2K.png
-     * @param Thumbs $thumb
+     * @param Thumb $thumb
      */
-    public static function getThumbFilePath(Thumbs $thumb)
+    public static function getThumbFilePath(Thumb $thumb)
     {
         return $thumb->channel_id . DIRECTORY_SEPARATOR . $thumb->file_name;
     }
@@ -124,10 +124,10 @@ class ThumbService
      * From a Thumb model will return the vignette file path.
      * Typically will return something like
      * UC9hHeywcPBnLglqnQRaNShQ/Qb3mks0ghLSKQBpLOHNz5gY850ZgFAetkIodFI2K_vig.png
-     * @param Thumbs $thumb
+     * @param Thumb $thumb
      * @return string the vignette file path
      */
-    public static function getVignetteFilePath(Thumbs $thumb)
+    public static function getVignetteFilePath(Thumb $thumb)
     {
         $fileInfos = pathinfo(self::getThumbFilePath($thumb));
         return $thumb->channel_id . DIRECTORY_SEPARATOR . $fileInfos['filename'] . '_vig' . '.' . $fileInfos['extension'];
@@ -137,7 +137,7 @@ class ThumbService
      * This function will create a vignette from the podcast thumbnail.
      * @param Thumb $thumb
      */
-    public static function createThumbVig(Thumbs $thumb)
+    public static function createThumbVig(Thumb $thumb)
     {
         // mini thumb to be used in dashboard creation
         $thumbPath = self::getThumbFilePath($thumb);
