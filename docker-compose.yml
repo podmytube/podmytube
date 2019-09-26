@@ -37,7 +37,7 @@ services:
       - APACHE_RUN_GROUP=www-data
     # we are copying files into /srv/app (into Dockerfile)
     volumes:
-      - .:/srv/app
+      - .:/app
     # health : checking if vendor/autoload exists
     healthcheck:
       test: bash -c "[ -f /srv/app/vendor/autoload.php ]"
