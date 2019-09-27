@@ -16,221 +16,193 @@ class categoriesTableSeeder extends Seeder
     {
         DB::statement('SET FOREIGN_KEY_CHECKS=0');
         Category::truncate();
-        DB::statement('SET FOREIGN_KEY_CHECKS=1');
-
+        
         /**
          * Parents categories
          */
-        Category::insert(['parent_id' => 0, 'name' => 'arts']);
-        Category::insert(['parent_id' => 0, 'name' => 'business']);
-        Category::insert(['parent_id' => 0, 'name' => 'comedy']);
-        Category::insert(['parent_id' => 0, 'name' => 'education']);
-        Category::insert(['parent_id' => 0, 'name' => 'fiction']);
-        Category::insert(['parent_id' => 0, 'name' => 'government']);
-        Category::insert(['parent_id' => 0, 'name' => 'history']);
-        Category::insert(['parent_id' => 0, 'name' => 'healthFitness']);
-        Category::insert(['parent_id' => 0, 'name' => 'kidsFamily']);
-        Category::insert(['parent_id' => 0, 'name' => 'leisure']);
-        Category::insert(['parent_id' => 0, 'name' => 'music']);
-        Category::insert(['parent_id' => 0, 'name' => 'news']);
-        Category::insert(['parent_id' => 0, 'name' => 'religionSpirituality']);
-        Category::insert(['parent_id' => 0, 'name' => 'science']);
-        Category::insert(['parent_id' => 0, 'name' => 'societyCulture']);
-        Category::insert(['parent_id' => 0, 'name' => 'sports']);
-        Category::insert(['parent_id' => 0, 'name' => 'technology']);
-        Category::insert(['parent_id' => 0, 'name' => 'trueCrime']);
-        Category::insert(['parent_id' => 0, 'name' => 'tvFilm']);
+        $data = [
+            ['parent_id' => 0, 'name' => 'arts'],
+            ['parent_id' => 0, 'name' => 'business'],
+            ['parent_id' => 0, 'name' => 'comedy'],
+            ['parent_id' => 0, 'name' => 'education'],
+            ['parent_id' => 0, 'name' => 'fiction'],
+            ['parent_id' => 0, 'name' => 'government'],
+            ['parent_id' => 0, 'name' => 'history'],
+            ['parent_id' => 0, 'name' => 'healthFitness'],
+            ['parent_id' => 0, 'name' => 'kidsFamily'],
+            ['parent_id' => 0, 'name' => 'leisure'],
+            ['parent_id' => 0, 'name' => 'music'],
+            ['parent_id' => 0, 'name' => 'news'],
+            ['parent_id' => 0, 'name' => 'religionSpirituality'],
+            ['parent_id' => 0, 'name' => 'science'],
+            ['parent_id' => 0, 'name' => 'societyCulture'],
+            ['parent_id' => 0, 'name' => 'sports'],
+            ['parent_id' => 0, 'name' => 'technology'],
+            ['parent_id' => 0, 'name' => 'trueCrime'],
+            ['parent_id' => 0, 'name' => 'tvFilm'],
+        ];
+        Category::insert($data);
 
         /**
-         * Arts categories
+         * Sub categories
          */
-        $parentId = Category::where("name", "arts")->first()->id;
-        Category::insert(['parent_id' => $parentId, 'name' => 'books']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'design']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'fashionAndBeauty']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'food']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'performingArts']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'visualArts']);
 
-        /**
-         * Business categories
-         */
-        $parentId = Category::where("name", "business")->first()->id;
-        Category::insert(['parent_id' => $parentId, 'name' => 'careers']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'entrepreneurShip']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'investing']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'management']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'marketing']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'nonProfit']);
+        $artsId = Category::where("name", "arts")->first()->id;
+        $businessId = Category::where("name", "business")->first()->id;
+        $comedyId = Category::where("name", "comedy")->first()->id;
+        $educationId = Category::where('name', 'education')->first()->id;
+        $fictionId = Category::where('name', 'fiction')->first()->id;
+        $healthFitnessId = Category::where('name', 'healthFitness')->first()->id;
+        $kidsFamilyId = Category::where('name', 'kidsFamily')->first()->id;
+        $leisureId = Category::where('name', 'leisure')->first()->id;
+        $musicId = Category::where('name', 'music')->first()->id;
+        $newsId = Category::where('name', 'news')->first()->id;
+        $religionSpiritualityId = Category::where('name', 'religionSpirituality')->first()->id;
+        $scienceId = Category::where('name', 'science')->first()->id;
+        $societyCultureId = Category::where('name', 'societyCulture')->first()->id;
+        $sportsId = Category::where('name', 'sports')->first()->id;
+        $tvFilmId = Category::where('name', 'tvFilm')->first()->id;
 
-        /**
-         * Comedy categories
-         */
-        $parentId = Category::where("name", "comedy")->first()->id;
-        Category::insert(['parent_id' => $parentId, 'name' => 'comedyInterviews']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'improv']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'standUp']);
+        $data = [
+            /**
+             * Arts categories
+             */
+            ['parent_id' => $artsId, 'name' => 'books'],
+            ['parent_id' => $artsId, 'name' => 'design'],
+            ['parent_id' => $artsId, 'name' => 'fashionAndBeauty'],
+            ['parent_id' => $artsId, 'name' => 'food'],
+            ['parent_id' => $artsId, 'name' => 'performingArts'],
+            ['parent_id' => $artsId, 'name' => 'visualArts'],
+            /**
+             * Business categories
+             */
+            ['parent_id' => $businessId, 'name' => 'careers'],
+            ['parent_id' => $businessId, 'name' => 'entrepreneurShip'],
+            ['parent_id' => $businessId, 'name' => 'investing'],
+            ['parent_id' => $businessId, 'name' => 'management'],
+            ['parent_id' => $businessId, 'name' => 'marketing'],
+            ['parent_id' => $businessId, 'name' => 'nonProfit'],
+            /**
+             * Comedy categories
+             */
+            ['parent_id' => $comedyId, 'name' => 'comedyInterviews'],
+            ['parent_id' => $comedyId, 'name' => 'improv'],
+            ['parent_id' => $comedyId, 'name' => 'standUp'],
+            /**
+             * Education categories
+             */
+            ['parent_id' => $educationId, 'name' => 'courses'],
+            ['parent_id' => $educationId, 'name' => 'howTo'],
+            ['parent_id' => $educationId, 'name' => 'languageLearning'],
+            ['parent_id' => $educationId, 'name' => 'selfImprovement'],
+            /**
+             * Fiction categories
+             */
+            ['parent_id' => $fictionId, 'name' => 'comedyFiction'],
+            ['parent_id' => $fictionId, 'name' => 'drama'],
+            ['parent_id' => $fictionId, 'name' => 'scienceFiction'],
+            /**
+             * Health & Fitness categories
+             */
+            ['parent_id' => $healthFitnessId, 'name' => 'alternativeHealth'],
+            ['parent_id' => $healthFitnessId, 'name' => 'fitness'],
+            ['parent_id' => $healthFitnessId, 'name' => 'medicine'],
+            ['parent_id' => $healthFitnessId, 'name' => 'mentalHealth'],
+            ['parent_id' => $healthFitnessId, 'name' => 'nutrition'],
+            ['parent_id' => $healthFitnessId, 'name' => 'sexuality'],
+            /**
+             * Kids & Family categories
+             */
+            ['parent_id' => $kidsFamilyId, 'name' => 'educationForKids'],
+            ['parent_id' => $kidsFamilyId, 'name' => 'parenting'],
+            ['parent_id' => $kidsFamilyId, 'name' => 'petsAnimals'],
+            ['parent_id' => $kidsFamilyId, 'name' => 'storiesForKids'],
+            /**
+             * Leisure categories
+             */
+            ['parent_id' => $leisureId, 'name' => 'animationManga'],
+            ['parent_id' => $leisureId, 'name' => 'automotive'],
+            ['parent_id' => $leisureId, 'name' => 'aviation'],
+            ['parent_id' => $leisureId, 'name' => 'crafts'],
+            ['parent_id' => $leisureId, 'name' => 'games'],
+            ['parent_id' => $leisureId, 'name' => 'hobbies'],
+            ['parent_id' => $leisureId, 'name' => 'homeGarden'],
+            ['parent_id' => $leisureId, 'name' => 'videoGames'],
+            /**
+             * Music categories
+             */
+            ['parent_id' => $musicId, 'name' => 'musicCommentary'],
+            ['parent_id' => $musicId, 'name' => 'musicHistory'],
+            ['parent_id' => $musicId, 'name' => 'musicInterviews'],
+            /**
+             * News categories
+             */
+            ['parent_id' => $newsId, 'name' => 'businessNews'],
+            ['parent_id' => $newsId, 'name' => 'dailyNews'],
+            ['parent_id' => $newsId, 'name' => 'entertainmentNews'],
+            ['parent_id' => $newsId, 'name' => 'newsCommentary'],
+            ['parent_id' => $newsId, 'name' => 'politics'],
+            ['parent_id' => $newsId, 'name' => 'sportsNews'],
+            ['parent_id' => $newsId, 'name' => 'techNews'],
 
-        /**
-         * Education categories
-         */
-        $parentId = Category::where('name', 'education')->first()->id;
-        Category::insert(['parent_id' => $parentId, 'name' => 'courses']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'howTo']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'languageLearning']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'selfImprovement']);
-
-        /**
-         * Fiction categories
-         */
-        $parentId = Category::where('name', 'fiction')->first()->id;
-        Category::insert(['parent_id' => $parentId, 'name' => 'comedyFiction']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'drama']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'scienceFiction']);
-
-        /**
-         * Government categories
-         */
-        $parentId = Category::where('name', 'government')->first()->id;
-        /** no subcategories */
-
-        /**
-         * History categories
-         */
-        $parentId = Category::where('name', 'history')->first()->id;
-        /** no subcategories */
-
-        /**
-         * Health & Fitness categories
-         */
-        $parentId = Category::where('name', 'healthFitness')->first()->id;
-        Category::insert(['parent_id' => $parentId, 'name' => 'alternativeHealth']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'fitness']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'medicine']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'mentalHealth']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'nutrition']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'sexuality']);
-
-        /**
-         * Kids & Family categories
-         */
-        $parentId = Category::where('name', 'kidsFamily')->first()->id;
-        Category::insert(['parent_id' => $parentId, 'name' => 'educationForKids']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'parenting']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'petsAnimals']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'storiesForKids']);
-
-        /**
-         * Leisure categories
-         */
-        $parentId = Category::where('name', 'leisure')->first()->id;
-        Category::insert(['parent_id' => $parentId, 'name' => 'animationManga']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'automotive']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'aviation']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'crafts']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'games']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'hobbies']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'homeGarden']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'videoGames']);
-
-        /**
-         * Music categories
-         */
-        $parentId = Category::where('name', 'music')->first()->id;
-        Category::insert(['parent_id' => $parentId, 'name' => 'musicCommentary']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'musicHistory']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'musicInterviews']);
-        
-        /**
-         * News categories
-         */
-        $parentId = Category::where('name', 'news')->first()->id;
-        Category::insert(['parent_id' => $parentId, 'name' => 'businessNews']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'dailyNews']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'entertainmentNews']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'newsCommentary']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'politics']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'sportsNews']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'techNews']);
-        
-
-        /**
-         * Religion & Spirtuality categories
-         */
-        $parentId = Category::where('name', 'religionSpirituality')->first()->id;
-        Category::insert(['parent_id' => $parentId, 'name' => 'buddhism']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'christianity']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'hinduism']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'islam']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'judaism']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'religion']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'spirituality']);
-        
-        /**
-         * Science categories
-         */
-        $parentId = Category::where('name', 'science')->first()->id;
-        Category::insert(['parent_id' => $parentId, 'name' => 'astronomy']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'chemistry']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'earthSciences']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'lifeSciences']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'mathematics']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'naturalSciences']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'nature']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'physics']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'socialSciences']);
-        
-
-        /**
-         * Society & Culture categories
-         */
-        $parentId = Category::where('name', 'societyCulture')->first()->id;
-        Category::insert(['parent_id' => $parentId, 'name' => 'documentary']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'personalJournals']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'philosophy']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'placesTravel']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'relationships']);
-        
-        /**
-         * Sports categories
-         */
-        $parentId = Category::where('name', 'sports')->first()->id;
-        Category::insert(['parent_id' => $parentId, 'name' => 'baseball']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'basketball']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'cricket']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'fantasySports']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'football']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'golf']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'hockey']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'rugby']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'running']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'soccer']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'swimming']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'tennis']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'volleyball']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'wilderness']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'wrestling']);
-        
-        /**
-         * Techology categories
-         */
-        $parentId = Category::where('name', 'technology')->first()->id;
-        /** no subcategories */
-
-        /**
-         * True Crime categories
-         */
-        $parentId = Category::where('name', 'trueCrime')->first()->id;
-        /** no subcategories */
-
-        /**
-         * TV & Film categories
-         */
-        $parentId = Category::where('name', 'tvFilm')->first()->id;
-        Category::insert(['parent_id' => $parentId, 'name' => 'afterShows']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'filmHistory']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'filmInterviews']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'filmReviews']);
-        Category::insert(['parent_id' => $parentId, 'name' => 'tvReviews']);
+            /**
+             * Religion & Spirtuality categories
+             */
+            ['parent_id' => $religionSpiritualityId, 'name' => 'buddhism'],
+            ['parent_id' => $religionSpiritualityId, 'name' => 'christianity'],
+            ['parent_id' => $religionSpiritualityId, 'name' => 'hinduism'],
+            ['parent_id' => $religionSpiritualityId, 'name' => 'islam'],
+            ['parent_id' => $religionSpiritualityId, 'name' => 'judaism'],
+            ['parent_id' => $religionSpiritualityId, 'name' => 'religion'],
+            ['parent_id' => $religionSpiritualityId, 'name' => 'spirituality'],
+            /**
+             * Science categories
+             */
+            ['parent_id' => $scienceId, 'name' => 'astronomy'],
+            ['parent_id' => $scienceId, 'name' => 'chemistry'],
+            ['parent_id' => $scienceId, 'name' => 'earthSciences'],
+            ['parent_id' => $scienceId, 'name' => 'lifeSciences'],
+            ['parent_id' => $scienceId, 'name' => 'mathematics'],
+            ['parent_id' => $scienceId, 'name' => 'naturalSciences'],
+            ['parent_id' => $scienceId, 'name' => 'nature'],
+            ['parent_id' => $scienceId, 'name' => 'physics'],
+            ['parent_id' => $scienceId, 'name' => 'socialSciences'],
+            /**
+             * Society & Culture categories
+             */
+            ['parent_id' => $societyCultureId, 'name' => 'documentary'],
+            ['parent_id' => $societyCultureId, 'name' => 'personalJournals'],
+            ['parent_id' => $societyCultureId, 'name' => 'philosophy'],
+            ['parent_id' => $societyCultureId, 'name' => 'placesTravel'],
+            ['parent_id' => $societyCultureId, 'name' => 'relationships'],
+            /**
+             * Sports categories
+             */
+            ['parent_id' => $sportsId, 'name' => 'baseball'],
+            ['parent_id' => $sportsId, 'name' => 'basketball'],
+            ['parent_id' => $sportsId, 'name' => 'cricket'],
+            ['parent_id' => $sportsId, 'name' => 'fantasySports'],
+            ['parent_id' => $sportsId, 'name' => 'football'],
+            ['parent_id' => $sportsId, 'name' => 'golf'],
+            ['parent_id' => $sportsId, 'name' => 'hockey'],
+            ['parent_id' => $sportsId, 'name' => 'rugby'],
+            ['parent_id' => $sportsId, 'name' => 'running'],
+            ['parent_id' => $sportsId, 'name' => 'soccer'],
+            ['parent_id' => $sportsId, 'name' => 'swimming'],
+            ['parent_id' => $sportsId, 'name' => 'tennis'],
+            ['parent_id' => $sportsId, 'name' => 'volleyball'],
+            ['parent_id' => $sportsId, 'name' => 'wilderness'],
+            ['parent_id' => $sportsId, 'name' => 'wrestling'],
+            /**
+             * TV & Film categories
+             */
+            ['parent_id' => $tvFilmId, 'name' => 'afterShows'],
+            ['parent_id' => $tvFilmId, 'name' => 'filmHistory'],
+            ['parent_id' => $tvFilmId, 'name' => 'filmInterviews'],
+            ['parent_id' => $tvFilmId, 'name' => 'filmReviews'],
+            ['parent_id' => $tvFilmId, 'name' => 'tvReviews'],
+        ];
+        Category::insert($data);
+        DB::statement('SET FOREIGN_KEY_CHECKS=1');
     }
 }
