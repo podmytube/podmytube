@@ -17,16 +17,31 @@ class ThumbServiceTest extends TestCase
     protected const VALID_SAMPLE_THUMB_FILE = "sampleThumb.jpg";
     protected const VALID_SAMPLE_VIG_FILE = "sampleVig.jpg";
 
+    /**
+     * Tell id DB has been seed with some item first.
+     * @var Boolean $initDone 
+     */
     protected static $initDone = false;
 
+    /**
+     * This function will create one thumb (and user+channel).
+     * I'm not using setUpBeforeClass because it doesn't work out
+     * of the bow with laravel and this way is pretty clear and simple.
+     */
     protected static function initDB(): void
     {
         factory(Thumb::class)->create();
         self::$initDone = true;
     }
+
     protected function setUp(): void
     {
         parent::setUp();
+
+        /**
+         * This should be thumb const properties.
+         * @todo change that
+         */
         $this->expectedThumbUrl = env('APP_URL') . self::STORAGE_THUMBS_PATH . ThumbService::DEFAULT_THUMB_FILE;
         $this->expectedVigUrl = env('APP_URL') . self::STORAGE_THUMBS_PATH . ThumbService::DEFAULT_VIGNETTE_FILE;
 
