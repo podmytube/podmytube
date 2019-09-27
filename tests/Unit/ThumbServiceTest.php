@@ -17,25 +17,30 @@ class ThumbServiceTest extends TestCase
     protected const VALID_SAMPLE_THUMB_FILE = "sampleThumb.jpg";
     protected const VALID_SAMPLE_VIG_FILE = "sampleVig.jpg";
 
-    public static function setUpBeforeClass():void{
-        //parent::setUpBeforeClass();
-        //$thumb = factory(Thumb::class)->make();
-        //dd($thumb);
+    protected static $initDone = false;
+
+    protected static function initDB(): void
+    {
+        factory(Thumb::class)->create();
+        self::$initDone = true;
     }
-    protected function setUp():void
+    protected function setUp(): void
     {
         parent::setUp();
-        $thumb = factory(Thumb::class)->make();
         $this->expectedThumbUrl = env('APP_URL') . self::STORAGE_THUMBS_PATH . ThumbService::DEFAULT_THUMB_FILE;
         $this->expectedVigUrl = env('APP_URL') . self::STORAGE_THUMBS_PATH . ThumbService::DEFAULT_VIGNETTE_FILE;
+
+        if (!self::$initDone) {
+            self::initDB();
+        }
     }
 
-    public function testfoo ()
+    public function testfoo()
     {
         $this->assertFalse(false);
     }
-    
-/*
+
+    /*
     public function testCreateVigFromThumb()
     {
         $channel = Channel::find(self::VALID_CHANNEL);
