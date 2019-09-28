@@ -6,9 +6,26 @@ use Illuminate\Database\Eloquent\Model;
 
 class Thumb extends Model
 {
+    /**
+     * @var 
+     */
     public const _TEMP_STORAGE_DISK = 'appTmp';
-    public const _LOCAL_STORAGE_DISK = 'thumbs';
-    public const _SFTP_STORAGE_DISK = 'sftpThumb';
+
+    /**
+     * where thumbs were stored when stored locally
+     * @var string _LOCAL_STORAGE_DISK
+     */
+    public const _STORAGE_DISK = 'thumbs';
+
+    /**
+     * default thumb file (1400x1400) and default vignette one.
+     * @var string _DEFAULT_THUMB_FILE
+     * @var string _DEFAULT_VIGNETTE_FILE
+     */
+    public const _DEFAULT_THUMB_FILE = 'default_thumb.jpg';
+    public const _DEFAULT_VIGNETTE_FILE = 'default_vignette.jpg';
+    public const _DEFAULT_VIGNETTE_WIDTH = 300;
+
 
     protected $fillable = [
         'channel_id',

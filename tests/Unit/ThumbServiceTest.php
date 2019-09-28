@@ -9,19 +9,79 @@ use Tests\TestCase;
 
 class ThumbServiceTest extends TestCase
 {
-    protected $expectedThumbUrl = null;
-    protected $expectedVigUrl = null;
-    protected const STORAGE_THUMBS_PATH = "/storage/thumbs/";
-
-    protected const VALID_CHANNEL = "earlyChannel";
-    protected const VALID_SAMPLE_THUMB_FILE = "sampleThumb.jpg";
-    protected const VALID_SAMPLE_VIG_FILE = "sampleVig.jpg";
-
     /**
      * Tell id DB has been seed with some item first.
      * @var Boolean $initDone 
      */
     protected static $initDone = false;
+
+    /**
+     * Thumb provided by the factory creation
+     * @var Thumb $thumb
+     */
+    protected static $thumb;
+
+
+    /**
+     * ------------------------------------------------------------------------
+     */
+    public function testingChannelWithNoThumbShouldGetDefaultUrl ()
+    {
+        /**
+         * Creating one channel for this test
+         */
+        $channel = factory(Channel::class)->create();
+        $this->assertEquals(
+            ThumbService::getDefaultThumbUrl(),
+            ThumbService::getChannelThumbUrl($channel)
+        );
+        return $channel;
+    }
+
+    /**
+     * @depends testingChannelWithNoThumbShouldGetDefaultUrl
+     */
+    public function  ()
+    {
+        //code
+    }
+    /**
+     * ========================================================================
+     */
+
+    public function testingGetDefaultThumbUrl()
+    {
+        $this->assertEquals(
+            getenv('THUMBS_URL') . '/' . Thumb::_DEFAULT_THUMB_FILE,
+            ThumbService::getDefaultThumbUrl()
+        );
+    }
+
+    public function testingGetDefaultVignetteUrl()
+    {
+        $this->assertEquals(
+            getenv('THUMBS_URL') . '/' . Thumb::_DEFAULT_VIGNETTE_FILE,
+            ThumbService::getDefaultVignetteUrl()
+        );
+    }
+
+    public function testingThatDefaultFilesArePresent()
+    {
+        foreach ([
+            Thumb::_DEFAULT_THUMB_FILE,
+            Thumb::_DEFAULT_VIGNETTE_FILE,
+        ] as $defaultFile) {
+            $this->assertTrue(
+                ThumbService::pathExists($defaultFile),
+                "Default thumb file {$defaultFile} is missing on {" . Thumb::_STORAGE_DISK . "}."
+            );
+        }
+    }
+
+    public function testingInvalidThumbFileShouldBeMissing()
+    {
+        $this->assertFalse(ThumbService::pathExists("/this/file/will/never/exist"));
+    }
 
     /**
      * This function will create one thumb (and user+channel).
@@ -30,7 +90,7 @@ class ThumbServiceTest extends TestCase
      */
     protected static function initDB(): void
     {
-        factory(Thumb::class)->create();
+        self::$thumb = factory(Thumb::class)->create();
         self::$initDone = true;
     }
 
@@ -38,63 +98,12 @@ class ThumbServiceTest extends TestCase
     {
         parent::setUp();
 
-        /**
-         * This should be thumb const properties.
-         * @todo change that
-         */
-        $this->expectedThumbUrl = env('APP_URL') . self::STORAGE_THUMBS_PATH . ThumbService::DEFAULT_THUMB_FILE;
-        $this->expectedVigUrl = env('APP_URL') . self::STORAGE_THUMBS_PATH . ThumbService::DEFAULT_VIGNETTE_FILE;
-
         if (!self::$initDone) {
             self::initDB();
         }
     }
 
-    public function testfoo()
-    {
-        $this->assertFalse(false);
-    }
 
-    /*
-    public function testCreateVigFromThumb()
-    {
-        $channel = Channel::find(self::VALID_CHANNEL);
-        $result = ThumbService::createThumbVig($channel->thumb);
-        $this->assertFileExists($result);
-    }
 
-    public function testEarlyChannelHasItsThumbOk()
-    {
-        $channel = Channel::find(self::VALID_CHANNEL);
-        $expected = env('APP_URL') . self::STORAGE_THUMBS_PATH . $channel->channel_id . '/' . self::VALID_SAMPLE_THUMB_FILE;
-        $result = ThumbService::getChannelThumbUrl($channel);
-        $this->assertEquals(
-            $expected,
-            $result,
-            "Channel {{$channel->channel_id}} should have its real thumb {{$expected}} and result was {{$result}}"
-        );
-    }
-
-    public function testFreeChannelHasAThumbInDBButNoFileIsPresent()
-    {
-        $channel = Channel::find("freeChannel");
-        $result = ThumbService::getChannelThumbUrl($channel);
-        $this->assertEquals(
-            $this->expectedThumbUrl,
-            $result,
-            "Channel {{$channel->channel_id}} should have default thumb {{$this->expectedThumbUrl}} and result was {{$result}}"
-        );
-    }
-
-    public function testInvalidChannelShouldHaveDefaultThumb()
-    {
-        $channel = Channel::find("invalidChannel");
-        $result = ThumbService::getChannelThumbUrl($channel);
-        $this->assertEquals(
-            $this->expectedThumbUrl,
-            $result,
-            "Channel {{$channel->channel_id}} should have default thumb {{$this->expectedThumbUrl}} and result was {{$result}}"
-        );
-    }
-*/
+    
 }
