@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Channel;
@@ -10,26 +11,25 @@ use Image;
 class ThumbService
 {
     /**
-     * Thumb is the full sized image that illustrate podcast
-     */
-    const DEFAULT_THUMB_DISK = 'thumbs';
-    const DEFAULT_THUMB_FILE = 'default_thumb.jpg';
-
-    /**
-     * Vignette file is the same thumb resized to go on dashboard page
-     */
-    const DEFAULT_VIGNETTE_FILE = 'default_vignette.jpg';
-    const VIGNETTE_WIDTH = 300;
-
-    /**
      * This function is checking is thumb folder exist for current Thumb model.
      */
     public static function thumbExists(Thumb $thumb)
     {
-        if (!Storage::disk($thumb->file_disk)->exists($thumb->channel_id . '/' . $thumb->file_name)) {
-            throw new \Exception("This channel {$thumb->channel_id} has no thumb folder !");
+        if (!self::pathExists(self::getThumbFilePath($thumb))) {
+            throw new \Exception("This channel {$thumb->channel_id} has no thumb !");
         }
         return true;
+    }
+
+    /**
+     * This function will tell if there is really a thumb on this path.
+     * 
+     * @param string $thumbPath th e thumb path to check.
+     * @return boolean true if exists
+     */
+    public static function pathExists($thumbPath)
+    {
+        return Storage::disk(Thumb::_STORAGE_DISK)->exists($thumbPath);
     }
 
     /**
@@ -38,10 +38,7 @@ class ThumbService
      */
     public static function getDefaultThumbUrl()
     {
-        if (!Storage::disk(self::DEFAULT_THUMB_DISK)->exists(self::DEFAULT_THUMB_FILE)) {
-            throw new \Exception("Default thumb {" . self::DEFAULT_THUMB_FILE . "} does not exist on this server !");
-        }
-        return Storage::disk(self::DEFAULT_THUMB_DISK)->url(self::DEFAULT_THUMB_FILE);
+        return getenv('THUMBS_URL') . '/' . Thumb::_DEFAULT_THUMB_FILE;
     }
 
     /**
@@ -50,10 +47,7 @@ class ThumbService
      */
     public static function getDefaultVignetteUrl()
     {
-        if (!Storage::disk(self::DEFAULT_THUMB_DISK)->exists(self::DEFAULT_VIGNETTE_FILE)) {
-            throw new \Exception("Default vignette {" . self::DEFAULT_VIGNETTE_FILE . "} does not exist on this server !");
-        }
-        return Storage::disk(self::DEFAULT_THUMB_DISK)->url(self::DEFAULT_VIGNETTE_FILE);
+        return getenv('THUMBS_URL') . '/' . Thumb::_DEFAULT_VIGNETTE_FILE;
     }
 
     /**
@@ -71,7 +65,7 @@ class ThumbService
 
         $thumb = $channel->thumb;
         /**
-         * If channel has a database entry into thumbs but no files => => returning default one
+         * If channel has a database entry into thumbs but no files => returning default one
          */
         try {
             self::thumbExists($thumb);
@@ -142,7 +136,7 @@ class ThumbService
         // mini thumb to be used in dashboard creation
         $thumbPath = self::getThumbFilePath($thumb);
         $vignettePath = self::getVignetteFilePath($thumb);
-        
+
         /**
          * Grabbing thumb file (if exists)
          */
@@ -151,24 +145,24 @@ class ThumbService
         }
 
         //$thumbFullPath = Storage::disk($thumb->file_disk)->path($thumbPath);
-        
+
         /**
          * Getting Thumb data
          */
         $thumbData = Storage::disk($thumb->file_disk)->get($thumbPath);
-        
+
         /**
          * Converting it as an image
          */
         $thumbnail = Image::make($thumbData);
         //$thumbnail = Image::make($thumbFullPath);
-        
+
         /**
          * creating vignette
          */
         $thumbnail->fit(
-            self::VIGNETTE_WIDTH,
-            self::VIGNETTE_WIDTH,
+            Thumb::_DEFAULT_VIGNETTE_FILE,
+            Thumb::_DEFAULT_VIGNETTE_FILE,
             function ($constraint) {
                 $constraint->aspectRatio();
             }
@@ -182,6 +176,6 @@ class ThumbService
         /**
          * Return full path of the vig
          */
-        return Storage::disk($thumb->file_disk)->path($vignettePath);        
+        return Storage::disk($thumb->file_disk)->path($vignettePath);
     }
 }

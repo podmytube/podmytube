@@ -15,8 +15,16 @@ $factory->define(Thumb::class, function (Faker $faker) {
     /**
      * Getting one random channel
      */
-    $channel=Channel::all()->random();
-    
+    $channel = Channel::all()->random();
+
+    /**
+     * delete existing thumb for this channel (is any)
+     */
+    if (Thumb::where('channel_id', $channel->channel_id)->exists()) {
+        Thumb::where('channel_id', $channel->channel_id)->delete();
+    }
+
+
     /**
      * generate an image using loremPixels and storing it into
      * /app/tmp. I need to use basename because filename is something
@@ -28,10 +36,13 @@ $factory->define(Thumb::class, function (Faker $faker) {
         $faker->image("/app/tmp", 1400, 1400, 'nature')
     );
 
+    /**
+     * return the object to be make/created
+     */
     return [
         'channel_id' => $channel->channel_id,
         'file_name' => $fileName,
         'file_disk' => Thumb::_TEMP_STORAGE_DISK, // where it is stored
         'file_size' => Storage::disk(Thumb::_TEMP_STORAGE_DISK)->size("$fileName"), // its size
-    ];    
+    ];
 });

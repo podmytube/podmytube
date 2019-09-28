@@ -56,23 +56,12 @@ return [
         ],
 
         'thumbs' => [
+            /*
             'driver' => 'local',
             'root' => storage_path('app/public/thumbs'),
             'url' => env('APP_URL') . '/storage/thumbs',
             'visibility' => 'public',
-        ],
-
-        'old_thumbs' => [
-            'driver' => 'local',
-            'root'   => '../www/thumbs',
-        ],
-
-        'appTmp' => [
-            'driver' => 'local',
-            'root' => base_path('tmp'),
-        ],
-
-        'sftpThumb' => [
+            */
             'driver' => 'sftp',
             'host' => 'ns3309553.ip-5-135-160.eu',
             'username' => 'fred',
@@ -84,8 +73,24 @@ return [
 
             // Optional SFTP Settings...
             // 'port' => 22,
-            // 'root' => '',
+            'root' => env('SFTP_THUMBS_PATH'),
             // 'timeout' => 30,
+            'url' => env('THUMB_URL'),
+            'cache' => [
+                'store' => 'memcached',
+                'expire' => 600,
+                'prefix' => 'thumbs-prefix',
+            ],
+        ],
+
+        'old_thumbs' => [
+            'driver' => 'local',
+            'root'   => '../www/thumbs',
+        ],
+
+        'appTmp' => [
+            'driver' => 'local',
+            'root' => base_path('tmp'),
         ],
 
     ],
