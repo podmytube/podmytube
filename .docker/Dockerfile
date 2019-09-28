@@ -11,40 +11,51 @@ RUN     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezo
 
 # stuff to install
 # libpng-dev --- used with laravel lib to resize/work with images
+# libz-dev & libmemcached-dev are used for memcached
 # libjpeg-dev --- used with laravel lib to resize/work with images
 # wget --- used for the composer install
 # zip --- is used by composer 
 # git --- is used by composer 
-# mysql-client --- is used to get mysqldump (used for creating pmtests)
 # curl is used to download npm
 RUN     apt-get update -y && \
         apt-get install -y -qq sendmail \
             libpng-dev \
+            libz-dev libmemcached-dev \
             libjpeg-dev \
             curl \
             wget \
             zip \
             git \
-            mysql-client
+            memcached
 
 # installing nodejs
 RUN     curl -sL https://deb.nodesource.com/setup_12.x | bash -
 RUN     apt-get install -y nodejs
 RUN     rm -rf /var/lib/apt/lists/*;
 
+# installing memcached with pecl
+RUN pecl install memcached
+
 RUN docker-php-ext-configure gd \
         --with-png-dir=/usr/lib/ \
         --with-jpeg-dir=/usr/lib/ \
         --with-gd
 
+
 # installing required php modules
+# pdo & pdo_mysql for db connection
+# gd ----- NOT SURE -----
+# php-memcached for caching used for thumb for example
 RUN     docker-php-ext-install pdo \
             pdo_mysql \
-            gd
+            gd && \
+        docker-php-ext-enable memcached
+
 
 # default vhost replaced by custom one
 # mainly documentRoot /app/public
 COPY    .docker/vhost.conf /etc/apache2/sites-available/000-default.conf
+
 
 # copying all files (but .dockerignore(d)) in /app
 COPY    . /app
