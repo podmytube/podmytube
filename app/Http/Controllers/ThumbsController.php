@@ -17,10 +17,13 @@ class ThumbsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Channel $channel, Request $request)
+    public function index(Channel $channel)
     {
-        $thumb_url = ThumbService::getChannelThumbUrl($channel);
-
+        if (!isset($channel->thumb)) {
+            $thumb_url = Thumb::defaultUrl();
+        } else {
+            $thumb_url = $channel->thumb->dashboardUrl();
+        }
         return view(
             'thumbs.index',
             compact('channel', 'thumb_url')
@@ -65,34 +68,16 @@ class ThumbsController extends Controller
          *      - the disk (config/filesystems) 
          * and return a unique filepath we split to get filename
          */
-        
-        ThumbService::create()->addUploadedThumb($request->file('new_thumb_file'), $channel);
-        $file_path = $request->file('new_thumb_file')
-            ->store($channel->channel_id, Thumb::_STORAGE_DISK);
-
-        $file_name = explode(DIRECTORY_SEPARATOR, $file_path)[1];
-        
-        // storing new/updated entry in db
-        $newThumb = Thumb::updateOrCreate(
-            [
-                'channel_id' => $channel->channel_id
-            ],
-            [
-                'channel_id' => $channel->channel_id,
-                'file_name' => $file_name,
-                'file_disk' => Thumb::_STORAGE_DISK,
-                'file_size' => \Storage::disk(Thumb::_STORAGE_DISK)->size($file_path),
-            ]
-        );
 
         try {
-            ThumbService::createThumbVig($newThumb);
+            $thumbService = ThumbService::create();
+            $thumbService->addUploadedThumb($request->file('new_thumb_file'), $channel);
+            $thumbService->createThumbVig($channel);
         } catch (\Exception $e) {
-            throw new \Exception("A problem occurs during new thumb upload !");
+            throw new \Exception($e->getMessage());
         }
 
         return redirect()->route('channel.thumbs.index', ['channel' => $channel]);
-
     }
 
     /**
@@ -103,7 +88,7 @@ class ThumbsController extends Controller
      */
     public function show(Thumb $thumb)
     {
-        $this->index();
+        $this->index($thumb->channel);
     }
 
     /**
@@ -116,7 +101,6 @@ class ThumbsController extends Controller
     {
 
         return view('thumbs.edit', compact('channel'));
-
     }
 
     /**

@@ -3,14 +3,16 @@
 namespace Tests\Unit;
 
 use App\Channel;
-use App\Services\ThumbService;
 use App\Thumb;
+use App\Services\ThumbService;
+use App\User;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class ThumbServiceTest extends TestCase
 {
+
     /**
      * Tell id DB has been seed with some item first.
      * @var Boolean $initDone 
@@ -46,17 +48,26 @@ class ThumbServiceTest extends TestCase
     public function testingAddingThumbToChannel($channel)
     {
         $fileName = 'fakeThumbThatShouldNeverExist.jpg';
-        /**
-         * File should not be present at this time
-         */
-        if (Storage::disk(Thumb::_STORAGE_DISK)->exists($channel->channel_id . DIRECTORY_SEPARATOR . $fileName)) {
-            Storage::disk(Thumb::_STORAGE_DISK)->delete($channel->channel_id . DIRECTORY_SEPARATOR . $fileName);
-        }
 
         $uploadedFile = UploadedFile::fake()->image($fileName, '1400', '1400');
-        ThumbService::create()->addUploadedThumb($uploadedFile, $channel);
-        $this->markTestIncomplete( 'This test has not been implemented yet.' );
+        $this->assertTrue(ThumbService::create()->addUploadedThumb($uploadedFile, $channel));
+
+        $thumb = Thumb::where('channel_id', $channel->channel_id)->first();
+        return $thumb;
     }
+
+    /**
+     * @depends testingAddingThumbToChannel
+     */
+    public function testingDashboardUrlForThatThumb($thumb)
+    {
+        $this->assertEquals(
+            getenv('APP_URL') . '/storage/thumbs' . DIRECTORY_SEPARATOR . $thumb->channel->channel_id . DIRECTORY_SEPARATOR . $thumb->file_name,
+            $thumb->dashboardUrl()
+        );
+    }
+
+
     /**
      * ========================================================================
      */
@@ -102,6 +113,12 @@ class ThumbServiceTest extends TestCase
      */
     protected static function initDB(): void
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0');
+        User::truncate();
+        Channel::truncate();
+        Thumb::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1');
+
         self::$thumb = factory(Thumb::class)->create();
         self::$initDone = true;
     }

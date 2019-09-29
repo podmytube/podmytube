@@ -55,13 +55,25 @@ return [
             'visibility' => 'public',
         ],
 
+        /**
+         * Thumbs from the dashboard
+         */
         'thumbs' => [
-            /*
             'driver' => 'local',
             'root' => storage_path('app/public/thumbs'),
             'url' => env('APP_URL') . '/storage/thumbs',
             'visibility' => 'public',
-            */
+            'cache' => [
+                'store' => 'memcached',
+                'expire' => 600,
+                'prefix' => 'thumbs-prefix',
+            ],
+        ],
+
+        /**
+         * Thumbs real url for podcast listeners
+         */
+        'sftpthumbs' => [
             'driver' => 'sftp',
             'host' => 'ns3309553.ip-5-135-160.eu',
             'username' => 'fred',
