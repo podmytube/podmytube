@@ -12,14 +12,6 @@ use App\Services\ThumbService;
 
 class ThumbsController extends Controller
 {
-
-    protected static $file_disk = 'thumbs';
-
-    protected static $thumb_side = 300; // it s a square
-
-    protected static $dashboard_thumb_filename = 'dashboard_thumb.jpg';
-
-
     /**
      * Display a listing of the resource.
      *
@@ -33,7 +25,6 @@ class ThumbsController extends Controller
             'thumbs.index',
             compact('channel', 'thumb_url')
         );
-
     }
 
     /**
@@ -43,9 +34,7 @@ class ThumbsController extends Controller
      */
     public function create(Channel $channel)
     {
-
         return $this->edit($channel);
-
     }
 
     /**
@@ -56,23 +45,17 @@ class ThumbsController extends Controller
      */
     public function store(Request $request, Channel $channel)
     {
-
         $messages = [
             'required' => __('messages.thumbs_edit_error_image_required'),
             'dimensions' => __('messages.thumbs_edit_error_image_dimensions'),
         ];
-
         $rules = [
             'new_thumb_file' => 'required|dimensions:min_width=1400,min_height=1400,max_width=3000,max_height=3000'
         ];
-
         $this->validate($request, $rules, $messages);
 
-
         if (!$request->file('new_thumb_file')->isValid()) {
-
             throw new \Exception("A problem occurs during new thumb upload !");
-
         }
 
         /**
@@ -82,8 +65,9 @@ class ThumbsController extends Controller
          *      - the disk (config/filesystems) 
          * and return a unique filepath we split to get filename
          */
+        dd($request->file('new_thumb_file'));
         $file_path = $request->file('new_thumb_file')
-            ->store($channel->channel_id, self::$file_disk);
+            ->store($channel->channel_id, Thumb::_STORAGE_DISK);
 
         $file_name = explode(DIRECTORY_SEPARATOR, $file_path)[1];
         
@@ -95,8 +79,8 @@ class ThumbsController extends Controller
             [
                 'channel_id' => $channel->channel_id,
                 'file_name' => $file_name,
-                'file_disk' => self::$file_disk,
-                'file_size' => \Storage::disk(self::$file_disk)->size($file_path),
+                'file_disk' => Thumb::_STORAGE_DISK,
+                'file_size' => \Storage::disk(Thumb::_STORAGE_DISK)->size($file_path),
             ]
         );
 
