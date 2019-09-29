@@ -60,12 +60,13 @@ class ThumbsController extends Controller
 
         /**
          * new_thumb_file is the form field
-         * store get 2 parameters 
+         * UploadedFile::store get 2 parameters 
          *      - the folder we want to save in and 
          *      - the disk (config/filesystems) 
          * and return a unique filepath we split to get filename
          */
-        dd($request->file('new_thumb_file'));
+        
+        ThumbService::create()->addUploadedThumb($request->file('new_thumb_file'), $channel);
         $file_path = $request->file('new_thumb_file')
             ->store($channel->channel_id, Thumb::_STORAGE_DISK);
 

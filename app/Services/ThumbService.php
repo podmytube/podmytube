@@ -7,15 +7,75 @@ use App\Thumb;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Image;
+use Illuminate\Http\UploadedFile;
 
 class ThumbService
 {
+
+    public static function create()
+    {
+        return new static();
+    }
+
+    /**
+     * This function will store the uploaded file at its new location.
+     * 
+     * @param UploadedFile $uploadedFile the file that has just been uploaded.
+     * @param Channel $channel the channel that owns this thumb.
+     * @return String filePath
+     */
+    public function storeThumb(UploadedFile $uploadedFile, Channel $channel)
+    {
+        $filePath = $uploadedFile->store($channel->channel_id, Thumb::_STORAGE_DISK);
+        return substr($filePath, strlen($channel->channel_id) + 1);
+    }
+
+    /**
+     * This function will do the operations required when a new thumb is uploaded.
+     * 
+     * @param UploadedFile $uploadedFile the file that has just been uploaded.
+     * @param Channel $channel the channel that owns this thumb.
+     */
+    public function addUploadedThumb(UploadedFile $uploadedFile, Channel $channel)
+    {
+        try {
+            /**
+             * Getting fileSize
+             */
+            $fileSize = $uploadedFile->getSize();
+
+            /**
+             * Store the uploaded file to its final location
+             */
+            $fileName = $this->storeThumb($uploadedFile, $channel);
+
+            /**
+             * Associate the thumb to the channel
+             */
+            $newThumb = Thumb::updateOrCreate(
+                [
+                    'channel_id' => $channel->channel_id
+                ],
+                [
+                    'channel_id' => $channel->channel_id,
+                    'file_name' => $fileName,
+                    'file_disk' => Thumb::_STORAGE_DISK,
+                    'file_size' => $fileSize,
+                ]
+            );
+
+            return $fileName;
+        } catch (\Exception $e) { 
+            throw $e;
+        }
+    }
+
     /**
      * This function is checking is thumb folder exist for current Thumb model.
      */
-    public static function thumbExists(Thumb $thumb)
+    public function thumbExists(Thumb $thumb)
     {
-        if (!self::pathExists(self::getThumbFilePath($thumb))) {
+        if (!$this->pathExists($this->getThumbFilePath($thumb))) {
             throw new \Exception("This channel {$thumb->channel_id} has no thumb !");
         }
         return true;
@@ -24,7 +84,7 @@ class ThumbService
     /**
      * This function will tell if there is really a thumb on this path.
      * 
-     * @param string $thumbPath th e thumb path to check.
+     * @param string $thumbPath the thumb path to check.
      * @return boolean true if exists
      */
     public static function pathExists($thumbPath)
@@ -86,7 +146,7 @@ class ThumbService
      * Get the channel vignette url for the specified thumb.
      * @param Thumb $thumb the thumb model to retrieve
      */
-    public static function getChannelVignetteUrl(Thumb $thumb)
+    public function getChannelVignetteUrl(Thumb $thumb)
     {
         try {
             self::thumbExists($thumb);
@@ -109,7 +169,7 @@ class ThumbService
      * UC9hHeywcPBnLglqnQRaNShQ/Qb3mks0ghLSKQBpLOHNz5gY850ZgFAetkIodFI2K.png
      * @param Thumb $thumb
      */
-    public static function getThumbFilePath(Thumb $thumb)
+    public function getThumbFilePath(Thumb $thumb)
     {
         return $thumb->channel_id . DIRECTORY_SEPARATOR . $thumb->file_name;
     }
@@ -121,7 +181,7 @@ class ThumbService
      * @param Thumb $thumb
      * @return string the vignette file path
      */
-    public static function getVignetteFilePath(Thumb $thumb)
+    public function getVignetteFilePath(Thumb $thumb)
     {
         $fileInfos = pathinfo(self::getThumbFilePath($thumb));
         return $thumb->channel_id . DIRECTORY_SEPARATOR . $fileInfos['filename'] . '_vig' . '.' . $fileInfos['extension'];
@@ -131,7 +191,7 @@ class ThumbService
      * This function will create a vignette from the podcast thumbnail.
      * @param Thumb $thumb
      */
-    public static function createThumbVig(Thumb $thumb)
+    public function createThumbVig(Thumb $thumb)
     {
         // mini thumb to be used in dashboard creation
         $thumbPath = self::getThumbFilePath($thumb);
