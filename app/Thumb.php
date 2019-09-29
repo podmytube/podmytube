@@ -39,9 +39,7 @@ class Thumb extends Model
      */
     public function channel()
     {
-
         return $this->belongsTo(Channel::class, 'channel_id', 'channel_id');
-
     }
 
     /**
@@ -51,25 +49,19 @@ class Thumb extends Model
      */
     public function exists()
     {
+        return Storage::disk(self::_STORAGE_DISK)->exists($this->relativePath());
+    }
 
-        return \Storage::disk('thumbs')->exists($this->channel_id . '/' . $this->file_name);
-
+    public function relativePath()
+    {
+        return $this->channel_id . DIRECTORY_SEPARATOR . $this->file_name;
     }
 
     /**
      * return the url of the thumbs for the current channel.
      */
-
-    public function get_url()
+    public function url()
     {
-
-        if (!$this->exists()) {
-
-            throw new \Exception('Thumb for this channel does not exist');
-
-        }
-
-        return \Storage::disk('thumbs')->url($this->channel_id . '/' . $this->file_name);
-
+        return getenv('THUMBS_URL') . DIRECTORY_SEPARATOR . $this->relativePath();
     }
 }

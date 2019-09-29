@@ -5,6 +5,8 @@ namespace Tests\Unit;
 use App\Channel;
 use App\Services\ThumbService;
 use App\Thumb;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class ThumbServiceTest extends TestCase
@@ -43,11 +45,17 @@ class ThumbServiceTest extends TestCase
      */
     public function testingAddingThumbToChannel($channel)
     {
-        $thumb = factory(Thumb::class)
-            ->create([
-                'channel_id' => $channel->channel_id
-            ]);
-        dd($thumb);
+        $fileName = 'fakeThumbThatShouldNeverExist.jpg';
+        /**
+         * File should not be present at this time
+         */
+        if (Storage::disk(Thumb::_STORAGE_DISK)->exists($channel->channel_id . DIRECTORY_SEPARATOR . $fileName)) {
+            Storage::disk(Thumb::_STORAGE_DISK)->delete($channel->channel_id . DIRECTORY_SEPARATOR . $fileName);
+        }
+
+        $uploadedFile = UploadedFile::fake()->image($fileName, '1400', '1400');
+        ThumbService::create()->addUploadedThumb($uploadedFile, $channel);
+        $this->markTestIncomplete( 'This test has not been implemented yet.' );
     }
     /**
      * ========================================================================
