@@ -36,7 +36,7 @@ class ThumbService
      * @param UploadedFile $uploadedFile the file that has just been uploaded.
      * @param Channel $channel the channel that owns this thumb.
      */
-    public function addUploadedThumb(UploadedFile $uploadedFile, Channel $channel)
+    public function addUploadedThumb(UploadedFile $uploadedFile, Channel $channel): bool
     {
         try {
             /**
@@ -52,7 +52,7 @@ class ThumbService
             /**
              * Associate the thumb to the channel
              */
-            $newThumb = Thumb::updateOrCreate(
+            Thumb::updateOrCreate(
                 [
                     'channel_id' => $channel->channel_id
                 ],
@@ -63,11 +63,10 @@ class ThumbService
                     'file_size' => $fileSize,
                 ]
             );
-
-            return $fileName;
-        } catch (\Exception $e) { 
+        } catch (\Exception $e) {
             throw $e;
         }
+        return true;
     }
 
     /**
@@ -167,11 +166,10 @@ class ThumbService
      * From a Thumb model will return the thumb file path.
      * Typically will return something like
      * UC9hHeywcPBnLglqnQRaNShQ/Qb3mks0ghLSKQBpLOHNz5gY850ZgFAetkIodFI2K.png
-     * @param Thumb $thumb
      */
-    public function getThumbFilePath(Thumb $thumb)
+    public function getThumbFilePath()
     {
-        return $thumb->channel_id . DIRECTORY_SEPARATOR . $thumb->file_name;
+        return $this->channel_id . DIRECTORY_SEPARATOR . $this->file_name;
     }
 
     /**
@@ -181,61 +179,55 @@ class ThumbService
      * @param Thumb $thumb
      * @return string the vignette file path
      */
-    public function getVignetteFilePath(Thumb $thumb)
+    public function getVignetteFilePath()
     {
-        $fileInfos = pathinfo(self::getThumbFilePath($thumb));
-        return $thumb->channel_id . DIRECTORY_SEPARATOR . $fileInfos['filename'] . '_vig' . '.' . $fileInfos['extension'];
+        $fileInfos = pathinfo($this->getThumbFilePath());
+        return $this->channel_id . DIRECTORY_SEPARATOR . $fileInfos['filename'] . '_vig' . '.' . $fileInfos['extension'];
     }
 
     /**
      * This function will create a vignette from the podcast thumbnail.
-     * @param Thumb $thumb
+     * @param Channel $channel
      */
-    public function createThumbVig(Thumb $thumb)
+    public function createThumbVig(Channel $channel)
     {
-        // mini thumb to be used in dashboard creation
-        $thumbPath = self::getThumbFilePath($thumb);
-        $vignettePath = self::getVignetteFilePath($thumb);
-
-        /**
-         * Grabbing thumb file (if exists)
-         */
-        if (!Storage::disk($thumb->file_disk)->exists($thumbPath)) {
-            throw new \Exception("Thumb file {$thumbPath} does not exist");
-        }
-
-        //$thumbFullPath = Storage::disk($thumb->file_disk)->path($thumbPath);
-
-        /**
-         * Getting Thumb data
-         */
-        $thumbData = Storage::disk($thumb->file_disk)->get($thumbPath);
-
-        /**
-         * Converting it as an image
-         */
-        $thumbnail = Image::make($thumbData);
-        //$thumbnail = Image::make($thumbFullPath);
-
-        /**
-         * creating vignette
-         */
-        $thumbnail->fit(
-            Thumb::_DEFAULT_VIGNETTE_FILE,
-            Thumb::_DEFAULT_VIGNETTE_FILE,
-            function ($constraint) {
-                $constraint->aspectRatio();
+        try {
+            /**
+             * Grabbing thumb file (if exists)
+             */
+            if (!$channel->thumb->exists()) {
+                throw new \Exception("Thumb file for channel {{$channel->channel_id}} does not exist.");
             }
-        );
 
-        /**
-         * Storing it
-         */
-        Storage::disk($thumb->file_disk)->put($vignettePath, (string) $thumbnail->encode());
+            /**
+             * Converting it as an image
+             */
+            $thumbnail = Image::make(
+                $channel->thumb->getData()
+            );
 
-        /**
-         * Return full path of the vig
-         */
-        return Storage::disk($thumb->file_disk)->path($vignettePath);
+            /**
+             * creating vignette
+             */
+            $thumbnail->fit(
+                Thumb::_DEFAULT_VIGNETTE_WIDTH,
+                Thumb::_DEFAULT_VIGNETTE_WIDTH,
+                function ($constraint) {
+                    $constraint->aspectRatio();
+                }
+            );
+
+            /**
+             * Storing it
+             */
+            Storage::disk($channel->thumb->file_disk)
+                ->put(
+                    $channel->thumb->vignetteRelativePath(),
+                    (string) $thumbnail->encode()
+                );
+        } catch (\Exception $e) {
+            throw $e;
+        }
+        return true;
     }
 }
