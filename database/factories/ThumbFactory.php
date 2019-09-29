@@ -6,16 +6,20 @@ use App\Channel;
 use App\Thumb;
 use Faker\Generator as Faker;
 
-$factory->define(Thumb::class, function (Faker $faker) {
+$factory->define(Thumb::class, function (Faker $faker, ?array $params) {
     /**
      * creating fake channel (to have one)
      */
-    factory(Channel::class)->create();
+    if (!isset($params['channel_id'])) {
+        factory(Channel::class)->create($params);
 
-    /**
-     * Getting one random channel
-     */
-    $channel = Channel::all()->random();
+        /**
+         * Getting one random channel
+         */
+        $channel = Channel::all()->random();
+    } else {
+        $channel = Channel::find($params['channel_id']);
+    }
 
     /**
      * delete existing thumb for this channel (is any)

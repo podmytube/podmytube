@@ -25,7 +25,7 @@ class ThumbServiceTest extends TestCase
     /**
      * ------------------------------------------------------------------------
      */
-    public function testingChannelWithNoThumbShouldGetDefaultUrl ()
+    public function testingChannelWithNoThumbShouldGetDefaultUrl()
     {
         /**
          * Creating one channel for this test
@@ -41,9 +41,13 @@ class ThumbServiceTest extends TestCase
     /**
      * @depends testingChannelWithNoThumbShouldGetDefaultUrl
      */
-    public function  ()
+    public function testingAddingThumbToChannel($channel)
     {
-        //code
+        $thumb = factory(Thumb::class)
+            ->create([
+                'channel_id' => $channel->channel_id
+            ]);
+        dd($thumb);
     }
     /**
      * ========================================================================
@@ -102,8 +106,4 @@ class ThumbServiceTest extends TestCase
             self::initDB();
         }
     }
-
-
-
-    
 }
