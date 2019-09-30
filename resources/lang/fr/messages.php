@@ -71,8 +71,11 @@ return [
     'page_title_channel_thumbs_index' => 'Visuel du podcast',
     'button_update_thumbs_label' => 'Télécharger un nouveau visuel',
     'page_title_channel_thumbs_edit' => 'Télécharger un nouveau visuel',
-    'thumbs_edit_new_thumb_help_message_part1' => 'Le visuel doit être conforme aux pré-requis iTunes!',
-    'thumbs_edit_new_thumb_help_message_part2' => 'Ses dimensions doivent être au minimum de 1400x1400 pixels et de 3000x3000 pixels au maximum.',
+    'thumbs_edit_new_thumb_help_message' => '<b>Le visuel doit être conforme aux pré-requis iTunes!</b> 
+    <ul>
+        <li>Dimensions minimum : 1400x1400</li>
+        <li>Dimensions maximum : 3000x3000</li>
+    </ul>',
     'thumbs_edit_new_thumb_form_label' => 'Choisissez votre nouveau visuel.',
     'thumbs_edit_error_image_required' => 'Vous devriez choisir un nouveau visuel avant de valider le formulaire.',
     'thumbs_edit_error_image_dimensions' => 'Le nouveau visuel doit être de dimensions entre 1400x1400 et 3000x3000 pixels.',
