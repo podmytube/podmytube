@@ -34,13 +34,9 @@ class ChannelsController extends Controller
     public function index()
     {
         try {
-            $channels = ChannelService::getAuthenticatedUserChannels(Auth::user());
+            $channels = ChannelService::getAuthenticatedUserChannels(Auth::user());            
         } catch (\Exception $e) {
-			/**
-			 * @TODO adding a message to add one channel
-			 */
-			1;
-			$channels=[];
+			echo $e->getMessage();
 		}
         return view('channel.index', compact('channels'));
     }
