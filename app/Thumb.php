@@ -69,6 +69,16 @@ class Thumb extends Model
     }
 
     /**
+     * This function is checking if one thumbnail is existing for a specific channel.
+     *
+     * @return boolean true if thumb present false else.
+     */
+    public function vignetteExists()
+    {
+        return Storage::disk($this->file_disk)->exists($this->vignetteRelativePath());
+    }
+
+    /**
      * This function is returning the vignette file name.
      *
      * @return string vignette file name
@@ -111,12 +121,32 @@ class Thumb extends Model
     }
 
     /**
-     * return the url of the thumbs for the current channel.
+     * If the thumb exist return the internal url else return the default one.
      * 
      * @return string thumb url to be used in the dashboard
+     */
+    public function vignetteUrl()
+    {
+        return Storage::disk($this->file_disk)->url($this->vignetteRelativePath());
+    }
+
+    /**
+     * return the url of the default thumb.
+     * 
+     * @return string default thumb url to be used in the dashboard
      */
     public static function defaultUrl()
     {
         return Storage::disk(self::_STORAGE_DISK)->url(self::_DEFAULT_THUMB_FILE);
+    }
+
+    /**
+     * return the url of the default vignette.
+     * 
+     * @return string default vignette url to be used in the dashboard
+     */
+    public static function defaultVignetteUrl()
+    {
+        return Storage::disk(self::_STORAGE_DISK)->url(self::_DEFAULT_VIGNETTE_FILE);
     }
 }
