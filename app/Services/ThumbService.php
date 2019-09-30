@@ -2,12 +2,14 @@
 
 namespace App\Services;
 
+use Image;
 use App\Channel;
 use App\Thumb;
+use App\Exceptions\VignetteCreationFromMissingThumbException;
+use App\Exceptions\VignetteCreationFromThumbException;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Image;
-use Illuminate\Http\UploadedFile;
 
 class ThumbService
 {
@@ -196,7 +198,7 @@ class ThumbService
              * Grabbing thumb file (if exists)
              */
             if (!$channel->thumb->exists()) {
-                throw new \Exception("Thumb file for channel {{$channel->channel_id}} does not exist.");
+                throw new VignetteCreationFromMissingThumbException("Thumb file for channel {{$channel->channel_id}} is missing.");
             }
 
             /**
@@ -226,7 +228,9 @@ class ThumbService
                     (string) $thumbnail->encode()
                 );
         } catch (\Exception $e) {
-            throw $e;
+            throw new VignetteCreationFromThumbException(
+                "Vignette creation for channel {{$channel->channel_id}} has failed with message : ".$e->getMessage()
+            );
         }
         return true;
     }
