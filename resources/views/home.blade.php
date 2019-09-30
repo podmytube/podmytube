@@ -13,21 +13,7 @@
 @include ('layouts.errors')
 
 <div class="container">
-
-	<!--home main container-->
-	
-	<div class="row">
-
-		<div class="col">
-
-			@include ('layouts.channels')
-
-		</div>
-
-	</div>
-
-
-
+	@include ('layouts.channels')
 </div>
 <!--/home main container-->
 @endsection
