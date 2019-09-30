@@ -3,11 +3,12 @@
 namespace App\Services;
 
 use App\Plan;
+use App\Thumb;
+use App\User;
+use App\Exceptions\UserHasNoChannelException;
 use App\Services\SubscriptionService;
 use App\Services\ThumbService;
 use App\Services\MediaService;
-use App\User;
-use App\Thumb;
 
 class ChannelService
 {
@@ -25,12 +26,12 @@ class ChannelService
 
         $channels = $user->channels;
         if ($channels->isEmpty()) {
-            throw new \Exception("User {$user->user_id} has no channel.");
+            throw new UserHasNoChannelException("User {$user->user_id} has no channel.");
         }
 
         foreach ($channels as $channel) {
-            $nbEpisodesGrabbedThisMonth = MediaService::getNbEpisodesAlreadyDownloadedThisMonth($channel);
             try {
+                $nbEpisodesGrabbedThisMonth = MediaService::getNbEpisodesAlreadyDownloadedThisMonth($channel);
                 $subscription = SubscriptionService::getActiveSubscription($channel);
                 $episodesPerMonth = $subscription->plan->nb_episodes_per_month;
             } catch (\Exception $e) {
