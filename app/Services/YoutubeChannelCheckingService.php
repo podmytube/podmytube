@@ -1,6 +1,9 @@
 <?php
 namespace App\Services;
 
+use App\Exceptions\YoutubeApiInvalidChannelIdException;
+use App\Exceptions\YoutubeApiInvalidKeyException;
+
 /**
  * This class is there to get some basic informations about one channel.
  * It will be used to validate a registering channel.
@@ -20,7 +23,7 @@ class YoutubeChannelCheckingService
     {
         self::$apiKey = env('YOUTUBE_API_KEY');
         if (empty(self::$apiKey)) {
-            throw new \Exception("YOUTUBE_API_KEY is not set in tne env file");
+            throw new YoutubeApiInvalidKeyException("YOUTUBE_API_KEY is not set in tne env file");
         }
 
         /**
@@ -33,7 +36,7 @@ class YoutubeChannelCheckingService
          */
         $result = self::$youtubeObj->getChannelById($channelId);
         if ($result === false) {
-            throw new \Exception("Cannot get channel information for this channel {{$channelId}}");
+            throw new YoutubeApiInvalidChannelIdException("Cannot get channel information for this channel {{$channelId}}");
         }
 
         self::$youtubeChannelInformations = $result;
