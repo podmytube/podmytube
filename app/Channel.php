@@ -9,6 +9,8 @@
 
 namespace App;
 
+use App\Exceptions\ChannelCreationInvalidChannelUrlException;
+use App\Exceptions\ChannelCreationInvalidUrlException;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
 
@@ -176,16 +178,24 @@ class Channel extends Model
         /**
          * url should be one
          */
-        if (!filter_var($request->channel_url, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED)) {
-            throw new \InvalidArgumentException("flash_channel_id_is_invalid");
+        if (!filter_var(
+            $request->channel_url,
+            FILTER_VALIDATE_URL,
+            FILTER_FLAG_PATH_REQUIRED
+        )) {
+            throw new ChannelCreationInvalidUrlException("flash_channel_id_is_invalid");
         }
 
         /**
          * checking the url given.
          * It should contain one youtube url the channel path and the channel_id
          */
-        if (!preg_match("/^https?:\/\/(youtube.com|www.youtube.com)\/channel\/(?'channel'[\w\-]*)$/", $request->channel_url, $matches)) {
-            throw new \InvalidArgumentException("flash_channel_id_is_invalid");
+        if (!preg_match(
+            "/^https?:\/\/(youtube.com|www.youtube.com)\/channel\/(?'channel'[\w\-]*)$/",
+            $request->channel_url,
+            $matches
+        )) {
+            throw new ChannelCreationInvalidChannelUrlException("flash_channel_id_is_invalid");
         }
 
         return $matches['channel'];
