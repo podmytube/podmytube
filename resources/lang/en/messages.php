@@ -72,8 +72,12 @@ return [
     'page_title_channel_thumbs_index' => 'Podcast image',
     'button_update_thumbs_label' => 'Upload a new podcast image',
     'page_title_channel_thumbs_edit' => 'Upload a new one',
-    'thumbs_edit_new_thumb_help_message_part1' => 'Image must meet iTunes requirements !',
-    'thumbs_edit_new_thumb_help_message_part2' => 'It should be between 1400x1400 and 3000x3000 pixels. You may have an image 2000x2400 but you cannot have one that is 800x1600.',
+    'thumbs_edit_new_thumb_help_message' => '<b>Image must meet iTunes requirements !</b> 
+    <ul>
+        <li>Minimum dimensions : 1400x1400</li>
+        <li>Maximum dimensions : 3000x3000</li>
+    </ul>
+    <small>You may have one that is 2000x2400 but you cannot have one that is 800x1600.</small>',
     'thumbs_edit_new_thumb_form_label' => 'Select your new podcast image.',
     'thumbs_edit_error_image_required' => 'You should select a new image before clicking on the update button.',
     'thumbs_edit_error_image_dimensions' => 'The new image must be between 1400x1400 and 3000x3000.',

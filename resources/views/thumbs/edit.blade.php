@@ -17,8 +17,7 @@
         <div class="form-group">
 
             <p>
-                <strong>{{ __('messages.thumbs_edit_new_thumb_help_message_part1') }}</strong><br/>
-                {{ __('messages.thumbs_edit_new_thumb_help_message_part2') }}
+            {!! __('messages.thumbs_edit_new_thumb_help_message') !!}
             </p>
 
             <label for="new_thumb_file">{{__('messages.thumbs_edit_new_thumb_form_label')}}</label><br/>
