@@ -77,16 +77,10 @@ return [
             'driver' => 'sftp',
             'host' => 'ns3309553.ip-5-135-160.eu',
             'username' => 'fred',
-            //'password' => 'your-password',
-
-            // Settings for SSH key based authentication...
-            'privateKey' => './.ssh/SFTPthumb',
-            // 'password' => 'encryption-password',
-
-            // Optional SFTP Settings...
+            'privateKey' => base_path() . '/.ssh/SFTPthumb',
             // 'port' => 22,
             'root' => env('SFTP_THUMBS_PATH'),
-            // 'timeout' => 30,
+            'timeout' => 20,
             'url' => env('THUMB_URL'),
             'cache' => [
                 'store' => 'memcached',

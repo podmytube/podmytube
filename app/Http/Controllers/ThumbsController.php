@@ -6,7 +6,7 @@ namespace App\Http\Controllers;
 use App\Thumb;
 
 use App\Channel;
-
+use App\Jobs\SendThumbBySFTP;
 use Illuminate\Http\Request;
 use App\Services\ThumbService;
 
@@ -73,10 +73,12 @@ class ThumbsController extends Controller
             $thumbService = ThumbService::create();
             $thumbService->addUploadedThumb($request->file('new_thumb_file'), $channel);
             $thumbService->createThumbVig($channel);
+            SendThumbBySFTP::dispatch($channel->thumb)->delay(now()->addMinutes(1));
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }
-
+        
+        
         return redirect()->route('channel.thumbs.index', ['channel' => $channel]);
     }
 
