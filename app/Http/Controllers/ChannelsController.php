@@ -36,7 +36,7 @@ class ChannelsController extends Controller
         try {
             $channels = ChannelService::getAuthenticatedUserChannels(Auth::user());            
         } catch (\Exception $e) {
-			echo $e->getMessage();
+			$channels = [];
 		}
         return view('channel.index', compact('channels'));
     }
