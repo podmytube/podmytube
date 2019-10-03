@@ -36,7 +36,7 @@ class SendThumbBySFTP implements ShouldQueue
         if (!$this->thumbToSend->exists()) {
             throw new ThumbDoesNotExistsException("Thumb {{$this->thumbToSend->id}} file does not exists. hard to send over sftp.");
         }
-        
+
         try {
             Storage::disk('sftpthumbs')
                 ->put(
@@ -49,6 +49,5 @@ class SendThumbBySFTP implements ShouldQueue
                     $e->getMessage()
             );
         }
-        dump("thumb : ".$this->thumbToSend->id." should be on kim1");
     }
 }
