@@ -61,24 +61,31 @@ class ThumbsController extends Controller
             throw new \Exception("A problem occurs during new thumb upload !");
         }
 
-        /**
-         * new_thumb_file is the form field
-         * UploadedFile::store get 2 parameters 
-         *      - the folder we want to save in and 
-         *      - the disk (config/filesystems) 
-         * and return a unique filepath we split to get filename
-         */
-
         try {
+            /**
+             * upload thumb on local storage
+             */
             $thumbService = ThumbService::create();
             $thumbService->addUploadedThumb($request->file('new_thumb_file'), $channel);
+            /**
+             * create vignette from local storage
+             */
             $thumbService->createThumbVig($channel);
+            /**
+             * This process will add the job SendThumbBySFTP to the queue (upload is long).
+             * Jobs are runned with one supervisor.
+             * !! IMPORTANT !! 
+             * QUEUE_DRIVER in .env should be set to database and commands 
+             * php artisan queue:table
+             * php artisan migrate
+             * should have been run
+             */
             SendThumbBySFTP::dispatch($channel->thumb)->delay(now()->addMinutes(1));
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }
-        
-        
+
+
         return redirect()->route('channel.thumbs.index', ['channel' => $channel]);
     }
 

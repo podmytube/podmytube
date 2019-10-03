@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Exceptions\ThumbUploadHasFailedException;
 use App\Thumb;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
@@ -35,10 +36,19 @@ class SendThumbBySFTP implements ShouldQueue
         if (!$this->thumbToSend->exists()) {
             throw new ThumbDoesNotExistsException("Thumb {{$this->thumbToSend->id}} file does not exists. hard to send over sftp.");
         }
-        Storage::disk('sftpthumbs')
-            ->put(
-                $this->thumbToSend->relativePath(),
-                $this->thumbToSend->getData()
+        
+        try {
+            Storage::disk('sftpthumbs')
+                ->put(
+                    $this->thumbToSend->relativePath(),
+                    $this->thumbToSend->getData()
+                );
+        } catch (\Exception $e) {
+            throw new ThumbUploadHasFailedException(
+                "The upload of thumb {{$this->thumbToSend}} for channel {{$this->thumbToSend->channel_id}} has failed with message :" .
+                    $e->getMessage()
             );
+        }
+        dump("thumb : ".$this->thumbToSend->id." should be on kim1");
     }
 }
