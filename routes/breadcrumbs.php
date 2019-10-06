@@ -40,7 +40,7 @@ Breadcrumbs::register('channel.edit', function ($breadcrumbs, $channel) {
 // Home > Medias
 Breadcrumbs::register('medias.index', function ($breadcrumbs, $channel) {
     $breadcrumbs->parent('channel.show', $channel);
-    $breadcrumbs->push('Videos', route('channel.medias.index', $channel));
+    $breadcrumbs->push('medias', route('channel.medias.index', $channel));
 });
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
