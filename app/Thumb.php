@@ -86,7 +86,7 @@ class Thumb extends Model
     public function vignetteRelativePath()
     {
         list($fileName, $fileExtension) = explode('.', $this->file_name);
-        return $this->channel_id . DIRECTORY_SEPARATOR . $fileName . self::_VIGNETTE_SUFFIX . '.' . $fileExtension;
+        return $this->channelPath() . $fileName . self::_VIGNETTE_SUFFIX . '.' . $fileExtension;
     }
 
 
@@ -97,7 +97,17 @@ class Thumb extends Model
      */
     public function relativePath()
     {
-        return $this->channel_id . DIRECTORY_SEPARATOR . $this->file_name;
+        return $this->channelPath() . $this->file_name;
+    }
+
+    /**
+     * This function will return the channel path.
+     * 
+     * @return string relative path of the channel (where to store thumbs)
+     */
+    public function channelPath ()
+    {
+        return $this->channel_id . DIRECTORY_SEPARATOR;
     }
 
     /**

@@ -82,16 +82,8 @@ return [
             'root' => env('SFTP_THUMBS_PATH'),
             'timeout' => 20,
             'url' => env('THUMB_URL'),
-            'cache' => [
-                'store' => 'memcached',
-                'expire' => 600,
-                'prefix' => 'thumbs-prefix',
-            ],
-        ],
-
-        'old_thumbs' => [
-            'driver' => 'local',
-            'root'   => '../www/thumbs',
+            'visibility' => 'public',
+            'permPublic' => 0755,
         ],
 
         'appTmp' => [
