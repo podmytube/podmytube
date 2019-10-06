@@ -52,8 +52,8 @@ class ChannelsController extends Controller
     public function show(ChannelRequest $request, Channel $channel)
     {
 
-        $channel->podcast_url = \App\Channel::podcastUrl($channel);
-        $channel->youtube_url = \App\Channel::youtubeUrl($channel);
+        $channel->podcast_url = Channel::podcastUrl($channel);
+        $channel->youtube_url = Channel::youtubeUrl($channel);
 
         return view('channel.show', compact('channel'));
 
