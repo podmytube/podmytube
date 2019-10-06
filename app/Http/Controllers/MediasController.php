@@ -17,7 +17,7 @@ class MediasController extends Controller
     public function index(Channel $channel)
     {
         try {
-            $medias = $channel->medias()->orderBy('published_at', 'desc')->simplePaginate(15);
+            $medias = $channel->medias()->orderBy('published_at', 'desc')->simplePaginate(25);
         } catch (\Exception $e) {
             Session::flash('message', $e->getMessage());
             Session::flash('alert-class', 'alert-danger');
