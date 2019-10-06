@@ -59,8 +59,8 @@ class ChannelCreateController extends Controller
                 'channel_url' => 'required|string|min:27',
             ]);
 
-            $channel_id = Channel::extractChannelIdFromUrl($request);
-
+            $channelId = Channel::extractChannelIdFromUrl($request->channel_url);
+            
             /**
              * Getting current authenticated user
              */
@@ -69,7 +69,7 @@ class ChannelCreateController extends Controller
             /**
              * Getting same basic channel informations
              */
-            $channelName = YoutubeChannelCheckingService::getChannelName($channel_id);
+            $channelName = YoutubeChannelCheckingService::getChannelName($channelId);
 
             /**
              * Channel creating
@@ -77,7 +77,7 @@ class ChannelCreateController extends Controller
             try {
                 $channel = Channel::create([
                     'user_id' => $user->user_id,
-                    'channel_id' => $channel_id,
+                    'channel_id' => $channelId,
                     'channel_name' => $channelName,
                 ]);
             } catch (QueryException $e) {
@@ -91,7 +91,7 @@ class ChannelCreateController extends Controller
              */
             try {
                 Subscription::create([
-                    'channel_id' => $channel_id,
+                    'channel_id' => $channelId,
                     'plan_id' => Plan::_FREE_PLAN_ID,
                 ]);
             } catch (QueryException $e) {

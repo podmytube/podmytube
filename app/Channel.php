@@ -136,10 +136,10 @@ class Channel extends Model
     /**
      * Provides the channel global podcast url
      *
-     * @param Object $channel the channel we need the url for
+     * @param Channel $channel the channel we need the url for
      * @return string the podcast url
      */
-    public static function podcastUrl($channel)
+    public static function podcastUrl(Channel $channel): string
     {
         return $_ENV['APP_PODCAST_URL'] . '/' . $channel->channel_id;
     }
@@ -147,10 +147,10 @@ class Channel extends Model
     /**
      * Provides the channel global youtube url
      *
-     * @param Object $channel the channel we need the url for
+     * @param Channel $channel the channel we need the url for
      * @return string the podcast url
      */
-    public static function youtubeUrl($channel)
+    public static function youtubeUrl(Channel $channel): string
     {
         return 'https://www.youtube.com/channel/' . $channel->channel_id;
     }
@@ -170,29 +170,28 @@ class Channel extends Model
     /**
      * extract the id from a youtube channel url after checkingits valid
      * https://www.youtube.com/channel/UCZ0o1IeuSSceEixZbSATWtw => UCZ0o1IeuSSceEixZbSATWtw
-     * @param Request $request the request object 
+     * @param string $channelUrl the url of the channel to register
      * @return string the channel id
      */
-    public static function extractChannelIdFromUrl(Request $request)
+    public static function extractChannelIdFromUrl(string $channelUrl)
     {
         /**
          * url should be one
          */
         if (!filter_var(
-            $request->channel_url,
+            $channelUrl,
             FILTER_VALIDATE_URL,
             FILTER_FLAG_PATH_REQUIRED
         )) {
             throw new ChannelCreationInvalidUrlException("flash_channel_id_is_invalid");
         }
-
         /**
          * checking the url given.
          * It should contain one youtube url the channel path and the channel_id
          */
         if (!preg_match(
-            "/^https?:\/\/(youtube.com|www.youtube.com)\/channel\/(?'channel'[\w\-]*)$/",
-            $request->channel_url,
+            "#^https?://(youtube.com|www.youtube.com)/channel/(?'channel'[A-Za-z0-9_-]*)/?$#",
+            $channelUrl,
             $matches
         )) {
             throw new ChannelCreationInvalidChannelUrlException("flash_channel_id_is_invalid");
