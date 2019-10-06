@@ -12,6 +12,16 @@ class Media extends Model
     protected $table = 'medias';
 
     /**
+     * those fields are converted into Carbon mutator
+     */
+    protected $dates = [
+        'published_at',
+        'grabbed_at',
+        'created_at',
+        'updated_at',
+    ];
+
+    /**
      * define the relationship between media and its channel
      */
     public function channel()

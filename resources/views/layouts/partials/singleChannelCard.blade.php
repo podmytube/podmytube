@@ -23,21 +23,12 @@
     </div>
 
     <div class="card-footer text-center">
-        <a href="{{ route('channel.show', $channel) }}">
-            <button type="button" class="btn btn-primary btn-sm">
-                {{ __('messages.button_show_channel_label') }}
-            </button>
-        </a>
-        <a href="{{ route('channel.edit', $channel) }}">
-            <button type="button" class="btn btn-primary btn-sm">
-                {{ __('messages.button_edit_channel_label') }}
-            </button>
-        </a>
-        <a href="{{ route('channel.thumbs.edit', $channel) }}">
-            <button type="button" class="btn btn-primary btn-sm">
-                {{ __('messages.button_edit_thumb_label') }}
-            </button>
-        </a>
+        <div class="btn-group" role="group" aria-label="Basic example">
+            <a href="{{ route('channel.show', $channel) }}"  class="btn btn-primary btn-sm">{{ __('messages.button_show_channel_label') }}</a>
+            <a href="{{ route('channel.edit', $channel) }}"  class="btn btn-primary btn-sm">{{ __('messages.button_edit_channel_label') }}</a>
+            <a href="{{ route('channel.thumbs.edit', $channel) }}"  class="btn btn-primary btn-sm">{{ __('messages.button_edit_thumb_label') }}</a>
+            <a href="{{ route('channel.medias.index', $channel) }}"  class="btn btn-primary btn-sm">{{ __('messages.button_view_episodes_label') }}</a>
+        </div>
     </div>
     <!--
     <a href="{{ route('plans.index', $channel) }}">

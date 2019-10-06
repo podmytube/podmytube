@@ -49,6 +49,7 @@ return [
     'button_show_channel_label' => "Voir",
     'button_edit_channel_label' => "Modifier",
     'button_edit_thumb_label' => "Changer le visuel",
+    'button_view_episodes_label' => "Épisodes",
     'button_update_channel_label' => 'Modifier les informations de ma chaine',
     'button_create_channel_label' => 'Convertir une nouvelle chaine',
     'button_need_assistance_label' => "Contact",

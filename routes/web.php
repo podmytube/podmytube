@@ -1,10 +1,11 @@
 <?php
+
 /**
-* routes for PodMyTube web application (for now its dashboard)
-* 
-* @package PodMyTube Dashboard
-* @author Frederick Tyteca <fred@podmytube.com>
-*/
+ * routes for PodMyTube web application (for now its dashboard)
+ * 
+ * @package PodMyTube Dashboard
+ * @author Frederick Tyteca <fred@podmytube.com>
+ */
 
 /*
 |--------------------------------------------------------------------------
@@ -19,7 +20,9 @@
 /**
  * Route to check emails ==========================
  */
+
 use App\Mail\ChannelIsRegistered;
+
 if (env('APP_ENV') != 'prod') {
 	Route::get('/mailable', function () {
 		$user = App\User::find(1);
@@ -47,26 +50,16 @@ Route::get('setlocale/{locale}', function ($locale) {
 
 Route::get('/', 'HomeController@index')->name('root');
 
-Route::post('/channel/', 'ChannelCreateController@store')->name('channel.store'); 
-Route::get('/channel/create', 'ChannelCreateController@create')->name('channel.create'); 
+Route::post('/channel/', 'ChannelCreateController@store')->name('channel.store');
+Route::get('/channel/create', 'ChannelCreateController@create')->name('channel.create');
 
-Route::get('/channel/', 'ChannelsController@index')->name('channel.index'); 
-Route::get('/channel/{channel}', 'ChannelsController@show')->name('channel.show'); 
-Route::get('/channel/{channel}/edit', 'ChannelsController@edit')->name('channel.edit'); 
-Route::patch('/channel/{channel}', 'ChannelsController@update'); 
+Route::get('/channel/', 'ChannelsController@index')->name('channel.index');
+Route::get('/channel/{channel}', 'ChannelsController@show')->name('channel.show');
+Route::get('/channel/{channel}/edit', 'ChannelsController@edit')->name('channel.edit');
+Route::patch('/channel/{channel}', 'ChannelsController@update');
 
 Route::get('/change-password', 'Auth\UpdatePasswordController@index')->name('password.form');
 Route::post('/change-password', 'Auth\UpdatePasswordController@update')->name('password.update');
-
-/**
- * MediasStats
- */
-Route::get('/channel/{channel}/medias_downloads', 'MediasStatsController@index')->name('medias_stats.index');
-
-/**
- * AppStats
- */
-Route::get('/channel/{channel}/app_stats', 'AppStatsController@index')->name('app_stats.index');
 
 /**
  * Plans
@@ -75,13 +68,19 @@ Route::get('/plans/{channel}', 'PlansController@index')->name('plans.index');
 Route::get('/success', 'SubscriptionResultController@success');
 Route::get('/canceled', 'SubscriptionResultController@failure');
 
-Route::post('stripewebhook', 'StripeWebhookController@receive');
+//Route::post('stripewebhook', 'StripeWebhookController@receive');
 
 /**
  * Subscription
  */
 Route::post('/subscribe', 'SubscribeController@store');
 
+/**
+ * Medias
+ */
+Route::resources([
+	'channel.medias' => 'MediasController',
+]);
 
 /**
  * Thumb
@@ -97,7 +96,7 @@ Route::delete('/channel/{channel}/thumbs', 'ThumbsController@delete')->name('cha
 /**
  * User
  */
-Route::get('/user/', 'UsersController@show')->name('user.index'); 
-Route::get('/user/show', 'UsersController@show')->name('user.show'); 
-Route::get('/user/edit', 'UsersController@edit')->name('user.edit'); 
-Route::patch('/user/', 'UsersController@update')->name('user.patch'); 
+Route::get('/user/', 'UsersController@show')->name('user.index');
+Route::get('/user/show', 'UsersController@show')->name('user.show');
+Route::get('/user/edit', 'UsersController@edit')->name('user.edit');
+Route::patch('/user/', 'UsersController@update')->name('user.patch');
