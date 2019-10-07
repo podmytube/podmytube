@@ -34,15 +34,14 @@ services:
       - LETSENCRYPT_EMAIL=frederick@podmytube.com
       - APACHE_RUN_USER=www-data
       - APACHE_RUN_GROUP=www-data
-    # we are copying files into /srv/app (into Dockerfile)
+    # we are copying files into /app (into Dockerfile)
     volumes:
       - .:/app
     # health : checking if vendor/autoload exists
     healthcheck:
-      test: bash -c "[ -f /srv/app/vendor/autoload.php ]"
-      interval: 5s
-      timeout: 5s
-      retries: 10
+      test: bash -c "[ -f /app/vendor/autoload.php ]"
+      timeout: 10s
+      retries: 30
     # VERY IMPORTANT
     # to work with mysql docker on service(revdb)
     # both have to be on the same network
