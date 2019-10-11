@@ -1,15 +1,15 @@
 version: '3.3'
 services:
-  # ==============================================================
-  # composer is pulled then run composer install
-  # it is not restarted once done
-  # composer/docker is running into /app so you have to 
-  # mount the folder where is located composer.lock/composer.json
-  # here it is .:/app (host:docker)
-  composer:
-    container_name: compodash
+  node:
+    image: "node:8"
     restart: 'no'
+    working_dir: /home/node/app
+    volumes:
+      - ./:/home/node/app
+    command: bash -c "npm install && npm run production"  
+  composer:
     image: composer:1.7
+    restart: 'no'
     command: install
     volumes:
       - .:/app
@@ -19,7 +19,6 @@ services:
   # and creating host dashboard-pmt
   dashboard-pmt:
     container_name: dash
-    
     build:
       context: .
       dockerfile: .docker/Dockerfile
@@ -35,14 +34,14 @@ services:
       - LETSENCRYPT_EMAIL=frederick@podmytube.com
       - APACHE_RUN_USER=www-data
       - APACHE_RUN_GROUP=www-data
-    # we are copying files into /srv/app (into Dockerfile)
+    # we are copying files into /app (into Dockerfile)
     volumes:
       - .:/app
     # health : checking if vendor/autoload exists
     healthcheck:
-      test: bash -c "[ -f /srv/app/vendor/autoload.php ]"
-      timeout: 5s
-      retries: 20
+      test: bash -c "[ -f /app/vendor/autoload.php ]"
+      timeout: 10s
+      retries: 30
     # VERY IMPORTANT
     # to work with mysql docker on service(revdb)
     # both have to be on the same network
@@ -52,6 +51,9 @@ services:
     # that s all
     networks:
       - nginx-proxy
+    depends_on:
+      - composer
+      - node
     
 
 networks:
