@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\User;
-use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
 
 class AuthenticationAndLoginTest extends TestCase
@@ -53,7 +52,7 @@ class AuthenticationAndLoginTest extends TestCase
         
         $response->assertRedirect('/home');
         $this->assertAuthenticated($guard = null);
-        $this->assertAuthenticatedAs(self::$user);
+        $this->assertAuthenticatedAs(self::$user); // <===== this one is failing
         /* $response->assertSessionHasErrors('email');
         $this->assertTrue(session()->hasOldInput('email'));
         $this->assertFalse(session()->hasOldInput('password'));
