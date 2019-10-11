@@ -22,15 +22,11 @@ RUN     apt-get update -y && \
             libpng-dev \
             libz-dev libmemcached-dev \
             libjpeg-dev \
-            curl \
             wget \
             zip \
             git \
             memcached
 
-# installing nodejs
-RUN     curl -sL https://deb.nodesource.com/setup_12.x | bash -
-RUN     apt-get install -y nodejs
 RUN     rm -rf /var/lib/apt/lists/*;
 
 # installing memcached with pecl
@@ -67,19 +63,6 @@ RUN     chmod g+s storage/logs
 # Adding phpunit to Path
 ENV     PATH="/app/vendor/bin:${PATH}"
 
-
-# compiling app.css and js
-RUN     npm install && \
-        npm run production
-
-# adding composer (just in case)
-COPY    .docker/installComposer.sh /var/opt/installComposer.sh
-RUN     chmod +x /var/opt/installComposer.sh
-RUN     /var/opt/installComposer.sh
-
 # symlink for storage (the same that is created with "artisan storage:link")
 RUN     if [ ! -L public/storage ]; then ln -s /app/storage/app/public public/storage; fi
-
-RUN     chown -R www-data:www-data /app/storage
-
 
