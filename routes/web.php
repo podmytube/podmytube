@@ -50,16 +50,13 @@ Route::get('setlocale/{locale}', function ($locale) {
 
 Route::get('/', 'HomeController@index')->name('root');
 
-/** 
- * Channel Display
- */
-Route::resource('channel', 'ChannelsController')->only(['index', 'show', 'edit', 'update']);
-
-/**
- * 
- */
 Route::post('/channel/', 'ChannelCreateController@store')->name('channel.store');
 Route::get('/channel/create', 'ChannelCreateController@create')->name('channel.create');
+
+Route::get('/channel/', 'ChannelsController@index')->name('channel.index');
+Route::get('/channel/{channel}', 'ChannelsController@show')->name('channel.show');
+Route::get('/channel/{channel}/edit', 'ChannelsController@edit')->name('channel.edit');
+Route::patch('/channel/{channel}', 'ChannelsController@update');
 
 Route::get('/change-password', 'Auth\UpdatePasswordController@index')->name('password.form');
 Route::post('/change-password', 'Auth\UpdatePasswordController@update')->name('password.update');
