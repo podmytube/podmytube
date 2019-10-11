@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Session;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Session;
 
 class LoginController extends Controller
 {
@@ -38,22 +39,5 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
-    }
-
-    /**
-     * The user has been authenticated.
-     * overloaded to set locale language
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  mixed  $user
-     * @return mixed
-     */
-    protected function authenticated(Request $request, $user)
-    {
-        if (in_array($user->language, \Config::get('app.locales'))) {
-            \Session::put('locale', $user->language);
-        } else {
-            \Session::put('locale', \Config::get('app.fallback_locale'));
-        }
     }
 }
