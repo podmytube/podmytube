@@ -11,8 +11,10 @@ class DatabaseSeeder extends Seeder
 	 */
 	public function run()
 	{
-        if (App::environment(['dev','local','rec', 'micromania'])) {
-            // The environment is dev
+        if (!App::environment('prod')) {
+            
+            Model::unguard();
+
             $this->call([
                 usersTableSeeder::class,
                 categoriesTableSeeder::class,
@@ -20,6 +22,8 @@ class DatabaseSeeder extends Seeder
                 subscriptionTableSeeder::class,
                 stripePlansTableSeeder::class,
             ]);
+
+            Model::reguard();
         }
 
 	}
