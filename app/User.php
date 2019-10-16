@@ -24,11 +24,6 @@ class User extends Authenticatable
     protected $primaryKey = 'user_id';
 
     /**
-     * this kind of id is not incrementable
-     */
-    public $incrementing = false;
-
-    /**
      * The attributes that are mass assignable.
      *
      * @var array
