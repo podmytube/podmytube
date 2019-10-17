@@ -17,3 +17,7 @@ storage/debugbar
 .env
 .env.local
 .env.micromania
+# ===============================================
+# Bothering me
+# ===============================================
+package-lock.json
