@@ -45,18 +45,12 @@ class ChannelsController extends Controller
      * display all informations about one channel
      *
      * @param  ChannelRequest      $request
-     * @param  Channel          $channel
      * @return Response*
      */
 
-    public function show(ChannelRequest $request, Channel $channel)
+    public function show(Channel $channel)
     {
-
-        $channel->podcast_url = Channel::podcastUrl($channel);
-        $channel->youtube_url = Channel::youtubeUrl($channel);
-
         return view('channel.show', compact('channel'));
-
     }
 
     /**
@@ -66,7 +60,7 @@ class ChannelsController extends Controller
      * @param  Channel              $channel
      * @return Response
      */
-    public function edit(ChannelRequest $request, Channel $channel)
+    public function edit(Channel $channel)
     {
         $categories = Category::list();
         return view('channel.edit', compact(['channel', 'categories']));
