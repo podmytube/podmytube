@@ -77,6 +77,12 @@ class Channel extends Model
         'ftp_pasv',
     ];
 
+    /** this will apprend a new extra property to the model */
+    protected $attributes = [
+        'feed_url',
+        'youtube_url',
+    ];
+
     /**
      * define the relationship between one user and one channel
      *
@@ -136,23 +142,21 @@ class Channel extends Model
     /**
      * Provides the channel global podcast url
      *
-     * @param Channel $channel the channel we need the url for
      * @return string the podcast url
      */
-    public static function podcastUrl(Channel $channel): string
+    public function getFeedUrlAttribute()
     {
-        return $_ENV['APP_PODCAST_URL'] . '/' . $channel->channel_id;
+        return env('PODCAST_URL') . '/' . $this->channel_id . '/podcast.xml';
     }
 
     /**
-     * Provides the channel global youtube url
+     * Provides the channel youtube url
      *
-     * @param Channel $channel the channel we need the url for
      * @return string the podcast url
      */
-    public static function youtubeUrl(Channel $channel): string
+    public function getYoutubeUrlAttribute(): string
     {
-        return 'https://www.youtube.com/channel/' . $channel->channel_id;
+        return 'https://www.youtube.com/channel/' . $this->channel_id;
     }
 
     /**

@@ -19,7 +19,7 @@
 			<div class="col-6">
 				<p>
 					<a href="{{ $channel->youtube_url }}" target="_blank"><img src="/images/youtube-32x32.png" /></a> 
-					<a href="{{ $channel->podcast_url }}" target="_blank"><img src="/images/itunes-32x32.png" /></a> 
+					<a href="{{ $channel->feed_url }}" target="_blank"><img src="/images/itunes-32x32.png" /></a> 
           <br />
 					<span class="font-italic">
                         {{ __('messages.channel_podcast_created_label') }}
