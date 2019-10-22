@@ -8,15 +8,15 @@ use Illuminate\Support\Facades\Storage;
 class Thumb extends Model
 {
     /**
-     * @var 
+     * @var _TEMP_STORAGE_DISK is the folder where test image are created (mostly by factory).
      */
     public const _TEMP_STORAGE_DISK = 'appTmp';
 
-    /**
-     * where thumbs were stored when stored locally
-     * @var string _LOCAL_STORAGE_DISK
-     */
-    public const _STORAGE_DISK = 'thumbs';
+    /** @var string _LOCAL_STORAGE_DISK */
+    public const _LOCAL_STORAGE_DISK = 'thumbs';
+
+    /** @var string _REMOTE_STORAGE_DISK */
+    public const _REMOTE_STORAGE_DISK = 'sftpthumbs';
 
     /**
      * Vignette suffix
@@ -147,7 +147,7 @@ class Thumb extends Model
      */
     public static function defaultUrl()
     {
-        return Storage::disk(self::_STORAGE_DISK)->url(self::_DEFAULT_THUMB_FILE);
+        return Storage::disk(self::_LOCAL_STORAGE_DISK)->url(self::_DEFAULT_THUMB_FILE);
     }
 
     /**
@@ -157,6 +157,6 @@ class Thumb extends Model
      */
     public static function defaultVignetteUrl()
     {
-        return Storage::disk(self::_STORAGE_DISK)->url(self::_DEFAULT_VIGNETTE_FILE);
+        return Storage::disk(self::_LOCAL_STORAGE_DISK)->url(self::_DEFAULT_VIGNETTE_FILE);
     }
 }

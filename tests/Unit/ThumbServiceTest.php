@@ -96,7 +96,7 @@ class ThumbServiceTest extends TestCase
         ] as $defaultFile) {
             $this->assertTrue(
                 ThumbService::pathExists($defaultFile),
-                "Default thumb file {$defaultFile} is missing on {" . Thumb::_STORAGE_DISK . "}."
+                "Default thumb file {$defaultFile} is missing on {" . Thumb::_LOCAL_STORAGE_DISK . "}."
             );
         }
     }
