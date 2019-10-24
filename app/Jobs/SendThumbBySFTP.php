@@ -2,14 +2,13 @@
 
 namespace App\Jobs;
 
-use App\Exceptions\ThumbUploadHasFailedException;
 use App\Thumb;
+use App\Exceptions\ThumbUploadHasFailedException;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Support\Facades\Storage;
 
 class SendThumbBySFTP implements ShouldQueue
 {
@@ -38,13 +37,8 @@ class SendThumbBySFTP implements ShouldQueue
         }
 
         try {
-            Storage::disk('sftpthumbs')
-                ->put(
-                    $this->thumbToSend->relativePath(),
-                    $this->thumbToSend->getData()
-                );
-            Storage::disk('sftpthumbs')
-                ->setVisibility($this->thumbToSend->channelPath(), 'public');
+            $this->thumbToSend->uploadThumb();
+            $this->thumbToSend->uploadVig();
         } catch (\Exception $e) {
             throw new ThumbUploadHasFailedException(
                 "The upload of thumb {{$this->thumbToSend}} for channel {{$this->thumbToSend->channel_id}} has failed with message :" .

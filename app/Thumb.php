@@ -3,19 +3,18 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class Thumb extends Model
 {
-    /**
-     * @var _TEMP_STORAGE_DISK is the folder where test image are created (mostly by factory).
-     */
+    /** @var _TEMP_STORAGE_DISK is the folder where test image are created (mostly by factory).*/
     public const _TEMP_STORAGE_DISK = 'appTmp';
 
-    /** @var string _LOCAL_STORAGE_DISK */
+    /** @var string _LOCAL_STORAGE_DISK where thumbs and vigs are stored locally */
     public const _LOCAL_STORAGE_DISK = 'thumbs';
 
-    /** @var string _REMOTE_STORAGE_DISK */
+    /** @var string _REMOTE_STORAGE_DISK where thumbs and vigs are stored remotely */
     public const _REMOTE_STORAGE_DISK = 'sftpthumbs';
 
     /**
@@ -49,13 +48,37 @@ class Thumb extends Model
     }
 
     /**
-     * This function is returning the thumb data.
+     * This function is returning the data of the relative img path specified.
      * 
      * @return string content of the file.
      */
     public function getData()
     {
         return Storage::disk($this->file_disk)->get($this->relativePath());
+    }
+
+    /**
+     * getter filename function
+     */
+    public function fileName()
+    {
+        return $this->file_name;
+    }
+
+    /**
+     * getter filedisk function
+     */
+    public function fileDisk()
+    {
+        return $this->file_disk;
+    }
+    
+    /**
+     * getter channel_id function
+     */
+    public function channelId()
+    {
+        return $this->channel_id;
     }
 
     /**
@@ -105,7 +128,7 @@ class Thumb extends Model
      * 
      * @return string relative path of the channel (where to store thumbs)
      */
-    public function channelPath ()
+    public function channelPath()
     {
         return $this->channel_id . DIRECTORY_SEPARATOR;
     }
@@ -158,5 +181,57 @@ class Thumb extends Model
     public static function defaultVignetteUrl()
     {
         return Storage::disk(self::_LOCAL_STORAGE_DISK)->url(self::_DEFAULT_VIGNETTE_FILE);
+    }
+
+
+    protected function uploadImg(string $relativePath)
+    {
+        try {
+            /** 
+             * put is taking 2 arguments 
+             * - the relative path from SFTP_THUMBS_PATH where to store data 
+             * - the file content (data)
+             */
+            Storage::disk(self::_REMOTE_STORAGE_DISK)
+                ->put(
+                    $relativePath,
+                    $this->getThumbData()
+                );
+
+            /** Once uploaded, we are setting the channel_path on the remote to public visibility  */
+            Storage::disk(self::_REMOTE_STORAGE_DISK)
+                ->setVisibility($this->channelPath(), 'public');
+        } catch (\Exception $e) {
+            Log::alert("Uploading image " . $relativePath() . " on remote image repository has failed with message {{$e->getMessage()}}.");
+            throw $e;
+        }
+    }
+
+    /**
+     * This function will upload thum to thumb server.
+     * 
+     */
+    public function uploadThumb()
+    {
+        try {
+            $this->uploadImg($this->relativePath());
+        } catch (\Exception $e) {
+            Log::alert($e->getMessage());
+            throw $e;
+        }
+    }
+
+    /**
+     * This function will upload thumb to thumb server.
+     * 
+     */
+    public function uploadVig()
+    {
+        try {
+            $this->uploadImg($this->vignetteRelativePath());
+        } catch (\Exception $e) {
+            Log::alert($e->getMessage());
+            throw $e;
+        }
     }
 }

@@ -77,11 +77,11 @@ class Channel extends Model
         'ftp_pasv',
     ];
 
-    /** this will apprend a new extra property to the model */
-    protected $attributes = [
+    /** this will append a new extra property to the model */
+    /* protected $attributes = [
         'feed_url',
         'youtube_url',
-    ];
+    ]; */
 
     /**
      * define the relationship between one user and one channel
