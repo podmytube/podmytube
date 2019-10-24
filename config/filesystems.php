@@ -81,7 +81,7 @@ return [
             // 'port' => 22,
             'root' => env('SFTP_THUMBS_PATH'),
             'timeout' => 20,
-            'url' => env('THUMB_URL'),
+            'url' => env('THUMBS_URL'),
             'visibility' => 'public',
             'permPublic' => 0755,
         ],
