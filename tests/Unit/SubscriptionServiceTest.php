@@ -8,7 +8,6 @@ use Tests\TestCase;
 
 class SubscriptionServiceTest extends TestCase
 {
-
     /**
      * @test
      */

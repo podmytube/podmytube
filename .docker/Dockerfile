@@ -52,14 +52,16 @@ RUN     docker-php-ext-install pdo \
 # mainly documentRoot /app/public
 COPY    .docker/vhost.conf /etc/apache2/sites-available/000-default.conf
 
+# adding myself
+RUN     adduser --disabled-password --gecos "" fred
 
 # copying all files (but .dockerignore(d)) in /app
 COPY    . /app
 WORKDIR /app
-#RUN     chown -R www-data:www-data /app
-RUN 	chown -R www-data:www-data storage bootstrap/cache
-RUN 	chmod -R ug+rwx storage bootstrap/cache
-RUN     chmod g+s storage/logs
+RUN 	mkdir -p bootstrap/cache && \
+        chown -R www-data:fred storage bootstrap && \
+        chmod -R ug+rw storage bootstrap && \
+        chmod g+s storage/logs
 # Adding phpunit to Path
 ENV     PATH="/app/vendor/bin:${PATH}"
 

@@ -5,7 +5,7 @@ namespace App\Modules;
 use Image;
 use App\Thumb;
 use Illuminate\Support\Facades\Storage;
-use App\Exceptions\VignetteCreationFromMissingThumbException;
+//use App\Exceptions\VignetteCreationFromMissingThumbException;
 
 class Vignette
 {
@@ -30,51 +30,82 @@ class Vignette
     }
 
     /**
-     * 
+     * private constructor
      */
     private function __construct(Thumb $thumb)
     {
         $this->thumb = $thumb;
-        $this->channel_id = 
+        $this->setFileName();
         $this->setChannelId();
-        $this->setFileDisk();
     }
 
     /**
-     * This will obtain the file_disk from the thumb.
+     * This function will return the relative path to access the vignette.
+     * Relative path is defined from the root path of the Storage(object) root.
      * 
+     * @return string something like UC0NCbj8CxzeCGIF6sODJ-7A/YItR6zUPAuQg1c2sJhStyZApgJkdeObVoPp4e7BQ.jpeg
      */
-    public function setFileDisk()
+    public function relativePath(): string
     {
-        $this->file_disk = $this->thumb->fileDisk();
+        return $this->channelId() . '/' . $this->fileName();
     }
 
     /**
      * This will obtain the channel_id from the thumb.
-     * 
      */
-    public function setChannelId()
+    protected function setChannelId()
     {
         $this->channel_id = $this->thumb->channelId();
+    }
+
+    /**
+     * Return the channel_id.
+     * 
+     * @return string channel_id of the vignette
+     */
+    public function channelId(): string
+    {
+        return $this->channel_id;
     }
 
     /**
      * This will obtain the filename of the thumb and set the filename property for the vignette.
      * 
      */
-    public function setFileName()
+    protected function setFileName()
     {
         list($fileName, $fileExtension) = explode('.', $this->thumb->fileName());
         $this->file_name = $fileName . self::_VIGNETTE_SUFFIX . '.' . $fileExtension;
     }
 
     /**
-     * This function is checking if thumb file exists.
+     * Return the fileName.
      * 
+     * @return string filename (with ext) of the vignette
      */
-    protected function thumbExists()
+    public function fileName(): string
     {
-        return Storage::disk($this->thumb->file_disk)->exists($this->thumb->relativePath);
+        return $this->file_name;
+    }
+
+    /**
+     * Tell if vignette exists.
+     * 
+     * @return bool true if vignette exists. False else
+     */
+    public function exists()
+    {
+        return Storage::disk($this->thumb->fileDisk())->exists($this->relativePath());
+    }
+
+    /**
+     * If the thumb exist return the internal url else return the default one.
+     * 
+     * @return string thumb url to be used in the dashboard
+     */
+    public function url()
+    {
+        return Storage::disk($this->thumb->file_disk)->url($this->relativePath());
     }
 
     /**
@@ -83,25 +114,28 @@ class Vignette
     public function make()
     {
         /** Verifying thumb file exists */
-        if (!$this->thumbExists()) {
+        if (!$this->thumb->exists()) {
             throw new VignetteCreationFromMissingThumbException(
                 "Thumb file { " . $this->thumb->relativePath . " } on disk {{ $this->thumb->file_disk }} for channel {{$this->channel_id}} is missing."
             );
         }
+        try {
+            /** getting data and convert it to an image object */
+            $image = Image::make($this->thumb->getData());
 
-        /** getting data and convert it to an image object */
-        $image = Image::make(parent::getData());
+            /** creating vignette */
+            $image->fit(
+                self::_DEFAULT_VIGNETTE_WIDTH,
+                self::_DEFAULT_VIGNETTE_WIDTH,
+                function ($constraint) {
+                    $constraint->aspectRatio();
+                }
+            );
 
-        /** creating vignette */
-        $image->fit(
-            self::_DEFAULT_VIGNETTE_WIDTH,
-            self::_DEFAULT_VIGNETTE_WIDTH,
-            function ($constraint) {
-                $constraint->aspectRatio();
-            }
-        );
-
-        /** Storing it */
-        Storage::disk($this->file_disk)->put($this->relativePath(), (string) $image->encode());
+            /** Storing it */
+            return Storage::disk($this->thumb->fileDisk())->put($this->relativePath(), (string) $image->encode());
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
 }

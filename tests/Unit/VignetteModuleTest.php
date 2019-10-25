@@ -38,22 +38,14 @@ class VignetteModuleTest extends TestCase
         return $vigObj;
     }
 
+
     /**
      * @depends testingFileName
      */
-    public function testingChannelPath($vigObj)
-    {
-        $expectedChannelPath = self::$channel->channel_id . '/';
-        $this->assertEquals($expectedChannelPath, $vigObj->channelPath());
-        return $vigObj;
-    }
-
-    /**
-     * @depends testingChannelPath
-     */
     public function testingVignetteRelativePath($vigObj)
     {
-        list($fileName, $fileExtension) = explode('.', self::$thumb->fileName());
+        $fileName = pathinfo(self::$thumb->fileName(), PATHINFO_FILENAME);
+        $fileExtension = pathinfo(self::$thumb->fileName(), PATHINFO_EXTENSION);
         $expectedRelativePath = self::$channel->channel_id . '/' . $fileName . Vignette::_VIGNETTE_SUFFIX . '.' . $fileExtension;
         $this->assertEquals($expectedRelativePath, $vigObj->relativePath());
         return $vigObj;
@@ -71,26 +63,17 @@ class VignetteModuleTest extends TestCase
     /**
      * @depends testingVignetteFileShouldNotExists
      */
-    public function testingVignetteDiskShouldBeEqualToThumbDisk($vigObj)
+    public function testingMakingVignetteFromThumb($vigObj)
     {
-        $this->assertEquals(self::$thumb->fileDisk(), $vigObj->fileDisk());
+        $this->assertTrue($vigObj->make());
         return $vigObj;
     }
 
     /**
-     * @depends testingVignetteDiskShouldBeEqualToThumbDisk
+     * @depends testingMakingVignetteFromThumb
      */
-    public function testingMakingVignetteFromThumb($vigObj)
+    public function testingFinallyVignetteShouldExists($vigObj)
     {
-        $this->assertTrue($vigObj->make());
         $this->assertTrue($vigObj->exists());
-    }
-
-    public function testingThatThumbExistsFails()
-    {
-        $this->expectException(Exception::class);
-        $channel = factory(Channel::class)->make();
-        $thumb = factory(Thumb::class)->create(['channel_id' => $channel]);        
-        $vigObj = Vignette::fromThumb($thumb);
     }
 }
