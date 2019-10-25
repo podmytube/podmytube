@@ -63,11 +63,6 @@ return [
             'root' => storage_path('app/public/thumbs'),
             'url' => env('APP_URL') . '/storage/thumbs',
             'visibility' => 'public',
-            'cache' => [
-                'store' => 'memcached',
-                'expire' => 600,
-                'prefix' => 'thumbs-prefix',
-            ],
         ],
 
         /**
