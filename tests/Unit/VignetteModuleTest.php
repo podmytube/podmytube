@@ -28,7 +28,7 @@ class VignetteModuleTest extends TestCase
         }
     }
 
-    public function testingFileName ()
+    public function testingFileName()
     {
         $vigObj = Vignette::fromThumb(self::$thumb);
 
@@ -71,9 +71,26 @@ class VignetteModuleTest extends TestCase
     /**
      * @depends testingVignetteFileShouldNotExists
      */
+    public function testingVignetteDiskShouldBeEqualToThumbDisk($vigObj)
+    {
+        $this->assertEquals(self::$thumb->fileDisk(), $vigObj->fileDisk());
+        return $vigObj;
+    }
+
+    /**
+     * @depends testingVignetteDiskShouldBeEqualToThumbDisk
+     */
     public function testingMakingVignetteFromThumb($vigObj)
     {
         $this->assertTrue($vigObj->make());
         $this->assertTrue($vigObj->exists());
+    }
+
+    public function testingThatThumbExistsFails()
+    {
+        $this->expectException(Exception::class);
+        $channel = factory(Channel::class)->make();
+        $thumb = factory(Thumb::class)->create(['channel_id' => $channel]);        
+        $vigObj = Vignette::fromThumb($thumb);
     }
 }

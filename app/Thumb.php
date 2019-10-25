@@ -38,6 +38,15 @@ class Thumb extends Model
         'file_disk',
         'file_size',
     ];
+
+    /**
+     * extra attribute relativePath.
+     */
+    public function getRelativePathAttribute()
+    {
+        return $this->channel_id . '/' . $this->file_name;
+    }
+
     /**
      * This function defines the relation between one thumb and its channel (the channel it is belonging to)  .
      * @return Object Channel
@@ -54,7 +63,7 @@ class Thumb extends Model
      */
     public function getData()
     {
-        return Storage::disk($this->file_disk)->get($this->relativePath());
+        return Storage::disk($this->file_disk)->get($this->relativePath);
     }
 
     /**
@@ -72,7 +81,7 @@ class Thumb extends Model
     {
         return $this->file_disk;
     }
-    
+
     /**
      * getter channel_id function
      */
@@ -120,7 +129,7 @@ class Thumb extends Model
      */
     public function relativePath()
     {
-        return $this->channelPath() . $this->file_name;
+        return $this->relativePath;
     }
 
     /**
