@@ -2,12 +2,12 @@
 
 namespace App\Modules;
 
-use App\Exceptions\VignetteCreationFromMissingThumbException;
-use App\Thumb;
 use Image;
+use App\Thumb;
 use Illuminate\Support\Facades\Storage;
+use App\Exceptions\VignetteCreationFromMissingThumbException;
 
-class Vignette extends Thumb
+class Vignette
 {
     /** @var string Vignette suffix */
     public const _VIGNETTE_SUFFIX = '_vig';
@@ -17,6 +17,9 @@ class Vignette extends Thumb
 
     /** @var integer default vignette width in pixels */
     public const _DEFAULT_VIGNETTE_WIDTH = 300;
+
+    /** @var thumb used to create vignette */
+    protected $thumb;
 
     /**
      * This function will instantiate vignette object from the thumb one.
@@ -32,11 +35,33 @@ class Vignette extends Thumb
     private function __construct(Thumb $thumb)
     {
         $this->thumb = $thumb;
-        $this->setFileName();
+        $this->channel_id = 
+        $this->setChannelId();
+        $this->setFileDisk();
+    }
+
+    /**
+     * This will obtain the file_disk from the thumb.
+     * 
+     */
+    public function setFileDisk()
+    {
         $this->file_disk = $this->thumb->fileDisk();
+    }
+
+    /**
+     * This will obtain the channel_id from the thumb.
+     * 
+     */
+    public function setChannelId()
+    {
         $this->channel_id = $this->thumb->channelId();
     }
 
+    /**
+     * This will obtain the filename of the thumb and set the filename property for the vignette.
+     * 
+     */
     public function setFileName()
     {
         list($fileName, $fileExtension) = explode('.', $this->thumb->fileName());
@@ -44,34 +69,23 @@ class Vignette extends Thumb
     }
 
     /**
-     * This function is returning the vignette relative file path.
-     * Something like [CHANNEL]/[THUMB_FILE_NAME]_vig.[THUMB_FILE_EXT]
-     *
-     * @return string vignette file name
+     * This function is checking if thumb file exists.
+     * 
      */
-    public function relativePath()
+    protected function thumbExists()
     {
-        list($fileName, $fileExtension) = explode('.', $this->thumb->fileName());
-        return $this->channelPath() . $fileName . self::_VIGNETTE_SUFFIX . '.' . $fileExtension;
+        return Storage::disk($this->thumb->file_disk)->exists($this->thumb->relativePath);
     }
 
     /**
-     * This function will tell if vignette file does exist
-     * 
-     * @return bool true if file exists.
+     * This function will create the vignette from the thumb.
      */
-    public function exists()
-    {
-        return Storage::disk($this->file_disk)->exists($this->relativePath());
-    }
-
-
     public function make()
     {
         /** Verifying thumb file exists */
-        if (!$this->thumb->exists()) {
+        if (!$this->thumbExists()) {
             throw new VignetteCreationFromMissingThumbException(
-                "Thumb file {{ " . parent::relativePath() . " }} for channel {{$this->channel_id}} is missing."
+                "Thumb file { " . $this->thumb->relativePath . " } on disk {{ $this->thumb->file_disk }} for channel {{$this->channel_id}} is missing."
             );
         }
 

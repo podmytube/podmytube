@@ -12,7 +12,7 @@ $factory->define(App\Thumb::class, function ($faker, $attributes) {
     Storage::disk(App\Thumb::_TEMP_STORAGE_DISK)->makeDirectory($channelId);
 
     $fileName = basename(
-        $faker->image("/app/tmp/$channelId", 700, 700, 'nature')
+        $faker->image("/app/tmp/$channelId", 600, 600, 'nature')
     );
 
     return [
