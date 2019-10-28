@@ -2,7 +2,9 @@
 
 namespace App;
 
+use App\Exceptions\ThumbUploadHasFailedException;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -156,5 +158,32 @@ class Thumb extends Model
     {
         /** removing local vig */
         return Storage::disk($this->fileDisk())->delete($this->relativePath);
+    }
+
+
+    public function attachItToChannel(UploadedFile $uploadedFile, Channel $channel)
+    {
+        try {
+            return $this->updateOrCreate(
+                [
+                    'channel_id' => $channel->channelId(),
+                ],
+                [
+                    'channel_id' => $channel->channelId(),
+                    'file_size' => $uploadedFile->getSize(),
+                    /** get filename of the stored file */
+                    'file_name' => pathinfo(
+                        $uploadedFile->store(
+                            $channel->channelId(),
+                            Thumb::_LOCAL_STORAGE_DISK
+                        ),
+                        PATHINFO_FILENAME
+                    ),
+                    'file_disk' => Thumb::_LOCAL_STORAGE_DISK,
+                ]
+            );
+        } catch (\Exception $e) { 
+            throw new ThumbUploadHasFailedException("thumb upload has failed with error : ".$e->getMessage());
+        }
     }
 }
