@@ -1,4 +1,5 @@
 <?php
+
 /**
  * laravel database migration : adding the userid to the channel table
  *
@@ -23,9 +24,9 @@ class AddingValidFieldToChannelsTable extends Migration
     public function up()
     {
         Schema::table('channels', function (Blueprint $table) {
-            
-            $table->boolean('valid')->after('active')->default(TRUE)->comment('is this a valid channel');
-
+            if (!Schema::hasColumn('channels', 'valid')) {
+                $table->boolean('valid')->after('active')->default(TRUE)->comment('is this a valid channel');
+            }
         });
     }
 
@@ -37,8 +38,6 @@ class AddingValidFieldToChannelsTable extends Migration
     public function down()
     {
         Schema::table('channels', function (Blueprint $table) {
-
-            $table->dropColumn('valid');
 
         });
     }

@@ -14,7 +14,9 @@ class RemovingYoutubeChannelId extends Migration
     public function up()
     {
         Schema::table('channels', function (Blueprint $table) {
-            $table->dropColumn('youtube_channel_id');
+            if (Schema::hasColumn('channels', 'user_id')) {
+                $table->dropColumn('youtube_channel_id');
+            }
         });
     }
 
@@ -25,8 +27,6 @@ class RemovingYoutubeChannelId extends Migration
      */
     public function down()
     {
-        Schema::table('channels', function (Blueprint $table) {
-            $table->string('youtube_channel_id', 64)->after('user_id');
-        });   
+        Schema::table('channels', function (Blueprint $table) { });
     }
 }
