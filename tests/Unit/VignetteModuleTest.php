@@ -5,19 +5,40 @@ namespace Tests\Unit;
 use App\Channel;
 use App\Thumb;
 use App\Modules\Vignette;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class VignetteModuleTest extends TestCase
 {
+    /** used to remove every created data in database */
+    use DatabaseTransactions;
+
+    /** @var bool true, database is ready to run tests upon */
     protected static $dbIsWarm = false;
+
+    /** @var Channel channel obj used for the test */
     protected static $channel;
+
+    /** @var Thumb thumb object used by the tests */
     protected static $thumb;
 
+    /**
+     * This function will create a channel, thumb and everyt item required to run theses tests.
+     */
     protected static function warmDb()
     {
         self::$channel = factory(Channel::class)->create();
         self::$thumb = factory(Thumb::class)->create(['channel_id' => self::$channel->channel_id]);
         self::$dbIsWarm = true;
+    }
+    
+    public static function tearDownAfterClass(): void
+    {
+        /** removing local thumb img */
+        Storage::disk(self::$thumb->fileDisk())->deleteDirectory(self::$thumb->channelId());
+        
+        /** DB rows are removed by DatabaseTransactions trait */
     }
 
     public function setUp(): void
@@ -27,6 +48,15 @@ class VignetteModuleTest extends TestCase
             static::warmDb();
         }
     }
+
+    public function testingDefaultUrl()
+    {
+        $expectedUrl = env('THUMBS_URL') . '/' . Vignette::_DEFAULT_VIGNETTE_FILE;
+        $this->assertEquals(
+            $expectedUrl,
+            Vignette::defaultUrl()
+        );
+    }    
 
     public function testingFileName()
     {
@@ -75,5 +105,26 @@ class VignetteModuleTest extends TestCase
     public function testingFinallyVignetteShouldExists($vigObj)
     {
         $this->assertTrue($vigObj->exists());
+        return $vigObj;
+    }
+
+    /**
+     * @depends testingFinallyVignetteShouldExists
+     */
+    public function testingUploadVignetteIsRunningFine($vigObj)
+    {
+        $this->assertTrue($vigObj->upload());
+        return $vigObj;
+    }
+
+    /**
+     * @depends testingUploadVignetteIsRunningFine
+     */
+    public function testingRemovingLocalVignette($vigObj)
+    {
+        /** removing local vig img */
+        /** removing remote vig img */
+        $this->assertTrue($vigObj->delete());
+        $this->assertFalse($vigObj->exists());
     }
 }

@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Storage;
 
 class Vignette
 {
+    /** @var string _REMOTE_STORAGE_DISK where thumbs and vigs are stored remotely */
+    public const _REMOTE_STORAGE_DISK = 'sftpthumbs';
+
     /** @var string Vignette suffix */
     public const _VIGNETTE_SUFFIX = '_vig';
 
@@ -137,5 +140,65 @@ class Vignette
         } catch (\Exception $e) {
             throw $e;
         }
+    }
+
+    /**
+     * This function is returning the data of the vignette.
+     * 
+     * @return string content of the file.
+     */
+    public function getData()
+    {
+        return Storage::disk($this->thumb->fileDisk())->get($this->relativePath());
+    }
+
+    /**
+     * This function will upload the vignette.
+     * 
+     */
+    public function upload()
+    {
+        try {
+            Storage::disk(self::_REMOTE_STORAGE_DISK)
+                ->put(
+                    $this->relativePath(),
+                    $this->getData()
+                );
+
+            /** Once uploaded, we are setting the channel_path on the remote to public visibility  */
+            Storage::disk(self::_REMOTE_STORAGE_DISK)
+                ->setVisibility($this->channelId(), 'public');
+        } catch (\Exception $e) {
+            Log::alert("Uploading vignette " . $this->relativePath() . " on remote vignette repository has failed with message {{$e->getMessage()}}.");
+            throw $e;
+        }
+        return true;
+    }
+
+    /**
+     * Should be done within a queue.
+     */
+    public function delete()
+    {
+        try {
+            /** removing local vig */
+            Storage::disk($this->thumb->fileDisk())->delete($this->relativePath());
+            /** removing local vig */
+            Storage::disk(self::_REMOTE_STORAGE_DISK)->delete($this->relativePath());
+        } catch (\Exception $e) {
+            Log::alert("Deleting vignette " . $this->relativePath() . " has failed with message {{$e->getMessage()}}.");
+            throw $e;
+        }
+        return true;
+    }
+
+    /**
+     * return the url of the default vignette.
+     * 
+     * @return string default vignette url to be used in the dashboard
+     */
+    public static function defaultUrl()
+    {
+        return env('THUMBS_URL') . '/' . self::_DEFAULT_VIGNETTE_FILE;
     }
 }
