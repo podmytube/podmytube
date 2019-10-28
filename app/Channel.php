@@ -217,4 +217,12 @@ class Channel extends Model
             $this->attributes['reject_video_too_old'] = null;
         }
     }
+
+    /**
+     * Getter : channel_id
+     */
+    public function channelId()
+    {
+        return $this->channel_id;
+    }
 }
