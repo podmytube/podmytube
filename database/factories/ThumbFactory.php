@@ -9,7 +9,10 @@ $factory->define(App\Thumb::class, function ($faker, $attributes) {
         $channelId = $faker->regexify('[a-zA-Z0-9-_]{24}');
     }
 
-    Storage::disk(App\Thumb::_LOCAL_STORAGE_DISK)->makeDirectory($channelId, intval('0777', 8), true);
+    
+
+    Storage::disk(App\Thumb::_LOCAL_STORAGE_DISK)->makeDirectory($channelId, intval('0664', 8), true);
+    
     
     $fileName = basename(
         $faker->image(storage_path("app/public/thumbs/$channelId"), 600, 600, 'nature')
