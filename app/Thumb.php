@@ -8,29 +8,14 @@ use Illuminate\Support\Facades\Storage;
 
 class Thumb extends Model
 {
-    /** @var _TEMP_STORAGE_DISK is the folder where test image are created (mostly by factory).*/
-    public const _TEMP_STORAGE_DISK = 'appTmp';
-
     /** @var string _LOCAL_STORAGE_DISK where thumbs and vigs are stored locally */
     public const _LOCAL_STORAGE_DISK = 'thumbs';
 
     /** @var string _REMOTE_STORAGE_DISK where thumbs and vigs are stored remotely */
     public const _REMOTE_STORAGE_DISK = 'sftpthumbs';
 
-    /**
-     * Vignette suffix
-     */
-    public const _VIGNETTE_SUFFIX = '_vig';
-
-    /**
-     * default thumb file (1400x1400) and default vignette one.
-     * @var string _DEFAULT_THUMB_FILE
-     * @var string _DEFAULT_VIGNETTE_FILE
-     */
+    /** @var string _DEFAULT_THUMB_FILE default thumb file (1400x1400) and default vignette one. */
     public const _DEFAULT_THUMB_FILE = 'default_thumb.jpg';
-    public const _DEFAULT_VIGNETTE_FILE = 'default_vignette.jpg';
-    public const _DEFAULT_VIGNETTE_WIDTH = 300;
-
 
     protected $fillable = [
         'channel_id',
@@ -45,6 +30,12 @@ class Thumb extends Model
     public function getRelativePathAttribute()
     {
         return $this->channel_id . '/' . $this->file_name;
+    }
+
+    /** alias for getRelativePathAttribute */
+    public function relativePath()
+    {
+        return $this->getRelativePathAttribute();
     }
 
     /**
@@ -97,27 +88,7 @@ class Thumb extends Model
      */
     public function exists()
     {
-        return Storage::disk($this->file_disk)->exists($this->relativePath());
-    }
-
-    /**
-     * This function return the relative path (on the disk) of the thumb.
-     * 
-     * @return string relative path (channel_id/thumb.jpg)
-     */
-    public function relativePath()
-    {
-        return $this->relativePath;
-    }
-
-    /**
-     * This function will return the channel path.
-     * 
-     * @return string relative path of the channel (where to store thumbs)
-     */
-    public function channelPath()
-    {
-        return $this->channel_id . DIRECTORY_SEPARATOR;
+        return Storage::disk($this->file_disk)->exists($this->relativePath);
     }
 
     /**
@@ -127,7 +98,7 @@ class Thumb extends Model
      */
     public function podcastUrl()
     {
-        return getenv('THUMBS_URL') . DIRECTORY_SEPARATOR . $this->relativePath();
+        return getenv('THUMBS_URL') . DIRECTORY_SEPARATOR . $this->relativePath;
     }
 
     /**
@@ -137,10 +108,8 @@ class Thumb extends Model
      */
     public function dashboardUrl()
     {
-        return Storage::disk($this->file_disk)->url($this->relativePath());
+        return Storage::disk($this->file_disk)->url($this->relativePath);
     }
-
-    
 
     /**
      * return the url of the default thumb.
@@ -149,21 +118,14 @@ class Thumb extends Model
      */
     public static function defaultUrl()
     {
-        return Storage::disk(self::_LOCAL_STORAGE_DISK)->url(self::_DEFAULT_THUMB_FILE);
+        return getenv('THUMBS_URL') . DIRECTORY_SEPARATOR . self::_DEFAULT_THUMB_FILE;
     }
 
     /**
-     * return the url of the default vignette.
+     * This function will upload thum to thumb server.
      * 
-     * @return string default vignette url to be used in the dashboard
      */
-    public static function defaultVignetteUrl()
-    {
-        return Storage::disk(self::_LOCAL_STORAGE_DISK)->url(self::_DEFAULT_VIGNETTE_FILE);
-    }
-
-
-    protected function uploadImg(string $relativePath)
+    public function upload()
     {
         try {
             /** 
@@ -173,44 +135,26 @@ class Thumb extends Model
              */
             Storage::disk(self::_REMOTE_STORAGE_DISK)
                 ->put(
-                    $relativePath,
-                    $this->getThumbData()
+                    $this->relativePath,
+                    $this->getData()
                 );
 
             /** Once uploaded, we are setting the channel_path on the remote to public visibility  */
             Storage::disk(self::_REMOTE_STORAGE_DISK)
-                ->setVisibility($this->channelPath(), 'public');
+                ->setVisibility($this->channelId(), 'public');
         } catch (\Exception $e) {
-            Log::alert("Uploading image " . $relativePath() . " on remote image repository has failed with message {{$e->getMessage()}}.");
+            Log::alert("Uploading image " . $this->relativePath . " on remote image repository has failed with message {{$e->getMessage()}}.");
             throw $e;
         }
     }
 
     /**
-     * This function will upload thum to thumb server.
-     * 
+     * This function will remove the current thumb file.
+     * Should be done within a queue.
      */
-    public function uploadThumb()
+    public function delete()
     {
-        try {
-            $this->uploadImg($this->relativePath());
-        } catch (\Exception $e) {
-            Log::alert($e->getMessage());
-            throw $e;
-        }
-    }
-
-    /**
-     * This function will upload thumb to thumb server.
-     * 
-     */
-    public function uploadVig()
-    {
-        try {
-            $this->uploadImg($this->vignetteRelativePath());
-        } catch (\Exception $e) {
-            Log::alert($e->getMessage());
-            throw $e;
-        }
+        /** removing local vig */
+        return Storage::disk($this->fileDisk())->delete($this->relativePath);
     }
 }
