@@ -1,4 +1,5 @@
 <?php
+
 /**
  * laravel database migration : adding the userid to the channel table
  *
@@ -23,9 +24,9 @@ class AddingUseridToChannelsTable extends Migration
     public function up()
     {
         Schema::table('channels', function (Blueprint $table) {
-
-          $table->integer('user_id')->after('channel_id')->unsigned()->comment('the owner user_id');
-
+            if (!Schema::hasColumn('channels', 'user_id')) {
+                /* $table->integer('user_id')->after('channel_id')->unsigned()->comment('the owner user_id'); */
+            }
         });
     }
 
@@ -37,7 +38,7 @@ class AddingUseridToChannelsTable extends Migration
     public function down()
     {
         Schema::table('channels', function (Blueprint $table) {
-            $table->dropColumn('user_id');
+            
         });
     }
 }

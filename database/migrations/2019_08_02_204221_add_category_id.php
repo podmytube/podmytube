@@ -13,17 +13,13 @@ class AddCategoryId extends Migration
      */
     public function up()
     {
-        Schema::table('channels', function (Blueprint $table) {
+        /* Schema::table('channels', function (Blueprint $table) {
             $table->unsignedInteger('category_id')->after('link')->nullable();
-            /**
-             * Creating category_id
-             * This will replace fields category and subcategory
-             */
             $table->foreign('category_id')
                 ->references('id')->on('categories')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
-        });
+        }); 
 
         try {
             Artisan::call('db:seed', [
@@ -31,7 +27,7 @@ class AddCategoryId extends Migration
             ]);
         } catch (\Exception $e) {
             echo $e->getMessage() . PHP_EOL;
-        }
+        }*/
     }
 
     /**
@@ -42,9 +38,9 @@ class AddCategoryId extends Migration
     public function down()
     {
         Schema::table('channels', function (Blueprint $table) {
-            $table->dropForeign('channels_category_id_foreign');
+            /* $table->dropForeign('channels_category_id_foreign');
             $table->dropIndex('channels_category_id_foreign');
-            $table->dropColumn('category_id');
+            $table->dropColumn('category_id'); */
         });
     }
 }

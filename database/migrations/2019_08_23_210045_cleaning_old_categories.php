@@ -16,10 +16,10 @@ class CleaningOldCategories extends Migration
         /**
          * removing old category fields in DB
          */
-        Schema::table('channels', function (Blueprint $table) {
+        /* Schema::table('channels', function (Blueprint $table) {
             $table->dropColumn('category');
             $table->dropColumn('subcategory');
-        });
+        }); */
     }
 
     /**
@@ -29,9 +29,9 @@ class CleaningOldCategories extends Migration
      */
     public function down()
     {
-        Schema::table('channels', function (Blueprint $table) {
+        /* Schema::table('channels', function (Blueprint $table) {
             $table->string('category', 40)->after('category_id');
             $table->string('subcategory', 40)->after('category');
-        });   
+        });    */
     }
 }
