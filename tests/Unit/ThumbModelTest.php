@@ -2,16 +2,16 @@
 
 namespace Tests\Unit;
 
-use App\Channel;
 use App\Thumb;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use App\Channel;
 use Tests\TestCase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ThumbModelTest extends TestCase
 {
-    /** used to remove every created data in database */
-    use DatabaseTransactions;
-
+    use RefreshDatabase;
+    
     /** @var bool true, database is ready to run tests upon */
     protected static $dbIsWarm = false;
 
@@ -26,8 +26,11 @@ class ThumbModelTest extends TestCase
      */
     protected static function warmDb()
     {
+        /* if (env('APP_ENV') == 'testing') {
+            DB::table('channels')->delete();
+        } */
         self::$channel = factory(Channel::class)->create();
-        self::$thumb = factory(Thumb::class)->create(['channel_id' => self::$channel->channel_id]);
+        self::$thumb = factory(Thumb::class)->create(['channel_id' => self::$channel->channelId()]);
         self::$dbIsWarm = true;
     }
 
@@ -37,6 +40,19 @@ class ThumbModelTest extends TestCase
         if (!static::$dbIsWarm) {
             static::warmDb();
         }
+    }
+
+    public static function tearDownAfterClass(): void
+    {
+        /**
+         * Laravel app is destroyed on tearDown method. 
+         * TearDownAfterClass come after, so nothing is working.
+         * - self::$channel->delete => KO
+         * - query builder => KO
+         * - $this->beforeApplicationDestroyed(function () {
+         *       //self::$channel->delete();
+         *   }); => KO 
+         */
     }
 
     public function testingDefaultUrl()
@@ -53,32 +69,23 @@ class ThumbModelTest extends TestCase
         $this->assertTrue(self::$thumb->exists());
     }
 
-    public function testingFileName ()
+    public function testingFileName()
     {
-        $this->assertEquals(
-            self::$thumb->file_name,
-            self::$thumb->fileName()
-        );
+        $this->assertEquals(self::$thumb->file_name, self::$thumb->fileName());
     }
 
-    public function testingChannelId ()
+    public function testingChannelId()
     {
-        $this->assertEquals(
-            self::$channel->channel_id,
-            self::$thumb->channelId()
-        );
+        $this->assertEquals(self::$channel->channelId(), self::$thumb->channelId());
     }
-    
+
     /**
      * @depends testingChannelId
      */
-    public function testingRelativePath ()
+    public function testingRelativePath()
     {
         $expectedResult = self::$thumb->channelId() . '/' . self::$thumb->fileName();
-        $this->assertEquals(
-            $expectedResult,
-            self::$thumb->relativePath()
-        );
+        $this->assertEquals($expectedResult, self::$thumb->relativePath());
     }
 
     /**
@@ -87,10 +94,7 @@ class ThumbModelTest extends TestCase
     public function testingDashboardUrl()
     {
         $expectedUrl = env('APP_URL') . "/storage/thumbs/" . self::$thumb->relativePath();
-        $this->assertEquals(
-            $expectedUrl,
-            self::$thumb->dashboardUrl()
-        );
+        $this->assertEquals($expectedUrl, self::$thumb->dashboardUrl());
     }
 
     /**
@@ -99,10 +103,20 @@ class ThumbModelTest extends TestCase
     public function testingPodcastUrl()
     {
         $expectedUrl = env('THUMBS_URL') . '/' . self::$thumb->relativePath();
-        $this->assertEquals(
-            $expectedUrl,
-            self::$thumb->podcastUrl()
-        );
+        $this->assertEquals($expectedUrl, self::$thumb->podcastUrl());
+    }
+
+    public function testingfromUploadedFile()
+    {
+        /** creating fake uploaded image */
+        $uploadedFile = UploadedFile::fake()->image('/tmp/fakeThumbThatShouldNeverExist.jpg', '1400', '1400');
+
+        /** attach it to channel */
+        $thumb = Thumb::make()->attachItToChannel($uploadedFile, self::$channel);
+
+        /** checking */
+        $this->assertInstanceOf(Thumb::class, $thumb);
+        $this->assertEquals($thumb->channelId(), self::$channel->channelId());
     }
 
 
