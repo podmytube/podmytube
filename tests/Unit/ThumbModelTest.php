@@ -6,6 +6,7 @@ use App\Thumb;
 use App\Channel;
 use Tests\TestCase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ThumbModelTest extends TestCase
@@ -37,6 +38,9 @@ class ThumbModelTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+        $tables = DB::select('SHOW TABLES'); 
+        dd($tables);
+        die("\e[30;48;5;166m".__FILE__ . '::' . __LINE__ ."\e[0m". PHP_EOL);
         if (!static::$dbIsWarm) {
             static::warmDb();
         }

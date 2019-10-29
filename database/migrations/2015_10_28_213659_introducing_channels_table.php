@@ -14,9 +14,9 @@ class IntroducingChannelsTable extends Migration
     public function up()
     {
         if (!Schema::hasTable('channels')) {
-            Schema::table('channels', function (Blueprint $table) {
+            Schema::create('channels', function (Blueprint $table) {
                 $table->collation = 'utf8mb4_unicode_ci';
-                $table->primary('channel_id'); // 'channel_id' varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+                $table->string('channel_id'); // 'channel_id' varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
                 $table->integer('user_id')->unsigned()->comment('the owner user_id'); //user_id' int(10) UNSIGNED NOT NULL COMMENT 'the owner user_id',
                 $table->string('channel_name')->nullable(); //channel_name' varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
                 $table->string('podcast_title')->nullable(); //podcast_title' varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -47,13 +47,10 @@ class IntroducingChannelsTable extends Migration
                 $table->string('ftp_dir')->nullable(); //ftp_dir' varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
                 $table->boolean('ftp_pasv')->default(false); //ftp_pasv' tinyint(1) NOT NULL DEFAULT '0'
 
+                $table->primary('channel_id');
+
                 $table->foreign('user_id')
                     ->references('user_id')->on('users')
-                    ->onDelete('cascade')
-                    ->onUpdate('cascade');
-
-                $table->foreign('category_id')
-                    ->references('id')->on('categories')
                     ->onDelete('cascade')
                     ->onUpdate('cascade');
             });
@@ -67,8 +64,9 @@ class IntroducingChannelsTable extends Migration
      */
     public function down()
     {
-        Schema::table('channels', function (Blueprint $table) {
-            //
+        Schema::table('users', function (Blueprint $table) {
+            1;//$table->dropForeign('users_channel_id_foreign');
         });
+        Schema::dropIfExists('channels');
     }
 }
