@@ -1,4 +1,5 @@
 <?php
+
 /**
  * laravel database migration : creating the categories table
  *
@@ -27,6 +28,13 @@ class CreateCategoriesTable extends Migration
             $table->string('parent_id');
             $table->string('name');
         });
+
+        Schema::table('channels', function (Blueprint $table) {
+            $table->foreign('category_id')
+                ->references('id')->on('categories')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+        });
     }
 
     /**
@@ -36,6 +44,9 @@ class CreateCategoriesTable extends Migration
      */
     public function down()
     {
+        Schema::table('channels', function (Blueprint $table) {
+            $table->dropForeign('channels_category_id_foreign');
+        });
         Schema::dropIfExists('categories');
     }
 }

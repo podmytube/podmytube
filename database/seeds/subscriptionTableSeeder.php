@@ -26,17 +26,17 @@ class subscriptionTableSeeder extends Seeder
         $channels = Channel::select(['channel_id', 'channel_name', 'channel_premium', 'channel_createdAt'])
             ->get();
 
-        /**
-         * for each channel add a subscription according to its channel_premium state
-         */
-        foreach ($channels as $channel) {
-
-            try {
-                ChannelPremiumToSubscriptionService::transform($channel);
-            } catch (\Exception $e) {
-                die("Channel subscription transformation has failed with message : {{$e->getMessage()}} ");
+        if ($channels->count()) {
+            /**
+             * for each channel add a subscription according to its channel_premium state
+             */
+            foreach ($channels as $channel) {
+                try {
+                    ChannelPremiumToSubscriptionService::transform($channel);
+                } catch (\Exception $e) {
+                    die("Channel subscription transformation has failed with message : {{$e->getMessage()}} ");
+                }
             }
-
         }
     }
 }
