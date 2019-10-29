@@ -12,14 +12,8 @@ class usersTableSeeder extends Seeder
      */
     public function run()
     {
-        if (App::environment(['dev', 'local', 'rec', 'micromania', 'testing'])) {
-            /**
-             * emptying table User
-             */
-            DB::statement('SET FOREIGN_KEY_CHECKS=0');
-            User::truncate();
-            DB::statement('SET FOREIGN_KEY_CHECKS=1');
-
+        if (!App::environment('prod')) {
+            
             /**
              * creating my own user
              */

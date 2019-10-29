@@ -23,10 +23,6 @@ class plansTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS=0');
-        Plan::truncate();
-        DB::statement('SET FOREIGN_KEY_CHECKS=1');
-
         /**
          * forever free 
          */
