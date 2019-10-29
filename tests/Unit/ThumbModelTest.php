@@ -8,6 +8,7 @@ use Tests\TestCase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithoutMiddleware;
 
 class ThumbModelTest extends TestCase
 {
@@ -38,8 +39,7 @@ class ThumbModelTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $tables = DB::select('SHOW TABLES'); 
-        dd($tables);
+        DB::select("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;");
         die("\e[30;48;5;166m".__FILE__ . '::' . __LINE__ ."\e[0m". PHP_EOL);
         if (!static::$dbIsWarm) {
             static::warmDb();

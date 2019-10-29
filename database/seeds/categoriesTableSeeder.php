@@ -5,8 +5,8 @@ use Illuminate\Database\Seeder;
 
 class categoriesTableSeeder extends Seeder
 {
-    
-    
+
+
     /**
      * Run the database seeds.
      *
@@ -14,9 +14,6 @@ class categoriesTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS=0');
-        Category::truncate();
-        
         /**
          * Parents categories
          */
@@ -203,6 +200,5 @@ class categoriesTableSeeder extends Seeder
             ['parent_id' => $tvFilmId, 'name' => 'tvReviews'],
         ];
         Category::insert($data);
-        DB::statement('SET FOREIGN_KEY_CHECKS=1');
     }
 }

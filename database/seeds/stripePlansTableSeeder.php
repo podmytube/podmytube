@@ -14,10 +14,6 @@ class stripePlansTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS=0');
-        StripePlan::truncate();
-        DB::statement('SET FOREIGN_KEY_CHECKS=1');
-
         /**
          * ======================================
          * promo monhtly
