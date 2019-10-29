@@ -7,6 +7,7 @@
  * @package PodMyTube\Dashboard\Migrations
  */
 
+use App\Modules\ForeignKeys;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Schema\Blueprint;
@@ -42,26 +43,11 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
-
-
-        $foreignKeys = DB::table('INFORMATION_SCHEMA.KEY_COLUMN_USAGE')
-            ->select(
-                [
-                    'TABLE_NAME',
-                    'COLUMN_NAME',
-                    'CONSTRAINT_NAME',
-                    'REFERENCED_TABLE_NAME',
-                    'REFERENCED_COLUMN_NAME',
-                ]
-            )
-            ->where([
-                ['REFERENCED_TABLE_SCHEMA', env('DB_DATABASE')],
-                ['REFERENCED_TABLE_NAME', 'channels']
-            ])->get();
+        $foreignKeys = ForeignKeys::create('users')->get();
         if ($foreignKeys->count()) {
             foreach ($foreignKeys as $foreignKey) {
-                Schema::table($foreignKey->TABLE_NAME, function (Blueprint $table) use ($foreignKey) {
-                    $table->dropForeign($foreignKey->CONSTRAINT_NAME);
+                Schema::table($foreignKey->TABLE_NAME, function (Blueprint $table) use ($foreignKeyName) {
+                    $table->dropForeign($foreignKeyName);
                 });
             }
         }
