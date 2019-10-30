@@ -39,6 +39,13 @@ return [
             'prefix' => '',
         ],
 
+        /** used for in :memory: testing */
+        'sqlite_testing' => [
+            'driver'   => 'sqlite',
+            'database' => ':memory:',
+            'prefix'   => '',
+        ],
+
         'mysql' => [
             'driver' => 'mysql',
             'host' => env('DB_HOST', '127.0.0.1'),
