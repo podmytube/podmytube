@@ -164,7 +164,21 @@ class Thumb extends Model
     public function attachItToChannel(UploadedFile $uploadedFile, Channel $channel)
     {
         try {
-            return $this->updateOrCreate(
+            dump($channel);
+            dd([
+                'channel_id' => $channel->channelId(),
+                'file_size' => $uploadedFile->getSize(),
+                /** get filename of the stored file */
+                'file_name' => pathinfo(
+                    $uploadedFile->store(
+                        $channel->channelId(),
+                        Thumb::_LOCAL_STORAGE_DISK
+                    ),
+                    PATHINFO_FILENAME
+                ),
+                'file_disk' => Thumb::_LOCAL_STORAGE_DISK,
+            ]);
+            $result = $this->updateOrCreate(
                 [
                     'channel_id' => $channel->channelId(),
                 ],
@@ -185,5 +199,6 @@ class Thumb extends Model
         } catch (\Exception $e) { 
             throw new ThumbUploadHasFailedException("thumb upload has failed with error : ".$e->getMessage());
         }
+        return $result;
     }
 }

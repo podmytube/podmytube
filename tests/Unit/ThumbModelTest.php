@@ -8,7 +8,6 @@ use Tests\TestCase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 
 class ThumbModelTest extends TestCase
 {
@@ -28,9 +27,6 @@ class ThumbModelTest extends TestCase
      */
     protected static function warmDb()
     {
-        /* if (env('APP_ENV') == 'testing') {
-            DB::table('channels')->delete();
-        } */
         self::$channel = factory(Channel::class)->create();
         self::$thumb = factory(Thumb::class)->create(['channel_id' => self::$channel->channelId()]);
         self::$dbIsWarm = true;
@@ -39,8 +35,7 @@ class ThumbModelTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        DB::select("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;");
-        die("\e[30;48;5;166m".__FILE__ . '::' . __LINE__ ."\e[0m". PHP_EOL);
+        
         if (!static::$dbIsWarm) {
             static::warmDb();
         }
@@ -61,6 +56,7 @@ class ThumbModelTest extends TestCase
 
     public function testingDefaultUrl()
     {
+        
         $expectedUrl = env('THUMBS_URL') . '/' . Thumb::_DEFAULT_THUMB_FILE;
         $this->assertEquals(
             $expectedUrl,

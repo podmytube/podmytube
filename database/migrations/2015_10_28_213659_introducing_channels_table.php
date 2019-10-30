@@ -25,12 +25,12 @@ class IntroducingChannelsTable extends Migration
                 $table->string('email')->nullable(); //email' varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
                 $table->mediumText('description'); //description' mediumtext COLLATE utf8mb4_unicode_ci,
                 $table->string('link')->nullable(); //link' varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-                $table->integer('category_id')->unsigned()->nullable(); //category_id' int(10) UNSIGNED DEFAULT NULL,
+                $table->unsignedInteger('category_id')->nullable(); //category_id' int(10) UNSIGNED DEFAULT NULL,
                 $table->string('lang', 5)->default('FR'); //lang' varchar(5) COLLATE utf8mb4_unicode_ci DEFAULT 'FR',
                 $table->boolean('explicit')->default(false); //explicit' tinyint(1) UNSIGNED DEFAULT '0',
-                $table->integer('youtube_videos_count')->unsigned(); //youtube_videos_count' int(10) UNSIGNED DEFAULT '0',
-                $table->integer('youtube_views_count')->unsigned()->nullable(); //youtube_views_count' int(10) UNSIGNED DEFAULT NULL,
-                $table->integer('youtube_subscribers_count')->unsigned()->nullable(); //youtube_subscribers_count' int(10) UNSIGNED DEFAULT NULL,
+                $table->unsignedInteger('youtube_videos_count')->default(0); //youtube_videos_count' int(10) UNSIGNED DEFAULT '0',
+                $table->unsignedInteger('youtube_views_count')->nullable(); //youtube_views_count' int(10) UNSIGNED DEFAULT NULL,
+                $table->unsignedInteger('youtube_subscribers_count')->nullable(); //youtube_subscribers_count' int(10) UNSIGNED DEFAULT NULL,
                 $table->boolean('active')->default(true); //active' tinyint(1) UNSIGNED DEFAULT '1',
                 $table->boolean('valid')->default(true)->comment('is this a valid channel'); //valid' tinyint(1) NOT NULL DEFAULT '1' COMMENT 'is this a valid channel',
                 $table->boolean('channel_premium')->default(false); //channel_premium' tinyint(2) UNSIGNED DEFAULT '0',
@@ -51,6 +51,13 @@ class IntroducingChannelsTable extends Migration
 
                 $table->foreign('user_id')
                     ->references('user_id')->on('users')
+                    ->onDelete('cascade')
+                    ->onUpdate('cascade');                   
+            });
+
+            Schema::table('channels', function (Blueprint $table) {
+                $table->foreign('category_id')
+                    ->references('id')->on('categories')
                     ->onDelete('cascade')
                     ->onUpdate('cascade');
             });
