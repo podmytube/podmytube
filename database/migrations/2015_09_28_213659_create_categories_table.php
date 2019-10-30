@@ -29,12 +29,10 @@ class CreateCategoriesTable extends Migration
             $table->string('name');
         });
 
-        Schema::table('channels', function (Blueprint $table) {
-            $table->foreign('category_id')
-                ->references('id')->on('categories')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
-        });
+        Artisan::call('db:seed', [
+            '--class' => categoriesTableSeeder::class
+        ]);
+
     }
 
     /**

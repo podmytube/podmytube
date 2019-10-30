@@ -3,6 +3,7 @@
 /* @var $factory \Illuminate\Database\Eloquent\Factory */
 
 $factory->define(App\Channel::class, function ($faker) {
+    
     return [
         'channel_id' => $faker->regexify('[a-zA-Z0-9-_]{24}'),
         'channel_name' => $faker->sentence($nbWords = "3", $variableNbWords = true),
