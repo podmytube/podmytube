@@ -1,9 +1,10 @@
 <?php
 
-use Illuminate\Database\Seeder;
 use App\Plan;
 use App\StripePlan;
 use Carbon\Carbon;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class stripePlansTableSeeder extends Seeder
 {
@@ -14,6 +15,7 @@ class stripePlansTableSeeder extends Seeder
      */
     public function run()
     {
+        DB::table('stripe_plans')->delete();
         /**
          * ======================================
          * promo monhtly

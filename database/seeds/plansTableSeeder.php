@@ -1,8 +1,8 @@
 <?php
 
 use App\Plan;
-Use Carbon\Carbon;
-
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
 
 class plansTableSeeder extends Seeder
@@ -23,6 +23,9 @@ class plansTableSeeder extends Seeder
      */
     public function run()
     {
+        
+        DB::table('plans')->delete();
+
         /**
          * forever free 
          */
@@ -98,6 +101,7 @@ class plansTableSeeder extends Seeder
          * Accropolis wart
          */
         Plan::insert([
+            'id'                => 7,
             'name'              => 'accropolis_6_euros',
             'price'             => 6,
             'nb_episodes_per_month' => self::max_episodes_by_plan['accropolis'],

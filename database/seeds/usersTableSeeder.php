@@ -2,6 +2,7 @@
 
 use App\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class usersTableSeeder extends Seeder
 {
@@ -13,6 +14,8 @@ class usersTableSeeder extends Seeder
     public function run()
     {
         if (!App::environment('prod')) {
+            
+            DB::table('users')->delete();
             
             /**
              * creating my own user
