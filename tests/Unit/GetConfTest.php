@@ -16,6 +16,7 @@ class GetConfTest extends TestCase
     protected $testDbUser = 'podUserTests';
 
     protected $requiredProperties = [
+        /** base */
         "APP_NAME",
         "APP_ENV",
         "APP_KEY",
@@ -23,8 +24,10 @@ class GetConfTest extends TestCase
         "APP_URL",
         "APP_PODCAST_URL",
 
+        /** docker */
         "VIRTUAL_HOST",
 
+        /** database */
         "DB_CONNECTION",
         "DB_HOST",
         "DB_PORT",
@@ -33,15 +36,23 @@ class GetConfTest extends TestCase
         "DB_PASSWORD",
         "DB_CHARSET",
 
+        /** youtube */
         "YOUTUBE_API_KEY",
 
+        /** mailgun */
         "MAIL_DRIVER",
         "MAILGUN_DOMAIN",
         "MAILGUN_SECRET",
 
+        /** urls */
+        'THUMBS_URL',
+        'MP3_URL',
+
+        /** stripe */
         "STRIPE_KEY",
         "STRIPE_SECRET",
 
+        /** sentry */
         "SENTRY_LARAVEL_DSN",
     ];
 

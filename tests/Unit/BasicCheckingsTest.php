@@ -19,14 +19,4 @@ class BasicCheckingsTest extends TestCase
         $this->assertTrue(env("APP_DEBUG"), "DEBUG in .env.testing should be set to true");
         $this->assertEquals(env("DB_DATABASE"), "pmtests");                       
     }
-
-    public function testToValidDBConnection()
-    {
-        $channel = Channel::find('freeChannel');
-        $this->assertEquals(
-            'freeChannel', 
-            $channel->channel_id,
-            "This test only meaning is to check that DB connection is ok. It seems not."
-        );
-    }
 }
