@@ -32,12 +32,12 @@ class VignetteModuleTest extends TestCase
         self::$thumb = factory(Thumb::class)->create(['channel_id' => self::$channel->channel_id]);
         self::$dbIsWarm = true;
     }
-    
+
     public static function tearDownAfterClass(): void
     {
         /** removing local thumb img */
         Storage::disk(self::$thumb->fileDisk())->deleteDirectory(self::$thumb->channelId());
-        
+
         /** DB rows are removed by DatabaseTransactions trait */
     }
 
@@ -56,7 +56,7 @@ class VignetteModuleTest extends TestCase
             $expectedUrl,
             Vignette::defaultUrl()
         );
-    }    
+    }
 
     public function testingFileName()
     {
@@ -95,7 +95,10 @@ class VignetteModuleTest extends TestCase
      */
     public function testingMakingVignetteFromThumb($vigObj)
     {
-        $this->assertTrue($vigObj->make());
+        $this->assertInstanceOf(
+            Vignette::class,
+            $vigObj->makeIt()
+        );
         return $vigObj;
     }
 

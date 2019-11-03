@@ -6,13 +6,12 @@ use App\Thumb;
 use App\Channel;
 use Tests\TestCase;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ThumbModelTest extends TestCase
 {
-    use RefreshDatabase;
-    
+    //use RefreshDatabase;
+
     /** @var bool true, database is ready to run tests upon */
     protected static $dbIsWarm = false;
 
@@ -35,28 +34,14 @@ class ThumbModelTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        
+
         if (!static::$dbIsWarm) {
             static::warmDb();
         }
     }
 
-    public static function tearDownAfterClass(): void
-    {
-        /**
-         * Laravel app is destroyed on tearDown method. 
-         * TearDownAfterClass come after, so nothing is working.
-         * - self::$channel->delete => KO
-         * - query builder => KO
-         * - $this->beforeApplicationDestroyed(function () {
-         *       //self::$channel->delete();
-         *   }); => KO 
-         */
-    }
-
     public function testingDefaultUrl()
     {
-        
         $expectedUrl = env('THUMBS_URL') . '/' . Thumb::_DEFAULT_THUMB_FILE;
         $this->assertEquals(
             $expectedUrl,
@@ -98,7 +83,7 @@ class ThumbModelTest extends TestCase
     }
 
     /**
-     * @depends testingRelativePath
+     * @depends testingDashboardUrl
      */
     public function testingPodcastUrl()
     {
@@ -106,25 +91,35 @@ class ThumbModelTest extends TestCase
         $this->assertEquals($expectedUrl, self::$thumb->podcastUrl());
     }
 
-    public function testingfromUploadedFile()
+    /**
+     * @depends testingPodcastUrl
+     */
+    public function testingChannelReplaceItsThumb()
     {
         /** creating fake uploaded image */
         $uploadedFile = UploadedFile::fake()->image('/tmp/fakeThumbThatShouldNeverExist.jpg', '1400', '1400');
 
         /** attach it to channel */
-        $thumb = Thumb::make()->attachItToChannel($uploadedFile, self::$channel);
-
-        /** checking */
-        $this->assertInstanceOf(Thumb::class, $thumb);
-        $this->assertEquals($thumb->channelId(), self::$channel->channelId());
+        $this->assertInstanceOf(
+            Thumb::class,
+            Thumb::make()->attachItToChannel($uploadedFile, self::$channel)
+        );
     }
 
-
-    /* public function testingUploadThumbIsRunningFine()
+    public function testingChannelGetItsFirstThumb()
     {
-        $this->assertTrue(self::$thumb->upload());
-        echo self::$channel->channel_id;
-    } */
+        /** creating fake uploaded image */
+        $uploadedFile = UploadedFile::fake()->image('/tmp/fakeThumbThatShouldNeverExist.jpg', '1400', '1400');
+
+        /** creating new channel */
+        $channel = factory(Channel::class)->create();
+
+        /** attach it to channel */
+        $this->assertInstanceOf(
+            Thumb::class,
+            Thumb::make()->attachItToChannel($uploadedFile, $channel)
+        );
+    }
 
     public function testingThumbDoesNotExist()
     {

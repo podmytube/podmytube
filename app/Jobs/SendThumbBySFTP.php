@@ -37,8 +37,7 @@ class SendThumbBySFTP implements ShouldQueue
         }
 
         try {
-            $this->thumbToSend->uploadThumb();
-            $this->thumbToSend->uploadVig();
+            $this->thumbToSend->upload();
         } catch (\Exception $e) {
             throw new ThumbUploadHasFailedException(
                 "The upload of thumb {{$this->thumbToSend}} for channel {{$this->thumbToSend->channel_id}} has failed with message :" .

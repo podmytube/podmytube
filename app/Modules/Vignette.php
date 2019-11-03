@@ -4,8 +4,9 @@ namespace App\Modules;
 
 use Image;
 use App\Thumb;
+use App\Exceptions\VignetteCreationFromThumbException;
+use App\Exceptions\VignetteUploadException;
 use Illuminate\Support\Facades\Storage;
-//use App\Exceptions\VignetteCreationFromMissingThumbException;
 
 class Vignette
 {
@@ -102,7 +103,7 @@ class Vignette
     }
 
     /**
-     * If the thumb exist return the internal url else return the default one.
+     * Will return the internal url else return the default one.
      * 
      * @return string thumb url to be used in the dashboard
      */
@@ -114,7 +115,7 @@ class Vignette
     /**
      * This function will create the vignette from the thumb.
      */
-    public function make()
+    public function makeIt()
     {
         /** Verifying thumb file exists */
         if (!$this->thumb->exists()) {
@@ -135,11 +136,15 @@ class Vignette
                 }
             );
 
-            /** Storing it */
-            return Storage::disk($this->thumb->fileDisk())->put($this->relativePath(), (string) $image->encode());
+            /** Storing it locally */
+            Storage::disk($this->thumb->fileDisk())->put($this->relativePath(), (string) $image->encode());
         } catch (\Exception $e) {
-            throw $e;
+            throw new VignetteCreationFromThumbException(
+                "Creation of vignette from thumb {{$this->thumb}} for channel {{$this->thumb->channel_id}} has failed with message :" .
+                    $e->getMessage()
+            );
         }
+        return $this;
     }
 
     /**
@@ -169,8 +174,9 @@ class Vignette
             Storage::disk(self::_REMOTE_STORAGE_DISK)
                 ->setVisibility($this->channelId(), 'public');
         } catch (\Exception $e) {
-            Log::alert("Uploading vignette " . $this->relativePath() . " on remote vignette repository has failed with message {{$e->getMessage()}}.");
-            throw $e;
+            $message= "Uploading vignette {{$this->fileName()}} to remote has failed with message : ".$e->getMessage();
+            Log::alert($message);
+            throw new VignetteUploadException($message);
         }
         return true;
     }

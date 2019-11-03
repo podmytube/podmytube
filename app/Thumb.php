@@ -2,11 +2,12 @@
 
 namespace App;
 
-use App\Exceptions\ThumbUploadHasFailedException;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Model;
+use App\Exceptions\ThumbUploadHasFailedException;
 
 class Thumb extends Model
 {
@@ -151,54 +152,32 @@ class Thumb extends Model
     }
 
     /**
-     * This function will remove the current thumb file.
-     * Should be done within a queue.
+     * This function will set/update a new thumb for the specified channel.
+     * 
+     * @param UploadedFile $uploadedFile the uploaded file
+     * @param Channel $channel to be associated with thumb
+     * @return Thumb
      */
-    public function delete()
-    {
-        /** removing local vig */
-        return Storage::disk($this->fileDisk())->delete($this->relativePath);
-    }
-
-
     public function attachItToChannel(UploadedFile $uploadedFile, Channel $channel)
     {
         try {
-            dump($channel);
-            dd([
-                'channel_id' => $channel->channelId(),
-                'file_size' => $uploadedFile->getSize(),
-                /** get filename of the stored file */
-                'file_name' => pathinfo(
-                    $uploadedFile->store(
-                        $channel->channelId(),
-                        Thumb::_LOCAL_STORAGE_DISK
-                    ),
-                    PATHINFO_FILENAME
-                ),
-                'file_disk' => Thumb::_LOCAL_STORAGE_DISK,
-            ]);
-            $result = $this->updateOrCreate(
+            $thumb = $this->updateOrCreate(
+                ['channel_id' => $channel->channelId()],
                 [
-                    'channel_id' => $channel->channelId(),
-                ],
-                [
-                    'channel_id' => $channel->channelId(),
                     'file_size' => $uploadedFile->getSize(),
                     /** get filename of the stored file */
-                    'file_name' => pathinfo(
+                    'file_name' => basename(
                         $uploadedFile->store(
                             $channel->channelId(),
-                            Thumb::_LOCAL_STORAGE_DISK
-                        ),
-                        PATHINFO_FILENAME
+                            self::_LOCAL_STORAGE_DISK
+                        )
                     ),
-                    'file_disk' => Thumb::_LOCAL_STORAGE_DISK,
+                    'file_disk' => self::_LOCAL_STORAGE_DISK,
                 ]
             );
-        } catch (\Exception $e) { 
-            throw new ThumbUploadHasFailedException("thumb upload has failed with error : ".$e->getMessage());
+        } catch (\Exception $e) {
+            throw new ThumbUploadHasFailedException("Attaching new thumb to channel {{$channel->channelId()}} has failed with message : " . $e->getMessage());
         }
-        return $result;
+        return $thumb;
     }
 }
