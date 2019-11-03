@@ -6,6 +6,7 @@ use App\Plan;
 use App\Thumb;
 use App\User;
 use App\Exceptions\UserHasNoChannelException;
+use App\Modules\Vignette;
 use App\Services\SubscriptionService;
 use App\Services\ThumbService;
 use App\Services\MediaService;
@@ -47,18 +48,13 @@ class ChannelService
              */
             try {
                 if ($channel->thumb) {
-                    if ($channel->thumb->vignetteExists()) {
-                        $channel->vigUrl = $channel->thumb->vignetteUrl();
-                    } else {
-                        if (ThumbService::createThumbVig($channel->thumb)) {
-                            $channel->vigUrl = $channel->thumb->vignetteUrl();
-                        }
-                    }
-                } else {
-                    $channel->vigUrl = Thumb::defaultVignetteUrl();
+                    $vigObj = Vignette::fromThumb($channel->thumb);
+                    if ($vigObj->exists()) {
+                        $channel->vigUrl = $vigObj->url();
+                    } 
                 }
             } catch (\Exception $e) {
-                1;
+                $channel->vigUrl = Vignette::defaultUrl();
             }
         }
         return $channels;

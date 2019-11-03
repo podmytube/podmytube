@@ -4,11 +4,10 @@ namespace App\Http\Controllers;
 
 
 use App\Thumb;
-
 use App\Channel;
 use App\Jobs\SendThumbBySFTP;
+use App\Jobs\CreateVignetteFromThumb;
 use Illuminate\Http\Request;
-use App\Services\ThumbService;
 
 class ThumbsController extends Controller
 {
@@ -48,10 +47,13 @@ class ThumbsController extends Controller
      */
     public function store(Request $request, Channel $channel)
     {
+        /** error messages to be translated */
         $messages = [
             'required' => __('messages.thumbs_edit_error_image_required'),
             'dimensions' => __('messages.thumbs_edit_error_image_dimensions'),
         ];
+
+        /** requirements for podcast thumb */
         $rules = [
             'new_thumb_file' => 'required|dimensions:min_width=1400,min_height=1400,max_width=3000,max_height=3000'
         ];
@@ -62,15 +64,11 @@ class ThumbsController extends Controller
         }
 
         try {
-            /**
-             * upload thumb on local storage
-             */
-            $thumbService = ThumbService::create();
-            $thumbService->addUploadedThumb($request->file('new_thumb_file'), $channel);
-            /**
-             * create vignette from local storage
-             */
-            $thumbService->createThumbVig($channel);
+            /** attaching uploaded thumb to channel */
+            $thumb = Thumb::make()->attachItToChannel($request->file('new_thumb_file'), $channel);
+            
+            /** Create vignette from thumb in a job */
+            CreateVignetteFromThumb::dispatchNow($thumb);
             /**
              * This process will add the job SendThumbBySFTP to the queue (upload is long).
              * Jobs are runned with one supervisor.
@@ -80,9 +78,9 @@ class ThumbsController extends Controller
              * php artisan migrate
              * should have been run
              */
-            SendThumbBySFTP::dispatch($channel->thumb)->delay(now()->addMinutes(1));
+            SendThumbBySFTP::dispatch($thumb)->delay(now()->addMinutes(1));
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw $e;
         }
 
 
