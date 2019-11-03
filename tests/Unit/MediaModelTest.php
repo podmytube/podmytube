@@ -10,13 +10,13 @@ class MediaModelTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testingDefaultUrl()
+    public function testingFactory()
     {
-        $media = factory(Media::class)->make([
+        $medias = factory(Media::class,3)->make([
             'month' => 8,
             'year' => 2018,
 
         ]);
-        dump($media);
+        dump($medias);
     }
 }
