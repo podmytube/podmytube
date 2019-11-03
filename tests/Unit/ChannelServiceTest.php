@@ -30,6 +30,7 @@ class ChannelServiceTest extends TestCase
 
     public function testOnlyTheOwnerShouldSeeHisChannels()
     {
+        $this->markTestIncomplete();
         $expectedChannelIds = [
             'freeChannel',
             'earlyChannel',
@@ -49,6 +50,7 @@ class ChannelServiceTest extends TestCase
 
     public function testUserWithNoChannelShouldntSeeAny() 
     {
+        $this->markTestIncomplete();
         $this->expectException(\Exception::class);
         $userChannels = ChannelService::getAuthenticatedUserChannels($this->fakeUser);
     }

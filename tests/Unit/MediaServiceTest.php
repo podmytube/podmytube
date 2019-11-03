@@ -33,6 +33,7 @@ class MediaServiceTest extends TestCase
 
     public function testGetMediasStatusByPeriodForFreeChannel()
     {
+        $this->markTestIncomplete();
         $startDate = carbon::createMidnightDate(date('Y'), date('m'), 1);
         
         $expectedResults = [
@@ -53,12 +54,14 @@ class MediaServiceTest extends TestCase
 
     public function testGetMediasStatusWithWrongPeriodShouldFail()
     {
+        $this->markTestIncomplete();
         $this->expectException(\Exception::class);
         $results = MediaService::getMediasStatusByPeriodForChannel(Channel::find('freeChannel'), 1555);
     }
 
     public function testGetGrabbedMediaForFreeChannelShouldReturn2()
     {
+        $this->markTestIncomplete();
         $expectedNumberOfVideosDownloaded = 2;
         $result = MediaService::getNbEpisodesAlreadyDownloadedThisMonth(Channel::find('freeChannel'));
         $this->assertEquals(
@@ -70,6 +73,7 @@ class MediaServiceTest extends TestCase
 
     public function testGetGrabbedMediasFor()
     {
+        $this->markTestIncomplete();
         $expectedMediaIdsDownloaded = ['YsBVu6f8pR8', 'KsSPMDe_YWY'];
         $result = (MediaService::getGrabbedMediasFor(Channel::find('freeChannel'), $this->curMonth))->pluck('media_id')->toArray();
         $this->assertEqualsCanonicalizing(
@@ -81,6 +85,7 @@ class MediaServiceTest extends TestCase
 
     public function testGetPublishedMediasFor()
     {
+        $this->markTestIncomplete();
         $expectedMediaIdsPublished = ['YsBVu6f8pR8', 'KsSPMDe_YWY', 'hKjtoNByLAI'];
         $result = (MediaService::getPublishedMediasFor(Channel::find('freeChannel'), $this->curMonth))->pluck('media_id')->toArray();
         $this->assertEqualsCanonicalizing(
@@ -92,6 +97,7 @@ class MediaServiceTest extends TestCase
 
     public function testInvalidMonthShouldThrowOneException()
     {
+        $this->markTestIncomplete();
         $this->expectException(\Exception::class);
         $result = MediaService::getPublishedMediasFor(Channel::find('freeChannel'), 0);
     }
