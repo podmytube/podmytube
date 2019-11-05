@@ -1,5 +1,6 @@
 <?php
 
+use App\Channel;
 use Illuminate\Database\Seeder;
 
 class ChannelTableSeeder extends Seeder
@@ -11,6 +12,21 @@ class ChannelTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Channel::class, 50)->create();
+        if (!App::environment('prod')) {
+
+            DB::table('channels')->delete();
+
+            /**
+             * creating my own user
+             */
+            $data = [
+                [
+                    'channel_id' => 'UCRU38zigLJNtMIh7oRm2hIg',
+                    'user_id' => 1,
+                    'channel_name' => 'nowtech'
+                ],
+            ];
+            Channel::insert($data);
+        }
     }
 }

@@ -5,7 +5,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
 
-class plansTableSeeder extends Seeder
+class PlansTableSeeder extends Seeder
 {
 
     const max_episodes_by_plan = [

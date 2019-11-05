@@ -5,7 +5,7 @@ use App\Subscription;
 use App\Services\ChannelPremiumToSubscriptionService;
 use Illuminate\Database\Seeder;
 
-class subscriptionTableSeeder extends Seeder
+class SubscriptionTableSeeder extends Seeder
 {
 
     /**

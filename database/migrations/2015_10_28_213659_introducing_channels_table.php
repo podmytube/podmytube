@@ -23,7 +23,7 @@ class IntroducingChannelsTable extends Migration
                 $table->string('podcast_copyright')->nullable(); //podcast_copyright' varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
                 $table->string('authors')->nullable(); //authors' varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
                 $table->string('email')->nullable(); //email' varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-                $table->mediumText('description')->nullable(); //description' mediumtext COLLATE utf8mb4_unicode_ci,
+                $table->text('description')->nullable(); //description' mediumtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
                 $table->string('link')->nullable(); //link' varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
                 $table->unsignedInteger('category_id')->nullable(); //category_id' int(10) UNSIGNED DEFAULT NULL,
                 $table->string('lang', 5)->default('FR'); //lang' varchar(5) COLLATE utf8mb4_unicode_ci DEFAULT 'FR',

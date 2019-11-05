@@ -17,11 +17,12 @@ class DatabaseSeeder extends Seeder
             Model::unguard();
 
             $this->call([
-                usersTableSeeder::class,
-                categoriesTableSeeder::class,
-                plansTableSeeder::class,
-                subscriptionTableSeeder::class,
-                stripePlansTableSeeder::class,
+                UsersTableSeeder::class,
+                ChannelTableSeeder::class,
+                CategoriesTableSeeder::class,
+                PlansTableSeeder::class,
+                SubscriptionTableSeeder::class,
+                StripePlansTableSeeder::class,
             ]);
 
             Model::reguard();
