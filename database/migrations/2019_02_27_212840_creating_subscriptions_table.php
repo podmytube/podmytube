@@ -54,7 +54,7 @@ class CreatingSubscriptionsTable extends Migration
         }
 
         Artisan::call('db:seed', [
-            '--class' => subscriptionTableSeeder::class
+            '--class' => SubscriptionTableSeeder::class
         ]);
     }
 

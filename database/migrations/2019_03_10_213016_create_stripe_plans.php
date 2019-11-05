@@ -41,7 +41,7 @@ class CreateStripePlans extends Migration
         });
 
         Artisan::call('db:seed', [
-            '--class' => stripePlansTableSeeder::class
+            '--class' => StripePlansTableSeeder::class
         ]);
     }
 
