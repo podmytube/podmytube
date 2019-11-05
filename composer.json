@@ -9,7 +9,7 @@
         "anhskohbo/no-captcha": "^3.0",
         "barryvdh/laravel-debugbar": "^3.1",
         "davejamesmiller/laravel-breadcrumbs": "^5.1",
-        "doctrine/dbal": "^2.7",
+        "doctrine/dbal": "^2.10",
         "fideloper/proxy": "~4.0",
         "guzzlehttp/guzzle": "^6.3",
         "intervention/image": "^2.4",
