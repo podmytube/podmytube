@@ -23,7 +23,7 @@ class CreatingPlansTable extends Migration
         });
         
         Artisan::call('db:seed', [
-            '--class' => plansTableSeeder::class
+            '--class' => PlansTableSeeder::class
         ]);
     }
 

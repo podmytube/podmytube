@@ -4,7 +4,7 @@ use App\Channel;
 use App\Services\CategoryMigrationService;
 use Illuminate\Database\Seeder;
 
-class channelCategoriesTableSeeder extends Seeder
+class ChannelCategoriesTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
