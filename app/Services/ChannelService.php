@@ -52,9 +52,11 @@ class ChannelService
                     if ($vigObj->exists()) {
                         $channel->vigUrl = $vigObj->url();
                     } 
+                } else {
+                    $channel->vigUrl = Vignette::defaultUrl();
                 }
             } catch (\Exception $e) {
-                $channel->vigUrl = Vignette::defaultUrl();
+                1;
             }
         }
         return $channels;
