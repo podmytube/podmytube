@@ -18,7 +18,7 @@ services:
   # this image is starting from a official php-apache docker
   # and creating host dashboard-pmt
   dashboard-pmt:
-    container_name: dash
+    container_name: dashboard.podmytube.com
     build:
       context: .
       dockerfile: .docker/Dockerfile
