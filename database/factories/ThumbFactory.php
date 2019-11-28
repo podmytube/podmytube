@@ -3,14 +3,9 @@
 /* @var $factory \Illuminate\Database\Eloquent\Factory */
 
 $factory->define(App\Thumb::class, function ($faker, $attributes) {
-    if (isset($attributes['channel_id'])) {
-        $channelId = $attributes['channel_id'];
-    } else {
-        $channelId = $faker->regexify('[a-zA-Z0-9-_]{24}');
-    }
-
     
-
+    $channelId = $attributes['channel_id'] ?? $faker->regexify('[a-zA-Z0-9-_]{24}');
+    
     Storage::disk(App\Thumb::_LOCAL_STORAGE_DISK)->makeDirectory($channelId, intval('0664', 8), true);
     
     
