@@ -14,8 +14,6 @@ class CreatingPlaylistsTable extends Migration
     public function up()
     {
         if (!Schema::hasTable('playlists')) {
-
-
             Schema::create('playlists', function (Blueprint $table) {
                 $table->string('playlist_id'); // ` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
                 $table->string('channel_id'); // ` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
