@@ -14,9 +14,7 @@ class AddLanguageToUsers extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            
             $table->enum('language', ['fr','en'])->after('password')->default('en')->comment('the default language for user interface');
-
         });
     }
 
