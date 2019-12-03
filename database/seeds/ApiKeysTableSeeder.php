@@ -16,8 +16,9 @@ class ApiKeysTableSeeder extends Seeder
         DB::table('api_keys')->delete();
 
         $data = [
-            ['id' => 1, 'apikey' => 'AIzaSyB_iYiVpA9GWst4Mlr3-qcmlvL8dTLIZxo', 'comment' => 'mangeurdechamois', 'created_at' => Carbon::now()],
-            ['id' => 2, 'apikey' => 'AIzaSyB0Z5tK4-vzk8B-pICDBcWVIwzkg_-pzyk', 'comment' => 'captainbouflamoule', 'created_at' =>  Carbon::now()],
+            ['apikey' => 'AIzaSyB_iYiVpA9GWst4Mlr3-qcmlvL8dTLIZxo', 'comment' => 'mangeurdechamois', 'environment' => ApiKey::_PROD_ENV, 'created_at' => Carbon::now()],
+            ['apikey' => 'AIzaSyB0Z5tK4-vzk8B-pICDBcWVIwzkg_-pzyk', 'comment' => 'captainbouflamoule', 'environment' => ApiKey::_PROD_ENV, 'created_at' =>  Carbon::now()],
+            ['apikey' => 'AIzaSyDu5_d6Etu8N0biP6zfDN4FNe675FcgRkk', 'comment' => 'naindormeur', 'environment' => ApiKey::_LOCAL_ENV, 'created_at' =>  Carbon::now()],
         ];
 
         ApiKey::insert($data);

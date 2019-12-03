@@ -21,9 +21,9 @@ class ChannelTableSeeder extends Seeder
              */
             $data = [
                 [
-                    'channel_id' => 'UCRU38zigLJNtMIh7oRm2hIg',
+                    'channel_id' => 'UCTEzSp8NmvyjvXUj-eNYVuw',
                     'user_id' => 1,
-                    'channel_name' => 'nowtech'
+                    'channel_name' => 'La goupilation'
                 ],
             ];
             Channel::insert($data);
