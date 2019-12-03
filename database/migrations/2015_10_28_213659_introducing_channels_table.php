@@ -61,6 +61,11 @@ class IntroducingChannelsTable extends Migration
                     ->onDelete('cascade')
                     ->onUpdate('cascade');
             });
+
+
+            Artisan::call('db:seed', [
+                '--class' => ChannelTableSeeder::class
+            ]);
         }
     }
 
