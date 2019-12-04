@@ -35,9 +35,9 @@ class CreatingApikeysTable extends Migration
      */
     public function down()
     {
-        Schema::table('quotas', function (Blueprint $table) {
+        /* Schema::table('quotas', function (Blueprint $table) {
             $table->dropForeign('quotas_apikey_id_foreign');
-        });
+        }); */
         Schema::dropIfExists('api_keys');
     }
 }
