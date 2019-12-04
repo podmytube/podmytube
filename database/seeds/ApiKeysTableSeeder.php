@@ -19,6 +19,7 @@ class ApiKeysTableSeeder extends Seeder
             ['apikey' => 'AIzaSyB_iYiVpA9GWst4Mlr3-qcmlvL8dTLIZxo', 'comment' => 'mangeurdechamois', 'environment' => ApiKey::_PROD_ENV, 'created_at' => Carbon::now()],
             ['apikey' => 'AIzaSyB0Z5tK4-vzk8B-pICDBcWVIwzkg_-pzyk', 'comment' => 'captainbouflamoule', 'environment' => ApiKey::_PROD_ENV, 'created_at' =>  Carbon::now()],
             ['apikey' => 'AIzaSyDu5_d6Etu8N0biP6zfDN4FNe675FcgRkk', 'comment' => 'naindormeur', 'environment' => ApiKey::_LOCAL_ENV, 'created_at' =>  Carbon::now()],
+            ['apikey' => 'AIzaSyC0NDrm3rC9BLI9bWLCLZeGnynqu79IySA', 'comment' => 'johnsleepwalker', 'environment' => ApiKey::_PROD_ENV, 'created_at' =>  Carbon::now()],
         ];
 
         ApiKey::insert($data);
