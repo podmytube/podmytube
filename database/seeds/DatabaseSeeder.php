@@ -18,11 +18,12 @@ class DatabaseSeeder extends Seeder
 
             $this->call([
                 UsersTableSeeder::class,
-                ChannelTableSeeder::class,
                 CategoriesTableSeeder::class,
+                ChannelTableSeeder::class,
                 PlansTableSeeder::class,
                 SubscriptionTableSeeder::class,
                 StripePlansTableSeeder::class,
+                ApiKeysTableSeeder::class,
             ]);
 
             Model::reguard();
