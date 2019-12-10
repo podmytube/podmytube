@@ -37,6 +37,9 @@ if (env('APP_ENV') != 'prod') {
 	});
 }
 // ================================================
+Route::get('/', function () {
+	return view("welcome");
+})->name('welcome');
 
 Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
@@ -48,7 +51,6 @@ Route::get('setlocale/{locale}', function ($locale) {
 	return redirect()->back();
 });
 
-Route::get('/', 'HomeController@index')->name('root');
 
 Route::post('/channel/', 'ChannelCreateController@store')->name('channel.store');
 Route::get('/channel/create', 'ChannelCreateController@create')->name('channel.create');

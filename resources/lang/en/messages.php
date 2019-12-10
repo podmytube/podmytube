@@ -31,7 +31,8 @@ return [
     'highcharts_line_graph_legend_label'    => 'number of downloads',
 
     // breadcrumb
-    'page_title_home_breadcrumb' => 'Home',
+    'page_title_welcome_breadcrumb' => 'Welcome',
+    'page_title_home_breadcrumb' => 'Vos podcasts',
 
     // flash
     'flash_channel_has_been_created' => "Channel :channel has been successfully registered :)",
