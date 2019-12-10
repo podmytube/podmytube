@@ -12,6 +12,11 @@ class PlansController extends Controller
     const _WEEKLY = Plan::_WEEKLY_PLAN_ID;
     const _DAILY = Plan::_DAILY_PLAN_ID;
 
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+    
     /**
      * Show the available plans
      *
