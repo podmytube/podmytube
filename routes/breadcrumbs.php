@@ -1,7 +1,13 @@
 <?php
 
+// Welcome
+Breadcrumbs::register('welcome', function ($breadcrumbs) {
+    $breadcrumbs->push(__('messages.page_title_welcome_breadcrumb'), route('welcome'));
+});
+
 // Home
 Breadcrumbs::register('home', function ($breadcrumbs) {
+    $breadcrumbs->parent('welcome');
     $breadcrumbs->push(__('messages.page_title_home_breadcrumb'), route('home'));
 });
 

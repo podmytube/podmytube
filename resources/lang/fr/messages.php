@@ -31,7 +31,8 @@ return [
     'highcharts_line_graph_legend_label'    => 'téléchargements',
 
     // breadcrumb
-    'page_title_home_breadcrumb' => 'Accueil',
+    'page_title_welcome_breadcrumb' => 'Bienvenue',
+    'page_title_home_breadcrumb' => 'Vos podcasts',
 
     // flash
     'flash_channel_has_been_created' => "La chaine :channel est désormais inscrite :)",
