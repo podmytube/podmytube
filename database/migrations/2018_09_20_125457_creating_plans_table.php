@@ -21,10 +21,6 @@ class CreatingPlansTable extends Migration
             $table->unsignedTinyInteger('nb_episodes_per_month');
             $table->timestamps();
         });
-        
-        Artisan::call('db:seed', [
-            '--class' => PlansTableSeeder::class
-        ]);
     }
 
     /**
