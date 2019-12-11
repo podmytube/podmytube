@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Auth;
 /**
  * the home controller class.
  */
-class HomeController extends Controller
+class PodcastsController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -43,6 +43,6 @@ class HomeController extends Controller
             $channels = null;
         }
 
-        return view('home', compact('channels'));
+        return view('podcasts', compact('channels'));
     }
 }

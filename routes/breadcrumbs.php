@@ -1,18 +1,18 @@
 <?php
 
 // Welcome
-Breadcrumbs::register('welcome', function ($breadcrumbs) {
-    $breadcrumbs->push(__('messages.page_title_welcome_breadcrumb'), route('welcome'));
-});
-
-// Home
 Breadcrumbs::register('home', function ($breadcrumbs) {
-    $breadcrumbs->parent('welcome');
     $breadcrumbs->push(__('messages.page_title_home_breadcrumb'), route('home'));
 });
 
+// Podcasts
+Breadcrumbs::register('podcasts', function ($breadcrumbs) {
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push(__('messages.page_title_podcasts_breadcrumb'), route('podcasts'));
+});
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//                                 CHANNEL
+//                                 Podcasts
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 // Home > Channels >

@@ -4,7 +4,7 @@
 
 @section('breadcrumbs') 
 
-	{{ Breadcrumbs::render('welcome') }}
+	{{ Breadcrumbs::render('podcasts') }}
 
 @endsection
 
@@ -13,7 +13,7 @@
 @include ('layouts.errors')
 
 <div class="container">
-	Welcome
+	@include ('layouts.channels')
 </div>
 <!--/home main container-->
 @endsection
