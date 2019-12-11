@@ -5,8 +5,6 @@ namespace Tests\Unit;
 use App\Category;
 use Tests\TestCase;
 
-use App\Providers\AppServiceProvider;
-
 class CategoryModelTest extends TestCase
 {
     protected static $expectedCategories;

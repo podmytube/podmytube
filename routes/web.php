@@ -37,12 +37,14 @@ if (env('APP_ENV') != 'prod') {
 	});
 }
 // ================================================
+// Home page is the login screen
 Route::get('/', function () {
-	return view("home");
-})->name('home');
+	return view("auth.login");
+})->name('root');
 
 Auth::routes();
-Route::get('/home', 'PodcastsController@index')->name('podcasts');
+
+Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('setlocale/{locale}', function ($locale) {
 	if (in_array($locale, \Config::get('app.locales'))) {
