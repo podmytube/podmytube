@@ -18,14 +18,14 @@ class StripePlansTableSeeder extends Seeder
         DB::table('stripe_plans')->delete();
         /**
          * ======================================
-         * promo monhtly
+         * promo monthly
          * ======================================
          * test
          */
         StripePlan::insert(            
             [
                 'plan_id' => Plan::_PROMO_MONTHLY_PLAN_ID,
-                'stripe_id' => 'plan_EfYDgsuNMdj8Sb',
+                'stripe_id' => StripePlan::_PROMO_MONTHLY_PLAN_TEST,
                 'is_live' => 0,
                 'created_at' => Carbon::createFromDate(2019, 3, 10),
                 'updated_at' => Carbon::now(),
@@ -36,7 +36,7 @@ class StripePlansTableSeeder extends Seeder
         StripePlan::insert(
             [
                 'plan_id' => Plan::_PROMO_MONTHLY_PLAN_ID,
-                'stripe_id' => 'plan_EcuGg9SyUBw97i',
+                'stripe_id' => StripePlan::_PROMO_MONTHLY_PLAN_PROD,
                 'is_live' => 1,
                 'created_at' => Carbon::createFromDate(2019, 3, 10),
                 'updated_at' => Carbon::now(),
@@ -52,7 +52,7 @@ class StripePlansTableSeeder extends Seeder
         StripePlan::insert(            
             [
                 'plan_id' => Plan::_PROMO_YEARLY_PLAN_ID,
-                'stripe_id' => 'plan_EfYBFztmlQ3u4C',
+                'stripe_id' => StripePlan::_PROMO_YEARLY_PLAN_TEST,
                 'is_live' => 0,
                 'created_at' => Carbon::createFromDate(2019, 3, 10),
                 'updated_at' => Carbon::now(),
@@ -63,7 +63,7 @@ class StripePlansTableSeeder extends Seeder
         StripePlan::insert(
             [
                 'plan_id' => Plan::_PROMO_YEARLY_PLAN_ID,
-                'stripe_id' => 'plan_EcuJ2npV5EMrCg',
+                'stripe_id' => StripePlan::_PROMO_YEARLY_PLAN_PROD,
                 'is_live' => 1,
                 'created_at' => Carbon::createFromDate(2019, 3, 10),
                 'updated_at' => Carbon::now(),
@@ -79,7 +79,7 @@ class StripePlansTableSeeder extends Seeder
         StripePlan::insert(            
             [
                 'plan_id' => Plan::_WEEKLY_PLAN_ID,
-                'stripe_id' => 'plan_EfudBu6TCXHWEg',
+                'stripe_id' => StripePlan::_WEEKLY_PLAN_TEST,
                 'is_live' => 0,
                 'created_at' => Carbon::createFromDate(2019, 3, 10),
                 'updated_at' => Carbon::now(),
@@ -90,7 +90,7 @@ class StripePlansTableSeeder extends Seeder
         StripePlan::insert(
             [
                 'plan_id' => Plan::_WEEKLY_PLAN_ID,
-                'stripe_id' => 'plan_EaIv2XTMGtuY5g',
+                'stripe_id' => StripePlan::_WEEKLY_PLAN_PROD,
                 'is_live' => 1,
                 'created_at' => Carbon::createFromDate(2019, 3, 10),
                 'updated_at' => Carbon::now(),
@@ -106,7 +106,7 @@ class StripePlansTableSeeder extends Seeder
         StripePlan::insert(            
             [
                 'plan_id' => Plan::_DAILY_PLAN_ID,
-                'stripe_id' => 'plan_EfuceKVUwJTt5O',
+                'stripe_id' => StripePlan::_DAILY_PLAN_TEST,
                 'is_live' => 0,
                 'created_at' => Carbon::createFromDate(2019, 3, 10),
                 'updated_at' => Carbon::now(),
@@ -117,7 +117,7 @@ class StripePlansTableSeeder extends Seeder
         StripePlan::insert(
             [
                 'plan_id' => Plan::_DAILY_PLAN_ID,
-                'stripe_id' => 'plan_DFsB9U76WaSaR3',
+                'stripe_id' => StripePlan::_DAILY_PLAN_PROD,
                 'is_live' => 1,
                 'created_at' => Carbon::createFromDate(2019, 3, 10),
                 'updated_at' => Carbon::now(),
@@ -134,7 +134,7 @@ class StripePlansTableSeeder extends Seeder
         StripePlan::insert(            
             [
                 'plan_id' => Plan::_ACCROPOLIS_PLAN_ID,
-                'stripe_id' => 'plan_EfubS6xkc5amyO',
+                'stripe_id' => StripePlan::_ACCROPOLIS_PLAN_TEST,
                 'is_live' => 0,
                 'created_at' => Carbon::createFromDate(2019, 3, 10),
                 'updated_at' => Carbon::now(),
@@ -145,7 +145,7 @@ class StripePlansTableSeeder extends Seeder
         StripePlan::insert(
             [
                 'plan_id' => Plan::_ACCROPOLIS_PLAN_ID,
-                'stripe_id' => 'plan_Ecv3k67W6rsSKk',
+                'stripe_id' => StripePlan::_ACCROPOLIS_PLAN_PROD,
                 'is_live' => 1,
                 'created_at' => Carbon::createFromDate(2019, 3, 10),
                 'updated_at' => Carbon::now(),
