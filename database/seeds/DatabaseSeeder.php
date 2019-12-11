@@ -12,7 +12,7 @@ class DatabaseSeeder extends Seeder
 	 */
 	public function run()
 	{
-        if (!App::environment('prod')) {
+        if (!App::environment('production')) {
             
             Model::unguard();
 

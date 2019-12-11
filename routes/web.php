@@ -23,7 +23,7 @@
 
 use App\Mail\ChannelIsRegistered;
 
-if (env('APP_ENV') != 'prod') {
+if (env('APP_ENV') != 'production') {
 	Route::get('/mailable', function () {
 		$user = App\User::find(1);
 		$channel = $user->channels->first();

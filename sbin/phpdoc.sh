@@ -13,7 +13,7 @@ title "phpdoc"
 # getting info from .env.testing file
 ENV_FILE=".env"
 APP_ENV=$(read_var APP_ENV ${ENV_FILE})
-if [ "$APP_ENV" = "prod" ];then
+if [ "$APP_ENV" = "production" ];then
     warning "this documentation should not been published on production environment"
 fi
 
