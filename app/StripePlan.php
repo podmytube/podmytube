@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class StripePlan extends Model
 {
-
     public const _PROMO_MONTHLY_PLAN_TEST = 'plan_EfYDgsuNMdj8Sb';
     public const _PROMO_MONTHLY_PLAN_PROD = 'plan_EcuGg9SyUBw97i';
 

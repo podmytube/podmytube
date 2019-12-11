@@ -38,11 +38,11 @@ if (env('APP_ENV') != 'prod') {
 }
 // ================================================
 Route::get('/', function () {
-	return view("welcome");
-})->name('welcome');
+	return view("home");
+})->name('home');
 
 Auth::routes();
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/home', 'PodcastsController@index')->name('podcasts');
 
 Route::get('setlocale/{locale}', function ($locale) {
 	if (in_array($locale, \Config::get('app.locales'))) {
