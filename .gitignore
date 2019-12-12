@@ -21,3 +21,4 @@ storage/debugbar
 # Bothering me
 # ===============================================
 package-lock.json
+_ide_helper.php

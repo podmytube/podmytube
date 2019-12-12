@@ -12,17 +12,18 @@ class DatabaseSeeder extends Seeder
 	 */
 	public function run()
 	{
-        if (!App::environment('prod')) {
+        if (!App::environment('production')) {
             
             Model::unguard();
 
             $this->call([
                 UsersTableSeeder::class,
-                ChannelTableSeeder::class,
                 CategoriesTableSeeder::class,
+                ChannelTableSeeder::class,
                 PlansTableSeeder::class,
                 SubscriptionTableSeeder::class,
                 StripePlansTableSeeder::class,
+                ApiKeysTableSeeder::class,
             ]);
 
             Model::reguard();

@@ -25,7 +25,6 @@ class CreateUsersTable extends Migration
      */
     public function up()
     {
-
         Schema::create('users', function (Blueprint $table) {
             $table->increments('user_id');
             $table->string('name');
@@ -34,10 +33,6 @@ class CreateUsersTable extends Migration
             $table->rememberToken();
             $table->timestamps();
         });
-
-        Artisan::call('db:seed', [
-            '--class' => UsersTableSeeder::class
-        ]);
     }
 
     /**

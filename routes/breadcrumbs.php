@@ -1,12 +1,17 @@
 <?php
 
-// Home
-Breadcrumbs::register('home', function ($breadcrumbs) {
+// Welcome
+/* Breadcrumbs::register('home', function ($breadcrumbs) {
     $breadcrumbs->push(__('messages.page_title_home_breadcrumb'), route('home'));
+}); */
+
+// Podcasts
+Breadcrumbs::register('home', function ($breadcrumbs) {
+    $breadcrumbs->push(__('messages.page_title_podcasts_breadcrumb'), route('home'));
 });
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//                                 CHANNEL
+//                                 Podcasts
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 // Home > Channels >

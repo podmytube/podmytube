@@ -29,10 +29,6 @@ class CreateCategoriesTable extends Migration
                 $table->string('parent_id');
                 $table->string('name');
             });
-
-            Artisan::call('db:seed', [
-                '--class' => CategoriesTableSeeder::class
-            ]);
         }
     }
 

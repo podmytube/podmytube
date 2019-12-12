@@ -23,7 +23,7 @@
 
 use App\Mail\ChannelIsRegistered;
 
-if (env('APP_ENV') != 'prod') {
+if (env('APP_ENV') != 'production') {
 	Route::get('/mailable', function () {
 		$user = App\User::find(1);
 		$channel = $user->channels->first();
@@ -37,8 +37,13 @@ if (env('APP_ENV') != 'prod') {
 	});
 }
 // ================================================
+// Home page is the login screen
+Route::get('/', function () {
+	return view("auth.login");
+})->name('root');
 
 Auth::routes();
+
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('setlocale/{locale}', function ($locale) {
@@ -48,7 +53,6 @@ Route::get('setlocale/{locale}', function ($locale) {
 	return redirect()->back();
 });
 
-Route::get('/', 'HomeController@index')->name('root');
 
 Route::post('/channel/', 'ChannelCreateController@store')->name('channel.store');
 Route::get('/channel/create', 'ChannelCreateController@create')->name('channel.create');
