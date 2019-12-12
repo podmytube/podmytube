@@ -25,7 +25,8 @@ RUN     apt-get update -y && \
             wget \
             zip \
             git \
-            memcached
+            memcached \
+            supervisor
 
 RUN     rm -rf /var/lib/apt/lists/*;
 
@@ -51,6 +52,9 @@ RUN     docker-php-ext-install pdo \
 # default vhost replaced by custom one
 # mainly documentRoot /app/public
 COPY    .docker/vhost.conf /etc/apache2/sites-available/000-default.conf
+
+# 
+COPY    .docker/laravel-worker.conf /etc/supervisor/conf.d/
 
 # adding myself
 RUN     adduser --disabled-password --gecos "" fred
