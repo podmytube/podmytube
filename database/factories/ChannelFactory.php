@@ -2,8 +2,8 @@
 
 /* @var $factory \Illuminate\Database\Eloquent\Factory */
 
-$factory->define(App\Channel::class, function ($faker) {
-    
+$factory->define(App\Channel::class, function ($faker, array $attributes = []) {
+
     return [
         'channel_id' => $faker->regexify('[a-zA-Z0-9-_]{24}'),
         'channel_name' => $faker->sentence($nbWords = "3", $variableNbWords = true),
@@ -12,9 +12,9 @@ $factory->define(App\Channel::class, function ($faker) {
         'description' => $faker->text(300),
         'link' => 'http://' . $faker->domainName(),
         'lang' => $faker->randomElement(['FR', 'EN']),
-        'user_id' => function () {
+        'user_id' => function () use ($attributes) {
             /** creating user on the fly */
-            return factory(App\User::class)->create()->user_id;
+            return factory(App\User::class)->create($attributes)->user_id;
         },
         'category_id' => function () {
             /** getting one random category */
