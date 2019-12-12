@@ -27,18 +27,22 @@ class CreateStripePlans extends Migration
             /**
              * We have only one internal plan_id by live/test mode
              */
-            $table->unique(['plan_id','is_live']);
+            $table->unique(['plan_id', 'is_live']);
 
             /**
              * 
              */
-            
+
             $table->foreign('plan_id')
                 ->references('id')->on('plans')
                 ->onDelete('cascade')
-                ->onUpdate('cascade');            
-            
+                ->onUpdate('cascade');
         });
+
+        Artisan::call('db:seed', [
+            '--class' => StripePlansTableSeeder::class
+        ]);
+
     }
 
     /**
@@ -48,8 +52,6 @@ class CreateStripePlans extends Migration
      */
     public function down()
     {
-
         Schema::dropIfExists('stripe_plans');
-
     }
 }
