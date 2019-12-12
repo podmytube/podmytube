@@ -12,7 +12,7 @@ class ChannelTableSeeder extends Seeder
      */
     public function run()
     {
-        if (!App::environment('prod')) {
+        if (!App::environment('production')) {
 
             DB::table('channels')->delete();
 

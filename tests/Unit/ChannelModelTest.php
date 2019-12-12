@@ -5,20 +5,21 @@ namespace Tests\Unit;
 use App\Channel;
 use App\Exceptions\ChannelCreationInvalidChannelUrlException;
 use App\Exceptions\ChannelCreationInvalidUrlException;
+use App\Exceptions\ChannelCreationOnlyYoutubeIsAccepted;
 use Tests\TestCase;
 
 class ChannelModelTest extends TestCase
 {
-    public function testingChannelCreationFailure()
+    public function testingInvalidCharactersInChannelId()
     {
         $this->expectException(ChannelCreationInvalidChannelUrlException::class);
-        Channel::extractChannelIdFromUrl("http://www.youtube.com/channel/UCw*6bU9JT_Lihb2pbtqAUGQw-/");
+        $result = Channel::extractChannelIdFromUrl("http://www.youtube.com/channel/UCw%*Lihb2pbtqAUGQw-/");
     }
 
-    public function testingInvalidChannelIdFromYoutubeUrl()
+    public function testingInvalidHostInChannelId()
     {
-        $this->expectException(ChannelCreationInvalidChannelUrlException::class);
-        Channel::extractChannelIdFromUrl("http://www.youtube.com/channel/UCw*6bU9JT_Lihb2pbtqAUGQw-/");
+        $this->expectException(ChannelCreationOnlyYoutubeIsAccepted::class);
+        $result = Channel::extractChannelIdFromUrl("http://www.vimeo.com/channel/UCw%*Lihb2pbtqAUGQw-/");
     }
 
     public function testingInvalidYoutubeUrl()
@@ -27,7 +28,7 @@ class ChannelModelTest extends TestCase
         Channel::extractChannelIdFromUrl("This is not one url");
     }
 
-    public function testingValidYoutubeUrl()
+    public function testingValidYoutubeUrls()
     {
         $expectedChannelId = 'UCw6bU9JT_Lihb2pbtqAUGQw-';
         foreach ([
@@ -35,10 +36,12 @@ class ChannelModelTest extends TestCase
             "http://www.youtube.com/channel/UCw6bU9JT_Lihb2pbtqAUGQw-",
             "https://www.youtube.com/channel/UCw6bU9JT_Lihb2pbtqAUGQw-/",
             "https://www.youtube.com/channel/UCw6bU9JT_Lihb2pbtqAUGQw-",
+            "https://www.youtube.com/channel/UCw6bU9JT_Lihb2pbtqAUGQw-?",
+            "https://www.youtube.com/channel/UCw6bU9JT_Lihb2pbtqAUGQw-?view_as=subscriber",
         ] as $youtubeUrl) {
             $this->assertEquals(
                 $expectedChannelId,
-                ($result = Channel::extractChannelIdFromUrl($youtubeUrl)),
+                $result = Channel::extractChannelIdFromUrl($youtubeUrl),
                 "ChannelId for {$youtubeUrl} should be {$expectedChannelId} and result was {$result}"
             );
         }

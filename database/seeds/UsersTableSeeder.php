@@ -13,7 +13,7 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        if (!App::environment('prod')) {
+        if (!App::environment('production')) {
             
             DB::table('users')->delete();
             

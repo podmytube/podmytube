@@ -11,6 +11,7 @@ namespace App;
 
 use App\Exceptions\ChannelCreationInvalidChannelUrlException;
 use App\Exceptions\ChannelCreationInvalidUrlException;
+use App\Exceptions\ChannelCreationOnlyYoutubeIsAccepted;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
 
@@ -189,13 +190,21 @@ class Channel extends Model
         )) {
             throw new ChannelCreationInvalidUrlException("flash_channel_id_is_invalid");
         }
+
+        if (!in_array(
+            parse_url($channelUrl, PHP_URL_HOST),
+            ['youtube.com', 'www.youtube.com']
+        )) {
+            throw new ChannelCreationOnlyYoutubeIsAccepted("Only channels from youtube are accepted !");
+        }
+
         /**
          * checking the url given.
          * It should contain one youtube url the channel path and the channel_id
          */
         if (!preg_match(
-            "#^https?://(youtube.com|www.youtube.com)/channel/(?'channel'[A-Za-z0-9_-]*)/?$#",
-            $channelUrl,
+            "#^/channel/(?'channel'[A-Za-z0-9_-]*)/?$#",
+            parse_url($channelUrl, PHP_URL_PATH),
             $matches
         )) {
             throw new ChannelCreationInvalidChannelUrlException("flash_channel_id_is_invalid");

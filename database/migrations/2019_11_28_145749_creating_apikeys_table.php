@@ -22,10 +22,6 @@ class CreatingApikeysTable extends Migration
             $table->boolean('active')->default(true);
             $table->timestamps();
         });
-
-        Artisan::call('db:seed', [
-            '--class' => ApiKeysTableSeeder::class
-        ]);
     }
 
     /**

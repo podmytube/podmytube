@@ -8,13 +8,14 @@ return [
     'page_title_user_show' => 'User informations',
     'page_title_user_edit' => 'Updating user informations',
     'page_title_channel_show' => 'Channel informations ',
-    'page_title_channel_edit' => 'Updating channel ',
-    'page_title_channel_index' => 'Your channels',
-    'page_title_channel_create' => 'Add a channel',
+    'page_title_channel_edit' => 'Updating podcast ',
+    'page_title_channel_index' => 'Your podcasts',
+    'page_title_channel_create' => 'Add a podcast',
     'page_title_user_register' => 'Register',
     'page_title_user_login' => 'Login',
     'page_title_user_logout' => 'Logout',
-    'page_title_home_index' => 'Dashboard',
+    'page_title_home_index' => 'Welcome',
+    'page_title_podcasts_index' => 'Podcasts',
     'page_title_medias_stats_index' => 'Episodes downloads',
     'page_title_channel_stats_index' => 'Episodes downloads',
     'page_title_channel_app_stats_index' => 'Applications',
@@ -26,15 +27,12 @@ return [
     'channel_stats_link_last30_period' => 'last 30 days',
     'channel_stats_link_last90_period' => 'last 90 days',
     
-    // charts
-    'highcharts_line_graph_y_label'         => 'number of downloads',
-    'highcharts_line_graph_legend_label'    => 'number of downloads',
-
     // breadcrumb
-    'page_title_home_breadcrumb' => 'Home',
-
+    'page_title_home_breadcrumb' => 'Welcome',
+    'page_title_podcasts_breadcrumb' => 'Your podcasts',
+    
     // flash
-    'flash_channel_has_been_created' => "Channel :channel has been successfully registered :)",
+    'flash_channel_has_been_created' => "Podcast :channel has been successfully registered :)",
     'flash_channel_id_is_invalid' => "The youtube url you entered was invalid !",
 
     // commons

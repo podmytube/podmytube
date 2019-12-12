@@ -1,4 +1,5 @@
 <?php
+
 /**
  * the home controller. Only used to display the welcome page project for now.
  *
@@ -13,7 +14,6 @@ use Illuminate\Support\Facades\Auth;
 
 /**
  * the home controller class.
- *
  */
 class HomeController extends Controller
 {

@@ -12,6 +12,11 @@ class PlansController extends Controller
     const _WEEKLY = Plan::_WEEKLY_PLAN_ID;
     const _DAILY = Plan::_DAILY_PLAN_ID;
 
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+    
     /**
      * Show the available plans
      *
@@ -26,7 +31,7 @@ class PlansController extends Controller
                     Plan::_WEEKLY_PLAN_ID,
                     Plan::_DAILY_PLAN_ID,
                 ],
-                env('APP_ENV') == 'prod' ? true : false
+                env('APP_ENV') == 'production' ? true : false
             );
         } catch (\Exception $e) {
             session()->flash('message', __('messages.a_problem_occur'));
