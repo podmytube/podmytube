@@ -30,6 +30,10 @@ class CreateCategoriesTable extends Migration
                 $table->string('name');
             });
         }
+
+        Artisan::call('db:seed', [
+            '--class' => CategoriesTableSeeder::class
+        ]);
     }
 
     /**
