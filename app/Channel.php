@@ -85,13 +85,13 @@ class Channel extends Model
     ]; */
 
     /**
-     * define the relationship between one user and one channel
+     * define the relationship between one user and one channel.
      *
      * @return object the user that own this channel
      */
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id', 'user_id');
     }
 
     /**
