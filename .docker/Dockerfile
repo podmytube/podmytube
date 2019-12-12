@@ -52,8 +52,7 @@ RUN     docker-php-ext-install pdo \
 # default vhost replaced by custom one
 # mainly documentRoot /app/public
 COPY    .docker/vhost.conf /etc/apache2/sites-available/000-default.conf
-
-# 
+# copying supervisor conf for queue worker
 COPY    .docker/laravel-worker.conf /etc/supervisor/conf.d/
 
 # adding myself
@@ -72,3 +71,6 @@ ENV     PATH="/app/vendor/bin:${PATH}"
 # symlink for storage (the same that is created with "artisan storage:link")
 RUN     if [ ! -L public/storage ]; then ln -s /app/storage/app/public public/storage; fi
 
+# this script will launch supervisor then apache on the foreground
+COPY    .docker/run-on-start.sh /etc/init.d/run-on-start.sh
+CMD     ["/etc/init.d/run-on-start.sh"]
