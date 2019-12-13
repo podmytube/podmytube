@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Thumb;
+use App\Exceptions\ThumbDoesNotExistsException;
 use App\Exceptions\ThumbUploadHasFailedException;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
