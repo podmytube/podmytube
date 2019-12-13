@@ -19,6 +19,7 @@ use App\Mail\ChannelIsRegistered;
 use App\Exceptions\ChannelCreationInvalidChannelUrlException;
 use App\Exceptions\ChannelCreationInvalidUrlException;
 use App\Exceptions\SubscriptionHasFailedException;
+use App\Jobs\MailChannelIsRegistered;
 use App\Services\YoutubeChannelCheckingService;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
@@ -103,10 +104,8 @@ class ChannelCreateController extends Controller
                 throw new SubscriptionHasFailedException($e->getMessage());
             }
 
-            /**
-             * Sending congratulations mail
-             */
-            Mail::to($user)->send(new ChannelIsRegistered($user, $channel));
+            /** Sending the channel registered mail within the queue */
+            MailChannelIsRegistered::dispatchNow($channel);
 
             /**
              * All went fine
