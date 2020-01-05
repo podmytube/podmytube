@@ -8,6 +8,7 @@ use App\Channel;
 use App\Jobs\SendThumbBySFTP;
 use App\Jobs\CreateVignetteFromThumb;
 use Illuminate\Http\Request;
+use InvalidArgumentException;
 
 class ThumbsController extends Controller
 {
@@ -15,7 +16,7 @@ class ThumbsController extends Controller
     {
         $this->middleware('auth');
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -60,7 +61,7 @@ class ThumbsController extends Controller
 
         /** requirements for podcast thumb */
         $rules = [
-            'new_thumb_file' => 'required|dimensions:min_width=1400,min_height=1400,max_width=3000,max_height=3000'
+            'new_thumb_file' => 'required|dimensions:min_width=1400,min_height=1400,max_width=3000,max_height=3000,ratio=1'
         ];
         $this->validate($request, $rules, $messages);
 
@@ -68,25 +69,22 @@ class ThumbsController extends Controller
             throw new \Exception("A problem occurs during new thumb upload !");
         }
 
-        try {
-            /** attaching uploaded thumb to channel */
-            $thumb = Thumb::make()->attachItToChannel($request->file('new_thumb_file'), $channel);
-            
-            /** Create vignette from thumb in a job */
-            CreateVignetteFromThumb::dispatchNow($thumb);
-            /**
-             * This process will add the job SendThumbBySFTP to the queue (upload is long).
-             * Jobs are runned with one supervisor.
-             * !! IMPORTANT !! 
-             * QUEUE_DRIVER in .env should be set to database and commands 
-             * php artisan queue:table
-             * php artisan migrate
-             * should have been run
-             */
-            SendThumbBySFTP::dispatch($thumb)->delay(now()->addMinutes(1));
-        } catch (\Exception $e) {
-            throw $e;
-        }
+        /** attaching uploaded thumb to channel */
+        $thumb = Thumb::make()->attachItToChannel($request->file('new_thumb_file'), $channel);
+
+        /** Create vignette from thumb in a job */
+        CreateVignetteFromThumb::dispatchNow($thumb);
+        /**
+         * This process will add the job SendThumbBySFTP to the queue (upload is long).
+         * Jobs are runned with one supervisor.
+         * !! IMPORTANT !! 
+         * QUEUE_DRIVER in .env should be set to database and commands 
+         * php artisan queue:table
+         * php artisan migrate
+         * should have been run
+         */
+        SendThumbBySFTP::dispatch($thumb)->delay(now()->addMinutes(1));
+
 
 
         return redirect()->route('channel.thumbs.index', ['channel' => $channel]);
