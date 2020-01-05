@@ -74,10 +74,11 @@ return [
     <ul>
         <li>Dimensions minimum : 1400x1400</li>
         <li>Dimensions maximum : 3000x3000</li>
+        <li>Carré : largeur = hauteur</li>
     </ul>',
     'thumbs_edit_new_thumb_form_label' => 'Choisissez votre nouveau visuel.',
     'thumbs_edit_error_image_required' => 'Vous devriez choisir un nouveau visuel avant de valider le formulaire.',
-    'thumbs_edit_error_image_dimensions' => 'Le nouveau visuel doit être de dimensions entre 1400x1400 et 3000x3000 pixels.',
+    'thumbs_edit_error_image_dimensions' => 'Le nouveau visuel doit être un carré dont les dimensions sont entre 1400x1400 et 3000x3000 pixels.',
 
 
     //channel index part
