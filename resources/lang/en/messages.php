@@ -75,11 +75,11 @@ return [
     <ul>
         <li>Minimum dimensions : 1400x1400</li>
         <li>Maximum dimensions : 3000x3000</li>
-    </ul>
-    <small>You may have one that is 2000x2400 but you cannot have one that is 800x1600.</small>',
+        <li>Squared : width = height</li>
+    </ul>',
     'thumbs_edit_new_thumb_form_label' => 'Select your new podcast image.',
     'thumbs_edit_error_image_required' => 'You should select a new image before clicking on the update button.',
-    'thumbs_edit_error_image_dimensions' => 'The new image must be between 1400x1400 and 3000x3000.',
+    'thumbs_edit_error_image_dimensions' => 'The new image must be a square one between 1400x1400 and 3000x3000.',
     
 
     //channel index part
