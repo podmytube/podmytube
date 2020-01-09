@@ -21,13 +21,11 @@ class PodcastHeader
 
     private function __construct(Channel $channel)
     {
+        $this->link = $channel->link ?? null;
         $this->title = $channel->title ?? null;
-        $this->description = $channel->description ?? null;
         $this->language = $channel->language ?? null;
         $this->copyright = $channel->copyright ?? null;
-        $this->generator = $channel->generator ?? null;
-        $this->webmaster = $channel->webmaster ?? null;
-        $this->link = $channel->link ?? null;
+        $this->description = $channel->description ?? null;
     }
 
     public static function prepare(...$params)
@@ -37,8 +35,16 @@ class PodcastHeader
 
     public function render()
     {
-        var_dump("rendering podcast into $destinationFile");
-        return true;
+        $dataToRender = array_filter(get_object_vars($this), function ($property) {
+            if (isset($property)) {
+                return true;
+            }
+            return false;
+        });
+        if (!$dataToRender) {
+            return "";
+        }
+        return view('podcast.header')->with(["header" => $this])->render();
     }
 
     public function addItunesHeader(ItunesHeader $itunesHeader)

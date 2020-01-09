@@ -122,7 +122,6 @@ class ItunesHeaderTest extends TestCase
     public function testingNoInformationsShouldRenderNothing()
     {
         $renderedResult = ItunesHeader::prepare()->render();
-        var_dump($renderedResult);
         $this->assertEmpty($renderedResult);
     }
 }
