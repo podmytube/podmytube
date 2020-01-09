@@ -6,6 +6,7 @@ class PodcastItem
 {
     protected $guid;
     protected $title;
+    protected $link;
     protected $description;
     protected $duration;
     protected $enclosure;
@@ -17,6 +18,7 @@ class PodcastItem
     {
         $this->guid = $attributes['guid'] ?? null;
         $this->title = $attributes['title'] ?? null;
+        $this->link = $attributes['link'] ?? null;
         $this->description = $attributes["description"] ?? null;
         $this->duration = $attributes["duration"] ?? null;
         $this->enclosure = $attributes["enclosure"] ?? null;

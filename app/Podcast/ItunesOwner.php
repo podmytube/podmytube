@@ -7,7 +7,6 @@ class ItunesOwner implements IsRenderableInterface
     public $name;
     public $email;
 
-
     private function __construct(string $itunesName = null, string $itunesEmail = null)
     {
         $this->setItunesName($itunesName);
