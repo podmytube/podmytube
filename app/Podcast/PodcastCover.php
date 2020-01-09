@@ -2,7 +2,7 @@
 
 namespace App\Podcast;
 
-class HeaderImage implements IsRenderableInterface
+class PodcastCover implements IsRenderableInterface
 {
     public $url;
     public $link;
@@ -72,6 +72,6 @@ class HeaderImage implements IsRenderableInterface
         if (!$dataToRender) {
             return "";
         }
-        return view('podcast.headerImage')->with(["headerImage" => $this])->render();
+        return view('podcast.podcastCover')->with(["podcastCover" => $this])->render();
     }
 }
