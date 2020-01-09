@@ -1,3 +1,4 @@
+@forelse ($items as $item)
 <item>
     @if ($item->title)<title>{{ item->title}}</title> @endif
     <link>{{ item['enclosure']['url'] }}</link>
@@ -11,3 +12,6 @@
     <itunes:summary>{{ item['description'] }}</itunes:summary>
     <itunes:duration>{{ item['duration'] }}</itunes:duration>
 </item>
+@empty
+{{-- <!--nothing to display--> --}}
+@endforelse

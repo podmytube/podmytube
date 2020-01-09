@@ -2,8 +2,8 @@
 
 namespace Tests\Unit;
 
-use App\Podcast\ItunesOwner;
 use Tests\TestCase;
+use App\Podcast\ItunesOwner;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
