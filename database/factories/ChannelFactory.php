@@ -12,12 +12,10 @@ $factory->define(App\Channel::class, function ($faker, array $attributes = []) {
         'description' => $faker->text(300),
         'link' => 'http://' . $faker->domainName(),
         'lang' => $faker->randomElement(['FR', 'EN']),
-        'user_id' => function () use ($attributes) {
-            /** creating user on the fly */
+         'user_id' => function () use ($attributes) {
             return factory(App\User::class)->create($attributes)->user_id;
         },
         'category_id' => function () {
-            /** getting one random category */
             return App\Category::all()->random()->id;
         },
     ];
