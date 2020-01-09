@@ -63,10 +63,12 @@ class Channel extends Model
         'user_id',
         'authors',
         'email',
+        'description',
         'category_id',
         'link',
         'lang',
         'podcast_title',
+        'podcast_copyright',
         'accept_video_by_tag',
         'reject_video_by_keyword',
         'reject_video_too_old',
@@ -233,5 +235,10 @@ class Channel extends Model
     public function channelId()
     {
         return $this->channel_id;
+    }
+
+    public function title()
+    {
+        return $this->podcast_title ?? $this->channel_name;
     }
 }

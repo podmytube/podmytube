@@ -3,32 +3,58 @@
 namespace App\Podcast;
 
 use App\Channel;
-use Carbon\Carbon;
+use App\Podcast\ItunesHeader;
+use App\Podcast\PodcastCover;
 
 class PodcastHeader
 {
-    protected $items = [];
-    protected $docs;
+    /** @var string url of the show */
     protected $link;
+
+    /** @var string title of the show (channel name or podcast title) */
     protected $title;
-    protected $description;
+
+    /** @var string The show language. */
     protected $language;
+
+    /** @var string The show copyright details. */
     protected $copyright;
-    protected $generator;
-    protected $pubDate;
-    protected $lastBuildDate;
-    protected $webmaster;
+
+    /** @var string the show description */
+    protected $description;
+
+    /** @var PodcastCover rss tags for podcast thumb */
+    protected $podcastCover;
+
+    /** @var ItunesHeader itunes properties to be set in header */
+    protected $itunesHeader;
 
     private function __construct(Channel $channel)
     {
         $this->link = $channel->link ?? null;
-        $this->title = $channel->title ?? null;
-        $this->language = $channel->language ?? null;
-        $this->copyright = $channel->copyright ?? null;
+        $this->title = $channel->title();
+        $this->language = $channel->lang ?? null;
+        $this->copyright = $channel->podcast_copyright ?? null;
         $this->description = $channel->description ?? null;
+
+        $this->podcastCover = null;
+        $this->itunesHeader = null;
+        /* $this->podcastCover = PodcastCover::prepare([
+            "url" => $imageUrl,
+            "link" => $imageLink,
+            "title" => $imageTitle,
+        ]);
+
+        $this->itunesHeader = ItunesHeader::prepare([
+            "author" => $authorName,
+            "title" => $channel->title,
+            "itunesOwner" => ItunesOwner::prepare($authorName, $authorEmail),
+            "itunesCategory" => ItunesCategory::prepare(Category::find(86)),
+            "explicit" => true,
+        ]); */
     }
 
-    public static function prepare(...$params)
+    public static function from(...$params)
     {
         return new static(...$params);
     }
@@ -44,11 +70,41 @@ class PodcastHeader
         if (!$dataToRender) {
             return "";
         }
-        return view('podcast.header')->with(["header" => $this])->render();
+        return view('podcast.header')->with(["podcastHeader" => $this])->render();
     }
 
-    public function addItunesHeader(ItunesHeader $itunesHeader)
+    public function link()
     {
-        $this->itunesHeader = $itunesHeader;
+        return $this->link;
+    }
+
+    public function title()
+    {
+        return $this->title;
+    }
+
+    public function language()
+    {
+        return $this->language;
+    }
+
+    public function copyright()
+    {
+        return $this->copyright;
+    }
+
+    public function description()
+    {
+        return $this->description;
+    }
+
+    public function podcastCover()
+    {
+        return $this->podcastCover;
+    }
+
+    public function itunesHeader()
+    {
+        return $this->itunesHeader;
     }
 }

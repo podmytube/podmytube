@@ -7,14 +7,13 @@ use App\Channel;
 use App\Podcast\PodcastHeader;
 
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class PodcastHeaderTest extends TestCase
 {
     /** used to remove every created data in database */
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     protected static $thumb;
     protected static $channel;
@@ -23,7 +22,7 @@ class PodcastHeaderTest extends TestCase
     protected static function warmDb()
     {
         self::$channel = factory(Channel::class)->create();
-        self::$thumb = factory(Thumb::class)->create(['channel_id' => self::$channel->channelId()]);
+        //self::$thumb = factory(Thumb::class)->create(['channel_id' => self::$channel->channelId()]);
         self::$dbIsWarm = true;
     }
 
@@ -35,15 +34,13 @@ class PodcastHeaderTest extends TestCase
         }
     }
 
-    public function testfoo()
+    public function testingHeaderRenderingShouldBeFine()
     {
-        var_dump(self::$thumb);
-        $this->assertTrue(false);
+        $renderedResult = PodcastHeader::from(self::$channel)->render();
+        $this->assertStringContainsString("<link>" . self::$channel->link . "</link>", $renderedResult);
+        $this->assertStringContainsString("<title>" . self::$channel->title() . "</title>", $renderedResult);
+        $this->assertStringContainsString("<description><![CDATA[" . self::$channel->description . "]]></description>", $renderedResult);
+        $this->assertStringContainsString("<copyright>" . self::$channel->podcast_copyright . "</copyright>", $renderedResult);
+        $this->assertStringContainsString("<language>" . self::$channel->lang . "</language>", $renderedResult);
     }
-    /* public function testingNoInformationsShouldRenderNothing()
-    {
-        $renderedResult = PodcastHeader::prepare()->render();
-        var_dump($renderedResult);die("\e[30;48;5;166m".__FILE__ . '::' . __LINE__ ."\e[0m". PHP_EOL);
-        $this->assertEmpty($renderedResult);
-    } */
 }
