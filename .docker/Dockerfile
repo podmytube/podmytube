@@ -26,7 +26,8 @@ RUN     apt-get update -y && \
             zip \
             git \
             memcached \
-            supervisor
+            supervisor \
+            sqlite
 
 RUN     rm -rf /var/lib/apt/lists/*;
 

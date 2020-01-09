@@ -10,12 +10,14 @@ node_modules
 public/storage
 storage/app
 storage/debugbar
+storage/database.sqlite
 # ===============================================
 # not secured to commit these ones
 # ===============================================
 .vscode
 .env
 .env.local
+.env.testing
 .env.micromania
 # ===============================================
 # Bothering me
