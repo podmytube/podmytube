@@ -10,7 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ItunesCategoryTest extends TestCase
 {
-    public function testingWithAmpersandCategory ()
+    public function testingWithAmpersandCategory()
     {
         $renderedText = ItunesCategory::prepare(Category::find(86))->render();
         $this->assertStringContainsString('<itunes:category text="Society & Culture">', $renderedText);
@@ -18,7 +18,7 @@ class ItunesCategoryTest extends TestCase
         $this->assertStringContainsString('</itunes:category>', $renderedText);
     }
 
-    public function testingWithParentCategory ()
+    public function testingWithParentCategory()
     {
         $renderedText = ItunesCategory::prepare(Category::find(94))->render();
         $this->assertStringContainsString('<itunes:category text="Sports">', $renderedText);
@@ -31,5 +31,4 @@ class ItunesCategoryTest extends TestCase
         $renderedText = ItunesCategory::prepare(Category::find(10))->render();
         $this->assertEquals('<itunes:category text="Leisure" />', $renderedText);
     }
- 
 }
