@@ -17,18 +17,21 @@ class PodcastBuilderTest extends TestCase
 
     protected static $channel;
     protected static $medias;
+    protected static $fileDestination;
 
     public function setUp(): void
     {
         parent::setUp();
+
+        self::$fileDestination = "/tmp/foo.xml";
         self::$channel = factory(Channel::class)->create();
         self::$medias = factory(Media::class, 5)->create(['channel_id' => self::$channel->channel_id]);
         factory(Thumb::class)->create(['channel_id' => self::$channel->channel_id]);
     }
 
-    public function testWithOneMedia()
+    public function testRenderingWholePodcast()
     {
-        $renderedPodcast = PodcastBuilder::prepare(self::$channel, "/tmp/foo.xml")->render();
+        $renderedPodcast = ($podcastBuilder = PodcastBuilder::prepare(self::$channel, self::$fileDestination))->render();
 
         $this->assertStringContainsString("<link>" . self::$channel->link . "</link>", $renderedPodcast);
         $this->assertStringContainsString("<title>" . self::$channel->title() . "</title>", $renderedPodcast);
@@ -68,5 +71,18 @@ class PodcastBuilderTest extends TestCase
             $this->assertStringContainsString("<itunes:explicit>" . $media->channel->explicit() . "</itunes:explicit>", $renderedPodcast);
         }
         $this->assertStringContainsString("</item>", $renderedPodcast);
+
+        return $podcastBuilder;
     }
+
+    /**
+     * @depends testRenderingWholePodcast
+     */
+    public function testSavingIt($podcastBuilder)
+    {
+        $podcastBuilder->save();
+        $this->assertFileExists(self::$fileDestination);
+    }
+
+
 }

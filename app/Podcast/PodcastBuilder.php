@@ -3,6 +3,7 @@
 namespace App\Podcast;
 
 use App\Channel;
+use App\Exceptions\SavingPodcastHasFailed;
 
 class PodcastBuilder
 {
@@ -33,9 +34,22 @@ class PodcastBuilder
         $this->destinationFile = $destinationFile;
     }
 
+    /**
+     * fetch templates and get feed data to be written.
+     * 
+     * @return string podcast data
+     */
     public function render()
     {
         return view('podcast.main')->with(["podcast" => $this])->render();
+    }
+
+    public function save()
+    {
+        if (file_put_contents($this->destinationFile, $this->render())=== false){
+            throw new SavingPodcastHasFailed("An error occured while saving podcast to {{$this->destinationFile}}.");
+        }
+        return true;
     }
 
     public function podcastHeader()
