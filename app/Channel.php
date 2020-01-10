@@ -67,6 +67,7 @@ class Channel extends Model
         'category_id',
         'link',
         'lang',
+        'explicit',
         'podcast_title',
         'podcast_copyright',
         'accept_video_by_tag',
@@ -240,5 +241,10 @@ class Channel extends Model
     public function title()
     {
         return $this->podcast_title ?? $this->channel_name;
+    }
+
+    public function explicit()
+    {
+        return $this->explicit ? 'true' : 'false';
     }
 }

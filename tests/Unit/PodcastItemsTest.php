@@ -18,25 +18,38 @@ class PodcastItemsTest extends TestCase
     protected static $medias;
     protected static $dbIsWarm = false;
 
-    protected static function warmDb()
-    {
-        self::$channel = factory(Channel::class)->create();
-        self::$medias = factory(Media::class,3)->create(['channel_id' => self::$channel->channel_id]);
-        self::$dbIsWarm = true;
-    }
-
     public function setUp(): void
     {
         parent::setUp();
-        if (!static::$dbIsWarm) {
-            static::warmDb();
+        self::$channel = factory(Channel::class)->create();
+    }
+
+    public function testWithMoreMedias()
+    {
+        $medias = factory(Media::class, 5)->create(['channel_id' => self::$channel->channel_id]);
+        $renderedItems = PodcastItems::prepare(self::$channel)->render();
+
+        foreach ($medias as $media) {
+            $this->assertStringContainsString("<guid>" . $media->media_id . "</guid>", $renderedItems);
+            $this->assertStringContainsString("<title>" . $media->title . "</title>", $renderedItems);
+            $this->assertStringContainsString("<enclosure url=\"" . $media->enclosureUrl() . "\" length=\"" . $media->length . "\" type=\"audio/mpeg\" />", $renderedItems);
+            $this->assertStringContainsString("<pubDate>" . $media->pubDate() . "</pubDate>", $renderedItems);
+
+            $this->assertStringContainsString("<itunes:duration>" . $media->duration() . "</itunes:duration>", $renderedItems);
+            $this->assertStringContainsString("<itunes:explicit>" . $media->channel->explicit() . "</itunes:explicit>", $renderedItems);
         }
     }
 
-    public function testExample()
+    public function testWithOneMedia()
     {
+        $media = factory(Media::class)->create(['channel_id' => self::$channel->channel_id])->first();
         $renderedItems = PodcastItems::prepare(self::$channel)->render();
-        var_dump($renderedItems);
+        $this->assertStringContainsString("<guid>" . $media->media_id . "</guid>", $renderedItems);
+        $this->assertStringContainsString("<title>" . $media->title . "</title>", $renderedItems);
+        $this->assertStringContainsString("<enclosure url=\"" . $media->enclosureUrl() . "\" length=\"" . $media->length . "\" type=\"audio/mpeg\" />", $renderedItems);
+        $this->assertStringContainsString("<pubDate>" . $media->pubDate() . "</pubDate>", $renderedItems);
 
+        $this->assertStringContainsString("<itunes:duration>" . $media->duration() . "</itunes:duration>", $renderedItems);
+        $this->assertStringContainsString("<itunes:explicit>" . $media->channel->explicit() . "</itunes:explicit>", $renderedItems);
     }
 }
