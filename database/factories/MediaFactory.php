@@ -20,7 +20,7 @@ $factory->define(App\Media::class, function ($faker, $attributes) {
         'channel_id' => $attributes['channel_id'] ?? $faker->regexify('[a-zA-Z0-9-_]{24}'),
         'title' => $faker->sentence($nbWords = "3", $variableNbWords = true),
         'description' => $faker->text(300),
-        'length' => $faker->randomNumber(),
+        'length' => $faker->numberBetween(1000, 40000),
         'duration' => $faker->randomNumber(),
         'published_at' => $publishedAt,
         'grabbed_at' => $grabbedAt,

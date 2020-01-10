@@ -12,7 +12,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class PodcastHeaderTest extends TestCase
 {
-    /** used to remove every created data in database */
     use RefreshDatabase;
 
     protected static $thumb;
