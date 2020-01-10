@@ -8,7 +8,7 @@ $factory->define(App\Thumb::class, function ($faker, $attributes) {
 
     Storage::disk(App\Thumb::_LOCAL_STORAGE_DISK)->makeDirectory($channelId, intval('0664', 8), true);
 
-    $fileName = $faker->regexify('[a-zA-Z0-9-_]{6}').'jpg';
+    $fileName = $faker->regexify('[a-zA-Z0-9-_]{6}').'.jpg';
     $fileSize = $faker->randomNumber();
     if (isset($attributes["withRealImage"]) && $attributes["withRealImage"] === true) {
         $fileName = basename(
