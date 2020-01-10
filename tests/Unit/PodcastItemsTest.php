@@ -15,8 +15,6 @@ class PodcastItemsTest extends TestCase
     use RefreshDatabase;
 
     protected static $channel;
-    protected static $medias;
-    protected static $dbIsWarm = false;
 
     public function setUp(): void
     {

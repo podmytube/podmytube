@@ -54,7 +54,7 @@ class PodcastHeader
         ]);
     }
 
-    public static function from(...$params)
+    public static function generateFor(...$params)
     {
         return new static(...$params);
     }

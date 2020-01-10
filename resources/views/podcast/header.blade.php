@@ -11,10 +11,10 @@
 
 {{-- header image --}}
 @if ($podcastHeader->podcastCover())
-@include ('podcast.podcastCover', ["podcastCover" => $podcastHeader->podcastCover()])
+{!! $podcastHeader->podcastCover()->render() !!}
 @endif
 
 {{-- itunes part --}}
 @if ($podcastHeader->itunesHeader())
-@include ('podcast.itunesHeader', ["itunesHeader" => $podcastHeader->itunesHeader()])
+{!! $podcastHeader->itunesHeader()->render() !!}
 @endif
