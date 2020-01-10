@@ -35,7 +35,7 @@ class PodcastHeaderTest extends TestCase
 
     public function testingHeaderRenderingShouldBeFine()
     {
-        $renderedResult = PodcastHeader::from(self::$channel)->render();
+        $renderedResult = PodcastHeader::generateFor(self::$channel)->render();
         $this->assertStringContainsString("<link>" . self::$channel->link . "</link>", $renderedResult);
         $this->assertStringContainsString("<title>" . self::$channel->title() . "</title>", $renderedResult);
         $this->assertStringContainsString("<description><![CDATA[" . self::$channel->description . "]]></description>", $renderedResult);
@@ -47,17 +47,17 @@ class PodcastHeaderTest extends TestCase
         $this->assertStringContainsString("<title>" . self::$channel->title() . "</title>", $renderedResult);
         $this->assertStringContainsString("<link>" . self::$channel->link . "</link>", $renderedResult);
         $this->assertStringContainsString("</image>", $renderedResult);
-        
+
         /**
          * Following part is test exhaustively into separate tests so here are the minimal part.
          */
-        $this->assertStringContainsString("<itunes:author>".self::$channel->authors."</itunes:author>", $renderedResult);
-        $this->assertStringContainsString("<itunes:title>".self::$channel->title()."</itunes:title>", $renderedResult);
+        $this->assertStringContainsString("<itunes:author>" . self::$channel->authors . "</itunes:author>", $renderedResult);
+        $this->assertStringContainsString("<itunes:title>" . self::$channel->title() . "</itunes:title>", $renderedResult);
         $this->assertStringContainsString("<itunes:owner>", $renderedResult);
-        $this->assertStringContainsString("<itunes:name>".self::$channel->authors."</itunes:name>", $renderedResult);
-        $this->assertStringContainsString("<itunes:email>".self::$channel->email."</itunes:email>", $renderedResult);
+        $this->assertStringContainsString("<itunes:name>" . self::$channel->authors . "</itunes:name>", $renderedResult);
+        $this->assertStringContainsString("<itunes:email>" . self::$channel->email . "</itunes:email>", $renderedResult);
         $this->assertStringContainsString("</itunes:owner>", $renderedResult);
         $this->assertStringContainsString("<itunes:explicit>", $renderedResult);
-        $this->assertStringContainsString("<itunes:category text=\"".trans('categories.'.self::$channel->category->name())."\" />", $renderedResult);        
+        $this->assertStringContainsString("<itunes:category text=\"" . trans('categories.' . self::$channel->category->name()) . "\" />", $renderedResult);
     }
 }

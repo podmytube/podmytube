@@ -2,17 +2,22 @@
 
 namespace App\Podcast;
 
+use App\Channel;
+
 class PodcastBuilder
 {
-    protected $header;
-    protected $items;
+    /** @var Channel $channel is a Model/Channel object for the channel to generate */
+    protected $channel;
 
-    private function __construct(
-        PodcastHeader $podcastHeader,
-        PodcastItems $podcastItems
-    ) {
-        $this->header = $podcastHeader;
-        $this->items = $podcastItems;
+    /** @var string $destinationFile where to save feed */
+    protected $destinationFile;
+
+    private function __construct(Channel $channel, string $destinationFile)
+    {
+        $this->channel = $channel;
+        $this->setDestinationFile($destinationFile);
+        $this->podcastHeader = PodcastHeader::generateFor($channel);
+        $this->podcastItems = PodcastItems::prepare($channel);
     }
 
     public static function prepare(...$params)
@@ -20,14 +25,26 @@ class PodcastBuilder
         return new static(...$params);
     }
 
-    public function render(string $destinationFile)
+    public function setDestinationFile(string $destinationFile)
     {
         if (!is_writable(pathinfo($destinationFile, PATHINFO_DIRNAME))) {
-            throw new \InvalidArgumentException("Destination file {{$destinationFile}} is not writable.");
+            throw new \InvalidArgumentException("Destination folder for {{$destinationFile}} is not writable.");
         }
-        $this->header->render();
-        $this->items->render();
-        var_dump("finishing rendering");
-        return true;
+        $this->destinationFile = $destinationFile;
+    }
+
+    public function render()
+    {
+        return view('podcast.main')->with(["podcast" => $this])->render();
+    }
+
+    public function podcastHeader()
+    {
+        return $this->podcastHeader;
+    }
+
+    public function podcastItems()
+    {
+        return $this->podcastItems;
     }
 }
