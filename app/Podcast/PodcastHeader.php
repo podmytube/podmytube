@@ -37,21 +37,21 @@ class PodcastHeader
         $this->copyright = $channel->podcast_copyright ?? null;
         $this->description = $channel->description ?? null;
 
-        $this->podcastCover = null;
         $this->itunesHeader = null;
-        /* $this->podcastCover = PodcastCover::prepare([
-            "url" => $imageUrl,
-            "link" => $imageLink,
-            "title" => $imageTitle,
+        
+        $this->podcastCover = PodcastCover::prepare([
+            "url" => $channel->thumb->podcastUrl(),
+            "link" => $channel->link,
+            "title" => $channel->title(),
         ]);
 
         $this->itunesHeader = ItunesHeader::prepare([
-            "author" => $authorName,
-            "title" => $channel->title,
-            "itunesOwner" => ItunesOwner::prepare($authorName, $authorEmail),
-            "itunesCategory" => ItunesCategory::prepare(Category::find(86)),
-            "explicit" => true,
-        ]); */
+            "author" => $channel->authors,
+            "title" => $channel->title(),
+            "itunesOwner" => ItunesOwner::prepare($channel->authors, $channel->email),
+            "itunesCategory" => ItunesCategory::prepare($channel->category),
+            "explicit" => $channel->explicit,
+        ]);
     }
 
     public static function from(...$params)
