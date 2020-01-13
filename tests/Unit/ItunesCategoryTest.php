@@ -10,10 +10,17 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ItunesCategoryTest extends TestCase
 {
+    public function testingTranslationWithAmpersand()
+    {
+        $categoryObj=ItunesCategory::prepare(Category::find(89));
+        $this->assertEquals("Society &amp; Culture", $categoryObj->parentName());
+        $this->assertEquals("Places &amp; Travel", $categoryObj->name());
+    }
+
     public function testingWithAmpersandCategory()
     {
         $renderedText = ItunesCategory::prepare(Category::find(86))->render();
-        $this->assertStringContainsString('<itunes:category text="Society & Culture">', $renderedText);
+        $this->assertStringContainsString('<itunes:category text="Society &amp; Culture">', $renderedText);
         $this->assertStringContainsString('<itunes:category text="Documentary" />', $renderedText);
         $this->assertStringContainsString('</itunes:category>', $renderedText);
     }

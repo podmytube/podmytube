@@ -32,7 +32,7 @@ class ItunesHeaderTest extends TestCase
         $this->assertStringContainsString("<itunes:email>$authorEmail</itunes:email>", $renderedResult);
         $this->assertStringContainsString("</itunes:owner>", $renderedResult);
         $this->assertStringContainsString("<itunes:explicit>true</itunes:explicit>", $renderedResult);
-        $this->assertStringContainsString('<itunes:category text="Society & Culture">', $renderedResult);
+        $this->assertStringContainsString('<itunes:category text="Society &amp; Culture">', $renderedResult);
         $this->assertStringContainsString('<itunes:category text="Documentary" />', $renderedResult);
         $this->assertStringContainsString('</itunes:category>', $renderedResult);
     }
