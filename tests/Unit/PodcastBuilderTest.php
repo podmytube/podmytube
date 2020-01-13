@@ -22,10 +22,8 @@ class PodcastBuilderTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        self::$fileDestination = "/tmp/foo.xml";
         self::$channel = factory(Channel::class)->create();
-        self::$medias = factory(Media::class, 5)->create(['channel_id' => self::$channel->channel_id]);
+        self::$medias = factory(Media::class, 150)->create(['channel_id' => self::$channel->channel_id]);
         factory(Thumb::class)->create(['channel_id' => self::$channel->channel_id]);
     }
 
@@ -81,7 +79,7 @@ class PodcastBuilderTest extends TestCase
     public function testSavingIt($podcastBuilder)
     {
         $podcastBuilder->save();
-        $this->assertFileExists(self::$fileDestination);
+        $this->assertTrue($podcastBuilder->exists());
     }
 
 
