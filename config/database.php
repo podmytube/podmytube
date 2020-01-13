@@ -34,17 +34,17 @@ return [
     'connections' => [
 
         'sqlite' => [
-            'driver' => 'sqlite',
-            'database' => env('DB_DATABASE', database_path('database.sqlite')),
-            'prefix' => '',
+            'driver'   => 'sqlite',
+            'database' => storage_path('database.sqlite'),
+            'prefix'   => '',
         ],
 
         /** used for in :memory: testing */
-        'sqlite_testing' => [
+        /* 'sqlite_testing' => [
             'driver'   => 'sqlite',
             'database' => ':memory:',
             'prefix'   => '',
-        ],
+        ], */
 
         'mysql' => [
             'driver' => 'mysql',
