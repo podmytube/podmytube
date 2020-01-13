@@ -26,7 +26,8 @@ RUN     apt-get update -y && \
             zip \
             git \
             memcached \
-            supervisor
+            supervisor \
+            sqlite
 
 RUN     rm -rf /var/lib/apt/lists/*;
 
@@ -54,6 +55,9 @@ RUN     docker-php-ext-install pdo \
 COPY    .docker/vhost.conf /etc/apache2/sites-available/000-default.conf
 # copying supervisor conf for queue worker
 COPY    .docker/laravel-worker.conf /etc/supervisor/conf.d/
+
+# disabling php short tags (IE : <? ?>)
+COPY    .docker/disablingShortTags.ini /usr/local/etc/php/conf.d/
 
 # adding myself
 RUN     adduser --disabled-password --gecos "" fred

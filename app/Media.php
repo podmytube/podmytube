@@ -5,6 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Channel;
+use App\Modules\EnclosureUrl;
+
 use Carbon\Carbon;
 
 class Media extends Model
@@ -75,5 +77,20 @@ class Media extends Model
                 $endDate->toDateString()
             ]
         );
+    }
+    
+    public function enclosureUrl()
+    {
+        return EnclosureUrl::create($this)->get();
+    }
+
+    public function pubDate()
+    {
+        return $this->published_at->timezone('Europe/Paris')->format(DATE_RSS);
+    }
+
+    public function duration()
+    {
+        return $this->duration;
     }
 }

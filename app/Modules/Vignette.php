@@ -5,6 +5,7 @@ namespace App\Modules;
 use Image;
 use App\Thumb;
 use App\Exceptions\VignetteCreationFromThumbException;
+use App\Exceptions\VignetteCreationFromMissingThumbException;
 use App\Exceptions\VignetteUploadException;
 use Illuminate\Support\Facades\Storage;
 

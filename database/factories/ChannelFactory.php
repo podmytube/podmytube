@@ -3,22 +3,22 @@
 /* @var $factory \Illuminate\Database\Eloquent\Factory */
 
 $factory->define(App\Channel::class, function ($faker, array $attributes = []) {
-
     return [
         'channel_id' => $faker->regexify('[a-zA-Z0-9-_]{24}'),
+        'user_id' => function () use ($attributes) {
+            return factory(App\User::class)->create($attributes)->user_id;
+        },
         'channel_name' => $faker->sentence($nbWords = "3", $variableNbWords = true),
+        'podcast_title' => $faker->sentence($nbWords = "5", $variableNbWords = true),
+        'podcast_copyright' => $faker->sentence($nbWords = "10", $variableNbWords = true),
         'authors' => $faker->name,
         'email' => $faker->safeEmail,
         'description' => $faker->text(300),
         'link' => 'http://' . $faker->domainName(),
-        'lang' => $faker->randomElement(['FR', 'EN']),
-        'user_id' => function () use ($attributes) {
-            /** creating user on the fly */
-            return factory(App\User::class)->create($attributes)->user_id;
-        },
         'category_id' => function () {
-            /** getting one random category */
             return App\Category::all()->random()->id;
         },
+        'lang' => $faker->randomElement(['FR', 'EN']),
+        'explicit' => $faker->boolean(),
     ];
 });

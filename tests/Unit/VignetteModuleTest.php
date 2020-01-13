@@ -5,14 +5,14 @@ namespace Tests\Unit;
 use App\Channel;
 use App\Thumb;
 use App\Modules\Vignette;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class VignetteModuleTest extends TestCase
 {
     /** used to remove every created data in database */
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     /** @var bool true, database is ready to run tests upon */
     protected static $dbIsWarm = false;
@@ -29,7 +29,11 @@ class VignetteModuleTest extends TestCase
     protected static function warmDb()
     {
         self::$channel = factory(Channel::class)->create();
-        self::$thumb = factory(Thumb::class)->create(['channel_id' => self::$channel->channel_id]);
+        self::$thumb = factory(Thumb::class)->create(
+            [
+                'channel_id' => self::$channel->channel_id,
+            ]
+        );
         self::$dbIsWarm = true;
     }
 
@@ -37,8 +41,6 @@ class VignetteModuleTest extends TestCase
     {
         /** removing local thumb img */
         Storage::disk(self::$thumb->fileDisk())->deleteDirectory(self::$thumb->channelId());
-
-        /** DB rows are removed by DatabaseTransactions trait */
     }
 
     public function setUp(): void

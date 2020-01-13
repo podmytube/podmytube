@@ -48,4 +48,30 @@ class Category extends Model
     {
         return self::where('parent_id', 0)->with('children')->get();
     }
+
+    public function name()
+    {
+        return $this->name;
+    }
+
+    public function parentName()
+    {
+        if (!$this->parent) {
+            return null;
+        }
+        return $this->parent->name;
+    }
+
+    public function categoryFeedValue()
+    {
+        return $this->feedValue($this->name());
+    }
+
+    public function parentCategoryFeedValue()
+    {
+        if ($this->parentName()) {
+            return $this->feedValue($this->parentName());
+        }
+        return null;
+    }
 }

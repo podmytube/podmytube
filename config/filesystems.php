@@ -56,6 +56,16 @@ return [
         ],
 
         /**
+         * Podcast feeds
+         */
+        'feeds' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/feeds'),
+            'url' => env('APP_URL') . '/storage/feeds',
+            'visibility' => 'public',
+        ],
+
+        /**
          * Thumbs from the dashboard
          */
         'thumbs' => [
