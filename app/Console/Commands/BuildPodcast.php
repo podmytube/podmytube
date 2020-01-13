@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Channel;
+use App\Podcast\PodcastBuilder;
 use App\Podcast\PodcastHeader;
 use Illuminate\Console\Command;
 
@@ -43,9 +44,9 @@ class BuildPodcast extends Command
         /**
          * getting all channel data and checking it's a valid one
          */
-        $channelObject = Channel::findOrFail($this->argument('channelId'));
+        $channel = Channel::findOrFail($this->argument('channelId'));
 
-        $podcastObject = PodcastHeader::prepare($channelObject);
+        $podcastObject = PodcastBuilder::prepare($channel);
 
 
     }
