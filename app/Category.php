@@ -74,4 +74,9 @@ class Category extends Model
         }
         return null;
     }
+
+    protected function feedValue(string $text)
+    {
+        return htmlentities(trans('categories.'.$text));
+    }
 }
