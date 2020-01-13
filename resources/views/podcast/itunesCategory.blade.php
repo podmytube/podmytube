@@ -1,6 +1,6 @@
 @if ($itunesCategory->parentName())
-<itunes:category text="@lang( 'categories.'.$itunesCategory->parentName() )">
-    <itunes:category text="@lang( 'categories.'.$itunesCategory->name() )" />
+<itunes:category text="{!! $itunesCategory->parentName() !!}">
+    <itunes:category text="{!! $itunesCategory->name() !!}" />
 </itunes:category>
 @else
-<itunes:category text="@lang( 'categories.'.$itunesCategory->name() )" />@endif
+<itunes:category text="{!! $itunesCategory->name() !!}" />@endif
