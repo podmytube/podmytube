@@ -61,6 +61,8 @@ return [
         'feeds' => [
             'driver' => 'local',
             'root' => storage_path('app/public/feeds'),
+            'url' => env('APP_URL') . '/storage/feeds',
+            'visibility' => 'public',
         ],
 
         /**

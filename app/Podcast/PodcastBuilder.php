@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Storage;
 
 class PodcastBuilder
 {
-    protected const _FEED_DISK = 'feeds';
-    protected const _FEED_FILENAME = 'podcast.xml';
+    public const _FEED_DISK = 'feeds';
+    public const _FEED_FILENAME = 'podcast.xml';
 
     /** @var Channel $channel is a Model/Channel object for the channel to generate */
     protected $channel;
@@ -58,6 +58,11 @@ class PodcastBuilder
         return true;
     }
 
+    public function url()
+    {
+        return Storage::disk(self::_FEED_DISK)->url($this->relativePath());
+    }
+
     /**
      * This function will give the relative path where to save podcast file.
      * 
@@ -88,5 +93,13 @@ class PodcastBuilder
     public function podcastItems()
     {
         return $this->podcastItems;
+    }
+
+    /**
+     * This function will return the current channel built.
+     */
+    public function channel()
+    {
+        return $this->channel;
     }
 }

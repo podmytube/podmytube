@@ -10,6 +10,7 @@ use App\Podcast\PodcastBuilder;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Storage;
 
 class PodcastBuilderTest extends TestCase
 {
@@ -80,7 +81,19 @@ class PodcastBuilderTest extends TestCase
     {
         $podcastBuilder->save();
         $this->assertTrue($podcastBuilder->exists());
+        return $podcastBuilder;
     }
 
-
+    /**
+     * @depends testRenderingWholePodcast
+     */
+    public function testUrl($podcastBuilder)
+    {
+        $this->assertEquals(
+            Storage::disk(PodcastBuilder::_FEED_DISK)->url(
+                $podcastBuilder->channel()->channelId() . DIRECTORY_SEPARATOR . PodcastBuilder::_FEED_FILENAME
+            ),
+            $podcastBuilder->url()
+        );
+    }
 }

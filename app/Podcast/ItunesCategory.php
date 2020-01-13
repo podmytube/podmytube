@@ -10,10 +10,12 @@ class ItunesCategory implements IsRenderableInterface
     protected $name;
     protected $parentName;
 
-    private function __construct(Category $category)
+    private function __construct(Category $category = null)
     {
-        $this->name = $category->name();
-        $this->parentName = $category->parentName();
+        if ($category) {
+            $this->name = $category->name();
+            $this->parentName = $category->parentName();
+        }
     }
 
     public static function prepare(...$params)
@@ -33,6 +35,9 @@ class ItunesCategory implements IsRenderableInterface
 
     public function render(): string
     {
+        if (!$this->name) {
+            return "";
+        }
         return view('podcast.itunesCategory')->with(["itunesCategory" => $this])->render();
     }
 }

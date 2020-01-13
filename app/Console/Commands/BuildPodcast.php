@@ -42,12 +42,15 @@ class BuildPodcast extends Command
     public function handle()
     {
         /**
-         * getting all channel data and checking it's a valid one
+         * getting channel to build podcast for
          */
         $channel = Channel::findOrFail($this->argument('channelId'));
 
-        $podcastObject = PodcastBuilder::prepare($channel);
-
-
+        /**
+         * creating podcast
+         */
+        ($podcastObj = PodcastBuilder::prepare($channel))->save();
+        $this->info("Podcast {{$channel->title()}} has been successfully created.");
+        $this->info("You can check it here : ".$podcastObj->url());
     }
 }

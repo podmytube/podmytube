@@ -5,6 +5,7 @@ namespace App\Podcast;
 use App\Channel;
 use App\Podcast\ItunesHeader;
 use App\Podcast\PodcastCover;
+use App\Thumb;
 
 class PodcastHeader
 {
@@ -39,8 +40,9 @@ class PodcastHeader
 
         $this->itunesHeader = null;
         
+
         $this->podcastCover = PodcastCover::prepare([
-            "url" => $channel->thumb->podcastUrl(),
+            "url" => isset($channel->thumb) ? $channel->thumb->podcastUrl() : Thumb::defaultUrl(),
             "link" => $channel->link,
             "title" => $channel->title(),
         ]);
