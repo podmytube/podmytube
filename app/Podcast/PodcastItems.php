@@ -37,9 +37,6 @@ class PodcastItems
             ->filter(function ($element) {
                 return (!empty($element->grabbed_at));
             });
-        if ($this->medias->isEmpty()) {
-            throw new PodcastHasNoMediaToPublish("This channel {{$this->channel->channel_id}} has no items to publish.");
-        }
     }
 
     /**
