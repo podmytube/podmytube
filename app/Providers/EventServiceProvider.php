@@ -13,9 +13,19 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'App\Events\Event' => [
-            'App\Listeners\EventListener',
+        'App\Events\ChannelRegistered' =>[
+            'App\Listeners\SendChannelIsRegisteredEmail',
         ],
+        /*'App\Events\ChannelUpdated' =>[
+            'App\Listeners\RefreshPodcast',
+        ],
+        'App\Events\ThumbUpdated' =>[
+            'App\Listeners\RefreshPodcast',
+        ], */
+    ];
+
+    protected $subscribe = [
+        'App\Listeners\RefreshPodcast',
     ];
 
     /**

@@ -11,16 +11,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Channel;
-use App\Exceptions\ChannelCreationHasFailedException;
 use App\Plan;
+use App\Channel;
 use App\Subscription;
-use App\Mail\ChannelIsRegistered;
+use App\Jobs\MailChannelIsRegistered;
+use App\Events\ChannelRegistered;
+use App\Services\YoutubeChannelCheckingService;
+use App\Exceptions\ChannelCreationHasFailedException;
 use App\Exceptions\ChannelCreationInvalidChannelUrlException;
 use App\Exceptions\ChannelCreationInvalidUrlException;
 use App\Exceptions\SubscriptionHasFailedException;
-use App\Jobs\MailChannelIsRegistered;
-use App\Services\YoutubeChannelCheckingService;
+
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
@@ -73,7 +74,7 @@ class ChannelCreateController extends Controller
             $user = Auth::user();
 
             /**
-             * Getting same basic channel informations
+             * Getting basic channel informations
              */
             $channelName = YoutubeChannelCheckingService::getChannelName($channelId);
 
@@ -90,7 +91,6 @@ class ChannelCreateController extends Controller
                 throw new ChannelCreationHasFailedException($e->getMessage());
             }
 
-
             /**
              * Creating subscription on one free plan (default)
              * We will update it once paid.
@@ -104,8 +104,7 @@ class ChannelCreateController extends Controller
                 throw new SubscriptionHasFailedException($e->getMessage());
             }
 
-            /** Sending the channel registered mail within the queue */
-            MailChannelIsRegistered::dispatchNow($channel);
+            event(new ChannelRegistered($channel));
 
             /**
              * All went fine
