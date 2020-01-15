@@ -135,7 +135,7 @@ return [
     'channel_category_label' => "Category",
     'channel_category_help' => "In which category is your podcast ?",
     
-    'no_category_defined_label' => "No categories have been completed.",
+    'no_category_defined_label' => "This podcast has no category.",
     'no_filter_defined_label' => "No filter has been entered.",
     
     'channel_lang_label' => "Podcast Language",

@@ -7,7 +7,7 @@
 
 <h1> {{ __('emails.registered_h1_success', ['name' => $user->name]) }}</h1>
 
-<p> {!! __('emails.registered_p_channel_is_now_registered', ['channel_id' => $channel->channel_id]) !!} </p>
+<p> {!! __('emails.registered_p_channel_is_now_registered', ['channel_id' => $channel->title()]) !!} </p>
 <p> {!! __('emails.registered_p_in_a_few_minutes') !!} </p>
 
 

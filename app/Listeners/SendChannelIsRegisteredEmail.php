@@ -3,7 +3,7 @@
 namespace App\Listeners;
 
 use App\Jobs\MailChannelIsRegistered;
-use App\Events\ChannelRegistered;
+use App\Events\OccursOnChannel;
 
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -16,7 +16,7 @@ class SendChannelIsRegisteredEmail
      * @param  \App\Events\ChannelRegistered  $event
      * @return void
      */
-    public function handle(ChannelRegistered $event): void
+    public function handle(OccursOnChannel $event): void
     {
         /** Sending the channel registered mail within the queue */
         MailChannelIsRegistered::dispatchNow($event->channel);

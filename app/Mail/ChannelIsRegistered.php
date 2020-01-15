@@ -15,7 +15,7 @@ class ChannelIsRegistered extends Mailable
     public $user;
     public $channel;
     public $logo;
-    
+
     /**
      * Create a new message instance.
      *
@@ -36,6 +36,6 @@ class ChannelIsRegistered extends Mailable
     public function build()
     {
         return $this->view('emails.channelRegistered')
-        ->with('podmytubeLogo', $this->logo);
+            ->with('podmytubeLogo', $this->logo);
     }
 }
