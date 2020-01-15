@@ -6,6 +6,7 @@ use App\Channel;
 use App\Exceptions\ChannelCreationInvalidChannelUrlException;
 use App\Exceptions\ChannelCreationInvalidUrlException;
 use App\Exceptions\ChannelCreationOnlyYoutubeIsAccepted;
+use Carbon\Carbon;
 use Tests\TestCase;
 
 class ChannelModelTest extends TestCase
@@ -38,6 +39,8 @@ class ChannelModelTest extends TestCase
             "https://www.youtube.com/channel/UCw6bU9JT_Lihb2pbtqAUGQw-",
             "https://www.youtube.com/channel/UCw6bU9JT_Lihb2pbtqAUGQw-?",
             "https://www.youtube.com/channel/UCw6bU9JT_Lihb2pbtqAUGQw-?view_as=subscriber",
+            "https://www.youtube.com/channel/UCw6bU9JT_Lihb2pbtqAUGQw-?MyTailorIsRich&view_as=subscriber&whateverYouMightTypeAfter",
+
         ] as $youtubeUrl) {
             $this->assertEquals(
                 $expectedChannelId,
@@ -45,5 +48,12 @@ class ChannelModelTest extends TestCase
                 "ChannelId for {$youtubeUrl} should be {$expectedChannelId} and result was {$result}"
             );
         }
+    }
+
+    public function testCreatedAt()
+    {
+        $channel = factory(Channel::class)->create();
+        $this->assertNotNull($channel->createdAt());
+        $this->assertInstanceOf(Carbon::class, $channel->createdAt());
     }
 }

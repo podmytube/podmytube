@@ -14,18 +14,25 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $listen = [
         'App\Events\ChannelRegistered' =>[
+            'App\Listeners\RefreshPodcast',
             'App\Listeners\SendChannelIsRegisteredEmail',
         ],
-        /*'App\Events\ChannelUpdated' =>[
+        'App\Events\ChannelUpdated' =>[
             'App\Listeners\RefreshPodcast',
         ],
         'App\Events\ThumbUpdated' =>[
+            'App\Listeners\UploadThumb',
             'App\Listeners\RefreshPodcast',
-        ], */
+            'App\Listeners\RefreshVignette',
+        ],
     ];
 
+    /**
+     * this RefreshPodcast listener will listen to 
+     * ChannelRegistered, ChannelUpdated and ThumbUpdated
+     */
     protected $subscribe = [
-        'App\Listeners\RefreshPodcast',
+        /* 'App\Listeners\RefreshPodcast', */
     ];
 
     /**

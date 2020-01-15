@@ -156,9 +156,9 @@ class Thumb extends Model
      * 
      * @param UploadedFile $uploadedFile the uploaded file
      * @param Channel $channel to be associated with thumb
-     * @return Thumb
+     * @return Thumb object
      */
-    public function attachItToChannel(UploadedFile $uploadedFile, Channel $channel)
+    public function attachItToChannel(UploadedFile $uploadedFile, Channel $channel): Thumb
     {
         try {
             $thumb = $this->updateOrCreate(

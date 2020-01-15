@@ -7,7 +7,7 @@ use App\Channel as Channel;
 /**
  * Simple abstract class for event that will receive a channel object.
  */
-abstract class ChannelIsConcerned
+abstract class OccursOnChannel
 {
     public $channel;
 

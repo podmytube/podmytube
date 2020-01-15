@@ -16,7 +16,7 @@ class AuthenticationAndLoginTest extends TestCase
     {
         self::$user = factory(User::class)->create([
             'password' => bcrypt(self::$rightPassword),
-        ]);        
+        ]);
     }
 
     public function setUp(): void
@@ -35,7 +35,7 @@ class AuthenticationAndLoginTest extends TestCase
             'email' => self::$user->email,
             'password' => 'invalid-password',
         ]);
-        
+
         $response->assertRedirect('/login');
         $response->assertSessionHasErrors('email');
         $this->assertTrue(session()->hasOldInput('email'));
@@ -49,16 +49,13 @@ class AuthenticationAndLoginTest extends TestCase
             'email' => self::$user->email,
             'password' => self::$rightPassword,
         ]);
-        
+
         $response->assertRedirect('/home');
         $this->assertAuthenticated($guard = null);
         $this->assertAuthenticatedAs(self::$user); // <===== this one is failing
-        /* $response->assertSessionHasErrors('email');
-        $this->assertTrue(session()->hasOldInput('email'));
-        $this->assertFalse(session()->hasOldInput('password'));
-        $this->assertGuest(); */
+
     }
-/*
+
     public function testingLoginForm()
     {
         $response = $this->get('/login');
@@ -115,5 +112,4 @@ class AuthenticationAndLoginTest extends TestCase
         $this->assertFalse(session()->hasOldInput('password'));
         $this->assertGuest();
     }
-*/
 }

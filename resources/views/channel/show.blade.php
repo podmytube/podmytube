@@ -23,11 +23,11 @@
           <br />
 					<span class="font-italic">
                         {{ __('messages.channel_podcast_created_label') }}
-                    </span> : {{ $channel->channel_createdAt->format('d/m/Y à H:i') }}<br/>
+                    </span> : @if ($channel->createdAt()) {{ $channel->createdAt()->format(__('localized.dateFormat')) }} @endif<br/>
 
 					<span class="font-italic">
                         {{ __('messages.channel_podcast_updated_label') }}
-                    </span> : @if($channel->podcast_updatedAt) {{  $channel->podcast_updatedAt->format('d/m/Y à H:i') }} @endif
+                    </span> : @if ($channel->podcastUpdatedAt()) {{  $channel->podcastUpdatedAt()->format(__('localized.dateFormat')) }} @else {{__('channels.never')}} @endif
 				</p>
 			</div>
 			<div class="col-3 align-items-center text-center">
