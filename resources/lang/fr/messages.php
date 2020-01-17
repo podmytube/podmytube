@@ -75,6 +75,7 @@ return [
         <li>Dimensions minimum : 1400x1400</li>
         <li>Dimensions maximum : 3000x3000</li>
         <li>Carré : largeur = hauteur</li>
+        <li>La taille du fichier doit être inférieure à 5Mo (utiliser le format jpg peut aider)</li>
     </ul>',
     'thumbs_edit_new_thumb_form_label' => 'Choisissez votre nouveau visuel.',
     'thumbs_edit_error_image_required' => 'Vous devriez choisir un nouveau visuel avant de valider le formulaire.',

@@ -6,7 +6,7 @@
 
     {{ Breadcrumbs::render('thumbs.edit', $channel) }}
 
-    <div class="container" style="margin:0 auto;width:50%">
+    <div class="container" style="margin:0 auto;width:80%">
 
     @include ('layouts.errors')
 
