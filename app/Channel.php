@@ -243,6 +243,11 @@ class Channel extends Model
         return $this->channel_id;
     }
 
+    public function userId()
+    {
+        return $this->user_id;
+    }
+
     public function title()
     {
         return $this->podcast_title ?? $this->channel_name;
