@@ -57,10 +57,14 @@ Route::get('setlocale/{locale}', function ($locale) {
 Route::post('/channel/', 'ChannelCreateController@store')->name('channel.store');
 Route::get('/channel/create', 'ChannelCreateController@create')->name('channel.create');
 
-Route::get('/channel/', 'ChannelsController@index')->name('channel.index');
-Route::get('/channel/{channel}', 'ChannelsController@show')->name('channel.show');
+/* Route::get('/channel/', 'ChannelsController@index')->name('channel.index');
+Route::get('/channel/{channel}', 'ChannelsController@show')->name('channel.show')->middleware(\App\Http\Middleware\UserMustOwnChannel::class);
 Route::get('/channel/{channel}/edit', 'ChannelsController@edit')->name('channel.edit');
-Route::patch('/channel/{channel}', 'ChannelsController@update');
+Route::patch('/channel/{channel}', 'ChannelsController@update'); */
+
+Route::resource('channel', 'ChannelsController')->only([
+    'index', 'show', 'edit', 'update',
+])->middleware(\App\Http\Middleware\UserMustOwnChannel::class);
 
 Route::get('/change-password', 'Auth\UpdatePasswordController@index')->name('password.form');
 Route::post('/change-password', 'Auth\UpdatePasswordController@update')->name('password.update');
