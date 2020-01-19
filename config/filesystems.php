@@ -66,6 +66,22 @@ return [
         ],
 
         /**
+         * Thumbs real url for podcast listeners
+         */
+        'sftpfeeds' => [
+            'driver' => 'sftp',
+            'host' => 'ns3309553.ip-5-135-160.eu',
+            'username' => 'fred',
+            'privateKey' => base_path() . '/.ssh/SFTPthumb',
+            // 'port' => 22,
+            'root' => env('SFTP_PODCASTS_PATH'),
+            'timeout' => 20,
+            'url' => env('PODCASTS_URL'),
+            'visibility' => 'public',
+            'permPublic' => 0755,
+        ],
+
+        /**
          * Thumbs from the dashboard
          */
         'thumbs' => [

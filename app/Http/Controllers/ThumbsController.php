@@ -5,10 +5,8 @@ namespace App\Http\Controllers;
 
 use App\Thumb;
 use App\Channel;
-use App\Jobs\SendThumbBySFTP;
-use App\Jobs\CreateVignetteFromThumb;
+use App\Events\ThumbUpdated;
 use Illuminate\Http\Request;
-use InvalidArgumentException;
 
 class ThumbsController extends Controller
 {
@@ -72,8 +70,10 @@ class ThumbsController extends Controller
         /** attaching uploaded thumb to channel */
         $thumb = Thumb::make()->attachItToChannel($request->file('new_thumb_file'), $channel);
 
+        event(ThumbUpdated::shouldUpdateChannel($thumb->channel));
+
         /** Create vignette from thumb in a job */
-        CreateVignetteFromThumb::dispatchNow($thumb);
+        // CreateVignetteFromThumb::dispatchNow($thumb);
         /**
          * This process will add the job SendThumbBySFTP to the queue (upload is long).
          * Jobs are runned with one supervisor.
@@ -83,10 +83,7 @@ class ThumbsController extends Controller
          * php artisan migrate
          * should have been run
          */
-        SendThumbBySFTP::dispatch($thumb)->delay(now()->addMinutes(1));
-
-
-
+        // SendThumbBySFTP::dispatch($thumb)->delay(now()->addMinutes(1));
         return redirect()->route('channel.thumbs.index', ['channel' => $channel]);
     }
 

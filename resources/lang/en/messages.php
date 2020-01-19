@@ -76,6 +76,7 @@ return [
         <li>Minimum dimensions : 1400x1400</li>
         <li>Maximum dimensions : 3000x3000</li>
         <li>Squared : width = height</li>
+        <li>File size must be less than 5Mb (using jpg format will help)</li>
     </ul>',
     'thumbs_edit_new_thumb_form_label' => 'Select your new podcast image.',
     'thumbs_edit_error_image_required' => 'You should select a new image before clicking on the update button.',
@@ -135,7 +136,7 @@ return [
     'channel_category_label' => "Category",
     'channel_category_help' => "In which category is your podcast ?",
     
-    'no_category_defined_label' => "No categories have been completed.",
+    'no_category_defined_label' => "This podcast has no category.",
     'no_filter_defined_label' => "No filter has been entered.",
     
     'channel_lang_label' => "Podcast Language",

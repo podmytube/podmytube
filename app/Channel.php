@@ -9,9 +9,11 @@
 
 namespace App;
 
+use App;
 use App\Exceptions\ChannelCreationInvalidChannelUrlException;
 use App\Exceptions\ChannelCreationInvalidUrlException;
 use App\Exceptions\ChannelCreationOnlyYoutubeIsAccepted;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
 
@@ -73,6 +75,9 @@ class Channel extends Model
         'accept_video_by_tag',
         'reject_video_by_keyword',
         'reject_video_too_old',
+        'channel_createdAt',
+        'channel_updatedAt',
+        'podcast_updatedAt',
         'ftp_host',
         'ftp_user',
         'ftp_pass',
@@ -238,6 +243,11 @@ class Channel extends Model
         return $this->channel_id;
     }
 
+    public function userId()
+    {
+        return $this->user_id;
+    }
+
     public function title()
     {
         return $this->podcast_title ?? $this->channel_name;
@@ -246,5 +256,15 @@ class Channel extends Model
     public function explicit()
     {
         return $this->explicit ? 'true' : 'false';
+    }
+
+    public function createdAt()
+    {
+        return $this->channel_createdAt;
+    }
+
+    public function podcastUpdatedAt()
+    {
+        return $this->podcast_updatedAt;
     }
 }

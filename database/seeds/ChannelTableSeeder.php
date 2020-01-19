@@ -20,13 +20,15 @@ class ChannelTableSeeder extends Seeder
              * creating my own user
              */
             $data = [
-                [
-                    'channel_id' => 'UCTEzSp8NmvyjvXUj-eNYVuw',
-                    'user_id' => 1,
-                    'channel_name' => 'La goupilation'
-                ],
+                'channel_id' => 'UCTEzSp8NmvyjvXUj-eNYVuw',
+                'user_id' => 1,
+                'channel_name' => 'La goupilation'
             ];
-            Channel::insert($data);
+            /** 
+             * insert will set only the data specified
+             * create will set the timestamps also
+             */
+            Channel::create($data);
         }
     }
 }
