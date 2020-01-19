@@ -47,6 +47,7 @@ class GetConfTest extends TestCase
         /** urls */
         'THUMBS_URL',
         'MP3_URL',
+        'PODCASTS_URL',
 
         /** stripe */
         "STRIPE_KEY",

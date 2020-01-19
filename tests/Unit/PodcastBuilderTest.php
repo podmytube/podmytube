@@ -54,7 +54,7 @@ class PodcastBuilderTest extends TestCase
         $this->assertStringContainsString("<itunes:email>" . self::$channel->email . "</itunes:email>", $renderedPodcast);
         $this->assertStringContainsString("</itunes:owner>", $renderedPodcast);
         $this->assertStringContainsString("<itunes:explicit>", $renderedPodcast);
-        $this->assertStringContainsString("<itunes:category text=\"" . trans('categories.' . self::$channel->category->name()) . "\" />", $renderedPodcast);
+        $this->assertStringContainsString("<itunes:category text=\"" . self::$channel->category->categoryFeedValue() . "\" />", $renderedPodcast);
 
         /**
          * there should have some items too
@@ -90,7 +90,7 @@ class PodcastBuilderTest extends TestCase
     public function testUrl($podcastBuilder)
     {
         $this->assertEquals(
-            Storage::disk(PodcastBuilder::_FEED_DISK)->url(
+            Storage::disk(PodcastBuilder::_LOCAL_FEED_DISK)->url(
                 $podcastBuilder->channel()->channelId() . DIRECTORY_SEPARATOR . PodcastBuilder::_FEED_FILENAME
             ),
             $podcastBuilder->url()
