@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Storage;
 class PodcastBuilder
 {
     public const _FEED_DISK = 'feeds';
+
+    public const _REMOTE_FEED_DISK = 'sftpfeeds';
+
     public const _FEED_FILENAME = 'podcast.xml';
 
     /** @var Channel $channel is a Model/Channel object for the channel to generate */
@@ -68,7 +71,7 @@ class PodcastBuilder
      * 
      * @return string relative path
      */
-    protected function relativePath()
+    public function relativePath()
     {
         return $this->channel->channelId() . DIRECTORY_SEPARATOR . self::_FEED_FILENAME;
     }

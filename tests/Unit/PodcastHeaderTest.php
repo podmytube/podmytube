@@ -47,7 +47,7 @@ class PodcastHeaderTest extends TestCase
         $this->assertStringContainsString("<itunes:email>" . $channel->email . "</itunes:email>", $renderedResult);
         $this->assertStringContainsString("</itunes:owner>", $renderedResult);
         $this->assertStringContainsString("<itunes:explicit>", $renderedResult);
-        $this->assertStringContainsString("<itunes:category text=\"" . trans('categories.' . $channel->category->name()) . "\" />", $renderedResult);
+        $this->assertStringContainsString("<itunes:category text=\"" . $channel->category->categoryFeedValue() . "\" />", $renderedResult);
     }
 
     public function testingHeaderRenderingShouldBeFine()
@@ -78,6 +78,6 @@ class PodcastHeaderTest extends TestCase
         $this->assertStringContainsString("<itunes:email>" . $channel->email . "</itunes:email>", $renderedResult);
         $this->assertStringContainsString("</itunes:owner>", $renderedResult);
         $this->assertStringContainsString("<itunes:explicit>", $renderedResult);
-        $this->assertStringContainsString("<itunes:category text=\"" . trans('categories.' . $channel->category->name()) . "\" />", $renderedResult);
+        $this->assertStringContainsString("<itunes:category text=\"" . $channel->category->categoryFeedValue() . "\" />", $renderedResult);
     }
 }

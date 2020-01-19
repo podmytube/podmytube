@@ -10,8 +10,10 @@ namespace App\Http\Controllers;
 
 use App\Category;
 use App\Channel;
+use App\Events\ChannelUpdated;
 use App\Http\Requests\ChannelRequest;
 use App\Services\ChannelService;
+use Gate;
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -34,10 +36,10 @@ class ChannelsController extends Controller
     public function index()
     {
         try {
-            $channels = ChannelService::getAuthenticatedUserChannels(Auth::user());            
+            $channels = ChannelService::getAuthenticatedUserChannels(Auth::user());
         } catch (\Exception $e) {
-			$channels = [];
-		}
+            $channels = [];
+        }
         return view('channel.index', compact('channels'));
     }
 
@@ -50,6 +52,9 @@ class ChannelsController extends Controller
 
     public function show(Channel $channel)
     {
+        /* if (Gate::denies('show', $channel)) {
+            abort(403, "nope");
+        } */
         return view('channel.show', compact('channel'));
     }
 
@@ -79,10 +84,11 @@ class ChannelsController extends Controller
 
         $channel->update($request->all());
 
+        event(new ChannelUpdated($channel));
+
         \Session::flash('message', 'Channel successfully updated !');
         \Session::flash('alert-class', 'alert-success');
 
         return redirect('channel/' . $channel->channel_id);
-
     }
 }

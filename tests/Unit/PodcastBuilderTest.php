@@ -30,7 +30,7 @@ class PodcastBuilderTest extends TestCase
 
     public function testRenderingWholePodcast()
     {
-        $renderedPodcast = ($podcastBuilder = PodcastBuilder::prepare(self::$channel, self::$fileDestination))->render();
+        $renderedPodcast = ($podcastBuilder = PodcastBuilder::prepare(self::$channel))->render();
 
         $this->assertStringContainsString("<link>" . self::$channel->link . "</link>", $renderedPodcast);
         $this->assertStringContainsString("<title>" . self::$channel->title() . "</title>", $renderedPodcast);
