@@ -50,6 +50,7 @@ class PodcastHeader
         $this->itunesHeader = ItunesHeader::prepare([
             "author" => $channel->authors,
             "title" => $channel->title(),
+            "imageUrl" => isset($channel->thumb) ? $channel->thumb->podcastUrl() : Thumb::defaultUrl(),
             "itunesOwner" => ItunesOwner::prepare($channel->authors, $channel->email),
             "itunesCategory" => ItunesCategory::prepare($channel->category),
             "explicit" => $channel->explicit,

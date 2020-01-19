@@ -6,7 +6,7 @@ use App\Category;
 use App\Podcast\ItunesOwner;
 use App\Podcast\ItunesHeader;
 use App\Podcast\ItunesCategory;
-
+use App\Thumb;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -21,6 +21,7 @@ class ItunesHeaderTest extends TestCase
         $renderedResult = ItunesHeader::prepare([
             "author" => $authorName,
             "title" => $itunesTitle,
+            "imageUrl" => Thumb::defaultUrl(),
             "itunesOwner" => ItunesOwner::prepare($authorName, $authorEmail),
             "itunesCategory" => ItunesCategory::prepare(Category::find(86)),
             "explicit" => true,
@@ -35,6 +36,7 @@ class ItunesHeaderTest extends TestCase
         $this->assertStringContainsString('<itunes:category text="Society &amp; Culture">', $renderedResult);
         $this->assertStringContainsString('<itunes:category text="Documentary" />', $renderedResult);
         $this->assertStringContainsString('</itunes:category>', $renderedResult);
+        $this->assertStringContainsString('<itunes:image href="'.Thumb::defaultUrl().'" />', $renderedResult);
     }
 
     public function testingWithOwner()
