@@ -10,6 +10,7 @@ namespace App\Http\Controllers;
 
 use App\Category;
 use App\Channel;
+use App\Events\ChannelUpdated;
 use App\Http\Requests\ChannelRequest;
 use App\Services\ChannelService;
 use Gate;
@@ -82,6 +83,8 @@ class ChannelsController extends Controller
         //$channel = Channel::findOrFail($id);
 
         $channel->update($request->all());
+
+        event(new ChannelUpdated($channel));
 
         \Session::flash('message', 'Channel successfully updated !');
         \Session::flash('alert-class', 'alert-success');
