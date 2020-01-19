@@ -13,6 +13,7 @@ use App;
 use App\Exceptions\ChannelCreationInvalidChannelUrlException;
 use App\Exceptions\ChannelCreationInvalidUrlException;
 use App\Exceptions\ChannelCreationOnlyYoutubeIsAccepted;
+use App\Podcast\PodcastBuilder;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
@@ -23,7 +24,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Channel extends Model
 {
-
     /**
      * the way to specify users.user_id is the key (and not users.id)
      */
@@ -266,5 +266,10 @@ class Channel extends Model
     public function podcastUpdatedAt()
     {
         return $this->podcast_updatedAt;
+    }
+
+    public function podcastUrl()
+    {
+        return getenv('PODCASTS_URL') . DIRECTORY_SEPARATOR . $this->channelId() . DIRECTORY_SEPARATOR . PodcastBuilder::_FEED_FILENAME;
     }
 }

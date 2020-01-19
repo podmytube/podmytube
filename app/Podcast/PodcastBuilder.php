@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Storage;
 
 class PodcastBuilder
 {
-    public const _FEED_DISK = 'feeds';
+    public const _LOCAL_FEED_DISK = 'feeds';
 
     public const _REMOTE_FEED_DISK = 'sftpfeeds';
 
@@ -35,7 +35,7 @@ class PodcastBuilder
 
     public function exists()
     {
-        return Storage::disk(self::_FEED_DISK)->exists($this->relativePath());
+        return Storage::disk(self::_LOCAL_FEED_DISK)->exists($this->relativePath());
     }
 
     /**
@@ -55,7 +55,7 @@ class PodcastBuilder
      */
     public function save()
     {
-        if (!Storage::disk(self::_FEED_DISK)->put($this->relativePath(), $this->render())) {
+        if (!Storage::disk(self::_LOCAL_FEED_DISK)->put($this->relativePath(), $this->render())) {
             throw new SavingPodcastHasFailed("An error occured while saving podcast to {{$this->destinationFile}}.");
         }
         return true;
@@ -63,7 +63,7 @@ class PodcastBuilder
 
     public function url()
     {
-        return Storage::disk(self::_FEED_DISK)->url($this->relativePath());
+        return Storage::disk(self::_LOCAL_FEED_DISK)->url($this->relativePath());
     }
 
     /**
