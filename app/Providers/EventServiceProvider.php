@@ -13,17 +13,17 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'App\Events\ChannelRegistered' =>[
-            'App\Listeners\RefreshPodcast',
-            'App\Listeners\SendChannelIsRegisteredEmail',
+        \App\Events\ChannelRegistered::class =>[
+            \App\Listeners\RefreshPodcast::class,
+            \App\Listeners\SendChannelIsRegisteredEmail::class,
         ],
-        'App\Events\ChannelUpdated' =>[
-            'App\Listeners\RefreshPodcast',
+        \App\Events\ChannelUpdated::class =>[
+            \App\Listeners\RefreshPodcast::class,
         ],
-        'App\Events\ThumbUpdated' =>[
-            'App\Listeners\UploadThumb',
-            'App\Listeners\RefreshPodcast',
-            'App\Listeners\RefreshVignette',
+        \App\Events\ThumbUpdated::class =>[
+            \App\Listeners\UploadThumb::class,
+            \App\Listeners\RefreshPodcast::class,
+            \App\Listeners\RefreshVignette::class,
         ],
     ];
 

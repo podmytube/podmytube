@@ -2,13 +2,17 @@
 
 namespace App\Listeners;
 
+use App\Jobs\SendFeedBySFTP;
 use App\Events\OccursOnChannel;
 use App\Podcast\PodcastBuilder;
+
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class RefreshPodcast
+class RefreshPodcast implements ShouldQueue
 {
+    use InteractsWithQueue;
+
     /**
      * Handle the event.
      *
@@ -17,7 +21,11 @@ class RefreshPodcast
      */
     public function handle(OccursOnChannel $event)
     {
-        PodcastBuilder::prepare($event->channel)->save();
+        /** rendering feed */
+        if (PodcastBuilder::prepare($event->channel)->save()) {
+            /** uploading feed */
+            SendFeedBySFTP::dispatchNow($event->channel);
+        }
     }
 
     /**
