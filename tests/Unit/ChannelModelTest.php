@@ -6,6 +6,7 @@ use App\Channel;
 use App\Exceptions\ChannelCreationInvalidChannelUrlException;
 use App\Exceptions\ChannelCreationInvalidUrlException;
 use App\Exceptions\ChannelCreationOnlyYoutubeIsAccepted;
+use App\Podcast\PodcastBuilder;
 use Carbon\Carbon;
 use Tests\TestCase;
 
@@ -55,5 +56,14 @@ class ChannelModelTest extends TestCase
         $channel = factory(Channel::class)->create();
         $this->assertNotNull($channel->createdAt());
         $this->assertInstanceOf(Carbon::class, $channel->createdAt());
+    }
+
+    public function testingPodcastUrl()
+    {
+        $channel = factory(Channel::class)->create();
+        $this->assertEquals(
+            getenv('PODCASTS_URL') . DIRECTORY_SEPARATOR . $channel->channelId() . DIRECTORY_SEPARATOR . PodcastBuilder::_FEED_FILENAME,
+            $channel->podcastUrl()
+        );
     }
 }

@@ -3,8 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Channel;
-use App\Podcast\PodcastBuilder;
-use App\Podcast\PodcastHeader;
+use App\Events\ChannelUpdated;
 use Illuminate\Console\Command;
 
 
@@ -46,11 +45,9 @@ class BuildPodcast extends Command
          */
         $channel = Channel::findOrFail($this->argument('channelId'));
 
-        /**
-         * creating podcast
-         */
-        ($podcastObj = PodcastBuilder::prepare($channel))->save();
+        event(new ChannelUpdated($channel));
+        
         $this->info("Podcast {{$channel->title()}} has been successfully created.");
-        $this->info("You can check it here : ".$podcastObj->url());
+        $this->info("You can check it here : ".$channel->podcastUrl());
     }
 }
