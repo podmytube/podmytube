@@ -17,19 +17,24 @@ class ChannelAccessTest extends TestCase
         $response->assertRedirect('/login');
     }
 
-    public function testChannelIndexIsAllowedToOwner()
+    public function testChannelIndexIsAllowedToOwnerAndHasAllItsChannel()
     {
-        $channel = factory(Channel::class)->create();
-        $response = $this->actingAs($channel->user)->get('/channel/');
+        $user = factory(User::class, 1)->create()->first();
+        $channels = factory(Channel::class, 3)->create(['user_id' => $user->userId()]);
+
+        $response = $this->actingAs($user)->get('/channel/');
         $response->assertSuccessful();
         $response->assertViewIs('channel.index');
-        $response->assertSeeText($channel->channel_name);
+
+        foreach ($channels as $channel) {
+            $response->assertSeeText($channel->title());
+        }
     }
 
     public function testChannelEditIsNotPossibleForGuest()
     {
         $channel = factory(Channel::class)->create();
-        $response = $this->get('/channel/' . $channel->channelId().'/edit');
+        $response = $this->get('/channel/' . $channel->channelId() . '/edit');
         $response->assertRedirect('/login');
     }
 
@@ -37,14 +42,14 @@ class ChannelAccessTest extends TestCase
     {
         $channel = factory(Channel::class)->create();
         $forbiddenUser = factory(User::class)->create();
-        $response = $this->actingAs($forbiddenUser)->get('/channel/' . $channel->channelId().'/edit');
+        $response = $this->actingAs($forbiddenUser)->get('/channel/' . $channel->channelId() . '/edit');
         $response->assertForbidden();
     }
 
     public function testChannelEditIsAllowedToOwner()
     {
         $channel = factory(Channel::class)->create();
-        $response = $this->actingAs($channel->user)->get('/channel/' . $channel->channelId().'/edit');
+        $response = $this->actingAs($channel->user)->get('/channel/' . $channel->channelId() . '/edit');
         $response->assertSuccessful();
         $response->assertViewIs('channel.edit');
     }
