@@ -53,7 +53,7 @@ class PodcastHeaderTest extends TestCase
     public function testingHeaderRenderingShouldBeFine()
     {
         $channel = factory(Channel::class)->create();
-        $thumb = factory(Thumb::class)->create(['channel_id' => $channel->channel_id]);
+        factory(Thumb::class)->create(['channel_id' => $channel->channel_id]);
         
         $renderedResult = PodcastHeader::generateFor($channel)->render();
         $this->assertStringContainsString("<link>" . $channel->link . "</link>", $renderedResult);
