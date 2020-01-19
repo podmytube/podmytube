@@ -7,5 +7,5 @@
 @if ($itunesHeader->itunesCategory()) 
 {!! $itunesHeader->itunesCategory()->render() !!}
 @endif
-@if ($itunesHeader->imageUrl())<itunes:image href="{{$itunesHeader->imageUrl()}}" />@endif
+@if ($itunesHeader->imageUrl())<itunes:image href="{!! $itunesHeader->imageUrl() !!}" />@endif
 @if ($itunesHeader->explicit())<itunes:explicit>{{$itunesHeader->explicit()}}</itunes:explicit>@endif

@@ -9,22 +9,22 @@ class ItunesHeader implements IsRenderableInterface
 {
     const _TYPE_EPISODIC = 'episodic';
     const _TYPE_SERIAL = 'serial';
-    
+
     /** @var string title */
     protected $title;
 
     /** @var string author */
     protected $author;
-    
+
     /** @var string type (episodic or serial) */
     protected $type;
-    
+
     /** @var string imageUrl */
     protected $imageUrl;
-    
+
     /** @var boolean explicit */
     protected $explicit;
-    
+
     /** @var ItunesCategory category object*/
     protected $itunesCategory;
 
@@ -108,18 +108,18 @@ class ItunesHeader implements IsRenderableInterface
         return $this->imageUrl;
     }
 
-    protected function setType(string $type = self::_TYPE_DEFAULT)
+    protected function setType(string $type = self::_TYPE_EPISODIC)
     {
         if ($type == self::_TYPE_EPISODIC || $type == self::_TYPE_SERIAL) {
             $this->type = $type;
-        } 
+        }
     }
 
     protected function setImageUrl(string $imageUrl)
     {
-        if (filter_var($imageUrl, FILTER_VALIDATE_URL)===false){
+        if (filter_var($imageUrl, FILTER_VALIDATE_URL) === false) {
             throw new \InvalidArgumentException("ImageUrl is not a valid url.");
         }
-            $this->imageUrl = $imageUrl;
+        $this->imageUrl = $imageUrl;
     }
 }
