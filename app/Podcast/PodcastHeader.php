@@ -39,7 +39,6 @@ class PodcastHeader
         $this->description = $channel->description ?? null;
 
         $this->itunesHeader = null;
-        
 
         $this->podcastCover = PodcastCover::prepare([
             "url" => isset($channel->thumb) ? $channel->thumb->podcastUrl() : Thumb::defaultUrl(),
