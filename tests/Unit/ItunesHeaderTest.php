@@ -118,7 +118,7 @@ class ItunesHeaderTest extends TestCase
         $renderedResult = ItunesHeader::prepare([
             "explicit" => true,
         ])->render();
-        $this->assertEquals("<itunes:explicit>true</itunes:explicit>", $renderedResult);
+        $this->assertStringContainsString("<itunes:explicit>true</itunes:explicit>", $renderedResult);
     }
 
     public function testingNoInformationsShouldRenderNothing()

@@ -55,6 +55,7 @@ class PodcastBuilderTest extends TestCase
         $this->assertStringContainsString("</itunes:owner>", $renderedPodcast);
         $this->assertStringContainsString("<itunes:explicit>", $renderedPodcast);
         $this->assertStringContainsString("<itunes:category text=\"" . self::$channel->category->categoryFeedValue() . "\" />", $renderedPodcast);
+        $this->assertStringContainsString('<itunes:image href="'.self::$channel->thumb->podcastUrl().'" />', $renderedPodcast);
 
         /**
          * there should have some items too
