@@ -48,6 +48,7 @@ class PodcastHeaderTest extends TestCase
         $this->assertStringContainsString("</itunes:owner>", $renderedResult);
         $this->assertStringContainsString("<itunes:explicit>", $renderedResult);
         $this->assertStringContainsString("<itunes:category text=\"" . $channel->category->categoryFeedValue() . "\" />", $renderedResult);
+        $this->assertStringContainsString('<itunes:image href="'.Thumb::defaultUrl().'" />', $renderedResult);
     }
 
     public function testingHeaderRenderingShouldBeFine()
@@ -79,5 +80,6 @@ class PodcastHeaderTest extends TestCase
         $this->assertStringContainsString("</itunes:owner>", $renderedResult);
         $this->assertStringContainsString("<itunes:explicit>", $renderedResult);
         $this->assertStringContainsString("<itunes:category text=\"" . $channel->category->categoryFeedValue() . "\" />", $renderedResult);
+        $this->assertStringContainsString('<itunes:image href="'.$channel->thumb->podcastUrl().'" />', $renderedResult);
     }
 }
