@@ -14,10 +14,11 @@ use App\Exceptions\ChannelCreationInvalidChannelUrlException;
 use App\Exceptions\ChannelCreationInvalidUrlException;
 use App\Exceptions\ChannelCreationOnlyYoutubeIsAccepted;
 use App\Podcast\PodcastBuilder;
-use Carbon\Carbon;
+
+use Illuminate\Database\Capsule\Manager as DB;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Support\Collection;
 
 /**
  * the channel model and its functions
@@ -271,5 +272,73 @@ class Channel extends Model
     public function podcastUrl()
     {
         return getenv('PODCASTS_URL') . DIRECTORY_SEPARATOR . $this->channelId() . DIRECTORY_SEPARATOR . PodcastBuilder::_FEED_FILENAME;
+    }
+
+    /**
+     * return all early birds channels.
+     * 
+     * @return Illuminate\Support\Collection 
+     */
+    public static function earlyBirdsChannels(): Collection
+    {
+        return self::where([
+            ["active", 1],
+            ["subscriptions.plan_id", "=", Plan::_EARLY_PLAN_ID],
+        ])
+            ->with('User')
+            ->with('Category')
+            ->with('Thumb')
+            ->with('Subscription')
+            ->join('subscriptions', 'subscriptions.channel_id', '=', 'channels.channel_id')
+            ->get();
+    }
+
+    /**
+     * return all free channels.
+     * 
+     * @return Illuminate\Support\Collection 
+     */
+    public static function freeChannels(): Collection
+    {
+        return self::where([
+            ["active", 1],
+            ["subscriptions.plan_id", "=", Plan::_FREE_PLAN_ID],
+        ])
+            ->with('User')
+            ->with('Category')
+            ->with('Thumb')
+            ->with('Subscription')
+            ->join('subscriptions', 'subscriptions.channel_id', '=', 'channels.channel_id')
+            ->get();
+    }
+
+    /**
+     * return all paying customers channels.
+     * Paying customers only.
+     * 
+     * @return Illuminate\Support\Collection 
+     */
+    public static function payingChannels(): Collection
+    {
+        return self::where([
+            ["active", 1],
+            ["subscriptions.plan_id", ">", Plan::_EARLY_PLAN_ID],
+        ])
+            ->with('User')
+            ->with('Category')
+            ->with('Thumb')
+            ->with('Subscription')
+            ->join('subscriptions', 'subscriptions.channel_id', '=', 'channels.channel_id')
+            ->get();
+    }
+
+    public static function allActiveChannels()
+    {
+        return self::where("active", 1)
+            ->with('User')
+            ->with('Category')
+            ->with('Thumb')
+            ->with('Subscription')
+            ->get();
     }
 }
