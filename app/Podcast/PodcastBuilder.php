@@ -61,6 +61,11 @@ class PodcastBuilder
         return true;
     }
 
+    public function path()
+    {
+        return Storage::disk(self::_LOCAL_FEED_DISK)->path($this->relativePath());
+    }
+
     public function url()
     {
         return Storage::disk(self::_LOCAL_FEED_DISK)->url($this->relativePath());
