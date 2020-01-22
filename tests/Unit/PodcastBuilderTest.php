@@ -28,6 +28,15 @@ class PodcastBuilderTest extends TestCase
         factory(Thumb::class)->create(['channel_id' => self::$channel->channel_id]);
     }
 
+    public function testingFromStorageRelativePath()
+    {
+        $podcastBuilderObj = PodcastBuilder::prepare(self::$channel);
+        $this->assertEquals(
+            storage_path('app/public/feeds') . DIRECTORY_SEPARATOR . $podcastBuilderObj->relativePath(),
+            $podcastBuilderObj->path()
+        );
+    }
+
     public function testRenderingWholePodcast()
     {
         $renderedPodcast = ($podcastBuilder = PodcastBuilder::prepare(self::$channel))->render();
@@ -55,7 +64,7 @@ class PodcastBuilderTest extends TestCase
         $this->assertStringContainsString("</itunes:owner>", $renderedPodcast);
         $this->assertStringContainsString("<itunes:explicit>", $renderedPodcast);
         $this->assertStringContainsString("<itunes:category text=\"" . self::$channel->category->categoryFeedValue() . "\" />", $renderedPodcast);
-        $this->assertStringContainsString('<itunes:image href="'.self::$channel->thumb->podcastUrl().'" />', $renderedPodcast);
+        $this->assertStringContainsString('<itunes:image href="' . self::$channel->thumb->podcastUrl() . '" />', $renderedPodcast);
 
         /**
          * there should have some items too
@@ -101,7 +110,7 @@ class PodcastBuilderTest extends TestCase
     public function testProducingPodcastIsFine()
     {
         ($podcastBuilder = PodcastBuilder::prepare(self::$channel))->save();
-        
+
         $savedPodcastContent = file_get_contents($podcastBuilder->path());
 
         $this->assertStringContainsString("<link>" . self::$channel->link . "</link>", $savedPodcastContent);
@@ -127,7 +136,7 @@ class PodcastBuilderTest extends TestCase
         $this->assertStringContainsString("</itunes:owner>", $savedPodcastContent);
         $this->assertStringContainsString("<itunes:explicit>", $savedPodcastContent);
         $this->assertStringContainsString("<itunes:category text=\"" . self::$channel->category->categoryFeedValue() . "\" />", $savedPodcastContent);
-        $this->assertStringContainsString('<itunes:image href="'.self::$channel->thumb->podcastUrl().'" />', $savedPodcastContent);
+        $this->assertStringContainsString('<itunes:image href="' . self::$channel->thumb->podcastUrl() . '" />', $savedPodcastContent);
 
         /**
          * there should have some items too
@@ -142,6 +151,5 @@ class PodcastBuilderTest extends TestCase
             $this->assertStringContainsString("<itunes:explicit>" . $media->channel->explicit() . "</itunes:explicit>", $savedPodcastContent);
         }
         $this->assertStringContainsString("</item>", $savedPodcastContent);
-        var_dump($podcastBuilder->path());
     }
 }
