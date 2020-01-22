@@ -142,6 +142,5 @@ class PodcastBuilderTest extends TestCase
             $this->assertStringContainsString("<itunes:explicit>" . $media->channel->explicit() . "</itunes:explicit>", $savedPodcastContent);
         }
         $this->assertStringContainsString("</item>", $savedPodcastContent);
-        var_dump($podcastBuilder->path());
     }
 }
