@@ -3,4 +3,5 @@
     <itunes:category text="{!! $itunesCategory->name() !!}" />
 </itunes:category>
 @else
-<itunes:category text="{!! $itunesCategory->name() !!}" />@endif
+<itunes:category text="{!! $itunesCategory->name() !!}" />
+@endif
