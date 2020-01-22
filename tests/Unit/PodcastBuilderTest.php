@@ -97,4 +97,51 @@ class PodcastBuilderTest extends TestCase
             $podcastBuilder->url()
         );
     }
+
+    public function testProducingPodcastIsFine()
+    {
+        ($podcastBuilder = PodcastBuilder::prepare(self::$channel))->save();
+        
+        $savedPodcastContent = file_get_contents($podcastBuilder->path());
+
+        $this->assertStringContainsString("<link>" . self::$channel->link . "</link>", $savedPodcastContent);
+        $this->assertStringContainsString("<title>" . self::$channel->title() . "</title>", $savedPodcastContent);
+        $this->assertStringContainsString("<description><![CDATA[" . self::$channel->description . "]]></description>", $savedPodcastContent);
+        $this->assertStringContainsString("<copyright>" . self::$channel->podcast_copyright . "</copyright>", $savedPodcastContent);
+        $this->assertStringContainsString("<language>" . self::$channel->lang . "</language>", $savedPodcastContent);
+
+        $this->assertStringContainsString("<image>", $savedPodcastContent);
+        $this->assertStringContainsString("<url>" . self::$channel->thumb->podcastUrl() . "</url>", $savedPodcastContent);
+        $this->assertStringContainsString("<title>" . self::$channel->title() . "</title>", $savedPodcastContent);
+        $this->assertStringContainsString("<link>" . self::$channel->link . "</link>", $savedPodcastContent);
+        $this->assertStringContainsString("</image>", $savedPodcastContent);
+
+        /**
+         * Following part is test exhaustively into separate tests so here are the minimal part.
+         */
+        $this->assertStringContainsString("<itunes:author>" . self::$channel->authors . "</itunes:author>", $savedPodcastContent);
+        $this->assertStringContainsString("<itunes:title>" . self::$channel->title() . "</itunes:title>", $savedPodcastContent);
+        $this->assertStringContainsString("<itunes:owner>", $savedPodcastContent);
+        $this->assertStringContainsString("<itunes:name>" . self::$channel->authors . "</itunes:name>", $savedPodcastContent);
+        $this->assertStringContainsString("<itunes:email>" . self::$channel->email . "</itunes:email>", $savedPodcastContent);
+        $this->assertStringContainsString("</itunes:owner>", $savedPodcastContent);
+        $this->assertStringContainsString("<itunes:explicit>", $savedPodcastContent);
+        $this->assertStringContainsString("<itunes:category text=\"" . self::$channel->category->categoryFeedValue() . "\" />", $savedPodcastContent);
+        $this->assertStringContainsString('<itunes:image href="'.self::$channel->thumb->podcastUrl().'" />', $savedPodcastContent);
+
+        /**
+         * there should have some items too
+         */
+        $this->assertStringContainsString("<item>", $savedPodcastContent);
+        foreach (self::$medias as $media) {
+            $this->assertStringContainsString("<guid>" . $media->media_id . "</guid>", $savedPodcastContent);
+            $this->assertStringContainsString("<title>" . $media->title . "</title>", $savedPodcastContent);
+            $this->assertStringContainsString("<enclosure url=\"" . $media->enclosureUrl() . "\" length=\"" . $media->length . "\" type=\"audio/mpeg\" />", $savedPodcastContent);
+            $this->assertStringContainsString("<pubDate>" . $media->pubDate() . "</pubDate>", $savedPodcastContent);
+            $this->assertStringContainsString("<itunes:duration>" . $media->duration() . "</itunes:duration>", $savedPodcastContent);
+            $this->assertStringContainsString("<itunes:explicit>" . $media->channel->explicit() . "</itunes:explicit>", $savedPodcastContent);
+        }
+        $this->assertStringContainsString("</item>", $savedPodcastContent);
+        var_dump($podcastBuilder->path());
+    }
 }
