@@ -81,6 +81,7 @@ class AuthenticationAndLoginTest extends TestCase
         $response = $this->actingAs(self::$user)->get('/register');
         $response->assertRedirect('/home');
     }
+    
     public function testUserWithCorrectCredentialsWillAuthenticate()
     {
         $response = $this->post(
