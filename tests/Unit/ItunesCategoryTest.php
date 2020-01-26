@@ -36,7 +36,7 @@ class ItunesCategoryTest extends TestCase
     public function testingSimpleCategory()
     {
         $renderedText = ItunesCategory::prepare(Category::find(10))->render();
-        $this->assertEquals('<itunes:category text="Leisure" />', $renderedText);
+        $this->assertStringContainsString('<itunes:category text="Leisure" />', $renderedText);
     }
 
     public function testingNoCategorySet()
