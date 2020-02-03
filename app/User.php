@@ -50,11 +50,6 @@ class User extends Authenticatable
         return $this->HasMany(Channel::class, 'user_id');
     }
 
-    /* public function owns(Channel $channel)
-    {
-        return $this->userId() == $channel->userId();
-    } */
-
     public function userId()
     {
         return $this->user_id;
