@@ -109,6 +109,9 @@ class BatchPodcasts extends Command
             );
         }
 
+        /**
+         * Used with a crontab errors will be sent by email if any.
+         */
         if ($this->getErrors()) {
             $this->error($this->getErrors());
         }
