@@ -102,7 +102,7 @@ return [
     'button_login_label' => 'Sign in',
     
     'name_label' => 'Name',
-    'email_label' => 'Email adress',
+    'email_label' => 'Email address',
     'password_label' => 'Password',
     'confirm_password_label' => 'Password confirmation',
     'change_password_label' => 'Update your password',
@@ -124,7 +124,7 @@ return [
     'channel_authors_label' => "Author(s)",
     'channel_authors_help' => "Who is / are the author (s) / author (s).",
 
-    'channel_email_label' => "Email adress",
+    'channel_email_label' => "Email address",
     'channel_email_help' => "The email address that appears in your podcast.",
 
     'channel_description_label' => "Description",
