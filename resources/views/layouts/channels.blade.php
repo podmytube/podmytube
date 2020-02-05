@@ -1,12 +1,7 @@
 <div class="row align-items-center">
-    <div class="col-8">
+    <div class="col">
         <h2> {{ __('messages.title_channel_index_label') }} </h2>
-    </div>
-    <!--/col-->
-    <div class="col-4">
-        <a href="mailto:contact@podmytube.com" class="btn btn-primary"> {{ __('messages.button_need_assistance_label') }} </a>
-    </div>
-    <!--/col-->
+    </div>    
 </div>
 <!--/subhead row-->
 
@@ -21,7 +16,18 @@
             </div>
             <div class="card-body text-center">
                 <h5 class="card-title">{{$channel->title()}}</h5>
-                <a href="{{ $channel->podcastUrl() }}" target="_blank" class="btn btn-light btn-lg">{{ __('messages.podcast_link_label') }}</a>
+                <a href="{{ $channel->podcastUrl() }}" target="_blank" class="btn btn-dark btn">{{ __('messages.podcast_link_label') }}</a>
+
+                @if ($channel->isQuotaExceeded)
+                <div class="alert alert-danger" role="alert">
+                    <p>{{ __('messages.danger_podcast_is_no_more_updated') }}</p>
+                    <p class=" text-center">
+                        <a class="btn btn-success text-center" href="{{ route('plans.index', ['channel' => $channel]) }}" role="button">
+                            {{ __('messages.button_i_want_to_upgrade_now') }}
+                        </a>
+                    </p>
+                </div>
+                @endif
             </div>
             <div class="card-footer text-center">
                 <div class="btn-group " role="group" aria-label="link to your podcast.">
