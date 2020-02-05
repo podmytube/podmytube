@@ -10,9 +10,8 @@
 			<li class="nav-item"><a href="{{ route('login') }}" class="nav-link">{{ __('messages.page_title_user_login') }}</a></li>
 			<li class="nav-item"><a href="{{ route('register') }}" class="nav-link">{{__('messages.page_title_user_register')}}</a></li>
 			@else
-			<li class="nav-item">
-				<a class="nav-link" href="{{ route('channel.create') }}"> {{ __('messages.button_create_channel_label') }} </a>
-			</li>
+			<li class="nav-item"><a class="nav-link" href="{{ route('channel.create') }}"><i class="fas fa-plus"></i> {{ __('messages.button_create_channel_label') }} </a></li>
+			<li class="nav-item"><a class="nav-link" href="mailto:contact@podmytube.com"><i class="fas fa-envelope-square"></i> {{ __('messages.button_need_assistance_label') }} </a></li>
 			<li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle" href="#" id="accountDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ Auth::user()->name }}</a>
 				<div class="dropdown-menu dropdown-menu-right" aria-labelledby="accountDropdown">
