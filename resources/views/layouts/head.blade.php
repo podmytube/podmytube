@@ -17,6 +17,8 @@
 
     @yield('stripeJs')
 
+    <!--script src="{{ asset('js/app.js') }}" defer></script-->
+
     <!--Favicon-->
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
