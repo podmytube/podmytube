@@ -6,6 +6,6 @@
 
 {{ Breadcrumbs::render('channel.index') }}
 
-@include ('layouts.channels')
+@include ('partials.channels')
 
 @endsection

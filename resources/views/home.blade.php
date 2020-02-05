@@ -10,10 +10,10 @@
 
 @section('content') 
 
-@include ('layouts.errors')
+@include ('partials.errors')
 
 <div class="container">
-	@include ('layouts.channels')
+	@include ('partials.channels')
 </div>
 <!--/home main container-->
 @endsection

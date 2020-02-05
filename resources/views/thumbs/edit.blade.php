@@ -8,7 +8,7 @@
 
     <div class="container" style="margin:0 auto;width:80%">
 
-    @include ('layouts.errors')
+    @include ('partials.errors')
 
     <form method="POST" action="/channel/{{ $channel->channel_id }}/thumbs" enctype="multipart/form-data">
 

@@ -14,7 +14,7 @@
 
 	<hr> 
 		
-	@include ('layouts.errors')
+	@include ('partials.errors')
 
 	<form method="POST" action="/channel/{{ $channel->channel_id }}">
 

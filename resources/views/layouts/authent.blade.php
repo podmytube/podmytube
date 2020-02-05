@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}">
-@include ('layouts.head')
+@include ('partials.head')
 
 <body id="authent">
     <div id="app" class="container">
         <!--main container-->
-        @include ('layouts.flash')
+        @include ('partials.flash')
 
         @yield('content')
 

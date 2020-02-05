@@ -18,7 +18,7 @@
 
     <div class="container w-60 mt-2 mb-2"> <!--form container-->
 
-    	@include ('layouts.errors')
+    	@include ('partials.errors')
 
         <form method="POST" action="/channel">
 
