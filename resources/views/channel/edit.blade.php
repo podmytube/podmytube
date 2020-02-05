@@ -14,7 +14,7 @@
 
 	<hr> 
 		
-	@include ('layouts.errors')
+	@include ('partials.errors')
 
 	<form method="POST" action="/channel/{{ $channel->channel_id }}">
 
@@ -102,7 +102,7 @@
 				</th>
 				<td>
 				<select name="category_id" class="custom-select">
-					@include('layouts.partials.categories', ['channelSelectedCategory' => $channel->category_id])
+					@include('partials.categories', ['channelSelectedCategory' => $channel->category_id])
 				</select>
 				
 				</td>

@@ -28,6 +28,7 @@
             <a href="{{ route('channel.edit', $channel) }}"  class="btn btn-primary btn-sm">{{ __('messages.button_edit_channel_label') }}</a>
             <a href="{{ route('channel.thumbs.edit', $channel) }}"  class="btn btn-primary btn-sm">{{ __('messages.button_edit_thumb_label') }}</a>
             <a href="{{ route('channel.medias.index', $channel) }}"  class="btn btn-primary btn-sm">{{ __('messages.button_view_episodes_label') }}</a>
+            <a href="{{ $channel->podcastUrl() }}"  class="btn btn-primary btn-sm">chat</a>
         </div>
     </div>
     <!--
