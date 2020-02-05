@@ -114,6 +114,7 @@ return [
     'channel_podcast_url_label' => "Podcast url",
     'channel_podcast_created_label' => "Podcast created on",
     'channel_podcast_updated_label' => "Podcast updated on",
+    'podcast_link_label' => "Your podcast",
 
     'channel_name_label' => "Channel name",
     'channel_name_help' => "This is the name of your channel on Youtube.",

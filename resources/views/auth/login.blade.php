@@ -33,6 +33,6 @@
     <li><a href="{{ route('password.request') }}">{{ __('messages.password_forgotten_label') }} ?</a></li>
     <li>new customer ? <a href="{{ route('register') }}">{{ __('messages.button_register_label') }}</a></li>
   </ul>
-  <p class="mt-5 mb-3 text-muted text-center">&copy; 2017-2020</p>
 </form>
+
 @endsection

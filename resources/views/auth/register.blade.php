@@ -44,6 +44,5 @@
     <div class="mt-2">
         already customer ? <a href="{{ route('login') }}"> {{ __('messages.button_login_label') }} </a>
     </div>
-    <p class="mt-5 mb-3 text-muted text-center">&copy; 2017-2020</p>
 </form>
 @endsection
