@@ -19,7 +19,7 @@
                 <a href="{{ $channel->podcastUrl() }}" target="_blank" class="btn btn-dark btn">{{ __('messages.podcast_link_label') }}</a>
 
                 @if ($channel->isQuotaExceeded)
-                <div class="alert alert-danger" role="alert">
+                <div class="alert alert-danger mt-2" role="alert">
                     <p>{{ __('messages.danger_podcast_is_no_more_updated') }}</p>
                     <p class=" text-center">
                         <a class="btn btn-success text-center" href="{{ route('plans.index', ['channel' => $channel]) }}" role="button">
@@ -28,6 +28,7 @@
                     </p>
                 </div>
                 @endif
+                
             </div>
             <div class="card-footer text-center">
                 <div class="btn-group " role="group" aria-label="link to your podcast.">
