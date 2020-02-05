@@ -113,6 +113,7 @@ return [
     'channel_podcast_url_label' => "Adresse du podcast",
     'channel_podcast_created_label' => "Podcast créé le",
     'channel_podcast_updated_label' => "Podcast mis à jour le",
+    'podcast_link_label' => "Votre podcast",
 
     'channel_name_label' => "Nom de votre chaine",
     'channel_name_help' => "Il s'agit du nom de votre chaine sur Youtube.",
