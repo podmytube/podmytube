@@ -10,7 +10,7 @@
     <img class="mb-4" src="/images/logo-small.png" alt="" width="133" />
   </div>
 
-  @include ('layouts.errors')
+  @include ('partials.errors')
 
   <div class="form-label-group">
     <input type="email" name="email" id="inputEmail" class="form-control" placeholder="{{ __('messages.email_label') }}" required autofocus />

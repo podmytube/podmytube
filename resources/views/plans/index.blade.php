@@ -55,7 +55,7 @@
             <li> {!! __('plans.pricing_li_setup_once_and_forget') !!} </li>
             <li> {{ __('plans.pricing_li_reactive_support') }} </li>
           </ul>
-          @include("layouts.partials.stripeButton", [
+          @include("partials.stripeButton", [
             "buttonId" => "weeklyCheckoutButton",
             "planToSubscribe" => $stripePlans[$weekly],
             "successUrl" => env("APP_URL")."/success",
@@ -99,7 +99,7 @@
             <li> {!! __('plans.pricing_li_setup_once_and_forget') !!} </li>
             <li> {{ __('plans.pricing_li_reactive_support') }} </li>
           </ul>
-          @include("layouts.partials.stripeButton", [
+          @include("partials.stripeButton", [
             "buttonId" => "dailyCheckoutButton",
             "planToSubscribe" => $stripePlans[$daily],
             "successUrl" => env("APP_URL")."/success",

@@ -12,16 +12,19 @@
 			@else
 			<li class="nav-item"><a class="nav-link" href="{{ route('channel.create') }}"><i class="fas fa-plus"></i> {{ __('messages.button_create_channel_label') }} </a></li>
 			<li class="nav-item"><a class="nav-link" href="mailto:contact@podmytube.com"><i class="fas fa-envelope-square"></i> {{ __('messages.button_need_assistance_label') }} </a></li>
+			<li class="nav-item">
+				<a class="nav-link" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+					<i class="fas fa-door-open"></i>
+					{{ __('messages.page_title_user_logout') }}</a>
+				<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+					{{ csrf_field() }}
+				</form>
+			</li>
 			<li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle" href="#" id="accountDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ Auth::user()->name }}</a>
 				<div class="dropdown-menu dropdown-menu-right" aria-labelledby="accountDropdown">
-					<a class="dropdown-item" href="{{ route('home') }}">{{ __('messages.page_title_home_breadcrumb') }}</a>
 					<a class="dropdown-item" href="{{ route('user.show') }}">{{ __('messages.page_title_user_show') }}</a>
 					<a class="dropdown-item" href="{{ route('password.form') }}">{{ __('messages.change_password_label') }}</a>
-					<a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">{{ __('messages.page_title_user_logout') }}</a>
-					<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-						{{ csrf_field() }}
-					</form>
 				</div>
 			</li>
 			@endguest
