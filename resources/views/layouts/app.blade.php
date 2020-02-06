@@ -17,9 +17,6 @@
         @include ('partials.footer')
     </div>
     <!--/main container-->
-
-
-    @include ('partials.footer-javascript')
 </body>
 
 </html>
