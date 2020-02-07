@@ -38,14 +38,14 @@ return [
 
     'pricing_li_weekly_youtuber' => 'Weekly Youtuber',
     'pricing_li_weekly_youtuber_radio_button_label' => 'I will publish 10 videos (max) per month',
-    'pricing_li_weekly_youtuber_intro' => 'You publish <u>less than 10</u> videos <u>per month</u>',
+    'pricing_li_weekly_youtuber_intro' => 'Up to <b>10 episodes</b> added to your podcast every month',
     'pricing_li_weekly_youtuber_monthly_price' => '9 €',
     'pricing_li_monthly_price' => ':pricePerMonth €',
     'pricing_li_free_plan_monthly_price' => 'Free !',
 
     'pricing_li_daily_youtuber' => 'Daily Youtuber',
     'pricing_li_daily_youtuber_radio_button_label' => 'I will publish 33 videos (max) per month',
-    'pricing_li_daily_youtuber_intro' => 'I publish <u>1 video per day</u> on Youtube.',
+    'pricing_li_daily_youtuber_intro' => 'Up to <b>33 episodes</b> added to your podcast every month',
     'pricing_li_daily_youtuber_monthly_price' => '29 €',
 
     'pricing_li_I_choose_this_plan' => 'I choose this plan !',
@@ -65,5 +65,7 @@ return [
     'pricing_li_analytics' => 'Audience statistics (beta)',
     'pricing_li_setup_once_and_forget' => '<strong>Setup once and forget</strong>',
     'pricing_li_reactive_support' => 'Reactive and super friendly customer support',
+    'pricing_li_no_time_limit' => '<b>No time limitation</b>. Once added to your podcast every episode will stay in.',
 
+    'pricing_button_subscribe' => "Subscribe",
 ];

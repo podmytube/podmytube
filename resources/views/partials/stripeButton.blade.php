@@ -1,6 +1,5 @@
 <!-- Create a button that your customers click to complete their purchase. -->
-<button id="{{ $buttonId }}" class="btn btn-success" role="link">subscribe</button>
-
+<button id="{{ $buttonId }}" class="btn btn-lg btn-block btn-primary" role="link">{{ __('plans.pricing_button_subscribe') }}</button>
 
 <script>
   var stripe = Stripe('{{ env("STRIPE_KEY") }}', {
