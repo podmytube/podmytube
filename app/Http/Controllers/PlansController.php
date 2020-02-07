@@ -2,21 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Channel;
 use App\Plan;
+use App\Channel;
+use App\StripePlan;
 use App\Services\PlanService;
 
 class PlansController extends Controller
 {
-    
-    const _WEEKLY = Plan::_WEEKLY_PLAN_ID;
-    const _DAILY = Plan::_DAILY_PLAN_ID;
+
 
     public function __construct()
     {
         $this->middleware('auth');
     }
-    
+
     /**
      * Show the available plans
      *
@@ -24,7 +23,7 @@ class PlansController extends Controller
      */
     public function index(Channel $channel)
     {
-        
+
         try {
             $stripePlans = PlanService::getStripePlans(
                 [
@@ -35,11 +34,14 @@ class PlansController extends Controller
             );
         } catch (\Exception $e) {
             session()->flash('message', __('messages.a_problem_occur'));
-            session()->flash('messageClass', 'alert-danger');            
+            session()->flash('messageClass', 'alert-danger');
         }
-        $weekly = self::_WEEKLY;
-        $daily = self::_DAILY;
-        
-        return view('plans.index', compact('channel', 'stripePlans', 'weekly', 'daily'));
+        $weekly = Plan::_WEEKLY_PLAN_ID;
+        $daily = Plan::_DAILY_PLAN_ID;
+
+        /* $plans = Plan::whereIn('id', [Plan::_DAILY_PLAN_ID, Plan::_WEEKLY_PLAN_ID])
+            ->orderBy('price', 'ASC')
+            ->get(); */
+        return view('plans.index', compact('channel', 'stripePlans', 'weekly', 'daily'/* , $plans */));
     }
 }

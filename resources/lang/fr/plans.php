@@ -37,7 +37,7 @@ return [
     'pricing_li_I_can_convert_N_of_my_playlist_into_a_podcast' => 'Je peux convertir <strong>:playlistNumber playlist(s)</strong>en podcast également.',
 
     'pricing_li_weekly_youtuber' => 'Youtubeur Hebdo',
-    'pricing_li_weekly_youtuber_intro' => "Vous publiez <u>jusqu'à 10</u> vidéos <u>par mois</u>",
+    'pricing_li_weekly_youtuber_intro' => "<b>jusqu'à 10</b> vidéos <u>par mois</u>",
     'pricing_li_weekly_youtuber_monthly_price' => '9 €',
     'pricing_li_monthly_price' => ':pricePerMonth €',
     'pricing_li_free_plan_monthly_price' => 'Gratuit !',
@@ -63,7 +63,8 @@ return [
     'pricing_li_data_analytics' => "Pour le moment seul le nb de téléchargement des épisodes est disponible. Mais d'autres statistiques suivront.",
     'pricing_li_analytics' => "Statistiques d'audience (beta)",
     'pricing_li_setup_once_and_forget' => "<strong>Une fois installé vous pouvez l'oublier.</strong>",
-    'pricing_li_reactive_support' => 'Support réactif et très très amical :)',
+    'pricing_li_reactive_support' => 'Support prioritaire',
+    'pricing_li_no_time_limit' => "<b>Aucune limite de temps</b>.L'épisode est conservé dans votre podcast sans limitation de temps.",
 
-
+    'pricing_button_subscribe' => "Inscription",
 ];
