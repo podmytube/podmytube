@@ -116,7 +116,7 @@
 				
 				</th>
 				<td>
-					<select name="lang">
+					<select class="custom-select" name="lang">
 						<option value="FR" {{ $channel->lang == 'FR' ? ' selected' : '' }}>FR</option>
 						<option value="EN" {{ $channel->lang == 'EN' ? ' selected' : '' }}>EN</option>
 					</select>
