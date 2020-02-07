@@ -28,7 +28,7 @@ Breadcrumbs::register('channel.create', function ($breadcrumbs) {
 
 // Home > Channel > XXXXXXX
 Breadcrumbs::register('channel.show', function ($breadcrumbs, $channel) {
-    $breadcrumbs->parent('channel.index');
+    $breadcrumbs->parent('home');
     $breadcrumbs->push($channel->channel_name, route('channel.show', $channel));
 });
 
@@ -65,23 +65,6 @@ Breadcrumbs::register('user.edit', function ($breadcrumbs, $user) {
 });
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//                                 STATS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-// Home > channel > XXXXXXX > media_stats
-Breadcrumbs::register('medias_stats.index', function ($breadcrumbs, $channel) {
-    $breadcrumbs->parent('channel.show', $channel);
-    $breadcrumbs->push(__('messages.page_title_channel_stats_index'), route('medias_stats.index', $channel->channel_id));
-});
-
-// Home > channel > XXXXXXX > apps_stats
-Breadcrumbs::register('app_stats.index', function ($breadcrumbs, $channel) {
-    $breadcrumbs->parent('channel.show', $channel);
-    $breadcrumbs->push(__('messages.page_title_channel_app_stats_index'), route('app_stats.index', $channel->channel_id));
-});
-
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //                                 THUMBS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -93,6 +76,6 @@ Breadcrumbs::register('thumbs.index', function ($breadcrumbs, $channel) {
 
 // Home > channel > XXXXXXX > thumbs > edit
 Breadcrumbs::register('thumbs.edit', function ($breadcrumbs, $channel) {
-    $breadcrumbs->parent('thumbs.index', $channel);
+    $breadcrumbs->parent('channel.show', $channel);
     $breadcrumbs->push(__('messages.page_title_channel_thumbs_edit'), route('channel.thumbs.edit', $channel->channel_id));
 });
