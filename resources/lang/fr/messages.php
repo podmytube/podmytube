@@ -13,6 +13,7 @@ return [
     'page_title_channel_create' => 'Ajouter un podcast',
     'page_title_user_register' => 'Inscription',
     'page_title_user_login' => 'Connexion',
+    'page_title_lost_password' => 'Mot de passe oublié',
     'page_title_user_logout' => 'Déconnexion',
     'page_title_home_index' => 'Bienvenue',
     'page_title_podcasts_index' => 'Podcasts',
@@ -99,6 +100,8 @@ return [
     'title_login_label' => 'Connexion',
     'title_logout_label' => 'Déconnexion',
     'button_login_label' => 'Connexion',
+    'button_lost_password' => 'Réinitialiser mon mot de passe',
+    'button_reset_password' => 'Réinitialiser mon mot de passe',
     
     'name_label' => 'Nom',
     'email_label' => 'Adresse email',
@@ -187,5 +190,3 @@ return [
 	'layout_footer_legal_notice_url' => 'http://fr.podmytube.com/mentions-legales',
     
 ];
-
-?>

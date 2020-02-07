@@ -13,6 +13,7 @@ return [
     'page_title_channel_create' => 'Add a podcast',
     'page_title_user_register' => 'Register',
     'page_title_user_login' => 'Login',
+    'page_title_lost_password' => 'Lost password',
     'page_title_user_logout' => 'Logout',
     'page_title_home_index' => 'Welcome',
     'page_title_podcasts_index' => 'Podcasts',
@@ -100,6 +101,8 @@ return [
     'title_login_label' => 'Sign in',
     'title_logout_label' => 'Logout',
     'button_login_label' => 'Sign in',
+    'button_lost_password' => 'Send Password Reset Link',
+    'button_reset_password' => 'Reset password',
     
     'name_label' => 'Name',
     'email_label' => 'Email address',

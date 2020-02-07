@@ -1,41 +1,36 @@
-@extends('layouts.app')
+@extends('layouts.authent')
 
-@section('pageTitle', 'Mot de passe oublié')
+@section('pageTitle',__('messages.page_title_lost_password'))
 
 @section('content')
-<div class="container w-50 mt-2 mb-2"><!--section container-->
-	<div class="card">
-		<div class="card-header">Reset Password</div>
 
-		<div class="card-body">
-			@if (session('status'))
-				<div class="alert alert-success">
-					{{ session('status') }}
-				</div>
-			@endif
-
-			<form class="form-horizontal" method="POST" action="{{ route('password.email') }}">
-				{{ csrf_field() }}
-
-				<div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-					<label for="email" class="col-md-4 control-label">E-Mail Address</label>
-
-					<input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required>
-
-					@if ($errors->has('email'))
-						<span class="help-block">
-							<strong>{{ $errors->first('email') }}</strong>
-						</span>
-					@endif
-				</div>
-
-				<div class="form-group">
-					<button type="submit" class="btn btn-primary">
-						Send Password Reset Link
-					</button>
-				</div>
-			</form>
-		</div>
+<form class="form-signin" method="POST" action="{{ route('password.email') }}">
+	@csrf
+	<div class="text-center mb-4">
+		<img class="mb-4" src="/images/logo-small.png" alt="" width="133" />
 	</div>
-</div>
+
+	@include ('partials.errors')
+	
+	@if (session('status'))
+	<div class="alert alert-success">
+		{{ session('status') }}
+	</div>
+	@endif
+
+	<div class="form-label-group">
+		<input type="email" name="email" id="inputEmail" class="form-control" placeholder="{{ __('messages.email_label') }}" value="{{ old('email') }}" required autofocus />
+		<label for="inputEmail">{{ __('messages.email_label') }}</label>
+	</div>
+
+	<button class="btn btn-lg btn-primary btn-block" type="submit">
+		{{ __('messages.button_lost_password') }}
+	</button>
+
+	<ul>
+		<li>Happy customer ? <a href="{{ route('login') }}">{{ __('messages.button_login_label') }} ?</a></li>
+		<li>Want to become one ? <a href="{{ route('register') }}">{{ __('messages.button_register_label') }}</a></li>
+	</ul>
+</form>
+
 @endsection

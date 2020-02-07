@@ -1,58 +1,36 @@
-@extends('layouts.app')
+@extends('layouts.authent')
 
-@section('pageTitle', 'Mot de passe oublié')
+@section('pageTitle',__('messages.page_title_lost_password'))
 
 @section('content')
-<div class="container w-50 mt-2 mb-2"><!--section container-->
-	<div class="card">
-		<div class="card-header">Reset Password</div>
-
-		<div class="card-body">
-			<form class="form-horizontal" method="POST" action="{{ route('password.request') }}">
-				{{ csrf_field() }}
-
-				<input type="hidden" name="token" value="{{ $token }}">
-
-				<div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-					<label for="email" class="col-md-4 control-label">E-Mail Address</label>
-
-					<input id="email" type="email" class="form-control" name="email" value="{{ $email or old('email') }}" required autofocus>
-
-					@if ($errors->has('email'))
-						<span class="help-block">
-							<strong>{{ $errors->first('email') }}</strong>
-						</span>
-					@endif
-				</div>
-
-				<div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-					<label for="password" class="col-md-4 control-label">Password</label>
-
-					<input id="password" type="password" class="form-control" name="password" required>
-
-					@if ($errors->has('password'))
-						<span class="help-block">
-							<strong>{{ $errors->first('password') }}</strong>
-						</span>
-					@endif
-				</div>
-
-				<div class="form-group{{ $errors->has('password_confirmation') ? ' has-error' : '' }}">
-					<label for="password-confirm" class="col-md-4 control-label">Confirm Password</label>
-					<input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
-
-					@if ($errors->has('password_confirmation'))
-						<span class="help-block">
-							<strong>{{ $errors->first('password_confirmation') }}</strong>
-						</span>
-					@endif
-				</div>
-
-				<div class="form-group">
-					<button type="submit" class="btn btn-primary">Reset Password</button>
-				</div>
-			</form>
-		</div>
+<form class="form-signin" method="POST" action="{{ route('password.request') }}">
+	@csrf
+	<div class="text-center mb-4">
+		<img class="mb-4" src="/images/logo-small.png" alt="" width="133" />
 	</div>
-</div><!--/section container-->
+
+	<input type="hidden" name="token" value="{{ $token }}">
+
+	@include ('partials.errors')
+	<div class="form-label-group">
+		<input type="email" name="email" id="inputEmail" class="form-control" placeholder="{{ __('messages.email_label') }}" value="{{ $email }}" required autofocus>
+		<label for="inputEmail">{{ __('messages.email_label') }}</label>
+	</div>
+
+	<div class="form-label-group">
+		<input type="password" name="password" id="inputPassword" class="form-control" placeholder="{{ __('messages.password_label') }}" required />
+		<label for="inputPassword">{{ __('messages.password_label') }}</label>
+	</div>
+
+	<div class="form-label-group">
+		<input type="password" name="password_confirmation" id="inputPasswordConfirmation" class="form-control" placeholder="{{ __('messages.confirm_password_label') }}" required />
+		<label for="inputPasswordConfirmation">{{ __('messages.confirm_password_label') }}</label>
+	</div>
+
+	<button class="btn btn-lg btn-primary btn-block" type="submit">
+		{{ __('messages.button_reset_password') }}
+	</button>
+	
+</form>
+
 @endsection
