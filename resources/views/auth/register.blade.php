@@ -37,13 +37,13 @@
         <label for="inputPasswordConfirmation">{{ __('messages.confirm_password_label') }}</label>
     </div>
 
-    <button class="btn btn-lg btn-primary btn-block" type="submit">
-        {{ __('messages.button_register_label') }}
-    </button>
-
     @if (env('APP_ENV') == 'production')
     {!! NoCaptcha::display() !!}
     @endif
+
+    <button class="btn btn-lg btn-primary btn-block" type="submit">
+        {{ __('messages.button_register_label') }}
+    </button>
 
     <div class="mt-2">
         already customer ? <a href="{{ route('login') }}"> {{ __('messages.button_login_label') }} </a>
