@@ -41,6 +41,10 @@
         {{ __('messages.button_register_label') }}
     </button>
 
+    @if (env('APP_ENV') == 'production')
+    {!! NoCaptcha::display() !!}
+    @endif
+
     <div class="mt-2">
         already customer ? <a href="{{ route('login') }}"> {{ __('messages.button_login_label') }} </a>
     </div>

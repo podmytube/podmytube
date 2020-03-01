@@ -16,7 +16,7 @@
             </div>
             <div class="card-body text-center">
                 <h5 class="card-title">{{$channel->title()}}</h5>
-                <a href="{{ $channel->podcastUrl() }}" target="_blank" class="btn btn-dark btn">{{ __('messages.podcast_link_label') }}</a>
+                <a href="{{ $channel->podcastUrl() }}" target="_blank" class="btn btn-primary btn">{{ __('messages.podcast_link_label') }}</a>
 
                 @if ($channel->isQuotaExceeded)
                 <div class="alert alert-danger mt-2" role="alert">
