@@ -37,6 +37,7 @@ a:hover {
 h1, h2, h3, h4, h5 {
     color:$podmytube-red;
 }
+
 nav h1{
     margin: 0 auto;
     text-align: center;
@@ -59,7 +60,7 @@ nav h1{
 .btn-primary:hover {
   background: #eee;
   border: solid 1px #555;
-  color: #CE1701;
+  color: $podmytube-red;;
 }
 
 .font-italic{
