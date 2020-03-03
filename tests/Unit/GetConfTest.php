@@ -41,8 +41,6 @@ class GetConfTest extends TestCase
 
         /** mailgun */
         "MAIL_DRIVER",
-        "MAILGUN_DOMAIN",
-        "MAILGUN_SECRET",
 
         /** urls */
         'THUMBS_URL',
@@ -52,9 +50,7 @@ class GetConfTest extends TestCase
         /** stripe */
         "STRIPE_KEY",
         "STRIPE_SECRET",
-
-        /** sentry */
-        "SENTRY_LARAVEL_DSN",
+        
     ];
 
     /**
@@ -75,4 +71,16 @@ class GetConfTest extends TestCase
         }
     }
 
+    public function testMailDriver()
+    {
+        $this->assertEquals('tls', getenv('MAIL_ENCRYPTION'));
+        if (getenv('MAIL_DRIVER') == 'mailgun') {
+            foreach ([
+                "MAILGUN_DOMAIN",
+                "MAILGUN_SECRET",
+            ] as $property) {
+                $this->assertNotNull(getenv($property));
+            }
+        }
+    }
 }
