@@ -1,7 +1,7 @@
 <div class="row align-items-center">
     <div class="col">
         <h2> {{ __('messages.title_channel_index_label') }} </h2>
-    </div>    
+    </div>
 </div>
 <!--/subhead row-->
 
@@ -11,12 +11,14 @@
     @foreach ($channels as $channel)
     <div class="col-12 col-md-6">
         <div class="card shadow-md">
-            <div class="text-center">
+            <div class="text-center mt-2">
                 <img class="card-img-top" src="{{$channel->vigUrl}}" style="max-width:300px;" alt="{{ __('messages.channel_vignette_alt') }}">
             </div>
             <div class="card-body text-center">
                 <h5 class="card-title">{{$channel->title()}}</h5>
-                <a href="{{ $channel->podcastUrl() }}" target="_blank" class="btn btn-primary btn">{{ __('messages.podcast_link_label') }}</a>
+                <a href="{{ $channel->podcastUrl() }}" target="_blank" class="btn btn-success btn">
+                    <i class="fas fa-podcast fa-lg"></i> {{ __('messages.podcast_link_label') }}
+                </a>
 
                 @if ($channel->isQuotaExceeded)
                 <div class="alert alert-danger mt-2" role="alert">
@@ -28,14 +30,22 @@
                     </p>
                 </div>
                 @endif
-                
+
             </div>
             <div class="card-footer text-center">
                 <div class="btn-group " role="group" aria-label="link to your podcast.">
-                    <a href="{{ route('channel.show', $channel) }}" class="btn btn-primary btn-sm">{{ __('messages.button_show_channel_label') }}</a>
-                    <a href="{{ route('channel.edit', $channel) }}" class="btn btn-primary btn-sm">{{ __('messages.button_edit_channel_label') }}</a>
-                    <a href="{{ route('channel.thumbs.edit', $channel) }}" class="btn btn-primary btn-sm">{{ __('messages.button_edit_thumb_label') }}</a>
-                    <a href="{{ route('channel.medias.index', $channel) }}" class="btn btn-primary btn-sm">{{ __('messages.button_view_episodes_label') }}</a>
+                    <a href="{{ route('channel.show', $channel) }}" class="btn btn-primary btn-sm">
+                    <i class="far fa-eye"></i> {{ __('messages.button_show_channel_label') }}
+                    </a>
+                    <a href="{{ route('channel.edit', $channel) }}" class="btn btn-primary btn-sm">
+                        <i class="far fa-edit"></i> {{ __('messages.button_edit_channel_label') }}
+                    </a>
+                    <a href="{{ route('channel.thumbs.edit', $channel) }}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-image"></i> {{ __('messages.button_edit_thumb_label') }}
+                    </a>
+                    <a href="{{ route('channel.medias.index', $channel) }}" class="btn btn-primary btn-sm">
+                        <i class="far fa-list-alt"></i> {{ __('messages.button_view_episodes_label') }}
+                    </a>
                 </div>
             </div>
         </div>

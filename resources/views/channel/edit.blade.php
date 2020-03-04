@@ -23,162 +23,110 @@
 
 		{{ csrf_field() }}
 
-		<div class="row">
-			<div class="col">
-				<label for="podcastName">{{ __('messages.channel_podcast_name_label') }}</label>
-				<a href="#" data-toggle="tooltip" data-placement="top" title="{{ __('messages.channel_podcast_name_help') }}">
-					<i class="fas fa-question-circle"></i>
-				</a>
-				<input type="text" id="podcastName" class="form-control" placeholder="{{ __('messages.channel_podcast_name_label') }}">
+		<div class="row mb-2">
+			<label for="podcastName" class="col-md-2">
+				{{ __('messages.channel_podcast_name_label') }}
+				<i class="fas fa-question-circle fa-lg" data-toggle="tooltip" data-placement="top" title="{{ __('messages.channel_podcast_name_help') }}"></i>
+			</label>
+
+			<div class="col-md-10">
+				<input type="text" id="podcastName" name="podcast_title" class="form-control" placeholder="{{ __('messages.channel_podcast_name_label') }}">
 			</div>
 		</div>
-		<table class="table table-striped">
-			<tbody>
-				<tr>
-					<th scope="row" width="25%" class="justify-content-between">
 
-						{{ __('messages.channel_name_label') }}
-						<a href="#" data-toggle="tooltip" data-placement="top" title="{{ __('messages.channel_name_help') }}">
-							<i class="fas fa-question-circle"></i>
-						</a>
+		<div class="row mb-2">
+			<label for="authors" class="col-md-2">
+				{{ __('messages.channel_authors_label') }}
+				<i class="fas fa-question-circle fa-lg" data-toggle="tooltip" data-placement="top" title="{{ __('messages.channel_authors_help') }}"></i>
+			</label>
 
-					</th>
-					<td>{{ $channel->channel_name }}</td>
-				</tr>
-				<tr>
-					<th scope="row">
+			<div class="col-md-10">
+				<input type="text" class="form-control" id="authors" name="authors" value="{{ $channel->authors }}" required>
+			</div>
+		</div>
 
-						{{ __('messages.channel_podcast_name_label') }}
+		<div class="row mb-2">
+			<label for="email" class="col-md-2">
+				{{ __('messages.channel_email_label') }}
+				<i class="fas fa-question-circle fa-lg" data-toggle="tooltip" data-placement="top" title="{{ __('messages.channel_email_help') }}"></i>
+			</label>
 
-						<a href="#" title="{{ __('messages.channel_podcast_name_help') }}"><img src="/images/glyphicons-195-question-sign.png" class="float-right"></a>
+			<div class="col-md-10">
+				<input type="email" class="form-control" id="email" name="email" value="{{ $channel->email }}" required>
+			</div>
+		</div>
 
-					</th>
-					<td>
-						<input type="text" class="form-control" name="podcast_title" value="{{ $channel->podcast_title }}">
-					</td>
-				</tr>
-				<tr>
-					<th scope="row">
+		<div class="row mb-2">
+			<label for="link" class="col-md-2">
+				{{ __('messages.channel_link_label') }}
+				<i class="fas fa-question-circle fa-lg" data-toggle="tooltip" data-placement="top" title="{{ __('messages.channel_link_help') }}"></i>
+			</label>
 
-						{{ __('messages.channel_authors_label') }}
+			<div class="col-md-10">
+				<input type="url" class="form-control" id="link" name="link" value="{{ $channel->link }}">
+			</div>
+		</div>
 
-						<a href="#" title="{{ __('messages.channel_authors_help') }}"><img src="/images/glyphicons-195-question-sign.png" class="float-right"></a>
+		<div class="row mb-2">
+			<label for="category" class="col-md-2">
+				{{ __('messages.channel_category_label') }}
+				<i class="fas fa-question-circle fa-lg" data-toggle="tooltip" data-placement="top" title="{{ __('messages.channel_category_help') }}"></i>
+			</label>
 
-					</th>
-					<td>
-						<input type="text" class="form-control" name="authors" value="{{ $channel->authors }}" required>
-					</td>
-				</tr>
-				<tr>
-					<th scope="row">
+			<div class="col-md-2">
+				<select id="category" name="category_id" class="custom-select">
+					@include('partials.categories', ['channelSelectedCategory' => $channel->category_id])
+				</select>
+			</div>
 
-						{{ __('messages.channel_email_label') }}
+			<label for="lang" class="col-md-2">
+				{{ __('messages.channel_lang_label') }}
+				<i class="fas fa-question-circle fa-lg" data-toggle="tooltip" data-placement="top" title="{{ __('messages.channel_lang_help') }}"></i>
+			</label>
 
-						<a href="#" title="{{ __('messages.channel_email_help') }}"><img src="/images/glyphicons-195-question-sign.png" class="float-right"></a>
+			<div class="col-md-2">
+				<select class="custom-select" id="lang" name="lang">
+					<option value="FR" {{ $channel->lang == 'FR' ? ' selected' : '' }}>Français</option>
+					<option value="EN" {{ $channel->lang == 'EN' ? ' selected' : '' }}>English</option>
+				</select>
+			</div>
 
-					</th>
-					<td>
-						<input type="email" class="form-control" name="email" value="{{ $channel->email }}" required>
-					</td>
-				</tr>
-				<tr>
-					<th scope="row">
+			<label for="explicit" class="col-md-3">
+				{{ __('messages.channel_explicit_label') }}
+				<i class="fas fa-question-circle fa-lg" data-toggle="tooltip" data-placement="top" title="{{ __('messages.channel_explicit_help') }}"></i>
+			</label>
 
-						{{ __('messages.channel_description_label') }}
+			<div class="col-md-1">
+				<input type="checkbox" id="explicit" name="explicit" value="1" {{ $channel->explicit == 1 ? 'checked' : ''}}>
+			</div>
+		</div>
 
-						<a href="#" title="{{ __('messages.channel_description_help') }}"><img src="/images/glyphicons-195-question-sign.png" class="float-right"></a>
+		<div class="row mb-2">
+			<label for="filtertag" class="col-md-2">
+				{{ __('messages.channel_filter_by_tag_label') }}
+				<i class="fas fa-question-circle fa-lg" data-toggle="tooltip" data-placement="top" title="{{ __('messages.channel_filter_by_tag_help') }}"></i>
+			</label>
 
-					</th>
-					<td>{{ $channel->description }}</td>
-				</tr>
-				<tr>
-					<th scope="row">
+			<div class="col-md-10">
+				<input type="text" class="form-control" id="filtertag" name="accept_video_by_tag" value="{{ $channel->accept_video_by_tag }}">
+			</div>
+		</div>
 
-						{{ __('messages.channel_link_label') }}
+		<div class="row mb-2">
+			<label for="filterkw" class="col-md-2">
+				{{ __('messages.channel_filter_by_keyword_label') }}
+				<i class="fas fa-question-circle fa-lg" data-toggle="tooltip" data-placement="top" title="{{ __('messages.channel_filter_by_keyword_help') }}"></i>
+			</label>
 
-						<a href="#" title="{{ __('messages.channel_link_help') }}"><img src="/images/glyphicons-195-question-sign.png" class="float-right"></a>
+			<div class="col-md-10">
+				<input type="text" class="form-control" id="filterkw" name="reject_video_by_keyword" value="{{ $channel->reject_video_by_keyword }}">
+			</div>
+		</div>
 
-					</th>
-					<td>
-						<input type="url" class="form-control" name="link" value="{{ $channel->link }}">
-					</td>
-				</tr>
-				<tr>
-					<th scope="row">
-
-						{{ __('messages.channel_category_label') }}
-
-						<a href="#" title="{{ __('messages.channel_category_help') }}"><img src="/images/glyphicons-195-question-sign.png" class="float-right"></a>
-
-					</th>
-					<td>
-						<select name="category_id" class="custom-select">
-							@include('partials.categories', ['channelSelectedCategory' => $channel->category_id])
-						</select>
-
-					</td>
-				</tr>
-				<tr>
-					<th scope="row">
-
-						{{ __('messages.channel_lang_label') }}
-
-						<a href="#" title="{{ __('messages.channel_lang_help') }}"><img src="/images/glyphicons-195-question-sign.png" class="float-right"></a>
-
-					</th>
-					<td>
-						<select class="custom-select" name="lang">
-							<option value="FR" {{ $channel->lang == 'FR' ? ' selected' : '' }}>FR</option>
-							<option value="EN" {{ $channel->lang == 'EN' ? ' selected' : '' }}>EN</option>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<th scope="row">
-
-						{{ __('messages.channel_explicit_label') }}
-
-						<a href="#" title="{{ __('messages.channel_explicit_help') }}"><img src="/images/glyphicons-195-question-sign.png" class="float-right"></a>
-
-					</th>
-					<td>
-						<input type="checkbox" name="explicit" value="1" {{ $channel->explicit == 1 ? 'checked' : ''}}>
-					</td>
-				</tr>
-				<tr>
-					<th scope="row">
-
-						{{ __('messages.channel_filter_by_tag_label') }}
-
-						<a href="#" title="{{ __('messages.channel_filter_by_tag_help') }}"><img src="/images/glyphicons-195-question-sign.png" class="float-right"></a>
-
-					</th>
-					<td>
-
-						<input type="text" class="form-control" name="accept_video_by_tag" value="{{ $channel->accept_video_by_tag }}">
-
-					</td>
-				</tr>
-				<tr>
-					<th scope="row">
-
-						{{ __('messages.channel_filter_by_keyword_label') }}
-
-						<a href="#" title="{{ __('messages.channel_filter_by_keyword_help') }}"><img src="/images/glyphicons-195-question-sign.png" class="float-right"></a>
-
-					</th>
-					<td>
-
-						<input type="text" class="form-control" name="reject_video_by_keyword" value="{{ $channel->reject_video_by_keyword }}">
-
-					</td>
-				</tr>
-			</tbody>
-		</table>
-
-
+		
 		<hr>
 
+{{--
 		<h3> FTP </h3>
 		<p>{{ __('messages.channel_ftp_feature_description') }}</p>
 
@@ -270,9 +218,9 @@
 				</tr>
 			</tbody>
 		</table>
-
+--}}
 		<div class="mx-auto" style="width:200px">
-			<button type="submit" class="btn btn-primary">{{ __('messages.button_update_label') }}</button>
+			<button type="submit" class="btn btn-success">{{ __('messages.button_update_label') }}</button>
 			<a href="{{ route('channel.show', $channel->channel_id) }}" class="btn btn-secondary">
 				{{ __('messages.button_cancel_label') }}
 			</a>
