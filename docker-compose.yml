@@ -6,13 +6,14 @@ services:
     working_dir: /home/node/app
     volumes:
       - ./:/home/node/app
-    command: bash -c "npm install && npm run watch"  
+    #command: bash -c "npm install && npm run watch"  
+    command: bash -c "npm install && npm run production"  
   composer:
     image: composer:1.7
     restart: 'no'
     volumes:
       - .:/app
-    command: install --dev
+    command: install
   # ==============================================================
   # here we are building image from the .docker/Dockerfile
   # this image is starting from a official php-apache docker
@@ -26,12 +27,15 @@ services:
     restart: always
     expose:
         - "80"
+        - "443"
     # VIRTUAL_HOST should be only the domain (without http://)
     # by example : www.example.com or sub.domain.fr
     environment:
       - VIRTUAL_HOST=${VIRTUAL_HOST:?set it in .env}      
       - APACHE_RUN_USER=www-data
       - APACHE_RUN_GROUP=www-data
+      - LETSENCRYPT_HOST=${VIRTUAL_HOST:?set it in .env}
+      - LETSENCRYPT_EMAIL=frederick@podmytube.com
     # we are copying files into /app (into Dockerfile)
     volumes:
       - .:/app
