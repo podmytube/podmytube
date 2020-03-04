@@ -15,7 +15,7 @@
 @import "signin";
 
 /*podmytube red*/
-$podmytube-red: #CE1701;
+$podmytube-red: #ce1701;
 $footer-height: 50px;
 
 html,
@@ -24,57 +24,68 @@ body {
 }
 
 body {
-    /* Margin bottom by footer height */
-    margin-bottom: $footer-height;
+  /* Margin bottom by footer height */
+  margin-bottom: $footer-height;
 }
 
-a,a.page-link {
-    color:$podmytube-red;
+a,
+a.page-link {
+  color: $podmytube-red;
 }
+
 a:hover {
-    color:black;
-}
-h1, h2, h3, h4, h5 {
-    color:$podmytube-red;
+  color: black;
 }
 
-nav h1{
-    margin: 0 auto;
-    text-align: center;
+h1,
+h2,
+h3,
+h4,
+h5 {
+  color: $podmytube-red;
 }
+
+nav h1 {
+  margin: 0 auto;
+  text-align: center;
+}
+
 .pmt-logo {
-    background:url("/images/logo-small.png") no-repeat;
-    height:100px;
-    width:133px;
-    margin:2px 0;
+  background: url("/images/logo-small.png") no-repeat;
+  height: 100px;
+  width: 133px;
+  margin: 2px 0;
 }
+
 .dropdown-menu {
-    background-color:#eee
+  background-color: #eee;
 }
+
 .btn-primary {
   background: #555;
   border: solid 1px #555;
   color: #eee;
   margin: 10px 0;
 }
+
 .btn-primary:hover {
   background: #eee;
   border: solid 1px #555;
-  color: $podmytube-red;;
+  color: $podmytube-red;
 }
 
-.font-italic{
-    color:#555555;
+.font-italic {
+  color: #555555;
 }
 
 .pricing h3 {
-    color: $podmytube-red;
-    padding: 1rem;
-    margin: 0;
-    font-size: 22px;
-    font-weight: 600;
+  color: $podmytube-red;
+  padding: 1rem;
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
 }
 
-#footer{
-    padding:0;
+#footer {
+  padding: 0;
 }
