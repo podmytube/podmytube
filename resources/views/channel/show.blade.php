@@ -49,20 +49,6 @@
 	<table class="table table-striped">
 		<tbody>
 			<tr>
-				<th scope="row" width="25%">
-
-					{{ __('messages.channel_name_label') }}
-
-					<a href="#" title="{{ __('messages.channel_name_help') }}"><img src="/images/glyphicons-195-question-sign.png" class="float-right"></a>
-
-				</th>
-				<td>
-
-					{{ $channel->channel_name }}
-
-				</td>
-			</tr>
-			<tr>
 				<th scope="row">
 
 					{{ __('messages.channel_podcast_name_label') }}
@@ -71,11 +57,7 @@
 
 				</th>
 				<td>
-					@if ($channel->podcast_title)
-					{{ $channel->podcast_title }}
-					@else
-					{{ $channel->channel_name }}
-					@endif
+					{{ $channel->title() }}
 				</td>
 			</tr>
 			<tr>
@@ -97,16 +79,6 @@
 
 				</th>
 				<td>{{ $channel->email }}</td>
-			</tr>
-			<tr>
-				<th scope="row">
-
-					{{ __('messages.channel_description_label') }}
-
-					<a href="#" title="{{ __('messages.channel_description_help') }}"><img src="/images/glyphicons-195-question-sign.png" class="float-right"></a>
-
-				</th>
-				<td>{{ $channel->description }}</td>
 			</tr>
 			<tr>
 				<th scope="row">
@@ -136,12 +108,6 @@
 				</td>
 
 			</tr>
-			{{-- waiting for subcategory part
-		<!tr>
-		  <th scope="row">{{ __('messages.channel_subcategory_label') }} <a href="#" title="{{ __('messages.channel_subcategory_help') }}"><img src="/images/glyphicons-195-question-sign.png" class="float-right"></a></th>
-			<td>{{ $channel->subcategory }}</td>
-			</tr>
-			--}}
 			<tr>
 				<th scope="row">
 
@@ -198,141 +164,6 @@
 				</td>
 			</tr>
 	</table>
-
-	<h3>FTP</h3>
-	<p>{{ __('messages.channel_ftp_feature_description') }}</p>
-
-	<table class="table table-striped">
-		<tbody>
-			<tr>
-				<th scope="row" width="25%">
-
-					{{ __('messages.channel_ftp_host_label') }}
-
-					<a href="#" title="{{ __('messages.channel_ftp_host_help') }}"><img src="/images/glyphicons-195-question-sign.png" class="float-right"></a>
-
-				</th>
-				<td>
-
-					@if ($channel->ftp_host)
-
-					{{ $channel->ftp_host }}
-
-					@else
-
-					{{ __('messages.no_ftp_host_defined_label') }}
-
-					@endif
-				</td>
-			</tr>
-			<tr>
-				<th scope="row">
-
-					{{ __('messages.channel_ftp_user_label') }}
-
-					<a href="#" title="{{ __('messages.channel_ftp_user_help') }}"><img src="/images/glyphicons-195-question-sign.png" class="float-right"></a>
-
-				</th>
-				<td>
-
-					@if ($channel->ftp_user)
-
-					{{ $channel->ftp_user }}
-
-					@else
-
-					{{ __('messages.no_ftp_user_defined_label') }}
-
-					@endif
-				</td>
-			</tr>
-			<tr>
-				<th scope="row">
-
-					{{ __('messages.channel_ftp_pass_label') }}
-
-					<a href="#" title="{{ __('messages.channel_ftp_pass_help') }}"><img src="/images/glyphicons-195-question-sign.png" class="float-right"></a>
-
-				</th>
-				<td>
-
-					@if ($channel->ftp_pass)
-
-					{{ $channel->ftp_pass }}
-
-					@else
-
-					{{ __('messages.no_ftp_pass_defined_label') }}
-
-					@endif
-				</td>
-			</tr>
-			<tr>
-				<th scope="row">
-
-					{{ __('messages.channel_ftp_dir_label') }}
-
-					<a href="#" title="{{ __('messages.channel_ftp_dir_help') }}"><img src="/images/glyphicons-195-question-sign.png" class="float-right"></a>
-
-				</th>
-				<td>
-
-					@if ($channel->ftp_dir)
-
-					{{ $channel->ftp_dir }}
-
-					@else
-
-					{{ __('messages.no_ftp_dir_defined_label') }}
-
-					@endif
-				</td>
-			</tr>
-			<tr>
-				<th scope="row">
-
-					{{ __('messages.channel_ftp_podcast_label') }}
-
-					<a href="#" title="{{ __('messages.channel_ftp_podcast_help') }}"><img src="/images/glyphicons-195-question-sign.png" class="float-right"></a>
-
-				</th>
-				<td>
-
-					@if ($channel->ftp_podcast)
-
-					{{ $channel->ftp_podcast }}
-
-					@else
-
-					{{ __('messages.no_ftp_podcast_defined_label') }}
-
-					@endif
-				</td>
-			</tr>
-			<tr>
-				<th scope="row">
-
-					{{ __('messages.channel_ftp_pasv_label') }}
-
-					<a href="#" title="{{ __('messages.channel_ftp_pasv_help') }}"><img src="/images/glyphicons-195-question-sign.png" class="float-right"></a>
-
-				</th>
-				<td>
-
-					@if ($channel->ftp_pasv)
-
-					{{ __('messages.ftp_pasv_defined_label') }}
-
-					@else
-
-					{{ __('messages.no_ftp_pasv_defined_label') }}
-
-					@endif
-				</td>
-			</tr>
-		</tbody>
-	</table>
-
 </div>
 <!--/section container-->
 
