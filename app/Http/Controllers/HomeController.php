@@ -18,16 +18,6 @@ use Illuminate\Support\Facades\Auth;
 class HomeController extends Controller
 {
     /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
-    /**
      * Show the application dashboard.
      *
      * @return \Illuminate\Http\Response
@@ -40,7 +30,7 @@ class HomeController extends Controller
         try {
             $channels = ChannelService::getAuthenticatedUserChannels(Auth::user());
         } catch (\Exception $e) {
-            $channels = null;
+            $channels = collect([]);
         }
 
         return view('home', compact('channels'));

@@ -23,15 +23,23 @@
 
 		{{ csrf_field() }}
 
+		<div class="row">
+			<div class="col">
+				<label for="podcastName">{{ __('messages.channel_podcast_name_label') }}</label>
+				<a href="#" data-toggle="tooltip" data-placement="top" title="{{ __('messages.channel_podcast_name_help') }}">
+					<i class="fas fa-question-circle"></i>
+				</a>
+				<input type="text" id="podcastName" class="form-control" placeholder="{{ __('messages.channel_podcast_name_label') }}">
+			</div>
+		</div>
 		<table class="table table-striped">
 			<tbody>
 				<tr>
-					<th scope="row" width="25%">
+					<th scope="row" width="25%" class="justify-content-between">
 
 						{{ __('messages.channel_name_label') }}
-
-						<a href="#" data-toggle="tooltip" data-placement="top" title="Tooltip on top" title="{{ __('messages.channel_name_help') }}">
-							<i class="far fa-question-circle"></i>
+						<a href="#" data-toggle="tooltip" data-placement="top" title="{{ __('messages.channel_name_help') }}">
+							<i class="fas fa-question-circle"></i>
 						</a>
 
 					</th>
@@ -275,10 +283,10 @@
 <!--/section container-->
 <script type="text/javascript">
 	$(document).ready(function() {
-				$(function() {
-					$('[data-toggle="tooltip"]').tooltip()
-				})
-			});
+		$(function() {
+			$('[data-toggle="tooltip"]').tooltip()
+		})
+	});
 </script>
 
 @endsection
