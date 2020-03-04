@@ -1,7 +1,7 @@
 <?php
 
+use Illuminate\Support\Str;
 use Faker\Generator as Faker;
-
 /*
 |--------------------------------------------------------------------------
 | Model Factories
@@ -14,14 +14,10 @@ use Faker\Generator as Faker;
 */
 
 $factory->define(App\User::class, function (Faker $faker, array $attributes = []) {
-    static $password;
-    /**
-     * return the object to be make/created
-     */
     return [
         'name' => $faker->name,
-        'email' => $attributes['email'] ?? $faker->unique()->safeEmail,
-        'password' => $password ?: $password = bcrypt('secret'),
-        'remember_token' => str_random(10),
+        'email' => $attributes['email'] ?? $faker->safeEmail,
+        'password' => $attributes['password'] ?? bcrypt('secret'),
+        'remember_token' => Str::random(10),
     ];
 });

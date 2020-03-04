@@ -11,6 +11,12 @@ class ChannelAccessTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->user = factory(User::class)->create();
+    }
+
     public function testChannelIndexIsNotPossibleForGuest()
     {
         $response = $this->get('/channel/');
@@ -19,10 +25,9 @@ class ChannelAccessTest extends TestCase
 
     public function testChannelIndexIsAllowedToOwnerAndHasAllItsChannel()
     {
-        $user = factory(User::class, 1)->create()->first();
-        $channels = factory(Channel::class, 3)->create(['user_id' => $user->userId()]);
+        $channels = factory(Channel::class, 3)->create(['user_id' => $this->user->userId()]);
 
-        $response = $this->actingAs($user)->get('/channel/');
+        $response = $this->actingAs($this->user)->get('/channel/');
         $response->assertSuccessful();
         $response->assertViewIs('channel.index');
 

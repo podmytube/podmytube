@@ -1,11 +1,13 @@
 <?php
 
-/* @var $factory \Illuminate\Database\Eloquent\Factory */
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-$factory->define(App\Channel::class, function ($faker, array $attributes = []) {
+use Faker\Generator as Faker;
+
+$factory->define(App\Channel::class, function (Faker $faker, array $attributes = []) {
     return [
         'channel_id' => $faker->regexify('[a-zA-Z0-9-_]{24}'),
-        'user_id' => function () use ($attributes) {
+        'user_id' => $attributes['user_id'] ?? function () use ($attributes) {
             return factory(App\User::class)->create($attributes)->user_id;
         },
         'channel_name' => $faker->sentence($nbWords = "3", $variableNbWords = true),
