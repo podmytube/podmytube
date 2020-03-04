@@ -44,6 +44,7 @@
 </div>
 @else
 <div class="text-center alert alert-secondary">
-    {{__('messages.no_channels_at_this_moment')}}
+    <p>{{__('messages.no_channels_at_this_moment')}}</p>
+    <a class="btn btn-success" href="{{ route('channel.create') }}"><i class="fas fa-plus"></i> {{ __('messages.button_create_channel_label') }} </a>
 </div>
 @endif
