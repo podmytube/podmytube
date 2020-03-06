@@ -9,16 +9,13 @@
 
 namespace App;
 
-use App;
-use App\Exceptions\ChannelCreationInvalidChannelUrlException;
+use App\Podcast\PodcastBuilder;
+use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Model;
 use App\Exceptions\ChannelCreationInvalidUrlException;
 use App\Exceptions\ChannelCreationOnlyYoutubeIsAccepted;
-use App\Podcast\PodcastBuilder;
-
-use Illuminate\Database\Capsule\Manager as DB;
-use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
+use App\Exceptions\ChannelCreationInvalidChannelUrlException;
+use Illuminate\Support\Facades\Lang;
 
 /**
  * the channel model and its functions
@@ -256,7 +253,7 @@ class Channel extends Model
 
     public function explicit()
     {
-        return $this->explicit ? 'true' : 'false';
+        return $this->explicit==1 ? true : false;
     }
 
     public function createdAt()
@@ -340,5 +337,31 @@ class Channel extends Model
             ->with('Thumb')
             ->with('Subscription')
             ->get();
+    }
+
+    public function hasFilter()
+    {
+        return (isset($this->accept_video_by_tag) && $this->accept_video_by_tag != null) ||
+            (isset($this->reject_video_by_keyword) && $this->reject_video_by_keyword != null) ||
+            (isset($this->reject_video_too_old) && $this->reject_video_too_old != null);
+    }
+
+    public function getFilters()
+    {
+        $results = [];
+        if (!$this->hasFilter()) {
+            return $results;
+        }
+        if ($this->accept_video_by_tag != null) {
+            $results[] = Lang::get('messages.accept_video_by_tag', ['tag' => $this->accept_video_by_tag]);
+            //"accept only videos with tag " . $this->accept_video_by_tag;
+        }
+        if ($this->reject_video_by_keyword != null) {
+            $results[] = Lang::get('messages.reject_video_by_keyword', ['keyword' => $this->reject_video_by_keyword]);
+        }
+        if ($this->reject_video_too_old != null) {
+            $results[] = Lang::get('messages.reject_video_too_old', ['date' => $this->reject_video_too_old->format(Lang::get('localized.dateFormat'))]);
+        }
+        return $results;
     }
 }

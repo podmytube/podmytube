@@ -4,5 +4,8 @@
  * typically like date format
  */
 return [
-    'dateFormat' => 'm/d/Y \o\n H:i',
+    'dateFormat' => 'm/d/Y',
+    'dateTimeFormat' => 'm/d/Y \o\n H:i',
+    'FR' => 'French',
+    'EN' => 'English',
 ];

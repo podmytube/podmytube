@@ -86,8 +86,8 @@
 
 			<div class="col-md-2">
 				<select class="custom-select" id="lang" name="lang">
-					<option value="FR" {{ $channel->lang == 'FR' ? ' selected' : '' }}>Français</option>
-					<option value="EN" {{ $channel->lang == 'EN' ? ' selected' : '' }}>English</option>
+					<option value="FR" {{ $channel->lang == 'FR' ? ' selected' : '' }}>{{ __("localized.FR") }}</option>
+					<option value="EN" {{ $channel->lang == 'EN' ? ' selected' : '' }}>{{ __("localized.EN") }}</option>
 				</select>
 			</div>
 
@@ -99,6 +99,11 @@
 			<div class="col-md-1">
 				<input type="checkbox" id="explicit" name="explicit" value="1" {{ $channel->explicit == 1 ? 'checked' : ''}}>
 			</div>
+		</div>
+
+		<h3>{{ __('messages.channel_filters_label') }}</h3>
+		<div class="alert alert-warning" role="alert">
+			{!! __('messages.filters_warning') !!}
 		</div>
 
 		<div class="row mb-2">
@@ -123,10 +128,10 @@
 			</div>
 		</div>
 
-		
+
 		<hr>
 
-{{--
+		{{--
 		<h3> FTP </h3>
 		<p>{{ __('messages.channel_ftp_feature_description') }}</p>
 
@@ -218,7 +223,7 @@
 				</tr>
 			</tbody>
 		</table>
---}}
+		--}}
 		<div class="mx-auto" style="width:200px">
 			<button type="submit" class="btn btn-success">{{ __('messages.button_update_label') }}</button>
 			<a href="{{ route('channel.show', $channel->channel_id) }}" class="btn btn-secondary">
