@@ -140,16 +140,22 @@ return [
     'channel_category_help' => "Dans quelle catégorie se range votre podcast.",
     
     'no_category_defined_label' => "Aucune categorie n'a été renseignée.",
-    'no_filter_defined_label' => "Aucun filtre n'a été renseigné.",
+    'no_filter_defined_label' => "Aucun filtre n'a été défini. Toutes les vidéos seront donc inclues (selon le forfait souscrit) à votre podcast.",
     
     'channel_lang_label' => "Langue du podcast",
     'channel_lang_help' => "La langue de votre podcast.",
 
-    'channel_explicit_label' => "Podcast destiné à un public majeur et averti",
+    'channel_explicit_label' => "Ce podcast est destiné à un public majeur et averti",
     'channel_explicit_help' => "Si votre podcast est destiné à une public majeur et averti.",
     
     'channel_filter_by_tag_label' => "Filtre par tag",
     'channel_filter_by_tag_help' => "Seules les vidéos qui auront été tagguées (sous Youtube) seront incluses dans votre podcast. Par exemple \"podcast\"",
+
+    'channel_filters_label' => 'Filtres',
+    'filters_warning' => '<b>Attention</b> en appliquant des filtres incorrects vous risquez de vider votre podcast de tous ses épisodes.',
+    'accept_video_by_tag' => "Seules les vidéos Youtube comportant le tag <b>{:tag}</b> seront inclues dans votre podcast. N'oubliez pas de le mettre !",
+    'reject_video_by_keyword' => "Les vidéos comportant le mot clé <b>{:keyword}</b> dans leur titre ne seront pas inclues dans votre podcast. Par contre toutes les autres le seront.",
+    'reject_video_too_old' => "Seules les vidéos publiées après le <b>{:date}</b> seront inclues.",
     
     'channel_filter_by_date_label' => "Filtre par date",
     'channel_filter_by_date_help' => "Seules les vidéos antérieures à cette date seront incluses dans votre podcast. Par exemple : \"18/09/2016\"",

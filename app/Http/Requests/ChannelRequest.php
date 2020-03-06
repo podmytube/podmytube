@@ -50,7 +50,6 @@ class ChannelRequest extends FormRequest
             'subcategory'		        => 'nullable|string',
             'link' 			            => 'nullable|URL',
             //'lang' 			            => 'required',
-            'explicit' 		            => 'nullable',
             'accept_video_by_tag' 		=> 'nullable|string|max:255',
             'reject_video_by_keyword' 	=> 'nullable|string|max:255',
             'reject_video_too_old' 		=> 'nullable|date_format:d/m/Y|before:today',
