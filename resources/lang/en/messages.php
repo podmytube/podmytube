@@ -141,7 +141,7 @@ return [
     'channel_category_help' => "In which category is your podcast ?",
     
     'no_category_defined_label' => "This podcast has no category.",
-    'no_filter_defined_label' => "No filter has been entered.",
+    'no_filter_defined_label' => "No filter has been entered. All episodes (according to your plan) are included in your podcast.",
     
     'channel_lang_label' => "Podcast Language",
     'channel_lang_help' => "Your podcast language.",
@@ -151,6 +151,12 @@ return [
     
     'channel_filter_by_tag_label' => "Tag filter",
     'channel_filter_by_tag_help' => "Only videos that have been tagged (under Youtube) will be included in your podcast. For example \"podcast\"",
+    
+    'channel_filters_label' => 'Filters',
+    'filters_warning' => '<b>Warning</b> by applying incorrect filters you may empty your podcast.',
+    'accept_video_by_tag' => "Only youtube videos tagged with tag <b>{:tag}</b> will be included into your podcast. Don't forget to apply tag !",
+    'reject_video_by_keyword' => "Videos with this keyword <b>{:keyword}</b> in their title will not be included in your podcast. However, all the others will be included.",
+    'reject_video_too_old' => "Only videos published after this date <b>{:date}</b> will be included.",
     
     'channel_filter_by_date_label' => "Date filter",
     'channel_filter_by_date_help' => "Only videos published after this date will be included in your podcast. For example: \"18/09/2016\"",
