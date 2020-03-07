@@ -43,7 +43,7 @@ class RegisterController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-     /**
+    /**
      * Get a validator for an incoming registration request.
      *
      * @param  array  $data
@@ -75,13 +75,12 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-     
+
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
-
     }
 
     /**
@@ -93,8 +92,6 @@ class RegisterController extends Controller
      */
     protected function registered(Request $request, $user)
     {
-        
         Mail::to($user)->send(new WelcomeToPodmytube($user));
-
-    }  
+    }
 }

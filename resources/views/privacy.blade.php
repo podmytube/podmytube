@@ -4,7 +4,7 @@
 
 @section('content')
 
-<div class="container">
+<div class="container mt-4">
     <h3>Privacy Policy of Podmytube</h3>
 
     This Application collects some Personal Data from its Users.
