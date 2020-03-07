@@ -37,6 +37,11 @@
         <label for="inputPasswordConfirmation">{{ __('messages.confirm_password_label') }}</label>
     </div>
 
+    <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" id="termsaccepted" name="termsaccepted" value="1" required>
+        <label class="form-check-label" for="termsaccepted">I accept the <a href="{{route('terms')}}">terms of service</a></label>
+    </div>
+
     @if (env('APP_ENV') == 'production')
     {!! NoCaptcha::display() !!}
     @endif
