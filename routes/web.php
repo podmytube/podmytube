@@ -42,6 +42,14 @@ Route::get('/', function () {
 	return view("auth.login");
 })->name('root');
 
+Route::get('terms', function(){
+	return view('terms');
+})->name('terms');
+
+Route::get('privacy', function(){
+	return view('privacy');
+})->name('privacy');
+
 Auth::routes();
 
 Route::middleware(['auth'])->group(function () {
