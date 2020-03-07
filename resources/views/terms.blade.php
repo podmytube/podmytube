@@ -4,14 +4,14 @@
 
 @section('content')
 
-<div class="container">
+<div class="container mt-4">
 
     <div class="alert alert-secondary">
         <i class="fas fa-info-circle"></i>
-        For your convenience, is provided <a href="#version-francaise">a french translation of this page below</a>. This translation is for informational purposes only, and the definitive version of this page is the English version.
+        For your convenience, <a href="#version-francaise">a french translation of this page</a> is provided below. This translation is for informational purposes only, and the definitive version of this page is the English version.
     </div>
 
-    <h3>Terms Of Service</h3>
+    <h3>Terms of service</h3>
     <span class="text-muted">Last updated on march 7, 2021</span>
     <p>Use of the Podmytube web site and all associated services is offered subject to agreement to the following terms of service.</p>
 
