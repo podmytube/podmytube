@@ -13,18 +13,12 @@ RUN     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezo
 # libpng-dev --- used with laravel lib to resize/work with images
 # libz-dev & libmemcached-dev are used for memcached
 # libjpeg-dev --- used with laravel lib to resize/work with images
-# wget --- used for the composer install
-# zip --- is used by composer 
-# git --- is used by composer 
 # curl is used to download npm
 RUN     apt-get update -y && \
         apt-get install -y -qq sendmail \
             libpng-dev \
             libz-dev libmemcached-dev \
             libjpeg-dev \
-            wget \
-            zip \
-            git \
             memcached \
             supervisor \
             sqlite
