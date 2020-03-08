@@ -17,11 +17,10 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+
 /**
  * Route to check emails ==========================
  */
-
-use App\Mail\ChannelIsRegistered;
 
 if (env('APP_ENV') != 'production') {
 	Route::get('/mailable', function () {
@@ -33,22 +32,14 @@ if (env('APP_ENV') != 'production') {
 	Route::get('/sendmail', function () {
 		$user = App\User::find(1);
 		$channel = $user->channels->first();
-		Mail::to($user)->send(new ChannelIsRegistered($user, $channel));
+		Mail::to($user)->send(new App\Mail\ChannelIsRegistered($user, $channel));
 	});
 }
 // ================================================
 // Home page is the login screen
-Route::get('/', function () {
-	return view("auth.login");
-})->name('root');
-
-Route::get('terms', function(){
-	return view('terms');
-})->name('terms');
-
-Route::get('privacy', function(){
-	return view('privacy');
-})->name('privacy');
+Route::get('/', function () { return view("auth.login"); })->name('root');
+Route::get('terms', function(){ return view('terms'); })->name('terms');
+Route::get('privacy', function(){ return view('privacy'); })->name('privacy');
 
 Auth::routes();
 
