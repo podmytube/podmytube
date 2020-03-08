@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Exceptions\YoutubeApiInvalidChannelIdException;
@@ -50,15 +51,14 @@ class YoutubeChannelCheckingService
     public static function getChannelName(String $channelId)
     {
         try {
-            
+
             if (empty(self::$youtubeChannelInformations)) {
                 self::init($channelId);
             }
 
-            return self::$youtubeChannelInformations->snippet->title;            
+            return self::$youtubeChannelInformations->snippet->title;
         } catch (\Exception $e) {
             throw $e;
         }
     }
-
 }
