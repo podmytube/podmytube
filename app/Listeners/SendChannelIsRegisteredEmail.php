@@ -2,8 +2,8 @@
 
 namespace App\Listeners;
 
-use App\Jobs\MailChannelIsRegistered;
 use App\Events\OccursOnChannel;
+use App\Jobs\MailChannelIsRegistered;
 
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
