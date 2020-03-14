@@ -1,4 +1,4 @@
-FROM    php:7.3-apache-stretch
+FROM    php:7.4-apache-buster
 
 LABEL   maintainer="Frederick Tyteca"
 
@@ -11,38 +11,25 @@ RUN     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezo
 
 # stuff to install
 # libpng-dev --- used with laravel lib to resize/work with images
-# libz-dev & libmemcached-dev are used for memcached
 # libjpeg-dev --- used with laravel lib to resize/work with images
 # curl is used to download npm
 RUN     apt-get update -y && \
         apt-get install -y -qq sendmail \
             libpng-dev \
-            libz-dev libmemcached-dev \
             libjpeg-dev \
-            memcached \
             supervisor \
             sqlite
 
 RUN     rm -rf /var/lib/apt/lists/*;
 
-# installing memcached with pecl
-RUN pecl install memcached
-
-RUN docker-php-ext-configure gd \
-        --with-png-dir=/usr/lib/ \
-        --with-jpeg-dir=/usr/lib/ \
-        --with-gd
-
+RUN     docker-php-ext-configure gd --with-jpeg
 
 # installing required php modules
 # pdo & pdo_mysql for db connection
 # gd ----- NOT SURE -----
-# php-memcached for caching used for thumb for example
 RUN     docker-php-ext-install pdo \
             pdo_mysql \
-            gd && \
-        docker-php-ext-enable memcached
-
+            gd
 
 # default vhost replaced by custom one
 # mainly documentRoot /app/public
