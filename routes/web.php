@@ -7,40 +7,21 @@
  * @author Frederick Tyteca <fred@podmytube.com>
  */
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
-/**
- * Route to check emails ==========================
- */
-
-if (env('APP_ENV') != 'production') {
-	Route::get('/mailable', function () {
-		$user = App\User::find(1);
-		$channel = $user->channels->first();
-		return new App\Mail\ChannelIsRegistered($user, $channel);
-	});
-
-	Route::get('/sendmail', function () {
-		$user = App\User::find(1);
-		$channel = $user->channels->first();
-		Mail::to($user)->send(new App\Mail\ChannelIsRegistered($user, $channel));
-	});
-}
 // ================================================
 // Home page is the login screen
-Route::get('/', function () { return view("auth.login"); })->name('root');
-Route::get('terms', function(){ return view('terms'); })->name('terms');
-Route::get('privacy', function(){ return view('privacy'); })->name('privacy');
+Route::get('/', function () {
+	return view("auth.login");
+})->name('root');
+Route::get('terms', function () {
+	return view('terms');
+})->name('terms');
+Route::get('privacy', function () {
+	return view('privacy');
+})->name('privacy');
 
+// patie-stripe-webhooks
+Route::stripeWebhooks('/stripe/capture');																																													
+																												
 Auth::routes();
 
 Route::middleware(['auth'])->group(function () {
