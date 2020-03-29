@@ -23,7 +23,7 @@ class YoutubeChannelCheckingService
      */
     protected static function init(String $channelId)
     {
-        self::$apiKey = ApiKey::make()->getOne();
+        self::$apiKey = ApiKey::make()->getOne()->apikey;
         if (empty(self::$apiKey)) {
             throw new YoutubeApiInvalidKeyException("YOUTUBE_API_KEY is not set in tne env file");
         }

@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Artisan;
 use Tests\TestCase;
 use App\Services\YoutubeChannelCheckingService;
+use Illuminate\Support\Facades\Config;
 
 //use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -19,6 +20,7 @@ class YoutubeChannelCheckingServiceTest extends TestCase
     {
         parent::setUp();
         Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
+        Config::set('APP_ENV', 'local');
     }
 
     public function testWrongChannelIdShouldThrowException()
