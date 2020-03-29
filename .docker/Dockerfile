@@ -2,6 +2,10 @@ FROM    php:7.4-apache-buster
 
 LABEL   maintainer="Frederick Tyteca"
 
+# used to create specific user with same uid/gid
+ARG         USER_ID
+ARG         GROUP_ID
+
 # enabling mod rewrite
 RUN     a2enmod rewrite
 
@@ -40,14 +44,15 @@ COPY    .docker/laravel-worker.conf /etc/supervisor/conf.d/
 # disabling php short tags (IE : <? ?>)
 COPY    .docker/disablingShortTags.ini /usr/local/etc/php/conf.d/
 
-# adding myself
-RUN     adduser --disabled-password --gecos "" fred
+# creating appropriate user
+RUN         addgroup --gid $GROUP_ID dockeruser
+RUN         adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID dockeruser
 
 # copying all files (but .dockerignore(d)) in /app
 COPY    . /app
 WORKDIR /app
 RUN 	mkdir -p bootstrap/cache && \
-        chown -R www-data:fred storage bootstrap && \
+        chown -R www-data:dockeruser storage bootstrap && \
         chmod -R ug+rw storage bootstrap && \
         chmod g+s storage/logs
 # Adding phpunit to Path
