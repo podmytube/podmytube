@@ -2,11 +2,10 @@
 
 namespace Tests\Unit;
 
-use App\ApiKey;
 use Artisan;
+use App\ApiKey;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Config;
 
 class ApiKeyModelTest extends TestCase
 {
@@ -25,7 +24,7 @@ class ApiKeyModelTest extends TestCase
 
     public function testGetOneLocalIsRunningFile()
     {
-        Config::set('APP_ENV', 'local');
+        putenv('APP_ENV=local');
         $this->assertTrue(
             in_array(
                 Apikey::make()->getOne()->apikey,
@@ -36,7 +35,7 @@ class ApiKeyModelTest extends TestCase
 
     public function testGetOneProductionIsRunningFile()
     {
-        Config::set('APP_ENV', 'production');
+        putenv('APP_ENV=production');
         $this->assertTrue(
             in_array(
                 Apikey::make()->getOne()->apikey,

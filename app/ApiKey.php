@@ -46,7 +46,7 @@ class ApiKey extends Model
 
     public function getOne()
     {
-        switch (Config::get('APP_ENV')) {
+        switch (getenv('APP_ENV')) {
             case 'local':
             case 'testing':
             case 'test':
