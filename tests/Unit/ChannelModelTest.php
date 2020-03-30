@@ -59,7 +59,6 @@ class ChannelModelTest extends TestCase
 
     public function testCreatedAt()
     {
-
         $this->assertNotNull($this->channel->createdAt());
         $this->assertInstanceOf(Carbon::class, $this->channel->createdAt());
     }
