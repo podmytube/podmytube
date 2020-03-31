@@ -16,16 +16,23 @@ RUN     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezo
 # stuff to install
 # libpng-dev --- used with laravel lib to resize/work with images
 # libjpeg-dev --- used with laravel lib to resize/work with images
+# libzip-dev --- used by composer
+# zip --- used by composer
+# git -- used by composer
 # curl is used to download npm
 RUN     apt-get update -y && \
         apt-get install -y -qq sendmail \
             libpng-dev \
             libjpeg-dev \
             supervisor \
-            sqlite
-
+            sqlite \
+            libzip-dev \
+            zip \
+            git
+            
 RUN     rm -rf /var/lib/apt/lists/*;
 
+RUN     docker-php-ext-install zip
 RUN     docker-php-ext-configure gd --with-jpeg
 
 # installing required php modules
