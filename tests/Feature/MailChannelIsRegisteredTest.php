@@ -3,8 +3,8 @@
 namespace Tests\Feature;
 
 use App\Channel;
-use App\Jobs\MailChannelIsRegistered;
 use Tests\TestCase;
+use App\Jobs\MailChannelIsRegistered;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class MailChannelIsRegisteredTest extends TestCase

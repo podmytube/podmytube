@@ -10,4 +10,6 @@
 |
  */
 
-Log::useDailyFiles(storage_path().'/logs/laravel-'.get_current_user().'.log');
+$logFile = 'laravel.log';
+
+Log::useDailyFiles(storage_path().'/logs/'.$logFile);
