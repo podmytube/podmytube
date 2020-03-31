@@ -4,11 +4,10 @@ namespace App\Console\Commands;
 
 use App\Channel;
 use App\Jobs\SendFeedBySFTP;
-use App\Podcast\PodcastBuilder;
 use App\Podcast\PodcastUrl;
+use App\Podcast\PodcastBuilder;
 
 use Illuminate\Console\Command;
-use RuntimeException;
 
 class BatchPodcasts extends Command
 {
@@ -69,7 +68,7 @@ class BatchPodcasts extends Command
                 $channels = Channel::allActiveChannels();
                 break;
             default:
-                throw new RuntimeException("Option $optionTyped is not a valid one. Options available : free/paying/early/all.");
+                throw new \RuntimeException("Option $optionTyped is not a valid one. Options available : free/paying/early/all.");
         }
 
         if (!$channels->count()) {

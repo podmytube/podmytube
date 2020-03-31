@@ -1,6 +1,10 @@
-FROM    php:7.3-apache-stretch
+FROM    php:7.4-apache-buster
 
 LABEL   maintainer="Frederick Tyteca"
+
+# used to create specific user with same uid/gid
+ARG         USER_ID
+ARG         GROUP_ID
 
 # enabling mod rewrite
 RUN     a2enmod rewrite
@@ -11,38 +15,25 @@ RUN     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezo
 
 # stuff to install
 # libpng-dev --- used with laravel lib to resize/work with images
-# libz-dev & libmemcached-dev are used for memcached
 # libjpeg-dev --- used with laravel lib to resize/work with images
 # curl is used to download npm
 RUN     apt-get update -y && \
         apt-get install -y -qq sendmail \
             libpng-dev \
-            libz-dev libmemcached-dev \
             libjpeg-dev \
-            memcached \
             supervisor \
             sqlite
 
 RUN     rm -rf /var/lib/apt/lists/*;
 
-# installing memcached with pecl
-RUN pecl install memcached
-
-RUN docker-php-ext-configure gd \
-        --with-png-dir=/usr/lib/ \
-        --with-jpeg-dir=/usr/lib/ \
-        --with-gd
-
+RUN     docker-php-ext-configure gd --with-jpeg
 
 # installing required php modules
 # pdo & pdo_mysql for db connection
 # gd ----- NOT SURE -----
-# php-memcached for caching used for thumb for example
 RUN     docker-php-ext-install pdo \
             pdo_mysql \
-            gd && \
-        docker-php-ext-enable memcached
-
+            gd
 
 # default vhost replaced by custom one
 # mainly documentRoot /app/public
@@ -53,14 +44,15 @@ COPY    .docker/laravel-worker.conf /etc/supervisor/conf.d/
 # disabling php short tags (IE : <? ?>)
 COPY    .docker/disablingShortTags.ini /usr/local/etc/php/conf.d/
 
-# adding myself
-RUN     adduser --disabled-password --gecos "" fred
+# creating appropriate user
+RUN         addgroup --gid $GROUP_ID dockeruser
+RUN         adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID dockeruser
 
 # copying all files (but .dockerignore(d)) in /app
 COPY    . /app
 WORKDIR /app
 RUN 	mkdir -p bootstrap/cache && \
-        chown -R www-data:fred storage bootstrap && \
+        chown -R www-data:dockeruser storage bootstrap && \
         chmod -R ug+rw storage bootstrap && \
         chmod g+s storage/logs
 # Adding phpunit to Path
