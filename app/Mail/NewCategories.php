@@ -2,6 +2,8 @@
 
 namespace App\Mail;
 
+use App\User;
+use App\Channel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -31,6 +33,6 @@ class NewCategories extends Mailable
     public function build()
     {
         return $this->view('emails.newCategories')
-        ->with('podmytubeLogo', $this->logo);
+            ->with('podmytubeLogo', $this->logo);
     }
 }
