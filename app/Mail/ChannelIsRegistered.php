@@ -12,6 +12,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 class ChannelIsRegistered extends Mailable
 {
     use Queueable, SerializesModels;
+    
     public $user;
     public $channel;
     public $logo;

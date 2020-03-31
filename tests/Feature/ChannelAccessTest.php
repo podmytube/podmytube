@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Feature;
 
 use App\User;
 use App\Channel;
@@ -10,6 +10,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class ChannelAccessTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected $user;
 
     public function setUp(): void
     {

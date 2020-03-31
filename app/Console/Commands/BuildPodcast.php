@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Channel;
-use App\Events\ChannelUpdated;
 use App\Jobs\SendFeedBySFTP;
 use App\Podcast\PodcastBuilder;
 use Illuminate\Console\Command;
