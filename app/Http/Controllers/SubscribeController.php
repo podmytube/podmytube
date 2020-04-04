@@ -6,9 +6,8 @@ use Illuminate\Http\Request;
 
 class SubscribeController extends Controller
 {
-    
-    public function store (Request $request) 
+    public function store(Request $request)
     {
-        dd($request);
+        info(__CLASS__ . '-' . __FUNCTION__ . " TO BE DONE");
     }
 }

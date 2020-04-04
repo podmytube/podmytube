@@ -18,7 +18,9 @@ class CreatingApikeysTable extends Migration
             $table->smallIncrements('id');
             $table->string('apikey');
             $table->string('comment');
-            $table->unsignedTinyInteger('environment')->default(ApiKey::_PROD_ENV);
+            $table
+                ->unsignedTinyInteger('environment')
+                ->default(ApiKey::PROD_ENV);
             $table->boolean('active')->default(true);
             $table->timestamps();
         });

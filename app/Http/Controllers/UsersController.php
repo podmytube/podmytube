@@ -2,19 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Session;
 use Illuminate\Http\Request;
 
 class UsersController extends Controller
 {
     /**
-	 * mainly useful to guard some routes
-	 */
-	public function __construct()
-	{
-		$this->middleware('auth');
+     * mainly useful to guard some routes
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
     }
-    
 
     /**
      * Display a listing of the resource.
@@ -79,7 +77,7 @@ class UsersController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request)
-	{
+    {
         $user = auth()->user();
 
         $user->update($request->all());
@@ -87,13 +85,12 @@ class UsersController extends Controller
         if (in_array($user->language, \Config::get('app.locales'))) {
             \Session::put('locale', $user->language);
         }
-        
-		\Session::flash('message', 'User successfully updated !');
-		\Session::flash('alert-class', 'alert-success');
 
-		return redirect('/user/');
+        \Session::flash('message', 'User successfully updated !');
+        \Session::flash('alert-class', 'alert-success');
 
-	}
+        return redirect('/user/');
+    }
 
     /**
      * Remove the specified resource from storage.

@@ -2,23 +2,22 @@
 
 namespace App;
 
-use Illuminate\Support\Facades\Config;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class ApiKey extends Model
 {
-    public const _PROD_ENV = 1;
-    public const _LOCAL_ENV = 2;
+    public const PROD_ENV = 1;
+    public const LOCAL_ENV = 2;
 
-    protected function setEnvironment(int $environment = self::_PROD_ENV)
+    protected function defineEnvironment(int $environment = self::PROD_ENV)
     {
         $this->environment = $environment;
     }
 
     public function developmentKeys()
     {
-        $this->setEnvironment(self::_LOCAL_ENV);
+        $this->defineEnvironment(self::LOCAL_ENV);
         return $this->environment()
             ->get()
             ->pluck('apikey');
@@ -26,7 +25,7 @@ class ApiKey extends Model
 
     public function productionKeys()
     {
-        $this->setEnvironment(self::_PROD_ENV);
+        $this->defineEnvironment(self::PROD_ENV);
         return $this->environment()
             ->get()
             ->pluck('apikey');
@@ -50,10 +49,10 @@ class ApiKey extends Model
             case 'local':
             case 'testing':
             case 'test':
-                $this->setEnvironment(self::_LOCAL_ENV);
+                $this->defineEnvironment(self::LOCAL_ENV);
                 break;
             default:
-                $this->setEnvironment(self::_PROD_ENV);
+                $this->defineEnvironment(self::PROD_ENV);
         }
         return $this->getApiKey();
     }

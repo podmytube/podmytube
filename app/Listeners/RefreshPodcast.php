@@ -2,38 +2,37 @@
 
 namespace App\Listeners;
 
-use App\Jobs\SendFeedBySFTP;
 use App\Events\OccursOnChannel;
+use App\Jobs\SendFeedBySFTP;
 use App\Podcast\PodcastBuilder;
-
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
 
 class RefreshPodcast implements ShouldQueue
 {
-    use InteractsWithQueue;
+  use InteractsWithQueue;
 
-    /**
-     * Handle the event.
-     *
-     * @param  object  $event
-     * @return void
-     */
-    public function handle(OccursOnChannel $event)
-    {
-        /** rendering feed */
-        if (PodcastBuilder::prepare($event->channel)->save()) {
-            /** uploading feed */
-            SendFeedBySFTP::dispatchNow($event->channel);
-        }
+  /**
+   * Handle the event.
+   *
+   * @param  object  $event
+   * @return void
+   */
+  public function handle(OccursOnChannel $event)
+  {
+    /** rendering feed */
+    if (PodcastBuilder::prepare($event->channel)->save()) {
+      /** uploading feed */
+      SendFeedBySFTP::dispatchNow($event->channel);
     }
+  }
 
-    /**
-     * Register the listeners for the subscriber.
-     *
-     * @param  \Illuminate\Events\Dispatcher  $events
-     */
-    /* public function subscribe($events)
+  /**
+   * Register the listeners for the subscriber.
+   *
+   * @param  \Illuminate\Events\Dispatcher  $events
+   */
+  /* public function subscribe($events)
     {
         $events->listen(
             'App\Events\ChannelRegistered',
