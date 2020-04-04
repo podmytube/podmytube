@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-
-use App\Thumb;
 use App\Channel;
 use App\Events\ThumbUpdated;
+use App\Thumb;
 use Illuminate\Http\Request;
 
 class ThumbsController extends Controller
@@ -27,10 +26,7 @@ class ThumbsController extends Controller
         } else {
             $thumb_url = $channel->thumb->dashboardUrl();
         }
-        return view(
-            'thumbs.index',
-            compact('channel', 'thumb_url')
-        );
+        return view('thumbs.index', compact('channel', 'thumb_url'));
     }
 
     /**
@@ -59,32 +55,26 @@ class ThumbsController extends Controller
 
         /** requirements for podcast thumb */
         $rules = [
-            'new_thumb_file' => 'required|dimensions:min_width=1400,min_height=1400,max_width=3000,max_height=3000,ratio=1'
+            'new_thumb_file' =>
+                'required|dimensions:min_width=1400,min_height=1400,max_width=3000,max_height=3000,ratio=1',
         ];
         $this->validate($request, $rules, $messages);
 
         if (!$request->file('new_thumb_file')->isValid()) {
-            throw new \Exception("A problem occurs during new thumb upload !");
+            throw new \Exception('A problem occurs during new thumb upload !');
         }
 
         /** attaching uploaded thumb to channel */
-        $thumb = Thumb::make()->attachItToChannel($request->file('new_thumb_file'), $channel);
+        $thumb = Thumb::make()->attachItToChannel(
+            $request->file('new_thumb_file'),
+            $channel
+        );
 
         event(ThumbUpdated::shouldUpdateChannel($thumb->channel));
 
-        /** Create vignette from thumb in a job */
-        // CreateVignetteFromThumb::dispatchNow($thumb);
-        /**
-         * This process will add the job SendThumbBySFTP to the queue (upload is long).
-         * Jobs are runned with one supervisor.
-         * !! IMPORTANT !! 
-         * QUEUE_DRIVER in .env should be set to database and commands 
-         * php artisan queue:table
-         * php artisan migrate
-         * should have been run
-         */
-        // SendThumbBySFTP::dispatch($thumb)->delay(now()->addMinutes(1));
-        return redirect()->route('channel.thumbs.index', ['channel' => $channel]);
+        return redirect()->route('channel.thumbs.index', [
+            'channel' => $channel,
+        ]);
     }
 
     /**
@@ -106,7 +96,6 @@ class ThumbsController extends Controller
      */
     public function edit(Channel $channel)
     {
-
         return view('thumbs.edit', compact('channel'));
     }
 

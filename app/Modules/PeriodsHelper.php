@@ -2,9 +2,9 @@
 
 namespace App\Modules;
 
-use Carbon\Carbon;
 use App\Exceptions\PeriodsHelperInvalidMonthException;
 use App\Exceptions\PeriodsHelperInvalidYearException;
+use Carbon\Carbon;
 
 class PeriodsHelper
 {

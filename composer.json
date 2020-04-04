@@ -28,6 +28,7 @@
         "filp/whoops": "~2.0",
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "dev-master",
+        "nunomaduro/phpinsights": "^1.14",
         "phpunit/phpunit": "~8.0"
     },
     "autoload": {

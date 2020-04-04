@@ -29,18 +29,18 @@ class VignetteModuleTest extends TestCase
     protected static function warmDb()
     {
         self::$channel = factory(Channel::class)->create();
-        self::$thumb = factory(Thumb::class)->create(
-            [
-                'channel_id' => self::$channel->channel_id,
-            ]
-        );
+        self::$thumb = factory(Thumb::class)->create([
+            'channel_id' => self::$channel->channel_id,
+        ]);
         self::$dbIsWarm = true;
     }
 
     public static function tearDownAfterClass(): void
     {
         /** removing local thumb img */
-        Storage::disk(self::$thumb->fileDisk())->deleteDirectory(self::$thumb->channelId());
+        Storage::disk(self::$thumb->fileDisk())->deleteDirectory(
+            self::$thumb->channelId()
+        );
     }
 
     public function setUp(): void
@@ -53,23 +53,24 @@ class VignetteModuleTest extends TestCase
 
     public function testingDefaultUrl()
     {
-        $expectedUrl = env('THUMBS_URL') . '/' . Vignette::_DEFAULT_VIGNETTE_FILE;
-        $this->assertEquals(
-            $expectedUrl,
-            Vignette::defaultUrl()
-        );
+        $expectedUrl =
+            env('THUMBS_URL') . '/' . Vignette::_DEFAULT_VIGNETTE_FILE;
+        $this->assertEquals($expectedUrl, Vignette::defaultUrl());
     }
 
     public function testingFileName()
     {
         $vigObj = Vignette::fromThumb(self::$thumb);
 
-        list($fileName, $fileExtension) = explode('.', self::$thumb->fileName());
-        $expectedFileName = $fileName . Vignette::_VIGNETTE_SUFFIX . '.' . $fileExtension;
+        list($fileName, $fileExtension) = explode(
+            '.',
+            self::$thumb->fileName()
+        );
+        $expectedFileName =
+            $fileName . Vignette::_VIGNETTE_SUFFIX . '.' . $fileExtension;
         $this->assertEquals($expectedFileName, $vigObj->fileName());
         return $vigObj;
     }
-
 
     /**
      * @depends testingFileName
@@ -78,7 +79,13 @@ class VignetteModuleTest extends TestCase
     {
         $fileName = pathinfo(self::$thumb->fileName(), PATHINFO_FILENAME);
         $fileExtension = pathinfo(self::$thumb->fileName(), PATHINFO_EXTENSION);
-        $expectedRelativePath = self::$channel->channel_id . '/' . $fileName . Vignette::_VIGNETTE_SUFFIX . '.' . $fileExtension;
+        $expectedRelativePath =
+            self::$channel->channel_id .
+            '/' .
+            $fileName .
+            Vignette::_VIGNETTE_SUFFIX .
+            '.' .
+            $fileExtension;
         $this->assertEquals($expectedRelativePath, $vigObj->relativePath());
         return $vigObj;
     }
@@ -97,10 +104,7 @@ class VignetteModuleTest extends TestCase
      */
     public function testingMakingVignetteFromThumb($vigObj)
     {
-        $this->assertInstanceOf(
-            Vignette::class,
-            $vigObj->makeIt()
-        );
+        $this->assertInstanceOf(Vignette::class, $vigObj->makeIt());
         return $vigObj;
     }
 

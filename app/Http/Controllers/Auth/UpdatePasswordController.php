@@ -1,9 +1,9 @@
 <?php
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -12,15 +12,15 @@ class UpdatePasswordController extends Controller
     /*
      * Ensure the user is signed in to access this page
      */
-    public function __construct() {
-
+    public function __construct()
+    {
         $this->middleware('auth');
-
     }
     /**
      * Show the form to change the user password.
      */
-    public function index(){
+    public function index()
+    {
         return view('user.change-password');
     }
 
@@ -42,19 +42,22 @@ class UpdatePasswordController extends Controller
 
         if (Hash::check($request->old, $hashedPassword)) {
             //Change the password
-            $user->fill([
-                'password' => Hash::make($request->password)
-            ])->save();
+            $user
+                ->fill([
+                    'password' => Hash::make($request->password),
+                ])
+                ->save();
 
-            $request->session()->flash('success', 'Your password has been changed.');
-
+            $request
+                ->session()
+                ->flash('success', 'Your password has been changed.');
             return back();
         }
 
-        $request->session()->flash('failure', 'Your password has not been changed.');
+        $request
+            ->session()
+            ->flash('failure', 'Your password has not been changed.');
 
         return back();
-
-
     }
 }

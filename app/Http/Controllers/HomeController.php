@@ -28,7 +28,9 @@ class HomeController extends Controller
          * Get user's channel(s)
          */
         try {
-            $channels = ChannelService::getAuthenticatedUserChannels(Auth::user());
+            $channels = ChannelService::getAuthenticatedUserChannels(
+                Auth::user()
+            );
         } catch (\Exception $e) {
             $channels = collect([]);
         }
