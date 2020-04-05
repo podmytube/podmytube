@@ -16,37 +16,42 @@ use Illuminate\Notifications\Notifiable;
  */
 class User extends Authenticatable
 {
-  use Notifiable;
+    use Notifiable;
 
-  /**
-   * the way to specify users.user_id is the key (and not users.id)
-   */
-  protected $primaryKey = 'user_id';
+    /**
+     * the way to specify users.user_id is the key (and not users.id)
+     */
+    protected $primaryKey = 'user_id';
 
-  /**
-   * The attributes that are mass assignable.
-   *
-   * @var array
-   */
-  protected $fillable = ['name', 'email', 'password', 'language'];
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = ['name', 'email', 'password', 'language'];
 
-  /**
-   * The attributes that should be hidden for arrays.
-   *
-   * @var array
-   */
-  protected $hidden = ['password', 'remember_token'];
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = ['password', 'remember_token'];
 
-  /**
-   * this function define the relationship between one User and his channels
-   */
-  public function channels()
-  {
-    return $this->HasMany(Channel::class, 'user_id');
-  }
+    /**
+     * this function define the relationship between one User and his channels
+     */
+    public function channels()
+    {
+        return $this->HasMany(Channel::class, 'user_id');
+    }
 
-  public function userId()
-  {
-    return $this->user_id;
-  }
+    public function userId()
+    {
+        return $this->id();
+    }
+
+    public function id()
+    {
+        return $this->user_id;
+    }
 }

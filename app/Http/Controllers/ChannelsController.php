@@ -14,20 +14,13 @@ use App\Events\ChannelUpdated;
 use App\Http\Requests\ChannelRequest;
 use App\Services\ChannelService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 /**
  * the channel controller class.
  */
 class ChannelsController extends Controller
 {
-    /**
-     * mainly useful to guard some routes
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     /**
      * get list of user's channel
      * @return Response
@@ -53,6 +46,7 @@ class ChannelsController extends Controller
 
     public function show(Channel $channel)
     {
+        $this->authorize($channel);
         return view('channel.show', compact('channel'));
     }
 
@@ -65,6 +59,7 @@ class ChannelsController extends Controller
      */
     public function edit(Channel $channel)
     {
+        $this->authorize($channel);
         $categories = Category::list();
         return view('channel.edit', compact(['channel', 'categories']));
     }
@@ -78,6 +73,7 @@ class ChannelsController extends Controller
      */
     public function update(ChannelRequest $request, Channel $channel)
     {
+        $this->authorize($channel);
         $validatedParams = $request->validated();
         $validatedParams['explicit'] = $request->has('explicit') ? 1 : 0;
 

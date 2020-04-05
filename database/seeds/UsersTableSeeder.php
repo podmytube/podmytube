@@ -15,18 +15,15 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
         if (!App::environment('production')) {
-            
             DB::table('users')->delete();
-            
-            /**
-             * creating my own user
-             */
+
             $data = [
                 [
                     'user_id' => 1,
                     'name' => 'Fred',
                     'email' => 'frederick@podmytube.com',
-                    'password' => '$2y$10$c5.Md.ZOCYFv70pPv/3nAeNSsXzV3ttFguIu.GzEFYhaijHh988se',
+                    'password' =>
+                        '$2y$10$c5.Md.ZOCYFv70pPv/3nAeNSsXzV3ttFguIu.GzEFYhaijHh988se',
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now(),
                 ],
@@ -35,7 +32,8 @@ class UsersTableSeeder extends Seeder
                     'name' => 'another fred',
                     'email' => 'frederick@tyteca.net',
                     //chat
-                    'password' => '$2y$10$/6YHjNFwNuvXqq7023c3NedYMIi1vcjMj8r1UzIYmrBl5y.zVI.m2',
+                    'password' =>
+                        '$2y$10$/6YHjNFwNuvXqq7023c3NedYMIi1vcjMj8r1UzIYmrBl5y.zVI.m2',
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now(),
                 ],
