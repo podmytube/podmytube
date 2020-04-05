@@ -2,14 +2,11 @@
 
 namespace App\Events;
 
-use App\Channel as AppChannel;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
+use App\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
 class ThumbUpdated extends OccursOnChannel
 {
@@ -25,7 +22,7 @@ class ThumbUpdated extends OccursOnChannel
         return new PrivateChannel('channel-name');
     }
 
-    public static function shouldUpdateChannel(AppChannel $channel)
+    public static function shouldUpdateChannel(Channel $channel)
     {
         return new static($channel);
     }

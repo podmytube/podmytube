@@ -2,7 +2,6 @@
 
 /**
  *   this class is the model class for the User table
- *
  */
 
 namespace App;
@@ -12,7 +11,6 @@ use Illuminate\Notifications\Notifiable;
 
 /**
  * User Model Class
- *
  */
 class User extends Authenticatable
 {

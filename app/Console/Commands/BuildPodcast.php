@@ -9,38 +9,40 @@ use Illuminate\Console\Command;
 
 class BuildPodcast extends Command
 {
-  /**
-   * The name and signature of the console command.
-   *
-   * @var string
-   */
-  protected $signature = 'podcast:build {channelId}';
-
-  /**
-   * The console command description.
-   *
-   * @var string
-   */
-  protected $description = 'This command will build one podcast feed at a time.';
-
-  /**
-   * Execute the console command.
-   *
-   * @return mixed
-   */
-  public function handle()
-  {
     /**
-     * getting channel to build podcast for
+     * The name and signature of the console command.
+     *
+     * @var string
      */
-    $channel = Channel::findOrFail($this->argument('channelId'));
+    protected $signature = 'podcast:build {channelId}';
 
-    if (PodcastBuilder::prepare($channel)->save()) {
-      /** uploading feed */
-      SendFeedBySFTP::dispatchNow($channel);
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'This command will build one podcast feed at a time.';
+
+    /**
+     * Execute the console command.
+     *
+     * @return mixed
+     */
+    public function handle()
+    {
+        /**
+         * getting channel to build podcast for
+         */
+        $channel = Channel::findOrFail($this->argument('channelId'));
+
+        if (PodcastBuilder::prepare($channel)->save()) {
+            /** uploading feed */
+            SendFeedBySFTP::dispatchNow($channel);
+        }
+
+        $this->info(
+            "Podcast {{$channel->title()}} has been successfully created."
+        );
+        $this->info("You can check it here : {$channel->podcastUrl()}");
     }
-
-    $this->info("Podcast {{$channel->title()}} has been successfully created.");
-    $this->info("You can check it here : " . $channel->podcastUrl());
-  }
 }
