@@ -3,10 +3,9 @@
 namespace Tests\Feature;
 
 use App\User;
-use App\Channel;
+use Artisan;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-
 
 class HomeAccessTest extends TestCase
 {
@@ -15,13 +14,13 @@ class HomeAccessTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+        Artisan::call('db:seed');
         $this->user = factory(User::class)->create();
     }
 
     public function testGuestIsRejected()
     {
-        $response = $this->get('/home')
-            ->assertRedirect('/login');
+        $response = $this->get('/home')->assertRedirect('/login');
     }
 
     public function testUserCanAccessHomeWithNoChannels()
