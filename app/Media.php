@@ -2,12 +2,11 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
-
 use App\Channel;
+use App\Exceptions\InvalidStartDateException;
 use App\Modules\EnclosureUrl;
-
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 
 class Media extends Model
 {
@@ -41,18 +40,16 @@ class Media extends Model
         Carbon $startDate,
         Carbon $endDate
     ) {
-
         if ($startDate > $endDate) {
-            throw new \Exception("Start date should be before end date !");
+            throw new InvalidStartDateException(
+                'Start date should be before end date !'
+            );
         }
 
-        return $query->whereBetween(
-            'grabbed_at',
-            [
-                $startDate->toDateString(),
-                $endDate->toDateString()
-            ]
-        );
+        return $query->whereBetween('grabbed_at', [
+            $startDate->toDateString(),
+            $endDate->toDateString(),
+        ]);
     }
 
     /**
@@ -65,20 +62,18 @@ class Media extends Model
         Carbon $startDate,
         Carbon $endDate
     ) {
-
         if ($startDate > $endDate) {
-            throw new \Exception("Start date should be before end date !");
+            throw new InvalidStartDateException(
+                'Start date should be before end date !'
+            );
         }
 
-        return $query->whereBetween(
-            'published_at',
-            [
-                $startDate->toDateString(),
-                $endDate->toDateString()
-            ]
-        );
+        return $query->whereBetween('published_at', [
+            $startDate->toDateString(),
+            $endDate->toDateString(),
+        ]);
     }
-    
+
     public function enclosureUrl()
     {
         return EnclosureUrl::create($this)->get();

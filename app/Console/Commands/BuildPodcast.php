@@ -7,7 +7,6 @@ use App\Jobs\SendFeedBySFTP;
 use App\Podcast\PodcastBuilder;
 use Illuminate\Console\Command;
 
-
 class BuildPodcast extends Command
 {
     /**
@@ -25,16 +24,6 @@ class BuildPodcast extends Command
     protected $description = 'This command will build one podcast feed at a time.';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      *
      * @return mixed
@@ -50,9 +39,10 @@ class BuildPodcast extends Command
             /** uploading feed */
             SendFeedBySFTP::dispatchNow($channel);
         }
-        //event(new ChannelUpdated($channel));
-        
-        $this->info("Podcast {{$channel->title()}} has been successfully created.");
-        $this->info("You can check it here : ".$channel->podcastUrl());
+
+        $this->info(
+            "Podcast {{$channel->title()}} has been successfully created."
+        );
+        $this->info("You can check it here : {$channel->podcastUrl()}");
     }
 }

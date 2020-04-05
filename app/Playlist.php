@@ -12,13 +12,12 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 /**
-* the Playlist class and its functions
-*/
+ * the Playlist class and its functions
+ */
 class Playlist extends Model
 {
- 	/** 
-	 * the way to specify users.user_id is the key (and not users.id)
-	 */
-	protected $primaryKey = 'playlist_id';
-	
+  /**
+   * the way to specify users.user_id is the key (and not users.id)
+   */
+  protected $primaryKey = 'playlist_id';
 }

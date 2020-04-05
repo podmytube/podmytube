@@ -2,19 +2,25 @@
 
 namespace App\Modules;
 
-use App\Media;
 use App\Exceptions\UndefinedEnvironmentVariable;
+use App\Media;
 
 class EnclosureUrl
 {
+    public const MP3_URL_KEY = 'MP3_URL';
+
     protected $media;
     protected $mp3BaseUrl;
     protected $enclosureUrl;
 
     private function __construct(Media $media)
     {
-        if(!getenv('MP3_URL')){
-            throw new UndefinedEnvironmentVariable("Environment variable {".getenv('MP3_URL')."} is not defined.");
+        if (!getenv(self::MP3_URL_KEY)) {
+            throw new UndefinedEnvironmentVariable(
+                'Environment variable {' .
+                    getenv(self::MP3_URL_KEY) .
+                    '} is not defined.'
+            );
         }
         $this->media = $media;
         $this->setEnclosureUrl();
@@ -27,11 +33,17 @@ class EnclosureUrl
 
     protected function setEnclosureUrl()
     {
-        $this->enclosureUrl = getenv('MP3_URL') . '/' . $this->media->channel_id . '/' . $this->media->media_id . '.mp3';
+        $this->enclosureUrl =
+            getenv(self::MP3_URL_KEY) .
+            '/' .
+            $this->media->channel_id .
+            '/' .
+            $this->media->media_id .
+            '.mp3';
     }
 
     public function get()
-    { 
+    {
         return $this->enclosureUrl;
     }
 }

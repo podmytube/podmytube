@@ -11,21 +11,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Plan;
 use App\Channel;
-use App\Subscription;
-use App\Jobs\MailChannelIsRegistered;
 use App\Events\ChannelRegistered;
-use App\Services\YoutubeChannelCheckingService;
 use App\Exceptions\ChannelCreationHasFailedException;
 use App\Exceptions\ChannelCreationInvalidChannelUrlException;
 use App\Exceptions\ChannelCreationInvalidUrlException;
 use App\Exceptions\SubscriptionHasFailedException;
-
-use Illuminate\Http\Request;
+use App\Plan;
+use App\Services\YoutubeChannelCheckingService;
+use App\Subscription;
 use Illuminate\Database\QueryException;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 
 class ChannelCreateController extends Controller
 {
@@ -43,9 +40,9 @@ class ChannelCreateController extends Controller
     public function create()
     {
         $plans = [
-            'free' => Plan::_FREE_PLAN_ID,
-            'weekly' => Plan::_WEEKLY_PLAN_ID,
-            'daily' => Plan::_DAILY_PLAN_ID,
+            'free' => Plan::FREE_PLAN_ID,
+            'weekly' => Plan::WEEKLY_PLAN_ID,
+            'daily' => Plan::DAILY_PLAN_ID,
         ];
         return view('channel.create', compact('plans'));
     }
@@ -66,8 +63,10 @@ class ChannelCreateController extends Controller
                 'channel_url' => 'required|string|min:27',
             ]);
 
-            $channelId = Channel::extractChannelIdFromUrl($request->channel_url);
-            
+            $channelId = Channel::extractChannelIdFromUrl(
+                $request->channel_url
+            );
+
             /**
              * Getting current authenticated user
              */
@@ -76,7 +75,9 @@ class ChannelCreateController extends Controller
             /**
              * Getting basic channel informations
              */
-            $channelName = YoutubeChannelCheckingService::getChannelName($channelId);
+            $channelName = YoutubeChannelCheckingService::getChannelName(
+                $channelId
+            );
 
             /**
              * Channel creating
@@ -98,7 +99,7 @@ class ChannelCreateController extends Controller
             try {
                 Subscription::create([
                     'channel_id' => $channelId,
-                    'plan_id' => Plan::_FREE_PLAN_ID,
+                    'plan_id' => Plan::FREE_PLAN_ID,
                 ]);
             } catch (QueryException $e) {
                 throw new SubscriptionHasFailedException($e->getMessage());
@@ -109,15 +110,22 @@ class ChannelCreateController extends Controller
             /**
              * All went fine
              */
-            $request->session()->flash('message', __('messages.flash_channel_has_been_created', ['channel' => $channelName]));
+            $request->session()->flash(
+                'message',
+                __('messages.flash_channel_has_been_created', [
+                    'channel' => $channelName,
+                ])
+            );
             $request->session()->flash('messageClass', 'alert-success');
         } catch (ChannelCreationInvalidUrlException | ChannelCreationInvalidChannelUrlException $e) {
-            $request->session()->flash('message', __('messages.flash_channel_id_is_invalid'));
+            $request
+                ->session()
+                ->flash('message', __('messages.flash_channel_id_is_invalid'));
             $request->session()->flash('messageClass', 'alert-danger');
         } catch (\Exception $e) {
             /**
-             * will catch 
-             * - SubscriptionHasFailedException 
+             * will catch
+             * - SubscriptionHasFailedException
              * - ChannelCreationHasFailedException
              */
             $request->session()->flash('message', $e->getMessage());

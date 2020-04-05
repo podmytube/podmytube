@@ -24,15 +24,15 @@ class ChannelExtractMethodsTest extends TestCase
         // total is the sum of all previous
         $expectedTotalNumberOfChannels = $expectedNumberOfFreeChannels + $expectedNumberOfEarlyChannels + $expectedNumberOfPayingChannels;
         // creating free channels
-        factory(Subscription::class, $expectedNumberOfFreeChannels)->create(['plan_id' => Plan::_FREE_PLAN_ID]);
+        factory(Subscription::class, $expectedNumberOfFreeChannels)->create(['plan_id' => Plan::FREE_PLAN_ID]);
 
         // creating early birds channels
-        factory(Subscription::class, $expectedNumberOfEarlyChannels)->create(['plan_id' => Plan::_EARLY_PLAN_ID]);
+        factory(Subscription::class, $expectedNumberOfEarlyChannels)->create(['plan_id' => Plan::EARLY_PLAN_ID]);
 
         // creating paying channels
         factory(Subscription::class, $expectedNumberOfPayingChannels)
             ->create([
-                'plan_id' => rand(Plan::_PROMO_MONTHLY_PLAN_ID, Plan::_ACCROPOLIS_PLAN_ID)
+                'plan_id' => rand(Plan::PROMO_MONTHLY_PLAN_ID, Plan::ACCROPOLIS_PLAN_ID)
             ]);
         $this->assertCount($expectedNumberOfFreeChannels, Channel::freeChannels());
         $this->assertCount($expectedNumberOfPayingChannels, Channel::payingChannels());

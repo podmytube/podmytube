@@ -3,10 +3,11 @@
 namespace App\Policies;
 
 use App\Channel;
+use App\Thumb;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class ChannelPolicy
+class ThumbPolicy
 {
     use HandlesAuthorization;
 
@@ -15,8 +16,8 @@ class ChannelPolicy
         return $channel->user->is($user);
     }
 
-    public function update(User $user, Channel $channel): bool
+    public function update(User $user, Thumb $thumb): bool
     {
-        return $channel->user->is($user);
+        return $thumb->channel->user->is($user);
     }
 }

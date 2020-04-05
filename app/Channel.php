@@ -9,12 +9,12 @@
 
 namespace App;
 
-use App\Podcast\PodcastBuilder;
-use Illuminate\Support\Collection;
-use Illuminate\Database\Eloquent\Model;
+use App\Exceptions\ChannelCreationInvalidChannelUrlException;
 use App\Exceptions\ChannelCreationInvalidUrlException;
 use App\Exceptions\ChannelCreationOnlyYoutubeIsAccepted;
-use App\Exceptions\ChannelCreationInvalidChannelUrlException;
+use App\Podcast\PodcastBuilder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Lang;
 
 /**
@@ -119,18 +119,7 @@ class Channel extends Model
     }
 
     /**
-     * define the relationship between one channel and its playlists
-     */
-    /*
-    public function playlists()
-    {
-        return $this->HasMany(Playlist::class, 'channel_id');
-    }
-    */
-
-    /**
      * define the relationship between one channel and its medias
-     *
      */
     public function medias()
     {
@@ -139,7 +128,6 @@ class Channel extends Model
 
     /**
      * define the relationship between one channel and its playlists
-     *
      */
     public function thumb()
     {
@@ -189,31 +177,43 @@ class Channel extends Model
         /**
          * url should be one
          */
-        if (!filter_var(
-            $channelUrl,
-            FILTER_VALIDATE_URL,
-            FILTER_FLAG_PATH_REQUIRED
-        )) {
-            throw new ChannelCreationInvalidUrlException("flash_channel_id_is_invalid");
+        if (
+            !filter_var(
+                $channelUrl,
+                FILTER_VALIDATE_URL,
+                FILTER_FLAG_PATH_REQUIRED
+            )
+        ) {
+            throw new ChannelCreationInvalidUrlException(
+                'flash_channel_id_is_invalid'
+            );
         }
 
-        if (!in_array(
-            parse_url($channelUrl, PHP_URL_HOST),
-            ['youtube.com', 'www.youtube.com']
-        )) {
-            throw new ChannelCreationOnlyYoutubeIsAccepted("Only channels from youtube are accepted !");
+        if (
+            !in_array(parse_url($channelUrl, PHP_URL_HOST), [
+                'youtube.com',
+                'www.youtube.com',
+            ])
+        ) {
+            throw new ChannelCreationOnlyYoutubeIsAccepted(
+                'Only channels from youtube are accepted !'
+            );
         }
 
         /**
          * checking the url given.
          * It should contain one youtube url the channel path and the channel_id
          */
-        if (!preg_match(
-            "#^/channel/(?'channel'[A-Za-z0-9_-]*)/?$#",
-            parse_url($channelUrl, PHP_URL_PATH),
-            $matches
-        )) {
-            throw new ChannelCreationInvalidChannelUrlException("flash_channel_id_is_invalid");
+        if (
+            !preg_match(
+                "#^/channel/(?'channel'[A-Za-z0-9_-]*)/?$#",
+                parse_url($channelUrl, PHP_URL_PATH),
+                $matches
+            )
+        ) {
+            throw new ChannelCreationInvalidChannelUrlException(
+                'flash_channel_id_is_invalid'
+            );
         }
 
         return $matches['channel'];
@@ -253,7 +253,7 @@ class Channel extends Model
 
     public function explicit()
     {
-        return $this->explicit==1 ? true : false;
+        return $this->explicit == 1 ? true : false;
     }
 
     public function createdAt()
@@ -268,64 +268,83 @@ class Channel extends Model
 
     public function podcastUrl()
     {
-        return getenv('PODCASTS_URL') . DIRECTORY_SEPARATOR . $this->channelId() . DIRECTORY_SEPARATOR . PodcastBuilder::_FEED_FILENAME;
+        return getenv('PODCASTS_URL') .
+            DIRECTORY_SEPARATOR .
+            $this->channelId() .
+            DIRECTORY_SEPARATOR .
+            PodcastBuilder::_FEED_FILENAME;
     }
 
     /**
      * return all early birds channels.
-     * 
-     * @return Illuminate\Support\Collection 
+     *
+     * @return Illuminate\Support\Collection
      */
     public static function earlyBirdsChannels(): Collection
     {
         return self::where([
             ["active", 1],
-            ["subscriptions.plan_id", "=", Plan::_EARLY_PLAN_ID],
+            ["subscriptions.plan_id", "=", Plan::EARLY_PLAN_ID],
         ])
             ->with('User')
             ->with('Category')
             ->with('Thumb')
             ->with('Subscription')
-            ->join('subscriptions', 'subscriptions.channel_id', '=', 'channels.channel_id')
+            ->join(
+                'subscriptions',
+                'subscriptions.channel_id',
+                '=',
+                'channels.channel_id'
+            )
             ->get();
     }
 
     /**
      * return all free channels.
-     * 
-     * @return Illuminate\Support\Collection 
+     *
+     * @return Illuminate\Support\Collection
      */
     public static function freeChannels(): Collection
     {
         return self::where([
             ["active", 1],
-            ["subscriptions.plan_id", "=", Plan::_FREE_PLAN_ID],
+            ["subscriptions.plan_id", "=", Plan::FREE_PLAN_ID],
         ])
             ->with('User')
             ->with('Category')
             ->with('Thumb')
             ->with('Subscription')
-            ->join('subscriptions', 'subscriptions.channel_id', '=', 'channels.channel_id')
+            ->join(
+                'subscriptions',
+                'subscriptions.channel_id',
+                '=',
+                'channels.channel_id'
+            )
             ->get();
     }
 
     /**
      * return all paying customers channels.
      * Paying customers only.
-     * 
-     * @return Illuminate\Support\Collection 
+     *
+     * @return Illuminate\Support\Collection
      */
     public static function payingChannels(): Collection
     {
         return self::where([
             ["active", 1],
-            ["subscriptions.plan_id", ">", Plan::_EARLY_PLAN_ID],
+            ["subscriptions.plan_id", ">", Plan::EARLY_PLAN_ID],
         ])
             ->with('User')
             ->with('Category')
             ->with('Thumb')
             ->with('Subscription')
-            ->join('subscriptions', 'subscriptions.channel_id', '=', 'channels.channel_id')
+            ->join(
+                'subscriptions',
+                'subscriptions.channel_id',
+                '=',
+                'channels.channel_id'
+            )
             ->get();
     }
 
@@ -341,9 +360,12 @@ class Channel extends Model
 
     public function hasFilter()
     {
-        return (isset($this->accept_video_by_tag) && $this->accept_video_by_tag != null) ||
-            (isset($this->reject_video_by_keyword) && $this->reject_video_by_keyword != null) ||
-            (isset($this->reject_video_too_old) && $this->reject_video_too_old != null);
+        return (isset($this->accept_video_by_tag) &&
+            $this->accept_video_by_tag != null) ||
+            (isset($this->reject_video_by_keyword) &&
+                $this->reject_video_by_keyword != null) ||
+            (isset($this->reject_video_too_old) &&
+                $this->reject_video_too_old != null);
     }
 
     public function getFilters()
@@ -353,14 +375,22 @@ class Channel extends Model
             return $results;
         }
         if ($this->accept_video_by_tag != null) {
-            $results[] = Lang::get('messages.accept_video_by_tag', ['tag' => $this->accept_video_by_tag]);
+            $results[] = Lang::get('messages.accept_video_by_tag', [
+                'tag' => $this->accept_video_by_tag,
+            ]);
             //"accept only videos with tag " . $this->accept_video_by_tag;
         }
         if ($this->reject_video_by_keyword != null) {
-            $results[] = Lang::get('messages.reject_video_by_keyword', ['keyword' => $this->reject_video_by_keyword]);
+            $results[] = Lang::get('messages.reject_video_by_keyword', [
+                'keyword' => $this->reject_video_by_keyword,
+            ]);
         }
         if ($this->reject_video_too_old != null) {
-            $results[] = Lang::get('messages.reject_video_too_old', ['date' => $this->reject_video_too_old->format(Lang::get('localized.dateFormat'))]);
+            $results[] = Lang::get('messages.reject_video_too_old', [
+                'date' => $this->reject_video_too_old->format(
+                    Lang::get('localized.dateFormat')
+                ),
+            ]);
         }
         return $results;
     }

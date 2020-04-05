@@ -2,17 +2,15 @@
 
 /**
  *   this class is the model class for the User table
- *
  */
 
 namespace App;
 
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
 /**
  * User Model Class
- *
  */
 class User extends Authenticatable
 {
@@ -28,19 +26,14 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $fillable = [
-        'name', 'email', 'password', 'language'
-    ];
+    protected $fillable = ['name', 'email', 'password', 'language'];
 
     /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
      */
-    protected $hidden = [
-        'password', 'remember_token',
-    ];
-
+    protected $hidden = ['password', 'remember_token'];
 
     /**
      * this function define the relationship between one User and his channels
@@ -51,6 +44,11 @@ class User extends Authenticatable
     }
 
     public function userId()
+    {
+        return $this->id();
+    }
+
+    public function id()
     {
         return $this->user_id;
     }

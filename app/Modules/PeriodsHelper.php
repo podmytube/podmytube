@@ -2,9 +2,9 @@
 
 namespace App\Modules;
 
-use Carbon\Carbon;
 use App\Exceptions\PeriodsHelperInvalidMonthException;
 use App\Exceptions\PeriodsHelperInvalidYearException;
+use Carbon\Carbon;
 
 class PeriodsHelper
 {
@@ -19,19 +19,25 @@ class PeriodsHelper
 
     /**
      * constructor.
-     * 
+     *
      * @param integer $month the month we want (by default, it is current one)
      * @param integer $year the year we want (by default, it is current one)
      */
     private function __construct(int $month = null, int $year = null)
     {
         /**
-         * If $month is set with negative value or value more than 12, Carbon is calculatin the month. 
+         * If $month is set with negative value or value more than 12, Carbon is calculatin the month.
          * I don't want this to happen.
          */
         if (isset($month)) {
             if (self::MONTH_MIN > $month || $month > self::MONTH_MAX) {
-                throw new PeriodsHelperInvalidMonthException("Month {$month} should be set between {" . self::MONTH_MIN . "} and {" . self::MONTH_MAX . "}. ");
+                throw new PeriodsHelperInvalidMonthException(
+                    "Month {$month} should be set between {" .
+                        self::MONTH_MIN .
+                        '} and {' .
+                        self::MONTH_MAX .
+                        '}. '
+                );
             }
         } else {
             $month = date('n');
@@ -39,14 +45,28 @@ class PeriodsHelper
 
         if (isset($year)) {
             if (self::YEAR_MIN >= $year || $year > self::YEAR_MAX) {
-                throw new PeriodsHelperInvalidYearException("Year {$year} should be set between {" . self::YEAR_MIN . "} and {" . self::YEAR_MAX . "}. ");
+                throw new PeriodsHelperInvalidYearException(
+                    "Year {$year} should be set between {" .
+                        self::YEAR_MIN .
+                        '} and {' .
+                        self::YEAR_MAX .
+                        '}. '
+                );
             }
         } else {
             $year = date('Y');
         }
 
-        $this->startDate = Carbon::createMidnightDate($year, $month, 1)->subDay();
-        $this->endDate = Carbon::createMidnightDate($year, $month, 1)->endOfMonth();
+        $this->startDate = Carbon::createMidnightDate(
+            $year,
+            $month,
+            1
+        )->subDay();
+        $this->endDate = Carbon::createMidnightDate(
+            $year,
+            $month,
+            1
+        )->endOfMonth();
 
         if ($this->endDate->greaterThan(Carbon::createMidnightDate())) {
             $this->endDate = Carbon::createMidnightDate();
@@ -55,7 +75,7 @@ class PeriodsHelper
 
     /**
      * Create
-     * 
+     *
      * @param integer $month the month we want (by default, it is current one)
      * @param integer $year the year we want (by default, it is current one)
      */
@@ -66,7 +86,7 @@ class PeriodsHelper
 
     /**
      * Getting startdate.
-     * 
+     *
      * @return Carbon $startDate
      */
     public function startDate(): Carbon
@@ -76,7 +96,7 @@ class PeriodsHelper
 
     /**
      * Getting enddate.
-     * 
+     *
      * @return Carbon $endDate
      */
     public function endDate(): Carbon

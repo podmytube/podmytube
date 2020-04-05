@@ -4,15 +4,15 @@ namespace App\Console\Commands;
 
 use App\Channel;
 use App\Jobs\SendFeedBySFTP;
-use App\Podcast\PodcastUrl;
 use App\Podcast\PodcastBuilder;
+use App\Podcast\PodcastUrl;
 
 use Illuminate\Console\Command;
 
 class BatchPodcasts extends Command
 {
-    protected const _FAILURE = 0;
-    protected const _SUCCESS = 1;
+    protected const FAILURE = 0;
+    protected const SUCCESS = 1;
 
     protected $messages = [];
 
@@ -23,28 +23,12 @@ class BatchPodcasts extends Command
      */
     protected $signature = 'podcast:batch {batchToProcess=all : options are all/free/paying/early}';
 
-    /* {--all : will generate all active podcasts } 
-        {--free : will generate only the free ones } 
-        {--early : will generate only the early birds } 
-        {--paying : will generate only paying channels }'; */
-
     /**
      * The console command description.
      *
      * @var string
      */
     protected $description = 'This command will build podcast feeds by kind.';
-
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     /**
      * Execute the console command.
@@ -68,12 +52,16 @@ class BatchPodcasts extends Command
                 $channels = Channel::allActiveChannels();
                 break;
             default:
-                throw new \RuntimeException("Option $optionTyped is not a valid one. Options available : free/paying/early/all.");
+                throw new \RuntimeException(
+                    "Option $optionTyped is not a valid one. Options available : free/paying/early/all."
+                );
         }
 
         if (!$channels->count()) {
             if ($this->getOutput()->isVerbose()) {
-                $this->info("There is no channels to generate for option {{$optionTyped}}");
+                $this->info(
+                    "There is no channels to generate for option {{$optionTyped}}"
+                );
             }
             return true;
         }
@@ -103,9 +91,7 @@ class BatchPodcasts extends Command
         }
 
         if ($this->getOutput()->isVeryVerbose()) {
-            $this->info(
-                PHP_EOL . implode(PHP_EOL, $this->getSuccess())
-            );
+            $this->info(PHP_EOL . implode(PHP_EOL, $this->getSuccess()));
         }
 
         /**
@@ -119,18 +105,20 @@ class BatchPodcasts extends Command
     protected function recordSuccess(Channel $channel)
     {
         $this->addMessage(
-            self::_SUCCESS,
+            self::SUCCESS,
             "Channel {$channel->title()} {{$channel->channelId()}} has been successfully generated {" .
-                PodcastUrl::prepare($channel)->get() . "}"
+                PodcastUrl::prepare($channel)->get() .
+                '}'
         );
     }
 
     protected function recordFailure(Channel $channel, $exception)
     {
         $this->addMessage(
-            self::_FAILURE,
-            "Podcast generation has failed for Channel {$channel->title()} {{$channel->channelId()}} with "
-                . $exception->getMessage() . PHP_EOL
+            self::FAILURE,
+            "Podcast generation has failed for Channel {$channel->title()} {{$channel->channelId()}} with " .
+                $exception->getMessage() .
+                PHP_EOL
         );
     }
 
@@ -141,11 +129,11 @@ class BatchPodcasts extends Command
 
     protected function getErrors()
     {
-        return $this->messages[self::_FAILURE] ?? null;
+        return $this->messages[self::FAILURE] ?? null;
     }
 
     protected function getSuccess()
     {
-        return $this->messages[self::_SUCCESS] ?? null;
+        return $this->messages[self::SUCCESS] ?? null;
     }
 }

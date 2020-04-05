@@ -4,14 +4,16 @@
 
 {{ Breadcrumbs::render('thumbs.index', $channel) }}
 
-<div class="container text-center">
+<div class="container h100 text-center">
+    <p>
     <a href="{{ route('channel.thumbs.edit', $channel) }}">
         <button type="button" class="btn btn-primary">
             {{ __("messages.button_update_thumbs_label") }}
         </button>
     </a>
+    </p>
 
-    <img src="{{ $thumb_url }}" height="1400" class="img-fluid" alt="Responsive image" />
+    <img src="{{ $thumb_url }}" class="img-fluid" style="max-height:600px;" alt="Responsive image" />
 </div>
 
 @endsection

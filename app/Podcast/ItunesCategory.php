@@ -6,7 +6,6 @@ use App\Category;
 
 class ItunesCategory implements IsRenderableInterface
 {
-
     protected $name;
     protected $parentName;
 
@@ -36,8 +35,10 @@ class ItunesCategory implements IsRenderableInterface
     public function render(): string
     {
         if (!$this->name) {
-            return "";
+            return '';
         }
-        return view('podcast.itunesCategory')->with(["itunesCategory" => $this])->render();
+        return view('podcast.itunesCategory')
+            ->with(['itunesCategory' => $this])
+            ->render();
     }
 }
