@@ -9,14 +9,14 @@ use Tests\TestCase;
 class PlanServiceTest extends TestCase
 {
     const _STRIPE_PLANS = [
-        // Plan::_FREE_PLAN_ID=>null,
-        // Plan::_EARLY_PLAN_ID=>null,
+        // Plan::FREE_PLAN_ID=>null,
+        // Plan::EARLY_PLAN_ID=>null,
         // plan name => [dev_stripe_plan_id, prod_stripe_plan_id]
-        Plan::_PROMO_MONTHLY_PLAN_ID => ['plan_EfYDgsuNMdj8Sb', 'plan_EcuGg9SyUBw97i'],
-        Plan::_PROMO_YEARLY_PLAN_ID => ['plan_EfYBFztmlQ3u4C', 'plan_EcuJ2npV5EMrCg'],
-        Plan::_WEEKLY_PLAN_ID => ['plan_EfudBu6TCXHWEg', 'plan_EaIv2XTMGtuY5g'],
-        Plan::_DAILY_PLAN_ID => ['plan_EfuceKVUwJTt5O', 'plan_DFsB9U76WaSaR3'],
-        Plan::_ACCROPOLIS_PLAN_ID => ['plan_EfubS6xkc5amyO', 'plan_Ecv3k67W6rsSKk'],
+        Plan::PROMO_MONTHLY_PLAN_ID => ['plan_EfYDgsuNMdj8Sb', 'plan_EcuGg9SyUBw97i'],
+        Plan::PROMO_YEARLY_PLAN_ID => ['plan_EfYBFztmlQ3u4C', 'plan_EcuJ2npV5EMrCg'],
+        Plan::WEEKLY_PLAN_ID => ['plan_EfudBu6TCXHWEg', 'plan_EaIv2XTMGtuY5g'],
+        Plan::DAILY_PLAN_ID => ['plan_EfuceKVUwJTt5O', 'plan_DFsB9U76WaSaR3'],
+        Plan::ACCROPOLIS_PLAN_ID => ['plan_EfubS6xkc5amyO', 'plan_Ecv3k67W6rsSKk'],
     ];
 
     /**
@@ -26,12 +26,12 @@ class PlanServiceTest extends TestCase
     public function gettingSomeProdPlansShouldBeGood()
     {
         $result = PlanService::getStripePlans([
-            Plan::_PROMO_YEARLY_PLAN_ID,
-            Plan::_DAILY_PLAN_ID,
+            Plan::PROMO_YEARLY_PLAN_ID,
+            Plan::DAILY_PLAN_ID,
         ]);
         $expected = [
-            Plan::_PROMO_YEARLY_PLAN_ID=>'plan_EcuJ2npV5EMrCg',
-            Plan::_DAILY_PLAN_ID=>'plan_DFsB9U76WaSaR3',
+            Plan::PROMO_YEARLY_PLAN_ID=>'plan_EcuJ2npV5EMrCg',
+            Plan::DAILY_PLAN_ID=>'plan_DFsB9U76WaSaR3',
         ];
         $this->assertEquals($expected, $result,
             "Asking for some stripe plans in prod mode has failed !");
@@ -45,12 +45,12 @@ class PlanServiceTest extends TestCase
     public function gettingSomeDevPlansShouldBeGood()
     {
         $result = PlanService::getStripePlans([
-            Plan::_PROMO_MONTHLY_PLAN_ID,
-            Plan::_WEEKLY_PLAN_ID,
+            Plan::PROMO_MONTHLY_PLAN_ID,
+            Plan::WEEKLY_PLAN_ID,
         ], false);
         $expected = [
-            Plan::_PROMO_MONTHLY_PLAN_ID=>'plan_EfYDgsuNMdj8Sb',
-            Plan::_WEEKLY_PLAN_ID=>'plan_EfudBu6TCXHWEg',
+            Plan::PROMO_MONTHLY_PLAN_ID=>'plan_EfYDgsuNMdj8Sb',
+            Plan::WEEKLY_PLAN_ID=>'plan_EfudBu6TCXHWEg',
         ];
         $this->assertEquals($expected, $result,
             "Asking for some stripe plans in dev mode has failed !");

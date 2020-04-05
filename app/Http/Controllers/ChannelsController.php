@@ -8,12 +8,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Channel;
 use App\Category;
+use App\Channel;
 use App\Events\ChannelUpdated;
-use App\Services\ChannelService;
 use App\Http\Requests\ChannelRequest;
+use App\Services\ChannelService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 /**
  * the channel controller class.
@@ -21,21 +22,15 @@ use Illuminate\Support\Facades\Auth;
 class ChannelsController extends Controller
 {
     /**
-     * mainly useful to guard some routes
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
-    /**
      * get list of user's channel
      * @return Response
      */
     public function index()
     {
         try {
-            $channels = ChannelService::getAuthenticatedUserChannels(Auth::user());
+            $channels = ChannelService::getAuthenticatedUserChannels(
+                Auth::user()
+            );
         } catch (\Exception $e) {
             $channels = [];
         }
@@ -51,9 +46,7 @@ class ChannelsController extends Controller
 
     public function show(Channel $channel)
     {
-        /* if (Gate::denies('show', $channel)) {
-            abort(403, "nope");
-        } */
+        $this->authorize($channel);
         return view('channel.show', compact('channel'));
     }
 
@@ -66,6 +59,7 @@ class ChannelsController extends Controller
      */
     public function edit(Channel $channel)
     {
+        $this->authorize($channel);
         $categories = Category::list();
         return view('channel.edit', compact(['channel', 'categories']));
     }
@@ -79,9 +73,10 @@ class ChannelsController extends Controller
      */
     public function update(ChannelRequest $request, Channel $channel)
     {
+        $this->authorize($channel);
         $validatedParams = $request->validated();
         $validatedParams['explicit'] = $request->has('explicit') ? 1 : 0;
-        
+
         $channel->update($validatedParams);
 
         event(new ChannelUpdated($channel));

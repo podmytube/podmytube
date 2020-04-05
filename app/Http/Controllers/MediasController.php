@@ -13,7 +13,7 @@ class MediasController extends Controller
     {
         $this->middleware('auth');
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -22,12 +22,15 @@ class MediasController extends Controller
     public function index(Channel $channel)
     {
         try {
-            $medias = $channel->medias()->orderBy('published_at', 'desc')->simplePaginate(25);
+            $medias = $channel
+                ->medias()
+                ->orderBy('published_at', 'desc')
+                ->simplePaginate(25);
         } catch (\Exception $e) {
             Session::flash('message', $e->getMessage());
             Session::flash('alert-class', 'alert-danger');
         }
-        return view('medias.index', compact('channel','medias'));
+        return view('medias.index', compact('channel', 'medias'));
     }
 
     /**

@@ -3,8 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Channel;
-use App\Mail\WelcomeToPodmytube;
 use App\Mail\ChannelIsRegistered;
+use App\Mail\WelcomeToPodmytube;
 use App\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
@@ -47,8 +47,15 @@ class SendTestEmail extends Command
      */
     public function handle()
     {
-        if (filter_var($email = $this->argument('emailAddress'), FILTER_VALIDATE_EMAIL) === false) {
-            throw new \InvalidArgumentException("Email address {$email} is not valid !");
+        if (
+            filter_var(
+                $email = $this->argument('emailAddress'),
+                FILTER_VALIDATE_EMAIL
+            ) === false
+        ) {
+            throw new \InvalidArgumentException(
+                "Email address {$email} is not valid !"
+            );
         }
 
         $this->comment('Here are the mails you can send :');
@@ -64,7 +71,9 @@ class SendTestEmail extends Command
                 $allowedIds = array_keys($this->availableEmails)
             )
         ) {
-            $this->error('Only number (' . implode(', ', $allowedIds) . ') are accepted.');
+            $this->error(
+                'Only number (' . implode(', ', $allowedIds) . ') are accepted.'
+            );
             exit(1);
         }
 
@@ -75,13 +84,19 @@ class SendTestEmail extends Command
                 break;
             case 2:
                 $channel = Channel::first();
-                Mail::to($email)->send(new ChannelIsRegistered($channel->user, $channel));
+                Mail::to($email)->send(
+                    new ChannelIsRegistered($channel->user, $channel)
+                );
                 break;
         }
 
         #$class = ChannelIsRegistered::class;
         #Mail::to($email)->send(new $class($channel->user, $channel));
 
-        $this->comment("Email {\"" . $this->availableEmails[$emailIdToSend]['label'] . "\"} has been sent to $email.");
+        $this->comment(
+            'Email {' .
+                $this->availableEmails[$emailIdToSend]['label'] .
+                "} has been sent to $email."
+        );
     }
 }

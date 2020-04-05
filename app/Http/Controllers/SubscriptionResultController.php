@@ -10,13 +10,13 @@ class SubscriptionResultController extends Controller
     {
         $this->middleware('auth');
     }
-    
-    public function success(Request $request) 
+
+    public function success(Request $request)
     {
         return view('subscription.success');
     }
 
-    public function failure(Request $request) 
+    public function failure(Request $request)
     {
         return view('subscription.failure');
     }

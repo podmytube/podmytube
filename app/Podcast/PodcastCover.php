@@ -10,12 +10,12 @@ class PodcastCover implements IsRenderableInterface
 
     private function __construct(array $attributes = [])
     {
-        $this->title = $attributes["title"] ?? null;
-        if (isset($attributes["url"])) {
-            $this->setUrl($attributes["url"]);
+        $this->title = $attributes['title'] ?? null;
+        if (isset($attributes['url'])) {
+            $this->setUrl($attributes['url']);
         }
-        if (isset($attributes["link"])) {
-            $this->setLink($attributes["link"]);
+        if (isset($attributes['link'])) {
+            $this->setLink($attributes['link']);
         }
     }
 
@@ -41,7 +41,9 @@ class PodcastCover implements IsRenderableInterface
     public function isValidUrl(string $urlToCheck)
     {
         if (filter_var($urlToCheck, FILTER_VALIDATE_URL) === false) {
-            throw new \InvalidArgumentException("Url/link {{$urlToCheck}} is not valid.");
+            throw new \InvalidArgumentException(
+                "Url/link {{$urlToCheck}} is not valid."
+            );
         }
         return true;
     }
@@ -63,15 +65,19 @@ class PodcastCover implements IsRenderableInterface
 
     public function render(): string
     {
-        $dataToRender = array_filter(get_object_vars($this), function ($property) {
+        $dataToRender = array_filter(get_object_vars($this), function (
+            $property
+        ) {
             if (isset($property)) {
                 return true;
             }
             return false;
         });
         if (!$dataToRender) {
-            return "";
+            return '';
         }
-        return view('podcast.podcastCover')->with(["podcastCover" => $this])->render();
+        return view('podcast.podcastCover')
+            ->with(['podcastCover' => $this])
+            ->render();
     }
 }

@@ -24,7 +24,7 @@ class PodcastItems
 
     /**
      * This function will return all medias to be published.
-     * 
+     *
      * @throw PodcastHasNoMediaToPublish when no medias has been grabbed
      */
     protected function collectItemsToPublish()
@@ -35,17 +35,19 @@ class PodcastItems
             ->get()
             /** removing item not grabbed */
             ->filter(function ($element) {
-                return (!empty($element->grabbed_at));
+                return !empty($element->grabbed_at);
             });
     }
 
     /**
      * this function will render items in podcast feed.
-     * 
+     *
      * @return string xml data for feed items.
      */
     public function render()
     {
-        return view('podcast.items')->with(["medias" => $this->medias])->render();
+        return view('podcast.items')
+            ->with(['medias' => $this->medias])
+            ->render();
     }
 }

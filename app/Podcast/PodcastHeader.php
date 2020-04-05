@@ -41,18 +41,25 @@ class PodcastHeader
         $this->itunesHeader = null;
 
         $this->podcastCover = PodcastCover::prepare([
-            "url" => isset($channel->thumb) ? $channel->thumb->podcastUrl() : Thumb::defaultUrl(),
-            "link" => $channel->link,
-            "title" => $channel->title(),
+            'url' => isset($channel->thumb)
+                ? $channel->thumb->podcastUrl()
+                : Thumb::defaultUrl(),
+            'link' => $channel->link,
+            'title' => $channel->title(),
         ]);
 
         $this->itunesHeader = ItunesHeader::prepare([
-            "author" => $channel->authors,
-            "title" => $channel->title(),
-            "imageUrl" => isset($channel->thumb) ? $channel->thumb->podcastUrl() : Thumb::defaultUrl(),
-            "itunesOwner" => ItunesOwner::prepare($channel->authors, $channel->email),
-            "itunesCategory" => ItunesCategory::prepare($channel->category),
-            "explicit" => $channel->explicit,
+            'author' => $channel->authors,
+            'title' => $channel->title(),
+            'imageUrl' => isset($channel->thumb)
+                ? $channel->thumb->podcastUrl()
+                : Thumb::defaultUrl(),
+            'itunesOwner' => ItunesOwner::prepare(
+                $channel->authors,
+                $channel->email
+            ),
+            'itunesCategory' => ItunesCategory::prepare($channel->category),
+            'explicit' => $channel->explicit,
         ]);
     }
 
@@ -63,16 +70,20 @@ class PodcastHeader
 
     public function render()
     {
-        $dataToRender = array_filter(get_object_vars($this), function ($property) {
+        $dataToRender = array_filter(get_object_vars($this), function (
+            $property
+        ) {
             if (isset($property)) {
                 return true;
             }
             return false;
         });
         if (!$dataToRender) {
-            return "";
+            return '';
         }
-        return view('podcast.header')->with(["podcastHeader" => $this])->render();
+        return view('podcast.header')
+            ->with(['podcastHeader' => $this])
+            ->render();
     }
 
     public function link()
