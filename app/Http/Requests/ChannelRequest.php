@@ -8,7 +8,9 @@
 
 namespace App\Http\Requests;
 
+use App\Category;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 /**
  * the channel form request class
@@ -19,20 +21,20 @@ class ChannelRequest extends FormRequest
      * Get the validation rules that apply to the request.
      *
      * @return array
-     * @todo check why if I add lang in the rules everything is collapsing
-     * @todo check the messages by trying to fool the form
      */
     public function rules()
     {
         return [
-            //'channel_id' 	            => 'required|max:255',
             'podcast_title' => 'nullable|string|max:64',
-            'authors' => 'sometimes|string|max:255',
-            'email' => 'sometimes|email',
-            'category' => 'nullable|string',
-            'subcategory' => 'nullable|string',
+            'authors' => 'nullable|string|max:255',
+            'email' => 'nullable|email',
+            // all the categories are available
+            'category_id' => [
+                'nullable',
+                Rule::in(Category::all()->pluck('id')),
+            ],
             'link' => 'nullable|URL',
-            //'lang' 			            => 'required',
+            'lang' => ['required', Rule::in(['FR', 'EN', 'PT'])],
             'accept_video_by_tag' => 'nullable|string|max:255',
             'reject_video_by_keyword' => 'nullable|string|max:255',
             'reject_video_too_old' => 'nullable|date_format:d/m/Y|before:today',
