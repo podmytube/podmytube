@@ -128,7 +128,6 @@ class Channel extends Model
 
     /**
      * define the relationship between one channel and its playlists
-     *
      */
     public function thumb()
     {
@@ -186,7 +185,7 @@ class Channel extends Model
             )
         ) {
             throw new ChannelCreationInvalidUrlException(
-                "flash_channel_id_is_invalid"
+                'flash_channel_id_is_invalid'
             );
         }
 
@@ -197,7 +196,7 @@ class Channel extends Model
             ])
         ) {
             throw new ChannelCreationOnlyYoutubeIsAccepted(
-                "Only channels from youtube are accepted !"
+                'Only channels from youtube are accepted !'
             );
         }
 
@@ -213,7 +212,7 @@ class Channel extends Model
             )
         ) {
             throw new ChannelCreationInvalidChannelUrlException(
-                "flash_channel_id_is_invalid"
+                'flash_channel_id_is_invalid'
             );
         }
 

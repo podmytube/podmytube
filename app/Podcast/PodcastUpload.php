@@ -23,7 +23,7 @@ class PodcastUpload
     {
         $this->channel = $channel;
         if (!$this->feedExists()) {
-            throw new FeedDoesNotExist("Feed for channel does not exist.");
+            throw new FeedDoesNotExist('Feed for channel does not exist.');
         }
     }
 
@@ -34,31 +34,36 @@ class PodcastUpload
 
     public function feedExists()
     {
-        return Storage::disk(self::_LOCAL_FEED_DISK)->exists($this->relativePath());
+        return Storage::disk(self::_LOCAL_FEED_DISK)->exists(
+            $this->relativePath()
+        );
     }
 
     /**
      * return the relative file path
-     * 
+     *
      * @return string relative path
      */
     public function relativePath()
     {
-        return $this->channel->channelId() . DIRECTORY_SEPARATOR . self::_FEED_FILENAME;
+        return $this->channel->channelId() .
+            DIRECTORY_SEPARATOR .
+            self::_FEED_FILENAME;
     }
 
     public function upload()
     {
         /** uploading channelId/podcast.xml */
-        Storage::disk(self::_REMOTE_FEED_DISK)
-            ->put(
-                $this->relativePath(),
-                Storage::disk(self::_LOCAL_FEED_DISK)->get($this->relativePath())
-            );
+        Storage::disk(self::_REMOTE_FEED_DISK)->put(
+            $this->relativePath(),
+            Storage::disk(self::_LOCAL_FEED_DISK)->get($this->relativePath())
+        );
 
         /** granting +x perms to channelId/ */
-        Storage::disk(self::_REMOTE_FEED_DISK)
-            ->setVisibility($this->channel->channelId(), 'public');
+        Storage::disk(self::_REMOTE_FEED_DISK)->setVisibility(
+            $this->channel->channelId(),
+            'public'
+        );
         return true;
     }
 }

@@ -10,7 +10,7 @@
 // ================================================
 // Home page is the login screen
 Route::get('/', function () {
-    return view("auth.login");
+    return view('auth.login');
 })->name('root');
 Route::get('terms', function () {
     return view('terms');

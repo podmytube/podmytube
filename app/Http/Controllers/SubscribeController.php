@@ -8,6 +8,6 @@ class SubscribeController extends Controller
 {
     public function store(Request $request)
     {
-        info(__CLASS__ . '-' . __FUNCTION__ . " TO BE DONE");
+        info(__CLASS__ . '-' . __FUNCTION__ . ' TO BE DONE');
     }
 }
