@@ -1,4 +1,4 @@
-<option value="0">
+<option value="">
     {{ __('categories.select_your_category') }}
 </option>
 @if ( count ($categories) > 0 )
