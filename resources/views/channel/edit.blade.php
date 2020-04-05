@@ -17,7 +17,7 @@
 
 	@include ('partials.errors')
 
-	<form method="POST" action="/channel/{{ $channel->channel_id }}">
+	<form method="POST" action="{{ route('channel.update', $channel) }}">
 
 		{{ method_field('PATCH') }}
 
@@ -41,7 +41,7 @@
 			</label>
 
 			<div class="col-md-10">
-				<input type="text" class="form-control" id="authors" name="authors" value="{{ $channel->authors }}" required>
+				<input type="text" class="form-control" id="authors" name="authors" value="{{ $channel->authors }}">
 			</div>
 		</div>
 
@@ -52,7 +52,7 @@
 			</label>
 
 			<div class="col-md-10">
-				<input type="email" class="form-control" id="email" name="email" value="{{ $channel->email }}" required>
+				<input type="email" class="form-control" id="email" name="email" value="{{ $channel->email }}">
 			</div>
 		</div>
 
@@ -86,8 +86,9 @@
 
 			<div class="col-md-2">
 				<select class="custom-select" id="lang" name="lang">
-					<option value="FR" {{ $channel->lang == 'FR' ? ' selected' : '' }}>{{ __("localized.FR") }}</option>
 					<option value="EN" {{ $channel->lang == 'EN' ? ' selected' : '' }}>{{ __("localized.EN") }}</option>
+					<option value="FR" {{ $channel->lang == 'FR' ? ' selected' : '' }}>{{ __("localized.FR") }}</option>
+					<option value="PT" {{ $channel->lang == 'PT' ? ' selected' : '' }}>{{ __("localized.PT") }}</option>
 				</select>
 			</div>
 

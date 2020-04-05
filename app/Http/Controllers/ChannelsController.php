@@ -74,7 +74,9 @@ class ChannelsController extends Controller
     public function update(ChannelRequest $request, Channel $channel)
     {
         $this->authorize($channel);
+
         $validatedParams = $request->validated();
+
         $validatedParams['explicit'] = $request->has('explicit') ? 1 : 0;
 
         $channel->update($validatedParams);
