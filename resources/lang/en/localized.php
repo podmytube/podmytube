@@ -6,6 +6,7 @@
 return [
     'dateFormat' => 'm/d/Y',
     'dateTimeFormat' => 'm/d/Y \o\n H:i',
-    'FR' => 'French',
     'EN' => 'English',
+    'FR' => 'French',
+    'PT' => 'Portuguese',
 ];
