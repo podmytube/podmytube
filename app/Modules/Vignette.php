@@ -71,12 +71,9 @@ class Vignette
      */
     protected function setFileName()
     {
-        list($fileName, $fileExtension) = explode(
-            '.',
-            $this->thumb->fileName()
-        );
+        $fileNameAry = explode('.', $this->thumb->fileName());
         $this->file_name =
-            $fileName . self::VIGNETTE_SUFFIX . '.' . $fileExtension;
+            $fileNameAry[0] . self::VIGNETTE_SUFFIX . '.' . $fileNameAry[1];
     }
 
     /**
@@ -147,7 +144,7 @@ class Vignette
         } catch (\Exception $exception) {
             throw new VignetteCreationFromThumbException(
                 "Creation of vignette from thumb {{$this->thumb}} for channel {{$this->thumb->channel_id}} has failed with message :" .
-                    $e->getMessage()
+                    $exception->getMessage()
             );
         }
         return $this;
@@ -184,7 +181,7 @@ class Vignette
         } catch (\Exception $exception) {
             $message =
                 "Uploading vignette {{$this->fileName()}} to remote has failed with message : " .
-                $e->getMessage();
+                $exception->getMessage();
             Log::alert($message);
             throw new VignetteUploadException($message);
         }

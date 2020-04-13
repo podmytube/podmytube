@@ -174,7 +174,7 @@ class ThumbService
         try {
             self::thumbExists($thumb);
         } catch (\Exception $exception) {
-            throw new \Exception($e->getMessage());
+            throw $exception;
         }
 
         $vignettePath = self::getVignetteFilePath($thumb);
@@ -259,7 +259,7 @@ class ThumbService
         } catch (\Exception $exception) {
             throw new VignetteCreationFromThumbException(
                 "Vignette creation for channel {{$channel->channel_id}} has failed with message : " .
-                    $e->getMessage()
+                    $exception->getMessage()
             );
         }
         return true;

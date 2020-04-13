@@ -5,7 +5,6 @@ namespace App;
 use App\Exceptions\ThumbUploadHasFailedException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class Thumb extends Model
@@ -32,11 +31,6 @@ class Thumb extends Model
         return $this->getRelativePathAttribute();
     }
 
-    /**
-     * This function defines the relation between one thumb and its channel (the channel it is belonging to).
-     *
-     * @return Object Channel
-     */
     public function channel()
     {
         return $this->belongsTo(Channel::class, 'channel_id', 'channel_id');
@@ -77,7 +71,7 @@ class Thumb extends Model
     }
 
     /**
-     * This function is checking if one thumbnail is existing for a specific channel.
+     * Check if thumbnail exists
      *
      * @return bool true if thumb present false else.
      */
@@ -123,34 +117,28 @@ class Thumb extends Model
      */
     public function upload()
     {
-        try {
-            /**
-             * put is taking 2 arguments
-             * - the relative path from SFTP_THUMBS_PATH where to store data
-             * - the file content (data)
-             */
-            Storage::disk(self::REMOTE_STORAGE_DISK)->put(
-                $this->relativePath,
-                $this->getData()
-            );
+        /**
+         * put is taking 2 arguments
+         * - the relative path from SFTP_THUMBS_PATH where to store data
+         * - the file content (data)
+         */
+        Storage::disk(self::REMOTE_STORAGE_DISK)->put(
+            $this->relativePath,
+            $this->getData()
+        );
 
-            /** Once uploaded, we are setting the channel_path on the remote to public visibility  */
-            Storage::disk(self::REMOTE_STORAGE_DISK)->setVisibility(
-                $this->channelId(),
-                'public'
-            );
-        } catch (\Exception $exception) {
-            Log::alert(
-                'Uploading image ' .
-                    $this->relativePath .
-                    " on remote image repository has failed with message {{$e->getMessage()}}."
-            );
-            throw $exception;
-        }
+        /**
+         * Once uploaded, we are setting the channel_path
+         * on the remote to public visibility
+         */
+        Storage::disk(self::REMOTE_STORAGE_DISK)->setVisibility(
+            $this->channelId(),
+            'public'
+        );
     }
 
     /**
-     * This function will set/update a new thumb for the specified channel.
+     * set/update a new thumb for the specified channel.
      *
      * @param UploadedFile $uploadedFile the uploaded file
      * @param Channel $channel to be associated with thumb
@@ -178,8 +166,7 @@ class Thumb extends Model
             );
         } catch (\Exception $exception) {
             throw new ThumbUploadHasFailedException(
-                "Attaching new thumb to channel {{$channel->channelId()}} has failed with message : " .
-                    $e->getMessage()
+                "Attaching thumb to {$channel->channelId()} has failed {$exception->getMessage()}"
             );
         }
         return $thumb;

@@ -5,8 +5,6 @@ namespace App\Services;
 use App\Exceptions\UserHasNoChannelException;
 use App\Modules\Vignette;
 use App\Plan;
-use App\Services\MediaService;
-use App\Services\SubscriptionService;
 use App\User;
 
 class ChannelService

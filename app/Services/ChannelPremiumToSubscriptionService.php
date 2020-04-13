@@ -17,12 +17,12 @@ use Carbon\Carbon;
  */
 class ChannelPremiumToSubscriptionService
 {
-    const _ACCROPOLIS_CHANNEL_ID = 'UCq80IvL314jsE7PgYsTdw7Q';
+    public const _ACCROPOLIS_CHANNEL_ID = 'UCq80IvL314jsE7PgYsTdw7Q';
     /**
      * First premium users (6€) monthly
      * 'UCnF1gaTK11ax2pWCIdUp8-w', // | Delphine Dimanche => 6€/month
      */
-    const _OLD_MONTHLY_AT_6 = [
+    public const _OLD_MONTHLY_AT_6 = [
         'UCnF1gaTK11ax2pWCIdUp8-w', // Delphine Dimanche => 6€/month
     ];
 
@@ -38,7 +38,7 @@ class ChannelPremiumToSubscriptionService
      * 'UCU_gPhU-eAI56oUeFzVyUUQ', // | WP Marmite => 66€/year
      * 'UCNHFiyWgsnaSOsMtSoV_Q1A', // | Axiome => 66€/year
      */
-    const _OLD_YEARLY_AT_66 = [
+    public const _OLD_YEARLY_AT_66 = [
         'UCnf8HI3gUteF1BKAvrDO9dQ', // | Alex Borto 66€/year
         'UCU_gPhU-eAI56oUeFzVyUUQ', // | WP Marmite => 66€/year
         'UCNHFiyWgsnaSOsMtSoV_Q1A', // | Axiome => 66€/year
@@ -49,7 +49,7 @@ class ChannelPremiumToSubscriptionService
      * 'UCSMzy1n4Arqk_hCCOYOQn9g', // | iRunFarMedia => 29$/month
      */
 
-    const _OLD_MONTHLY_AT_29 = [
+    public const _OLD_MONTHLY_AT_29 = [
         'UCSMzy1n4Arqk_hCCOYOQn9g', // | iRunFarMedia => 29$/month
     ];
 
@@ -148,21 +148,13 @@ class ChannelPremiumToSubscriptionService
          * Generic cases
          */
 
-        switch ($channel->channel_premium) {
-            case 0:
-                $newPlanId = Plan::FREE_PLAN_ID;
-                break;
-            case 1:
-                $newPlanId = Plan::EARLY_PLAN_ID;
-                break;
-            case 2:
-                $newPlanId = Plan::WEEKLY_PLAN_ID;
-                break;
-            case 3:
-                $newPlanId = Plan::DAILY_PLAN_ID;
-                break;
-        }
+        $planMap = [
+            0 => Plan::FREE_PLAN_ID,
+            1 => Plan::EARLY_PLAN_ID,
+            2 => Plan::WEEKLY_PLAN_ID,
+            3 => Plan::DAILY_PLAN_ID,
+        ];
 
-        return $newPlanId;
+        return $planMap[$channel->channel_premium];
     }
 }
