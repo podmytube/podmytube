@@ -8,6 +8,7 @@
  *
  * @author Frederick Tyteca <fred@podmytube.com>
  */
+
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;

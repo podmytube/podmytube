@@ -23,7 +23,7 @@ class CategoryMigrationService
      *
      * @param object App\Channel model $channel the channel to convert
      *
-     * @return boolean mainly for tests
+     * @return bool mainly for tests
      */
     public static function transform(Channel $channel)
     {
@@ -45,7 +45,7 @@ class CategoryMigrationService
             $channel->category_id = $newCategoryId;
             $channel->save();
         } catch (\Exception $exception) {
-            throw $e;
+            throw $exception;
         }
         return true;
     }

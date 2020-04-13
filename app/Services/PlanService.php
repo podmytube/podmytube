@@ -9,8 +9,8 @@ class PlanService
     /**
      * This function will retrieve the plan to apply on the "Subscribe page" according to the env.
      *
-     * @param integer $planId
-     * @param boolean $isLive
+     * @param int $planId
+     * @param bool $isLive
      *
      * @return void
      */
@@ -22,7 +22,7 @@ class PlanService
                 $results[$planId] = self::getStripePlan($planId, $isLive);
             }
         } catch (\Exception $exception) {
-            throw $e;
+            throw $exception;
         }
         return $results;
     }
@@ -30,8 +30,8 @@ class PlanService
     /**
      * This function will retrieve the plan to apply on the "Subscribe page" according to the env.
      *
-     * @param integer $planId
-     * @param boolean $isLive
+     * @param int $planId
+     * @param bool $isLive
      *
      * @return void
      */
@@ -42,7 +42,7 @@ class PlanService
                 ->stripePlan->where('is_live', $isLive)
                 ->first()->stripe_id;
         } catch (\Exception $exception) {
-            throw $e;
+            throw $exception;
         }
     }
 }

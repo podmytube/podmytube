@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Channel;
 use App\Exceptions\VignetteCreationFromMissingThumbException;
 use App\Exceptions\VignetteCreationFromThumbException;
+use App\Modules\Vignette;
 use App\Thumb;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
@@ -71,7 +72,7 @@ class ThumbService
                 ]
             );
         } catch (\Exception $exception) {
-            throw $e;
+            throw $exception;
         }
         return true;
     }
@@ -94,7 +95,7 @@ class ThumbService
      *
      * @param string $thumbPath the thumb path to check.
      *
-     * @return boolean true if exists
+     * @return bool true if exists
      */
     public static function pathExists($thumbPath)
     {
@@ -118,7 +119,7 @@ class ThumbService
      */
     public static function getDefaultVignetteUrl()
     {
-        return getenv('THUMBS_URL') . '/' . Thumb::_DEFAULT_VIGNETTE_FILE;
+        return getenv('THUMBS_URL') . '/' . Vignette::DEFAULT_VIGNETTE_FILE;
     }
 
     /**
@@ -143,7 +144,7 @@ class ThumbService
             self::thumbExists($thumb);
         } catch (\Exception $exception) {
             Log::error(
-                "Channel {{$channel->channel_id}} has an entry in database but no file is thumb folder."
+                "Channel {$channel->channel_id} has an entry in database but no file is thumb folder."
             );
             return self::getDefaultThumbUrl();
         }
@@ -241,8 +242,8 @@ class ThumbService
              * creating vignette
              */
             $thumbnail->fit(
-                Thumb::_DEFAULT_VIGNETTE_WIDTH,
-                Thumb::_DEFAULT_VIGNETTE_WIDTH,
+                Thumb::DEFAULT_VIGNETTE_WIDTH,
+                Thumb::DEFAULT_VIGNETTE_WIDTH,
                 function ($constraint) {
                     $constraint->aspectRatio();
                 }

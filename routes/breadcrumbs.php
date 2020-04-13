@@ -1,10 +1,5 @@
 <?php
 
-// Welcome
-/* Breadcrumbs::register('home', function ($breadcrumbs) {
-    $breadcrumbs->push(__('messages.page_title_home_breadcrumb'), route('home'));
-}); */
-
 // Podcasts
 Breadcrumbs::register('home', function ($breadcrumbs) {
     $breadcrumbs->push(

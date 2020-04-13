@@ -32,7 +32,7 @@ class ChannelCategoriesTableSeeder extends Seeder
             try {
                 CategoryMigrationService::transform($channel);
             } catch (\Exception $exception) {
-                throw $e;
+                throw $exception;
             }
         }
     }

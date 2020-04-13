@@ -22,7 +22,7 @@ class ItunesHeader implements IsRenderableInterface
     /** @var string imageUrl */
     protected $imageUrl;
 
-    /** @var boolean explicit */
+    /** @var bool explicit */
     protected $explicit;
 
     /** @var ItunesCategory category object*/
@@ -120,7 +120,7 @@ class ItunesHeader implements IsRenderableInterface
 
     protected function setType(string $type = self::TYPE_EPISODIC)
     {
-        if ($type == self::TYPE_EPISODIC || $type == self::TYPE_SERIAL) {
+        if ($type === self::TYPE_EPISODIC || $type === self::TYPE_SERIAL) {
             $this->type = $type;
         }
     }

@@ -50,7 +50,7 @@ class SubscriptionService
      *
      * @param Channel $channel
      *
-     * @return boolean
+     * @return bool
      */
     public static function hasSubscription(Channel $channel)
     {
