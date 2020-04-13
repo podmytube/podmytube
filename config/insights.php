@@ -84,6 +84,8 @@ return [
         \PhpCsFixer\Fixer\Comment\NoEmptyCommentFixer::class,
         \PHP_CodeSniffer\Standards\Generic\Sniffs\Formatting\SpaceAfterNotSniff::class,
         \PHP_CodeSniffer\Standards\Generic\Sniffs\Commenting\TodoSniff::class,
+        \SlevomatCodingStandard\Sniffs\Classes\SuperfluousInterfaceNamingSniff::class,
+        \SlevomatCodingStandard\Sniffs\Classes\SuperfluousExceptionNamingSniff::class,
     ],
 
     'config' => [

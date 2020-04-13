@@ -20,8 +20,8 @@ class PeriodsHelper
     /**
      * constructor.
      *
-     * @param integer $month the month we want (by default, it is current one)
-     * @param integer $year the year we want (by default, it is current one)
+     * @param int $month the month we want (by default, it is current one)
+     * @param int $year the year we want (by default, it is current one)
      */
     private function __construct(int $month = null, int $year = null)
     {
@@ -76,8 +76,8 @@ class PeriodsHelper
     /**
      * Create
      *
-     * @param integer $month the month we want (by default, it is current one)
-     * @param integer $year the year we want (by default, it is current one)
+     * @param int $month the month we want (by default, it is current one)
+     * @param int $year the year we want (by default, it is current one)
      */
     public static function create(int $month = null, int $year = null)
     {

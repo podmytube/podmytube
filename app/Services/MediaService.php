@@ -13,8 +13,8 @@ class MediaService
      * This function will get list of medias ordered by status (grabbed or not).
      *
      * @param Channel $channel the channel object we want medias
-     * @param integer $month to define wanted period (by default current month)
-     * @param integer $year to define wanted period (by default current year)
+     * @param int $month to define wanted period (by default current month)
+     * @param int $year to define wanted period (by default current year)
      *
      * @return array
      */
@@ -43,7 +43,7 @@ class MediaService
                 ->orderBy('published_at', 'asc')
                 ->get();
         } catch (\Exception $exception) {
-            throw $e;
+            throw $exception;
         }
     }
 
@@ -66,7 +66,7 @@ class MediaService
                 ->where('channel_id', $channel->channel_id)
                 ->count();
         } catch (\Exception $exception) {
-            throw $e;
+            throw $exception;
         }
     }
 
@@ -74,7 +74,7 @@ class MediaService
      * This function will return the episodes already grabbed for one channel during the specified month.
      *
      * @param Channel $channel_id the channel
-     * @param integer $month month num wanted
+     * @param int $month month num wanted
      *
      * @return int the number of episodes grabbed this month for this channel
      */
@@ -92,7 +92,7 @@ class MediaService
                 ->where('channel_id', $channel->channel_id)
                 ->get();
         } catch (\Exception $exception) {
-            throw $e;
+            throw $exception;
         }
     }
 
@@ -118,7 +118,7 @@ class MediaService
                 ->where('channel_id', $channel->channel_id)
                 ->get();
         } catch (\Exception $exception) {
-            throw $e;
+            throw $exception;
         }
     }
 
@@ -142,12 +142,12 @@ class MediaService
             $year = date('Y');
         }
 
-        $startDate = carbon::createFromDate($year, $month);
+        $startDate = Carbon::createFromDate($year, $month);
 
         try {
-            return carbon::createMidnightDate($year, $month, 1);
+            return Carbon::createMidnightDate($year, $month, 1);
         } catch (\Exception $exception) {
-            throw $e;
+            throw $exception;
         }
     }
 
@@ -174,7 +174,7 @@ class MediaService
                 ->modify('last day of this month')
                 ->setTime(23, 59, 59);
         } catch (\Exception $exception) {
-            throw $e;
+            throw $exception;
         }
     }
 }

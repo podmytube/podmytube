@@ -66,9 +66,9 @@ class PodcastItemsTest extends TestCase
 
     public function testWithOneMedia()
     {
-        $media = factory(Media::class)
-            ->create(['channel_id' => $this->channel->channel_id])
-            ->first();
+        $media = factory(Media::class)->create([
+            'channel_id' => $this->channel->channel_id,
+        ]);
         $renderedItems = PodcastItems::prepare($this->channel)->render();
         $this->assertStringContainsString(
             '<guid>' . $media->media_id . '</guid>',

@@ -54,7 +54,7 @@ class VignetteModuleTest extends TestCase
     public function testingDefaultUrl()
     {
         $expectedUrl =
-            env('THUMBS_URL') . '/' . Vignette::_DEFAULT_VIGNETTE_FILE;
+            env('THUMBS_URL') . '/' . Vignette::DEFAULT_VIGNETTE_FILE;
         $this->assertEquals($expectedUrl, Vignette::defaultUrl());
     }
 
@@ -67,7 +67,7 @@ class VignetteModuleTest extends TestCase
             self::$thumb->fileName()
         );
         $expectedFileName =
-            $fileName . Vignette::_VIGNETTE_SUFFIX . '.' . $fileExtension;
+            $fileName . Vignette::VIGNETTE_SUFFIX . '.' . $fileExtension;
         $this->assertEquals($expectedFileName, $vigObj->fileName());
         return $vigObj;
     }
@@ -83,7 +83,7 @@ class VignetteModuleTest extends TestCase
             self::$channel->channel_id .
             '/' .
             $fileName .
-            Vignette::_VIGNETTE_SUFFIX .
+            Vignette::VIGNETTE_SUFFIX .
             '.' .
             $fileExtension;
         $this->assertEquals($expectedRelativePath, $vigObj->relativePath());

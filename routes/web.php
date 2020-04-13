@@ -42,11 +42,6 @@ Route::middleware(['auth'])->group(function () {
         'channel.create'
     );
 
-    /* Route::get('/channel/', 'ChannelsController@index')->name('channel.index');
-Route::get('/channel/{channel}', 'ChannelsController@show')->name('channel.show')->middleware(\App\Http\Middleware\UserMustOwnChannel::class);
-Route::get('/channel/{channel}/edit', 'ChannelsController@edit')->name('channel.edit');
-Route::patch('/channel/{channel}', 'ChannelsController@update'); */
-
     Route::resource('channel', 'ChannelsController')->only([
         'index',
         'show',

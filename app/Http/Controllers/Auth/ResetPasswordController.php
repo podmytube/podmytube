@@ -2,6 +2,7 @@
 /**
  * This controller is responsible for handling password reset requests
  */
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;

@@ -11,19 +11,12 @@ use Image;
 
 class Vignette
 {
-    /** @var string _REMOTE_STORAGE_DISK where thumbs and vigs are stored remotely */
-    public const _REMOTE_STORAGE_DISK = 'sftpthumbs';
+    public const REMOTE_STORAGE_DISK = 'sftpthumbs';
+    public const VIGNETTE_SUFFIX = '_vig';
+    public const DEFAULT_VIGNETTE_FILE = 'default_vignette.jpg';
+    public const DEFAULT_VIGNETTE_WIDTH = 300;
 
-    /** @var string Vignette suffix */
-    public const _VIGNETTE_SUFFIX = '_vig';
-
-    /** @var string default vignette filename */
-    public const _DEFAULT_VIGNETTE_FILE = 'default_vignette.jpg';
-
-    /** @var integer default vignette width in pixels */
-    public const _DEFAULT_VIGNETTE_WIDTH = 300;
-
-    /** @var thumb used to create vignette */
+    /** @var \App\Thumb used to create vignette */
     protected $thumb;
 
     /**
@@ -83,7 +76,7 @@ class Vignette
             $this->thumb->fileName()
         );
         $this->file_name =
-            $fileName . self::_VIGNETTE_SUFFIX . '.' . $fileExtension;
+            $fileName . self::VIGNETTE_SUFFIX . '.' . $fileExtension;
     }
 
     /**
@@ -139,8 +132,8 @@ class Vignette
 
             /** creating vignette */
             $image->fit(
-                self::_DEFAULT_VIGNETTE_WIDTH,
-                self::_DEFAULT_VIGNETTE_WIDTH,
+                self::DEFAULT_VIGNETTE_WIDTH,
+                self::DEFAULT_VIGNETTE_WIDTH,
                 function ($constraint) {
                     $constraint->aspectRatio();
                 }
@@ -178,13 +171,13 @@ class Vignette
     public function upload()
     {
         try {
-            Storage::disk(self::_REMOTE_STORAGE_DISK)->put(
+            Storage::disk(self::REMOTE_STORAGE_DISK)->put(
                 $this->relativePath(),
                 $this->getData()
             );
 
             /** Once uploaded, we are setting the channel_path on the remote to public visibility  */
-            Storage::disk(self::_REMOTE_STORAGE_DISK)->setVisibility(
+            Storage::disk(self::REMOTE_STORAGE_DISK)->setVisibility(
                 $this->channelId(),
                 'public'
             );
@@ -209,7 +202,7 @@ class Vignette
                 $this->relativePath()
             );
             /** removing local vig */
-            Storage::disk(self::_REMOTE_STORAGE_DISK)->delete(
+            Storage::disk(self::REMOTE_STORAGE_DISK)->delete(
                 $this->relativePath()
             );
         } catch (\Exception $exception) {
@@ -218,7 +211,7 @@ class Vignette
                     $this->relativePath() .
                     " has failed with message {{$e->getMessage()}}."
             );
-            throw $e;
+            throw $exception;
         }
         return true;
     }
@@ -230,6 +223,6 @@ class Vignette
      */
     public static function defaultUrl()
     {
-        return env('THUMBS_URL') . '/' . self::_DEFAULT_VIGNETTE_FILE;
+        return env('THUMBS_URL') . '/' . self::DEFAULT_VIGNETTE_FILE;
     }
 }

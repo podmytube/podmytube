@@ -102,8 +102,6 @@ class Channel extends Model
 
     /**
      * We are getting active subscriptions for the channel.
-     *
-     * @return model the current subscription
      */
     public function subscription()
     {
@@ -223,9 +221,9 @@ class Channel extends Model
         return $this->podcast_title ?? $this->channel_name;
     }
 
-    public function explicit()
+    public function explicit(): bool
     {
-        return $this->explicit == 1 ? true : false;
+        return $this->explicit === 1 ? true : false;
     }
 
     public function createdAt()
@@ -333,11 +331,11 @@ class Channel extends Model
     public function hasFilter()
     {
         return (isset($this->accept_video_by_tag) &&
-            $this->accept_video_by_tag != null) ||
+            $this->accept_video_by_tag !== null) ||
             (isset($this->reject_video_by_keyword) &&
-                $this->reject_video_by_keyword != null) ||
+                $this->reject_video_by_keyword !== null) ||
             (isset($this->reject_video_too_old) &&
-                $this->reject_video_too_old != null);
+                $this->reject_video_too_old !== null);
     }
 
     public function getFilters()
@@ -346,18 +344,18 @@ class Channel extends Model
         if (!$this->hasFilter()) {
             return $results;
         }
-        if ($this->accept_video_by_tag != null) {
+        if ($this->accept_video_by_tag !== null) {
             $results[] = Lang::get('messages.accept_video_by_tag', [
                 'tag' => $this->accept_video_by_tag,
             ]);
             //"accept only videos with tag " . $this->accept_video_by_tag;
         }
-        if ($this->reject_video_by_keyword != null) {
+        if ($this->reject_video_by_keyword !== null) {
             $results[] = Lang::get('messages.reject_video_by_keyword', [
                 'keyword' => $this->reject_video_by_keyword,
             ]);
         }
-        if ($this->reject_video_too_old != null) {
+        if ($this->reject_video_too_old !== null) {
             $results[] = Lang::get('messages.reject_video_too_old', [
                 'date' => $this->reject_video_too_old->format(
                     Lang::get('localized.dateFormat')

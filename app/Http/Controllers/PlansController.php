@@ -23,7 +23,7 @@ class PlansController extends Controller
         try {
             $stripePlans = PlanService::getStripePlans(
                 [Plan::WEEKLY_PLAN_ID, Plan::DAILY_PLAN_ID],
-                env('APP_ENV') == 'production' ? true : false
+                env('APP_ENV') === 'production' ? true : false
             );
         } catch (\Exception $exception) {
             session()->flash('message', __('messages.a_problem_occur'));

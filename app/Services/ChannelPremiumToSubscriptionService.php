@@ -3,6 +3,7 @@
  * This class will be used (for a short time) to convert old
  * channel premium registration to subscription model registration
  */
+
 namespace App\Services;
 
 use App\Channel;
@@ -81,9 +82,9 @@ class ChannelPremiumToSubscriptionService
              * if billed yearly we are fixing it to last day of this month + 1 year
              */
             $endsAt = null;
-            if ($newPlanId != Plan::EARLY_PLAN_ID) {
+            if ($newPlanId !== Plan::EARLY_PLAN_ID) {
                 $endsAt = $today->copy()->addMonth();
-                if ($plan->billing_yearly == 1) {
+                if ($plan->billing_yearly === 1) {
                     $endsAt = $today->copy()->addYear();
                 }
             }
@@ -101,7 +102,7 @@ class ChannelPremiumToSubscriptionService
                 'updated_at' => Carbon::now(),
             ]);
         } catch (\Exception $exception) {
-            throw $e;
+            throw $exception;
         }
         return true;
     }
@@ -119,7 +120,7 @@ class ChannelPremiumToSubscriptionService
          * Accropolis was set to channel_premium=3 once upon a time to increase
          * nb of episodes generated
          */
-        if ($channel->channel_id == self::_ACCROPOLIS_CHANNEL_ID) {
+        if ($channel->channel_id === self::_ACCROPOLIS_CHANNEL_ID) {
             return Plan::ACCROPOLIS_PLAN_ID;
         }
 
