@@ -23,8 +23,8 @@ use Illuminate\Support\Facades\Lang;
  */
 class Channel extends Model
 {
-    const CREATED_AT = 'channel_createdAt';
-    const UPDATED_AT = 'channel_updatedAt';
+    public const CREATED_AT = 'channel_createdAt';
+    public const UPDATED_AT = 'channel_updatedAt';
 
     /**
      * the way to specify users.user_id is the key (and not users.id)

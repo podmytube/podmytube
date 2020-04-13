@@ -89,8 +89,10 @@ class ChannelCreateController extends Controller
                     'channel_id' => $channelId,
                     'channel_name' => $channelName,
                 ]);
-            } catch (QueryException $e) {
-                throw new ChannelCreationHasFailedException($e->getMessage());
+            } catch (QueryException $exception) {
+                throw new ChannelCreationHasFailedException(
+                    $exception->getMessage()
+                );
             }
 
             /**
@@ -102,8 +104,10 @@ class ChannelCreateController extends Controller
                     'channel_id' => $channelId,
                     'plan_id' => Plan::FREE_PLAN_ID,
                 ]);
-            } catch (QueryException $e) {
-                throw new SubscriptionHasFailedException($e->getMessage());
+            } catch (QueryException $exception) {
+                throw new SubscriptionHasFailedException(
+                    $exception->getMessage()
+                );
             }
 
             event(new ChannelRegistered($channel));
@@ -118,18 +122,18 @@ class ChannelCreateController extends Controller
                 ])
             );
             $request->session()->flash('messageClass', 'alert-success');
-        } catch (ChannelCreationInvalidUrlException | ChannelCreationInvalidChannelUrlException $e) {
+        } catch (ChannelCreationInvalidUrlException | ChannelCreationInvalidChannelUrlException $exception) {
             $request
                 ->session()
                 ->flash('message', __('messages.flash_channel_id_is_invalid'));
             $request->session()->flash('messageClass', 'alert-danger');
-        } catch (\Exception $exception) {
+        } catch (\Exception $exceptionxception) {
             /**
              * will catch
              * - SubscriptionHasFailedException
              * - ChannelCreationHasFailedException
              */
-            $request->session()->flash('message', $e->getMessage());
+            $request->session()->flash('message', $exception->getMessage());
             $request->session()->flash('messageClass', 'alert-danger');
         } finally {
             return redirect()->route('home');

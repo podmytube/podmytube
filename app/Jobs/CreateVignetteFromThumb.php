@@ -49,7 +49,7 @@ class CreateVignetteFromThumb implements ShouldQueue
         } catch (\Exception $exception) {
             throw new VignetteCreationFromThumbException(
                 "Creation of vignette from thumb {{$this->srcThumb}} for channel {{$this->srcThumb->channel_id}} has failed with message :" .
-                    $e->getMessage()
+                    $exception->getMessage()
             );
         }
     }

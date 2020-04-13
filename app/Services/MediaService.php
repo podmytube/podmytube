@@ -142,8 +142,6 @@ class MediaService
             $year = date('Y');
         }
 
-        $startDate = Carbon::createFromDate($year, $month);
-
         try {
             return Carbon::createMidnightDate($year, $month, 1);
         } catch (\Exception $exception) {

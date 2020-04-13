@@ -11,6 +11,7 @@ class SendChannelIsRegisteredEmail
      * Handle the event.
      *
      * @param  \App\Events\ChannelRegistered  $event
+     *
      * @return void
      */
     public function handle(OccursOnChannel $event): void
