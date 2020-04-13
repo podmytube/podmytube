@@ -6,7 +6,6 @@ use App\Channel;
 use App\Jobs\SendFeedBySFTP;
 use App\Podcast\PodcastBuilder;
 use App\Podcast\PodcastUrl;
-
 use Illuminate\Console\Command;
 
 class BatchPodcasts extends Command
@@ -37,32 +36,26 @@ class BatchPodcasts extends Command
      */
     public function handle()
     {
-        $channels = null;
-        switch ($optionTyped = $this->argument('batchToProcess')) {
-            case 'free':
-                $channels = Channel::freeChannels();
-                break;
-            case 'paying':
-                $channels = Channel::payingChannels();
-                break;
-            case 'early':
-                $channels = Channel::earlyBirdsChannels();
-                break;
-            case 'all':
-                $channels = Channel::allActiveChannels();
-                break;
-            default:
-                throw new \RuntimeException(
-                    "Option $optionTyped is not a valid one. Options available : free/paying/early/all."
-                );
+        $optionAndMethods = [
+            'free' => 'freeChannels',
+            'paying' => 'payingChannels',
+            'early' => 'earlyBirdsChannels',
+            'all' => 'allActiveChannels',
+        ];
+        $optionTyped = $this->argument('batchToProcess');
+        if (!isset($optionAndMethods[$optionTyped])) {
+            throw new \RuntimeException(
+                "Option {$optionTyped} is not a valid one. Options available : free/paying/early/all."
+            );
         }
+        $method = $optionAndMethods[$optionTyped];
+        $channels = Channel::$method();
 
         if (!$channels->count()) {
-            if ($this->getOutput()->isVerbose()) {
-                $this->info(
-                    "There is no channels to generate for option {{$optionTyped}}"
-                );
-            }
+            $this->info(
+                "There is no channels to generate for option {{$optionTyped}}",
+                'v'
+            );
             return true;
         }
 
@@ -71,7 +64,7 @@ class BatchPodcasts extends Command
             $bar->start();
         }
 
-        foreach ($channels as $channel) {
+        $channels->map(function ($channel) use ($bar) {
             try {
                 if (PodcastBuilder::prepare($channel)->save()) {
                     // uploading feed
@@ -84,15 +77,13 @@ class BatchPodcasts extends Command
             if ($this->getOutput()->isVerbose()) {
                 $bar->advance();
             }
-        }
+        });
 
         if ($this->getOutput()->isVerbose()) {
             $bar->finish();
         }
 
-        if ($this->getOutput()->isVeryVerbose()) {
-            $this->info(PHP_EOL . implode(PHP_EOL, $this->getSuccess()));
-        }
+        $this->info(PHP_EOL . implode(PHP_EOL, $this->getSuccess()), 'v');
 
         /**
          * Used with a crontab errors will be sent by email if any.

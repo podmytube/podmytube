@@ -2,13 +2,10 @@
 
 namespace App\Podcast;
 
-use App\Podcast\ItunesCategory;
-use App\Podcast\ItunesOwner;
-
 class ItunesHeader implements IsRenderableInterface
 {
-    const TYPE_EPISODIC = 'episodic';
-    const TYPE_SERIAL = 'serial';
+    public const TYPE_EPISODIC = 'episodic';
+    public const TYPE_SERIAL = 'serial';
 
     /** @var string title */
     protected $title;
@@ -22,7 +19,7 @@ class ItunesHeader implements IsRenderableInterface
     /** @var string imageUrl */
     protected $imageUrl;
 
-    /** @var boolean explicit */
+    /** @var bool explicit */
     protected $explicit;
 
     /** @var ItunesCategory category object*/
@@ -120,7 +117,7 @@ class ItunesHeader implements IsRenderableInterface
 
     protected function setType(string $type = self::TYPE_EPISODIC)
     {
-        if ($type == self::TYPE_EPISODIC || $type == self::TYPE_SERIAL) {
+        if ($type === self::TYPE_EPISODIC || $type === self::TYPE_SERIAL) {
             $this->type = $type;
         }
     }

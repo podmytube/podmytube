@@ -11,9 +11,11 @@ class MediaService
 {
     /**
      * This function will get list of medias ordered by status (grabbed or not).
+     *
      * @param Channel $channel the channel object we want medias
-     * @param integer $month to define wanted period (by default current month)
-     * @param integer $year to define wanted period (by default current year)
+     * @param int $month to define wanted period (by default current month)
+     * @param int $year to define wanted period (by default current year)
+     *
      * @return array
      */
     public static function getMediasStatusByPeriodForChannel(
@@ -40,14 +42,16 @@ class MediaService
                 ->where('channel_id', $channel->channel_id)
                 ->orderBy('published_at', 'asc')
                 ->get();
-        } catch (\Exception $e) {
-            throw $e;
+        } catch (\Exception $exception) {
+            throw $exception;
         }
     }
 
     /**
      * This function will return the number of episodes already grabbed for one channel.
+     *
      * @param Channel $channel_id the channel
+     *
      * @return int the number of episodes grabbed this month for this channel
      */
     public static function getNbEpisodesAlreadyDownloadedThisMonth(
@@ -61,15 +65,17 @@ class MediaService
                 ->whereNotNull('grabbed_at')
                 ->where('channel_id', $channel->channel_id)
                 ->count();
-        } catch (\Exception $e) {
-            throw $e;
+        } catch (\Exception $exception) {
+            throw $exception;
         }
     }
 
     /**
      * This function will return the episodes already grabbed for one channel during the specified month.
+     *
      * @param Channel $channel_id the channel
-     * @param integer $month month num wanted
+     * @param int $month month num wanted
+     *
      * @return int the number of episodes grabbed this month for this channel
      */
     public static function getGrabbedMediasFor(
@@ -85,16 +91,18 @@ class MediaService
                 ->whereNotNull('grabbed_at')
                 ->where('channel_id', $channel->channel_id)
                 ->get();
-        } catch (\Exception $e) {
-            throw $e;
+        } catch (\Exception $exception) {
+            throw $exception;
         }
     }
 
     /**
      * This function will return the episodes list published for one channel for one period.
+     *
      * @param Channel $channel_id the channel
      * @param int $month the numeric version of the month to obtain
      * @param int|null $year the numeric version of the month to obtain (default will be current year)
+     *
      * @return model the list of published episodes during this month for this channel
      */
     public static function getPublishedMediasFor(
@@ -109,13 +117,14 @@ class MediaService
             )
                 ->where('channel_id', $channel->channel_id)
                 ->get();
-        } catch (\Exception $e) {
-            throw $e;
+        } catch (\Exception $exception) {
+            throw $exception;
         }
     }
 
     /**
-     * This function will set one month beginning period (IE last day of previous month at 00h00)
+     * This function will set one month beginning period (IE last day of previous month at 00h00).
+     *
      * @param int $month the numeric version month to get the end
      * @param int|null $year the numeric version of the end
      */
@@ -133,17 +142,16 @@ class MediaService
             $year = date('Y');
         }
 
-        $startDate = carbon::createFromDate($year, $month);
-
         try {
-            return carbon::createMidnightDate($year, $month, 1);
-        } catch (\Exception $e) {
-            throw $e;
+            return Carbon::createMidnightDate($year, $month, 1);
+        } catch (\Exception $exception) {
+            throw $exception;
         }
     }
 
     /**
-     * This function will set one month ending period (IE last day of the month at 23h59)
+     * This function will set one month ending period (IE last day of the month at 23h59).
+     *
      * @param int $month the numeric version month to get the end
      * @param int|null $year the numeric version of the end
      */
@@ -160,11 +168,11 @@ class MediaService
         }
 
         try {
-            return (new Carbon("$year-$month-1"))
+            return (new Carbon("{$year}-{$month}-1"))
                 ->modify('last day of this month')
                 ->setTime(23, 59, 59);
-        } catch (\Exception $e) {
-            throw $e;
+        } catch (\Exception $exception) {
+            throw $exception;
         }
     }
 }

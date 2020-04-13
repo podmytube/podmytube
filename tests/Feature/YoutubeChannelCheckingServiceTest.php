@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
-use Artisan;
-use Tests\TestCase;
+use App\Exceptions\YoutubeApiInvalidChannelIdException;
 use App\Services\YoutubeChannelCheckingService;
-
-//use Illuminate\Foundation\Testing\RefreshDatabase;
+use Artisan;
+use Illuminate\Support\Facades\Config;
+use Tests\TestCase;
 
 class YoutubeChannelCheckingServiceTest extends TestCase
 {
@@ -18,23 +18,31 @@ class YoutubeChannelCheckingServiceTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
-        putenv('APP_ENV=local');
+        Config::set('APP_ENV', 'testing');
+        Artisan::call('db:seed');
+    }
+
+    public function tearDown(): void
+    {
+        parent::setUp();
+        Artisan::call('config:clear');
     }
 
     public function testWrongChannelIdShouldThrowException()
     {
-        $this->expectException(\Exception::class);
-        YoutubeChannelCheckingService::getChannelName("JeDouteQueCeChannelExiste");
+        $this->expectException(YoutubeApiInvalidChannelIdException::class);
+        YoutubeChannelCheckingService::init('JeDouteQueCeChannelExisteUnJour');
     }
 
     public function testPewDiePieChannelShoudlBeValidForLong()
     {
-        $channel_id = self::PEWDIEPIE_CHANNEL_ID;
-        $channelName = YoutubeChannelCheckingService::getChannelName($channel_id);
+        $channelName = YoutubeChannelCheckingService::init(
+            self::PEWDIEPIE_CHANNEL_ID
+        )->getChannelName();
         $this->assertEquals(
             'PewDiePie',
             $channelName,
-            "Either PewDiePie channel {https://www.youtube.com/channel/UC-lHJZR3Gqxm24_Vd_AJ5Yw} has been stopped, either there is something wrong.");
+            'Either PewDiePie channel {https://www.youtube.com/channel/UC-lHJZR3Gqxm24_Vd_AJ5Yw} has been stopped, either there is something wrong.'
+        );
     }
 }

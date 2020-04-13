@@ -24,8 +24,8 @@ class ThumbRequest extends FormRequest
     public function rules()
     {
         return [
-            'new_thumb_file' =>
-                'required|dimensions:min_width=1400,min_height=1400,max_width=3000,max_height=3000,ratio=1',
+            // prettier-ignore
+            'new_thumb_file' => 'required|dimensions:min_width=1400,min_height=1400,max_width=3000,max_height=3000,ratio=1',
         ];
     }
 

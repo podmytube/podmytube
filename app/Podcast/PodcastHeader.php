@@ -3,8 +3,6 @@
 namespace App\Podcast;
 
 use App\Channel;
-use App\Podcast\ItunesHeader;
-use App\Podcast\PodcastCover;
 use App\Thumb;
 
 class PodcastHeader

@@ -6,6 +6,7 @@ use Artisan;
 use App\ApiKey;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Config;
 
 class ApiKeyModelTest extends TestCase
 {
@@ -18,28 +19,38 @@ class ApiKeyModelTest extends TestCase
     {
         parent::setUp();
         Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
-        $this->developmentKeys = ApiKey::make()->developmentKeys()->toArray();
-        $this->productionKeys = ApiKey::make()->productionKeys()->toArray();
+    }
+
+    public function tearDown(): void
+    {
+        parent::tearDown();
+        Artisan::call('config:clear');
     }
 
     public function testGetOneLocalIsRunningFile()
     {
-        putenv('APP_ENV=local');
+        Config::set('APP_ENV', 'local');
         $this->assertTrue(
             in_array(
                 Apikey::make()->getOne()->apikey,
-                $this->developmentKeys
+                ApiKey::where('environment', '=', ApiKey::LOCAL_ENV)
+                    ->get()
+                    ->pluck('apikey')
+                    ->toArray()
             )
         );
     }
 
     public function testGetOneProductionIsRunningFile()
     {
-        putenv('APP_ENV=production');
+        Config::set('APP_ENV', 'production');
         $this->assertTrue(
             in_array(
                 Apikey::make()->getOne()->apikey,
-                $this->productionKeys
+                ApiKey::where('environment', '=', ApiKey::PROD_ENV)
+                    ->get()
+                    ->pluck('apikey')
+                    ->toArray()
             )
         );
     }

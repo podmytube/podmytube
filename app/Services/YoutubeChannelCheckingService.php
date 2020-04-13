@@ -12,59 +12,51 @@ use App\Exceptions\YoutubeApiInvalidKeyException;
  */
 class YoutubeChannelCheckingService
 {
-    protected static $apiKey;
-    protected static $youtubeObj;
-    protected static $youtubeChannelInformations;
+    protected $apiKey;
+    protected $youtubeObj;
+    protected $youtubeChannelInformations;
 
-    /**
-     * this function will grab the youtube api key and obtain some data from youtube about the channelId
-     * @throws Exception
-     * @param String $channelId
-     */
-    protected static function init(string $channelId)
+    private function __construct(string $channelId)
     {
-        self::$apiKey = ApiKey::make()->getOne()->apikey;
-        if (empty(self::$apiKey)) {
+        $this->apiKey = ApiKey::make()->getOne()->apikey;
+        if ($this->apiKey === null) {
             throw new YoutubeApiInvalidKeyException(
-                'YOUTUBE_API_KEY is not set in tne env file'
+                'We failed to obtain a valid api key.'
             );
         }
 
         /**
          * Setting api key
          */
-        self::$youtubeObj = new \Madcoda\Youtube\Youtube([
-            'key' => self::$apiKey,
+        $this->youtubeObj = new \Madcoda\Youtube\Youtube([
+            'key' => $this->apiKey,
         ]);
 
         /**
          * Getting channel informations
          */
-        $result = self::$youtubeObj->getChannelById($channelId);
+        $result = $this->youtubeObj->getChannelById($channelId);
         if ($result === false) {
             throw new YoutubeApiInvalidChannelIdException(
-                "Cannot get channel information for this channel {{$channelId}}"
+                "Cannot get channel information for this channel {$channelId}"
             );
         }
 
-        self::$youtubeChannelInformations = $result;
+        $this->youtubeChannelInformations = $result;
+    }
+
+    public static function init(...$params)
+    {
+        return new static(...$params);
     }
 
     /**
      * This function wil extract the name.
-     * @param String $channelId
+     *
      * @return String channel name
      */
-    public static function getChannelName(string $channelId)
+    public function getChannelName(): string
     {
-        try {
-            if (empty(self::$youtubeChannelInformations)) {
-                self::init($channelId);
-            }
-
-            return self::$youtubeChannelInformations->snippet->title;
-        } catch (\Exception $e) {
-            throw $e;
-        }
+        return $this->youtubeChannelInformations->snippet->title;
     }
 }
