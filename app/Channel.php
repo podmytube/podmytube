@@ -4,6 +4,7 @@
  * the channel model to access database same table name
  *
  * @package PodMyTube
+ *
  * @author Frederick Tyteca <fred@podmytube.com>
  */
 
@@ -22,6 +23,9 @@ use Illuminate\Support\Facades\Lang;
  */
 class Channel extends Model
 {
+    public const CREATED_AT = 'channel_createdAt';
+    public const UPDATED_AT = 'channel_updatedAt';
+
     /**
      * the way to specify users.user_id is the key (and not users.id)
      */
@@ -31,18 +35,6 @@ class Channel extends Model
      * the channel_id is not one auto_increment integer
      */
     public $incrementing = false;
-
-    /**
-     * Laravel is updating the created_at default field on the first record.
-     * this way our custom field channel_createdAt is correctly used
-     */
-    const CREATED_AT = 'channel_createdAt';
-
-    /**
-     * Laravel is updating the updated_at default field on every update of the record.
-     * this way our custom field channel_updatedAt is correctly used
-     */
-    const UPDATED_AT = 'channel_updatedAt';
 
     /**
      * those fields are converted into Carbon mutator
@@ -110,8 +102,6 @@ class Channel extends Model
 
     /**
      * We are getting active subscriptions for the channel.
-     *
-     * @return model the current subscription
      */
     public function subscription()
     {
@@ -145,31 +135,11 @@ class Channel extends Model
     }
 
     /**
-     * Provides the channel youtube url
-     *
-     * @return string the podcast url
-     */
-    public function getYoutubeUrlAttribute(): string
-    {
-        return 'https://www.youtube.com/channel/' . $this->channel_id;
-    }
-
-    /**
-     * Provides the channel pic
-     *
-     * @param Object $channel the channel we need the picture
-     *
-     * @return string the picture url
-     */
-    public static function pictureUrl($channel)
-    {
-        return $_ENV['APP_PODCAST_URL'] . '/' . $channel->channel_id;
-    }
-
-    /**
      * extract the id from a youtube channel url after checkingits valid
-     * https://www.youtube.com/channel/UCZ0o1IeuSSceEixZbSATWtw => UCZ0o1IeuSSceEixZbSATWtw
+     * https://www.youtube.com/channel/UCZ0o1IeuSSceEixZbSATWtw => UCZ0o1IeuSSceEixZbSATWtw.
+     *
      * @param string $channelUrl the url of the channel to register
+     *
      * @return string the channel id
      */
     public static function extractChannelIdFromUrl(string $channelUrl)
@@ -251,9 +221,9 @@ class Channel extends Model
         return $this->podcast_title ?? $this->channel_name;
     }
 
-    public function explicit()
+    public function explicit(): bool
     {
-        return $this->explicit == 1 ? true : false;
+        return $this->explicit === 1 ? true : false;
     }
 
     public function createdAt()
@@ -272,7 +242,7 @@ class Channel extends Model
             DIRECTORY_SEPARATOR .
             $this->channelId() .
             DIRECTORY_SEPARATOR .
-            PodcastBuilder::_FEED_FILENAME;
+            PodcastBuilder::FEED_FILENAME;
     }
 
     /**
@@ -283,8 +253,8 @@ class Channel extends Model
     public static function earlyBirdsChannels(): Collection
     {
         return self::where([
-            ["active", 1],
-            ["subscriptions.plan_id", "=", Plan::EARLY_PLAN_ID],
+            ['active', 1],
+            ['subscriptions.plan_id', '=', Plan::EARLY_PLAN_ID],
         ])
             ->with('User')
             ->with('Category')
@@ -307,8 +277,8 @@ class Channel extends Model
     public static function freeChannels(): Collection
     {
         return self::where([
-            ["active", 1],
-            ["subscriptions.plan_id", "=", Plan::FREE_PLAN_ID],
+            ['active', 1],
+            ['subscriptions.plan_id', '=', Plan::FREE_PLAN_ID],
         ])
             ->with('User')
             ->with('Category')
@@ -332,8 +302,8 @@ class Channel extends Model
     public static function payingChannels(): Collection
     {
         return self::where([
-            ["active", 1],
-            ["subscriptions.plan_id", ">", Plan::EARLY_PLAN_ID],
+            ['active', 1],
+            ['subscriptions.plan_id', '>', Plan::EARLY_PLAN_ID],
         ])
             ->with('User')
             ->with('Category')
@@ -350,7 +320,7 @@ class Channel extends Model
 
     public static function allActiveChannels()
     {
-        return self::where("active", 1)
+        return self::where('active', 1)
             ->with('User')
             ->with('Category')
             ->with('Thumb')
@@ -361,11 +331,11 @@ class Channel extends Model
     public function hasFilter()
     {
         return (isset($this->accept_video_by_tag) &&
-            $this->accept_video_by_tag != null) ||
+            $this->accept_video_by_tag !== null) ||
             (isset($this->reject_video_by_keyword) &&
-                $this->reject_video_by_keyword != null) ||
+                $this->reject_video_by_keyword !== null) ||
             (isset($this->reject_video_too_old) &&
-                $this->reject_video_too_old != null);
+                $this->reject_video_too_old !== null);
     }
 
     public function getFilters()
@@ -374,18 +344,18 @@ class Channel extends Model
         if (!$this->hasFilter()) {
             return $results;
         }
-        if ($this->accept_video_by_tag != null) {
+        if ($this->accept_video_by_tag !== null) {
             $results[] = Lang::get('messages.accept_video_by_tag', [
                 'tag' => $this->accept_video_by_tag,
             ]);
             //"accept only videos with tag " . $this->accept_video_by_tag;
         }
-        if ($this->reject_video_by_keyword != null) {
+        if ($this->reject_video_by_keyword !== null) {
             $results[] = Lang::get('messages.reject_video_by_keyword', [
                 'keyword' => $this->reject_video_by_keyword,
             ]);
         }
-        if ($this->reject_video_too_old != null) {
+        if ($this->reject_video_too_old !== null) {
             $results[] = Lang::get('messages.reject_video_too_old', [
                 'date' => $this->reject_video_too_old->format(
                     Lang::get('localized.dateFormat')

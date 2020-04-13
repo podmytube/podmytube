@@ -12,27 +12,27 @@ use Illuminate\Queue\SerializesModels;
 
 class SendFeedBySFTP implements ShouldQueue
 {
-  use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-  protected $channel;
+    protected $channel;
 
-  /**
-   * Create a new job instance.
-   *
-   * @return void
-   */
-  public function __construct(Channel $channel)
-  {
-    $this->channel = $channel;
-  }
+    /**
+     * Create a new job instance.
+     *
+     * @return void
+     */
+    public function __construct(Channel $channel)
+    {
+        $this->channel = $channel;
+    }
 
-  /**
-   * Execute the job.
-   *
-   * @return void
-   */
-  public function handle()
-  {
-    PodcastUpload::prepare($this->channel)->upload();
-  }
+    /**
+     * Execute the job.
+     *
+     * @return void
+     */
+    public function handle()
+    {
+        PodcastUpload::prepare($this->channel)->upload();
+    }
 }

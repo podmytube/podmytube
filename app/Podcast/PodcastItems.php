@@ -3,8 +3,6 @@
 namespace App\Podcast;
 
 use App\Channel;
-use App\Exceptions\PodcastHasNoMediaToPublish;
-use App\Modules\EnclosureUrl;
 
 class PodcastItems
 {
@@ -35,7 +33,7 @@ class PodcastItems
             ->get()
             /** removing item not grabbed */
             ->filter(function ($element) {
-                return !empty($element->grabbed_at);
+                return $element->grabbed_at !== null;
             });
     }
 

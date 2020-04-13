@@ -18,7 +18,7 @@ class CategoriesTableSeeder extends Seeder
         /* DB::statement('SET FOREIGN_KEY_CHECKS=0');
         Category::truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1'); */
-
+        DB::table('categories')->delete();
         /**
          * Parents categories
          */

@@ -5,8 +5,10 @@
  * Mainly redefine the primary key and the relationship between one channel and its playlist
  *
  * @package PodMyTube
+ *
  * @author Frederick Tyteca <fred@podmytube.com>
  */
+
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
@@ -16,8 +18,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Playlist extends Model
 {
-  /**
-   * the way to specify users.user_id is the key (and not users.id)
-   */
-  protected $primaryKey = 'playlist_id';
+    /**
+     * the way to specify users.user_id is the key (and not users.id)
+     */
+    protected $primaryKey = 'playlist_id';
 }

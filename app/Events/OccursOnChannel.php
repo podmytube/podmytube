@@ -2,8 +2,7 @@
 
 namespace App\Events;
 
-use App\Channel as Channel;
-use Log;
+use App\Channel;
 
 /**
  * Simple abstract class for event that will receive a channel object.

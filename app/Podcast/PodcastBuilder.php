@@ -8,11 +8,11 @@ use Illuminate\Support\Facades\Storage;
 
 class PodcastBuilder
 {
-    public const _LOCAL_FEED_DISK = 'feeds';
+    public const LOCAL_FEED_DISK = 'feeds';
 
-    public const _REMOTE_FEED_DISK = 'sftpfeeds';
+    public const REMOTE_FEED_DISK = 'sftpfeeds';
 
-    public const _FEED_FILENAME = 'podcast.xml';
+    public const FEED_FILENAME = 'podcast.xml';
 
     /** @var Channel $channel is a Model/Channel object for the channel to generate */
     protected $channel;
@@ -34,7 +34,7 @@ class PodcastBuilder
 
     public function exists()
     {
-        return Storage::disk(self::_LOCAL_FEED_DISK)->exists(
+        return Storage::disk(self::LOCAL_FEED_DISK)->exists(
             $this->relativePath()
         );
     }
@@ -59,7 +59,7 @@ class PodcastBuilder
     public function save()
     {
         if (
-            !Storage::disk(self::_LOCAL_FEED_DISK)->put(
+            !Storage::disk(self::LOCAL_FEED_DISK)->put(
                 $this->relativePath(),
                 $this->render()
             )
@@ -73,16 +73,14 @@ class PodcastBuilder
 
     public function path()
     {
-        return Storage::disk(self::_LOCAL_FEED_DISK)->path(
+        return Storage::disk(self::LOCAL_FEED_DISK)->path(
             $this->relativePath()
         );
     }
 
     public function url()
     {
-        return Storage::disk(self::_LOCAL_FEED_DISK)->url(
-            $this->relativePath()
-        );
+        return Storage::disk(self::LOCAL_FEED_DISK)->url($this->relativePath());
     }
 
     /**
@@ -94,7 +92,7 @@ class PodcastBuilder
     {
         return $this->channel->channelId() .
             DIRECTORY_SEPARATOR .
-            self::_FEED_FILENAME;
+            self::FEED_FILENAME;
     }
 
     /**
