@@ -6,6 +6,7 @@
  * this controller is handling the new channel form part.
  *
  * @package PodMyTube
+ *
  * @author Frederick Tyteca <fred@podmytube.com>
  */
 
@@ -75,9 +76,9 @@ class ChannelCreateController extends Controller
             /**
              * Getting basic channel informations
              */
-            $channelName = YoutubeChannelCheckingService::getChannelName(
+            $channelName = YoutubeChannelCheckingService::init(
                 $channelId
-            );
+            )->getChannelName();
 
             /**
              * Channel creating
@@ -122,7 +123,7 @@ class ChannelCreateController extends Controller
                 ->session()
                 ->flash('message', __('messages.flash_channel_id_is_invalid'));
             $request->session()->flash('messageClass', 'alert-danger');
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             /**
              * will catch
              * - SubscriptionHasFailedException

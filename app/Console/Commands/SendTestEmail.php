@@ -96,7 +96,7 @@ class SendTestEmail extends Command
         $this->comment(
             'Email {' .
                 $this->availableEmails[$emailIdToSend]['label'] .
-                "} has been sent to $email."
+                "} has been sent to {$email}."
         );
     }
 }

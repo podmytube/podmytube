@@ -11,6 +11,7 @@ class PlanService
      *
      * @param integer $planId
      * @param boolean $isLive
+     *
      * @return void
      */
     public static function getStripePlans(array $plansId, bool $isLive = true)
@@ -20,7 +21,7 @@ class PlanService
             foreach ($plansId as $planId) {
                 $results[$planId] = self::getStripePlan($planId, $isLive);
             }
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             throw $e;
         }
         return $results;
@@ -31,15 +32,17 @@ class PlanService
      *
      * @param integer $planId
      * @param boolean $isLive
+     *
      * @return void
      */
     public static function getStripePlan(int $planId, bool $isLive = true)
     {
         try {
-            return Plan::find($planId)->stripePlan->where('is_live', $isLive)->first()->stripe_id;
-        } catch (\Exception $e) {
+            return Plan::find($planId)
+                ->stripePlan->where('is_live', $isLive)
+                ->first()->stripe_id;
+        } catch (\Exception $exception) {
             throw $e;
         }
     }
-
 }

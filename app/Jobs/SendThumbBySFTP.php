@@ -13,39 +13,39 @@ use Illuminate\Queue\SerializesModels;
 
 class SendThumbBySFTP implements ShouldQueue
 {
-  use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-  protected $thumbToSend;
-  /**
-   * Create a new job instance.
-   *
-   * @return void
-   */
-  public function __construct(Thumb $thumb)
-  {
-    $this->thumbToSend = $thumb;
-  }
-
-  /**
-   * Execute the job.
-   *
-   * @return void
-   */
-  public function handle()
-  {
-    if (!$this->thumbToSend->exists()) {
-      throw new ThumbDoesNotExistsException(
-        "Thumb {{$this->thumbToSend->id}} file does not exists. hard to send over sftp."
-      );
+    protected $thumbToSend;
+    /**
+     * Create a new job instance.
+     *
+     * @return void
+     */
+    public function __construct(Thumb $thumb)
+    {
+        $this->thumbToSend = $thumb;
     }
 
-    try {
-      $this->thumbToSend->upload();
-    } catch (\Exception $e) {
-      throw new ThumbUploadHasFailedException(
-        "The upload of thumb {{$this->thumbToSend}} for channel {{$this->thumbToSend->channel_id}} has failed with message :" .
-          $e->getMessage()
-      );
+    /**
+     * Execute the job.
+     *
+     * @return void
+     */
+    public function handle()
+    {
+        if (!$this->thumbToSend->exists()) {
+            throw new ThumbDoesNotExistsException(
+                "Thumb {{$this->thumbToSend->id}} file does not exists. hard to send over sftp."
+            );
+        }
+
+        try {
+            $this->thumbToSend->upload();
+        } catch (\Exception $exception) {
+            throw new ThumbUploadHasFailedException(
+                "The upload of thumb {{$this->thumbToSend}} for channel {{$this->thumbToSend->channel_id}} has failed with message :" .
+                    $e->getMessage()
+            );
+        }
     }
-  }
 }

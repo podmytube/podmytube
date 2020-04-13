@@ -20,7 +20,11 @@ class PodcastUrlTest extends TestCase
     {
         $channel = factory(Channel::class)->create();
         $this->assertEquals(
-            getenv('PODCASTS_URL') . DIRECTORY_SEPARATOR . $channel->channelId() . DIRECTORY_SEPARATOR . PodcastUrl::_FEED_FILENAME,
+            getenv('PODCASTS_URL') .
+                DIRECTORY_SEPARATOR .
+                $channel->channelId() .
+                DIRECTORY_SEPARATOR .
+                PodcastUrl::FEED_FILENAME,
             PodcastUrl::prepare($channel)->get()
         );
     }
