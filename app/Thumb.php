@@ -144,7 +144,7 @@ class Thumb extends Model
                 $this->channelId(),
                 'public'
             );
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             Log::alert(
                 'Uploading image ' .
                     $this->relativePath .
@@ -159,6 +159,7 @@ class Thumb extends Model
      *
      * @param UploadedFile $uploadedFile the uploaded file
      * @param Channel $channel to be associated with thumb
+     *
      * @return Thumb object
      */
     public function attachItToChannel(
@@ -180,7 +181,7 @@ class Thumb extends Model
                     'file_disk' => self::_LOCAL_STORAGE_DISK,
                 ]
             );
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             throw new ThumbUploadHasFailedException(
                 "Attaching new thumb to channel {{$channel->channelId()}} has failed with message : " .
                     $e->getMessage()

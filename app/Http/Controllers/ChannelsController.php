@@ -2,7 +2,9 @@
 
 /**
  * the channel controller
+ *
  * @package PodMyTube
+ *
  * @author Frederick Tyteca <fred@podmytube.com>
  */
 
@@ -14,7 +16,6 @@ use App\Events\ChannelUpdated;
 use App\Http\Requests\ChannelRequest;
 use App\Services\ChannelService;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
 
 /**
  * the channel controller class.
@@ -23,6 +24,7 @@ class ChannelsController extends Controller
 {
     /**
      * get list of user's channel
+     *
      * @return Response
      */
     public function index()
@@ -31,7 +33,7 @@ class ChannelsController extends Controller
             $channels = ChannelService::getAuthenticatedUserChannels(
                 Auth::user()
             );
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             $channels = [];
         }
         return view('channel.index', compact('channels'));
@@ -40,7 +42,8 @@ class ChannelsController extends Controller
     /**
      * display all informations about one channel
      *
-     * @param  ChannelRequest      $request
+     * @param  ChannelRequest $request
+     *
      * @return Response*
      */
 
@@ -53,8 +56,9 @@ class ChannelsController extends Controller
     /**
      * display the channel form in order to edit channel data
      *
-     * @param  ChannelRequest          $request
-     * @param  Channel              $channel
+     * @param ChannelRequest $request
+     * @param Channel $channel
+     *
      * @return Response
      */
     public function edit(Channel $channel)
@@ -69,6 +73,7 @@ class ChannelsController extends Controller
      *
      * @param  ChannelRequest $request the form request
      * @param  Channel $channel channel concerned
+     *
      * @return Response
      */
     public function update(ChannelRequest $request, Channel $channel)

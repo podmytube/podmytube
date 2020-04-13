@@ -22,6 +22,7 @@ class CategoryMigrationService
      * This function will create one channelCategories model for one channel according to its category.
      *
      * @param object App\Channel model $channel the channel to convert
+     *
      * @return boolean mainly for tests
      */
     public static function transform(Channel $channel)
@@ -43,7 +44,7 @@ class CategoryMigrationService
              */
             $channel->category_id = $newCategoryId;
             $channel->save();
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             throw $e;
         }
         return true;
@@ -51,8 +52,10 @@ class CategoryMigrationService
 
     /**
      * This function will return the next plan id for the channel specified.
+     *
      * @param object App\Channel $channel model object
-     * @return integer newPlanId
+     *
+     * @return int newPlanId
      */
     public static function getVersion2019Category(string $previousCategory)
     {

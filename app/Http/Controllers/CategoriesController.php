@@ -3,8 +3,10 @@
  * the categories controller
  *
  * @package PodMyTube
+ *
  * @author Frederick Tyteca <fred@podmytube.com>
  */
+
 namespace App\Http\Controllers;
 
 /**
@@ -12,5 +14,5 @@ namespace App\Http\Controllers;
  */
 class CategoriesController extends Controller
 {
-    //
+    //Code
 }

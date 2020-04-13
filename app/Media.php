@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Channel;
 use App\Exceptions\InvalidStartDateException;
 use App\Modules\EnclosureUrl;
 use Carbon\Carbon;
@@ -32,6 +31,7 @@ class Media extends Model
 
     /**
      * define a scope to get medias grabbed between 2 dates.
+     *
      * @param object query is the query object
      * @param array value should have 2 date in it [0] is the startDate, [1] is the endDate
      */
@@ -54,6 +54,7 @@ class Media extends Model
 
     /**
      * define a scope to get medias published between 2 dates.
+     *
      * @param object query is the query object
      * @param array value should have 2 date in it [0] is the startDate, [1] is the endDate
      */

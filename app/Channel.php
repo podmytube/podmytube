@@ -4,6 +4,7 @@
  * the channel model to access database same table name
  *
  * @package PodMyTube
+ *
  * @author Frederick Tyteca <fred@podmytube.com>
  */
 
@@ -22,6 +23,9 @@ use Illuminate\Support\Facades\Lang;
  */
 class Channel extends Model
 {
+    const CREATED_AT = 'channel_createdAt';
+    const UPDATED_AT = 'channel_updatedAt';
+
     /**
      * the way to specify users.user_id is the key (and not users.id)
      */
@@ -31,18 +35,6 @@ class Channel extends Model
      * the channel_id is not one auto_increment integer
      */
     public $incrementing = false;
-
-    /**
-     * Laravel is updating the created_at default field on the first record.
-     * this way our custom field channel_createdAt is correctly used
-     */
-    const CREATED_AT = 'channel_createdAt';
-
-    /**
-     * Laravel is updating the updated_at default field on every update of the record.
-     * this way our custom field channel_updatedAt is correctly used
-     */
-    const UPDATED_AT = 'channel_updatedAt';
 
     /**
      * those fields are converted into Carbon mutator
@@ -145,31 +137,11 @@ class Channel extends Model
     }
 
     /**
-     * Provides the channel youtube url
-     *
-     * @return string the podcast url
-     */
-    public function getYoutubeUrlAttribute(): string
-    {
-        return 'https://www.youtube.com/channel/' . $this->channel_id;
-    }
-
-    /**
-     * Provides the channel pic
-     *
-     * @param Object $channel the channel we need the picture
-     *
-     * @return string the picture url
-     */
-    public static function pictureUrl($channel)
-    {
-        return $_ENV['APP_PODCAST_URL'] . '/' . $channel->channel_id;
-    }
-
-    /**
      * extract the id from a youtube channel url after checkingits valid
-     * https://www.youtube.com/channel/UCZ0o1IeuSSceEixZbSATWtw => UCZ0o1IeuSSceEixZbSATWtw
+     * https://www.youtube.com/channel/UCZ0o1IeuSSceEixZbSATWtw => UCZ0o1IeuSSceEixZbSATWtw.
+     *
      * @param string $channelUrl the url of the channel to register
+     *
      * @return string the channel id
      */
     public static function extractChannelIdFromUrl(string $channelUrl)
@@ -272,7 +244,7 @@ class Channel extends Model
             DIRECTORY_SEPARATOR .
             $this->channelId() .
             DIRECTORY_SEPARATOR .
-            PodcastBuilder::_FEED_FILENAME;
+            PodcastBuilder::FEED_FILENAME;
     }
 
     /**
@@ -283,8 +255,8 @@ class Channel extends Model
     public static function earlyBirdsChannels(): Collection
     {
         return self::where([
-            ["active", 1],
-            ["subscriptions.plan_id", "=", Plan::EARLY_PLAN_ID],
+            ['active', 1],
+            ['subscriptions.plan_id', '=', Plan::EARLY_PLAN_ID],
         ])
             ->with('User')
             ->with('Category')
@@ -307,8 +279,8 @@ class Channel extends Model
     public static function freeChannels(): Collection
     {
         return self::where([
-            ["active", 1],
-            ["subscriptions.plan_id", "=", Plan::FREE_PLAN_ID],
+            ['active', 1],
+            ['subscriptions.plan_id', '=', Plan::FREE_PLAN_ID],
         ])
             ->with('User')
             ->with('Category')
@@ -332,8 +304,8 @@ class Channel extends Model
     public static function payingChannels(): Collection
     {
         return self::where([
-            ["active", 1],
-            ["subscriptions.plan_id", ">", Plan::EARLY_PLAN_ID],
+            ['active', 1],
+            ['subscriptions.plan_id', '>', Plan::EARLY_PLAN_ID],
         ])
             ->with('User')
             ->with('Category')
@@ -350,7 +322,7 @@ class Channel extends Model
 
     public static function allActiveChannels()
     {
-        return self::where("active", 1)
+        return self::where('active', 1)
             ->with('User')
             ->with('Category')
             ->with('Thumb')

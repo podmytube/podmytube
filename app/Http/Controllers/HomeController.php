@@ -4,6 +4,7 @@
  * the home controller. Only used to display the welcome page project for now.
  *
  * @package PodMyTube
+ *
  * @author Frederick Tyteca <fred@podmytube.com>
  */
 
@@ -31,7 +32,7 @@ class HomeController extends Controller
             $channels = ChannelService::getAuthenticatedUserChannels(
                 Auth::user()
             );
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             $channels = collect([]);
         }
 

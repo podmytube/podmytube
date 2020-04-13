@@ -25,7 +25,7 @@ class AddCategoryId extends Migration
             Artisan::call('db:seed', [
                 '--class' => channelCategoriesTableSeeder::class
             ]);
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             echo $e->getMessage() . PHP_EOL;
         }*/
     }

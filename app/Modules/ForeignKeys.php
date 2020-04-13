@@ -45,6 +45,7 @@ class ForeignKeys
      *
      * @param string $table the table we want the foreign keys
      * @param string $database the database
+     *
      * @return ForeignKeys
      */
     public static function create(string $table, string $database = null)

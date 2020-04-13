@@ -14,43 +14,43 @@ use Illuminate\Queue\SerializesModels;
 
 class CreateVignetteFromThumb implements ShouldQueue
 {
-  use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-  protected $srcThumb;
+    protected $srcThumb;
 
-  /**
-   * Create a new job instance.
-   *
-   * @return void
-   */
-  public function __construct(Thumb $srcThumb)
-  {
-    $this->srcThumb = $srcThumb;
-  }
-
-  /**
-   * Execute the job.
-   *
-   * @return void
-   */
-  public function handle()
-  {
-    if (!$this->srcThumb->exists()) {
-      throw new ThumbDoesNotExistsException(
-        "Thumb {{$this->srcThumb->fileName()}} file does not exists. hard to create vignette from it."
-      );
+    /**
+     * Create a new job instance.
+     *
+     * @return void
+     */
+    public function __construct(Thumb $srcThumb)
+    {
+        $this->srcThumb = $srcThumb;
     }
 
-    try {
-      /** chaining vignette creation and upload */
-      Vignette::fromThumb($this->srcThumb)
-        ->makeIt()
-        ->upload();
-    } catch (\Exception $e) {
-      throw new VignetteCreationFromThumbException(
-        "Creation of vignette from thumb {{$this->srcThumb}} for channel {{$this->srcThumb->channel_id}} has failed with message :" .
-          $e->getMessage()
-      );
+    /**
+     * Execute the job.
+     *
+     * @return void
+     */
+    public function handle()
+    {
+        if (!$this->srcThumb->exists()) {
+            throw new ThumbDoesNotExistsException(
+                "Thumb {{$this->srcThumb->fileName()}} file does not exists. hard to create vignette from it."
+            );
+        }
+
+        try {
+            /** chaining vignette creation and upload */
+            Vignette::fromThumb($this->srcThumb)
+                ->makeIt()
+                ->upload();
+        } catch (\Exception $exception) {
+            throw new VignetteCreationFromThumbException(
+                "Creation of vignette from thumb {{$this->srcThumb}} for channel {{$this->srcThumb->channel_id}} has failed with message :" .
+                    $e->getMessage()
+            );
+        }
     }
-  }
 }

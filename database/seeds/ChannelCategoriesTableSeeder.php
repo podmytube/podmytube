@@ -16,7 +16,12 @@ class ChannelCategoriesTableSeeder extends Seeder
         /**
          * getting channels informations
          */
-        $channels = Channel::select(['channel_id', 'channel_name', 'category', 'channel_createdAt'])
+        $channels = Channel::select([
+            'channel_id',
+            'channel_name',
+            'category',
+            'channel_createdAt',
+        ])
             ->whereNotNull('category')
             ->get();
 
@@ -26,7 +31,7 @@ class ChannelCategoriesTableSeeder extends Seeder
         foreach ($channels as $channel) {
             try {
                 CategoryMigrationService::transform($channel);
-            } catch (\Exception $e) {
+            } catch (\Exception $exception) {
                 throw $e;
             }
         }

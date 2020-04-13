@@ -1,9 +1,10 @@
 <?php
 
 /**
- * routes for PodMyTube web application (for now its dashboard)
+ * routes for PodMyTube web application (for now its dashboard).
  *
  * @package PodMyTube Dashboard
+ *
  * @author Frederick Tyteca <fred@podmytube.com>
  */
 
@@ -80,9 +81,7 @@ Route::patch('/channel/{channel}', 'ChannelsController@update'); */
     /**
      * Medias
      */
-    Route::resources([
-        'channel.medias' => 'MediasController',
-    ]);
+    Route::resource('channel.medias', 'MediasController')->only(['index']);
 
     /**
      * Thumb

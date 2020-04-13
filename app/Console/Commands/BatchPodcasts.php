@@ -6,7 +6,6 @@ use App\Channel;
 use App\Jobs\SendFeedBySFTP;
 use App\Podcast\PodcastBuilder;
 use App\Podcast\PodcastUrl;
-
 use Illuminate\Console\Command;
 
 class BatchPodcasts extends Command
@@ -53,7 +52,7 @@ class BatchPodcasts extends Command
                 break;
             default:
                 throw new \RuntimeException(
-                    "Option $optionTyped is not a valid one. Options available : free/paying/early/all."
+                    "Option {$optionTyped} is not a valid one. Options available : free/paying/early/all."
                 );
         }
 

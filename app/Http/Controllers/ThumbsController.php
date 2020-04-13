@@ -6,7 +6,6 @@ use App\Channel;
 use App\Events\ThumbUpdated;
 use App\Http\Requests\ThumbRequest;
 use App\Thumb;
-use Illuminate\Http\Request;
 
 class ThumbsController extends Controller
 {
@@ -30,7 +29,8 @@ class ThumbsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(ThumbRequest $request, Channel $channel)
@@ -58,6 +58,7 @@ class ThumbsController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  \App\Channel $channel
+     *
      * @return \Illuminate\Http\Response
      */
     public function edit(Channel $channel)

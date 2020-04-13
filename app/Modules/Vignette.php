@@ -130,7 +130,7 @@ class Vignette
             throw new VignetteCreationFromMissingThumbException(
                 'Thumb file { ' .
                     $this->thumb->relativePath .
-                    " } on disk {{ $this->thumb->file_disk }} for channel {{$this->channel_id}} is missing."
+                    " } on disk {$this->thumb->file_disk} for channel {$this->channel_id} is missing."
             );
         }
         try {
@@ -151,7 +151,7 @@ class Vignette
                 $this->relativePath(),
                 (string) $image->encode()
             );
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             throw new VignetteCreationFromThumbException(
                 "Creation of vignette from thumb {{$this->thumb}} for channel {{$this->thumb->channel_id}} has failed with message :" .
                     $e->getMessage()
@@ -188,7 +188,7 @@ class Vignette
                 $this->channelId(),
                 'public'
             );
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             $message =
                 "Uploading vignette {{$this->fileName()}} to remote has failed with message : " .
                 $e->getMessage();
@@ -212,7 +212,7 @@ class Vignette
             Storage::disk(self::_REMOTE_STORAGE_DISK)->delete(
                 $this->relativePath()
             );
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             Log::alert(
                 'Deleting vignette ' .
                     $this->relativePath() .
