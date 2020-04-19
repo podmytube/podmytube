@@ -2,8 +2,6 @@
 
 namespace App\Modules;
 
-use App\Exceptions\PeriodsHelperInvalidMonthException;
-use App\Exceptions\PeriodsHelperInvalidYearException;
 use Carbon\Carbon;
 
 class PeriodsHelper
@@ -14,8 +12,8 @@ class PeriodsHelper
     private const MONTH_MIN = 1;
     private const MONTH_MAX = 12;
 
-    protected $startDate = null;
-    protected $endDate = null;
+    protected $startDate;
+    protected $endDate;
 
     /**
      * constructor.
@@ -23,39 +21,15 @@ class PeriodsHelper
      * @param int $month the month we want (by default, it is current one)
      * @param int $year the year we want (by default, it is current one)
      */
-    private function __construct(int $month = null, int $year = null)
-    {
-        /**
-         * If $month is set with negative value or value more than 12, Carbon is calculatin the month.
-         * I don't want this to happen.
-         */
-        if (isset($month)) {
-            if (self::MONTH_MIN > $month || $month > self::MONTH_MAX) {
-                throw new PeriodsHelperInvalidMonthException(
-                    "Month {$month} should be set between {" .
-                        self::MONTH_MIN .
-                        '} and {' .
-                        self::MONTH_MAX .
-                        '}. '
-                );
-            }
-        } else {
-            $month = date('n');
-        }
+    private function __construct(
+        ?int $monthParam = null,
+        ?int $yearParam = null
+    ) {
+        $month = $monthParam ?? date('n');
+        $year = $yearParam ?? date('Y');
 
-        if (isset($year)) {
-            if (self::YEAR_MIN >= $year || $year > self::YEAR_MAX) {
-                throw new PeriodsHelperInvalidYearException(
-                    "Year {$year} should be set between {" .
-                        self::YEAR_MIN .
-                        '} and {' .
-                        self::YEAR_MAX .
-                        '}. '
-                );
-            }
-        } else {
-            $year = date('Y');
-        }
+        $this->isNumberBetween($month, self::MONTH_MIN, self::MONTH_MAX);
+        $this->isNumberBetween($year, self::YEAR_MIN, self::YEAR_MAX);
 
         $this->startDate = Carbon::createMidnightDate(
             $year,
@@ -67,7 +41,6 @@ class PeriodsHelper
             $month,
             1
         )->endOfMonth();
-
         if ($this->endDate->greaterThan(Carbon::createMidnightDate())) {
             $this->endDate = Carbon::createMidnightDate();
         }
@@ -79,7 +52,7 @@ class PeriodsHelper
      * @param int $month the month we want (by default, it is current one)
      * @param int $year the year we want (by default, it is current one)
      */
-    public static function create(int $month = null, int $year = null)
+    public static function create(?int $month = null, ?int $year = null)
     {
         return new static($month, $year);
     }
@@ -102,5 +75,15 @@ class PeriodsHelper
     public function endDate(): Carbon
     {
         return $this->endDate;
+    }
+
+    protected function isNumberBetween(int $number, int $min, int $max)
+    {
+        if ($min <= $number && $number <= $max) {
+            return true;
+        }
+        throw new \InvalidArgumentException(
+            "Number {$number} should be set between {$min} and {$max}"
+        );
     }
 }
