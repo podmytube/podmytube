@@ -76,12 +76,6 @@ class Channel extends Model
         'ftp_pasv',
     ];
 
-    /** this will append a new extra property to the model */
-    /* protected $attributes = [
-        'feed_url',
-        'youtube_url',
-    ]; */
-
     /**
      * define the relationship between one user and one channel.
      *
@@ -196,7 +190,8 @@ class Channel extends Model
      */
     public function setRejectVideoTooOldAttribute($date)
     {
-        if ($date = \DateTime::createFromFormat('d/m/Y', $date)) {
+        $date = \DateTime::createFromFormat('d/m/Y', $date);
+        if ($date !== false) {
             $this->attributes['reject_video_too_old'] = $date->format('Y-m-d');
         } else {
             $this->attributes['reject_video_too_old'] = null;

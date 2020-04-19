@@ -4,17 +4,22 @@ namespace App\Podcast;
 
 class ItunesOwner implements IsRenderableInterface
 {
-    public $name;
-    public $email;
+    protected $name;
+    protected $email;
 
     private function __construct(
-        string $itunesName = null,
-        string $itunesEmail = null
+        ?string $itunesName = null,
+        ?string $itunesEmail = null
     ) {
-        $this->setItunesName($itunesName);
-        if (isset($itunesEmail)) {
-            $this->setItunesEmail($itunesEmail);
+        $this->name = $itunesName ?? null;
+
+        if (
+            $itunesEmail &&
+            filter_var($itunesEmail, FILTER_VALIDATE_EMAIL) === false
+        ) {
+            throw new \InvalidArgumentException('Email address is not valid');
         }
+        $this->email = $itunesEmail;
     }
 
     public static function prepare(...$params)
@@ -22,18 +27,14 @@ class ItunesOwner implements IsRenderableInterface
         return new static(...$params);
     }
 
-    public function setItunesName(string $itunesName = null)
+    public function name()
     {
-        $this->name = $itunesName ?? null;
+        return $this->name;
     }
 
-    public function setItunesEmail(string $itunesEmail)
+    public function email()
     {
-        if (filter_var($itunesEmail, FILTER_VALIDATE_EMAIL) === false) {
-            throw new \InvalidArgumentException('Email address is not valid');
-        }
-
-        $this->email = $itunesEmail;
+        return $this->email;
     }
 
     public function render(): string
