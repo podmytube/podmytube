@@ -2,6 +2,7 @@
 
 namespace App\Modules;
 
+use App\Helpers\NumberChecker;
 use Carbon\Carbon;
 
 class PeriodsHelper
@@ -28,8 +29,8 @@ class PeriodsHelper
         $month = $monthParam ?? date('n');
         $year = $yearParam ?? date('Y');
 
-        $this->isNumberBetween($month, self::MONTH_MIN, self::MONTH_MAX);
-        $this->isNumberBetween($year, self::YEAR_MIN, self::YEAR_MAX);
+        NumberChecker::isBetween($month, self::MONTH_MIN, self::MONTH_MAX);
+        NumberChecker::isBetween($year, self::YEAR_MIN, self::YEAR_MAX);
 
         $this->startDate = Carbon::createMidnightDate(
             $year,
@@ -75,15 +76,5 @@ class PeriodsHelper
     public function endDate(): Carbon
     {
         return $this->endDate;
-    }
-
-    protected function isNumberBetween(int $number, int $min, int $max)
-    {
-        if ($min <= $number && $number <= $max) {
-            return true;
-        }
-        throw new \InvalidArgumentException(
-            "Number {$number} should be set between {$min} and {$max}"
-        );
     }
 }

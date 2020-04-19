@@ -9,22 +9,16 @@ class ItunesHeader implements IsRenderableInterface
 
     /** @var string title */
     protected $title;
-
     /** @var string author */
     protected $author;
-
+    /** @var bool $explicit true if the podcast is explicit */
+    protected $explicit;
     /** @var string type (episodic or serial) */
     protected $type;
-
     /** @var string imageUrl */
     protected $imageUrl;
-
-    /** @var bool explicit */
-    protected $explicit;
-
     /** @var ItunesCategory category object*/
     protected $itunesCategory;
-
     /** @var ItunesOwner itunesOwner object */
     protected $itunesOwner;
 
@@ -34,6 +28,7 @@ class ItunesHeader implements IsRenderableInterface
         $this->author = $attributes['author'] ?? null;
         $this->explicit = $attributes['explicit'] ?? null;
 
+        
         if (isset($attributes['imageUrl'])) {
             $this->setImageUrl($attributes['imageUrl']);
         }
