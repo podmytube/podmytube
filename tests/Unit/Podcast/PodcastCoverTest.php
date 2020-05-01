@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Podcast;
 
 use Tests\TestCase;
 use App\Podcast\PodcastCover;
