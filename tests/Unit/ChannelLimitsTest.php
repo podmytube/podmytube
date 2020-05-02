@@ -29,9 +29,20 @@ class ChannelLimitsTest extends TestCase
 
     public function testChannelHasNotReachedItsLimits()
     {
-        $this->assertEquals(2, $this->channel->numberOfEpisodesAllowed());
-        $this->assertEquals(0, $this->channel->numberOfEpisodesGrabbed());
-        $this->assertFalse($this->channel->hasReachedItslimit());
+        $this->assertEquals(
+            2,
+            $this->channel->numberOfEpisodesAllowed(),
+            'We were expecting only 2 episodes allowed for free plan.'
+        );
+        $this->assertEquals(
+            0,
+            $this->channel->numberOfEpisodesGrabbed(),
+            'Channel was expected to have 0 episodes grabbed.'
+        );
+        $this->assertFalse(
+            $this->channel->hasReachedItslimit(),
+            'Channel (with no grabbed eipsodes) was not expected to have reached its limits.'
+        );
     }
 
     public function testChannelHasReachedItsLimitsThisMonth()
@@ -40,9 +51,16 @@ class ChannelLimitsTest extends TestCase
             'channel_id' => $this->channel->channel_id,
             'grabbed_at' => Carbon::now(),
         ]);
-        $this->assertEquals(2, $this->channel->numberOfEpisodesAllowed());
+        $this->assertEquals(
+            2,
+            $this->channel->numberOfEpisodesAllowed(),
+            'We were expecting only 2 episodes allowed for free plan.'
+        );
         $this->assertEquals(2, $this->channel->numberOfEpisodesGrabbed());
-        $this->assertTrue($this->channel->hasReachedItslimit());
+        $this->assertTrue(
+            $this->channel->hasReachedItslimit(),
+            'Channel was expected to have reached its limits.'
+        );
     }
 
     public function testChannelHasReachedItsLimitsOnDecember2019()
@@ -52,18 +70,24 @@ class ChannelLimitsTest extends TestCase
         factory(\App\Media::class, 2)->create([
             'channel_id' => $this->channel->channel_id,
             'published_at' => null,
-            'grabbed_at' => Carbon::create(2019, 12, 1),
+            'grabbed_at' => Carbon::create($expectedYear, $expectedMonth, 1),
         ]);
-        $this->assertEquals(2, $this->channel->numberOfEpisodesAllowed());
+        $this->assertEquals(
+            2,
+            $this->channel->numberOfEpisodesAllowed(),
+            'We were expecting only 2 episodes allowed for free plan.'
+        );
         $this->assertEquals(
             2,
             $this->channel->numberOfEpisodesGrabbed(
                 $expectedMonth,
                 $expectedYear
-            )
+            ),
+            'Channel should have 2 episodes grabbed.'
         );
         $this->assertTrue(
-            $this->channel->hasReachedItslimit($expectedMonth, $expectedYear)
+            $this->channel->hasReachedItslimit($expectedMonth, $expectedYear),
+            'Channel was expected to have reached its limits.'
         );
     }
 }
