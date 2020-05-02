@@ -362,4 +362,21 @@ class Channel extends Model
         }
         return $results;
     }
+
+    public function scopeActive($query)
+    {
+        return $query->where('active', '=', 1);
+    }
+
+    public static function filterByPlanType(string $planType): Collection
+    {
+        $foo=[
+            'free' => Plan::where('id','=',Plan::FREE_PLAN_ID);
+        ];
+        return Channel::active()
+            ->get()
+            ->filter(function ($channel) use ($plan) {
+                return $channel->subscription->plan_id === $plan->id;
+            });
+    }
 }
