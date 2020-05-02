@@ -37,7 +37,7 @@ class PeriodsHelperTest extends TestCase
     public function testCurrentMonthEndDateIsToday()
     {
         $this->assertEquals(
-            Carbon::createMidnightDate(date('Y'), date('m'), date('d')),
+            Carbon::today()->endOfDay(),
             PeriodsHelper::create(date('m'), date('Y'))->endDate()
         );
     }

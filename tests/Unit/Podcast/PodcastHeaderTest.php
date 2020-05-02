@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Podcast;
 
 use App\Thumb;
 use App\Channel;
