@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class Plan extends Model
 {
@@ -31,5 +32,18 @@ class Plan extends Model
     public function stripePlan()
     {
         return $this->HasMany(StripePlan::class);
+    }
+
+    public function scopeFree(Builder $query)
+    {
+        return $query->where('id', '=', self::FREE_PLAN_ID);
+    }
+
+    public function scopePaying(Builder $query)
+    {
+        return $query->whereNotIn('id', [
+            self::FREE_PLAN_ID,
+            self::EARLY_PLAN_ID,
+        ]);
     }
 }
