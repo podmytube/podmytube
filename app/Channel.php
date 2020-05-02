@@ -14,6 +14,7 @@ use App\Exceptions\ChannelCreationInvalidChannelUrlException;
 use App\Exceptions\ChannelCreationInvalidUrlException;
 use App\Exceptions\ChannelCreationOnlyYoutubeIsAccepted;
 use App\Podcast\PodcastBuilder;
+use App\Traits\HasLimits;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Lang;
@@ -23,6 +24,8 @@ use Illuminate\Support\Facades\Lang;
  */
 class Channel extends Model
 {
+    use HasLimits;
+
     public const CREATED_AT = 'channel_createdAt';
     public const UPDATED_AT = 'channel_updatedAt';
 

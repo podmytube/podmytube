@@ -42,8 +42,8 @@ class PeriodsHelper
             $month,
             1
         )->endOfMonth();
-        if ($this->endDate->greaterThan(Carbon::createMidnightDate())) {
-            $this->endDate = Carbon::createMidnightDate();
+        if ($this->endDate->greaterThan(Carbon::today()->endOfDay())) {
+            $this->endDate = Carbon::today()->endOfDay();
         }
     }
 
