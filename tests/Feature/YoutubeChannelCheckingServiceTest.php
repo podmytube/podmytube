@@ -4,10 +4,10 @@ namespace Tests\Feature;
 
 use App\ApiKey;
 use App\Exceptions\YoutubeApiInvalidChannelIdException;
-use App\Exceptions\YoutubeApiInvalidKeyException;
 use App\Services\YoutubeChannelCheckingService;
 use Artisan;
 use Illuminate\Support\Facades\Config;
+use Madcoda\Youtube\Youtube;
 use Tests\TestCase;
 
 class YoutubeChannelCheckingServiceTest extends TestCase
@@ -23,9 +23,11 @@ class YoutubeChannelCheckingServiceTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Config::set('APP_ENV', 'testing');
+        Artisan::call('config:clear');
         Artisan::call('db:seed');
-        $this->apikey = ApiKey::make();
+        $this->youtubeObj = new Youtube([
+            'key' => ApiKey::make()->getOne(),
+        ]);
     }
 
     public function tearDown(): void
@@ -38,7 +40,7 @@ class YoutubeChannelCheckingServiceTest extends TestCase
     {
         $this->expectException(YoutubeApiInvalidChannelIdException::class);
         YoutubeChannelCheckingService::init(
-            $this->apikey,
+            $this->youtubeObj,
             'JeDouteQueCeChannelExisteUnJour'
         );
     }
@@ -46,7 +48,7 @@ class YoutubeChannelCheckingServiceTest extends TestCase
     public function testPewDiePieChannelShoudlBeValidForLong()
     {
         $channelName = YoutubeChannelCheckingService::init(
-            $this->apikey,
+            $this->youtubeObj,
             self::PEWDIEPIE_CHANNEL_ID
         )->getChannelName();
         $this->assertEquals(

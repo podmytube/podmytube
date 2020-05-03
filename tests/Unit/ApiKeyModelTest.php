@@ -7,6 +7,7 @@ use App\ApiKey;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 
 class ApiKeyModelTest extends TestCase
 {
@@ -18,43 +19,39 @@ class ApiKeyModelTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
-        $this->developmentKeys = factory(ApiKey::class, 2)->create([
-            'environment' => ApiKey::LOCAL_ENV,
-        ]);
-        $this->productionKeys = factory(ApiKey::class, 3)->create([
-            'environment' => ApiKey::PROD_ENV,
-        ]);
-    }
 
-    public function tearDown(): void
-    {
-        parent::tearDown();
-        Artisan::call('config:clear');
+        // when only this test is run no problem.
+        // however sometime RefreshDatabases does not clear table.
+        // so I'm forcing the truncate to me made
+        DB::table('api_keys')->delete();
+
+        $this->developmentKeys = factory(ApiKey::class, 2)
+            ->create([
+                'environment' => ApiKey::LOCAL_ENV,
+            ])
+            ->map(function ($apikey) {
+                return $apikey->apikey;
+            });
+        $this->productionKeys = factory(ApiKey::class, 3)
+            ->create([
+                'environment' => ApiKey::PROD_ENV,
+            ])
+            ->map(function ($apikey) {
+                return $apikey->apikey;
+            });
     }
 
     public function testGetOneLocalIsRunningFile()
     {
-        Config::set('APP_ENV', 'local');
-        $this->assertTrue(
-            in_array(
-                Apikey::make()->getOne()->apikey,
-                
-            )
-        );
+        Config::set('app.env', 'local');
+        $apikey = Apikey::make()->getOne();
+        $this->assertTrue($this->developmentKeys->contains($apikey));
     }
 
     public function testGetOneProductionIsRunningFile()
     {
-        Config::set('APP_ENV', 'production');
-        $this->assertTrue(
-            in_array(
-                Apikey::make()->getOne()->apikey,
-                ApiKey::where('environment', '=', ApiKey::PROD_ENV)
-                    ->get()
-                    ->pluck('apikey')
-                    ->toArray()
-            )
-        );
+        Config::set('app.env', 'production');
+        $apikey = Apikey::make()->getOne();
+        $this->assertTrue($this->productionKeys->contains($apikey));
     }
 }
