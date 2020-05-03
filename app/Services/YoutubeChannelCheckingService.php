@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\ApiKey;
 use App\Exceptions\YoutubeApiInvalidChannelIdException;
-use App\Exceptions\YoutubeApiInvalidKeyException;
 
 /**
  * This class is there to get some basic informations about one channel.
@@ -16,20 +15,15 @@ class YoutubeChannelCheckingService
     protected $youtubeObj;
     protected $youtubeChannelInformations;
 
-    private function __construct(string $channelId)
+    private function __construct(ApiKey $apikey, string $channelId)
     {
-        $this->apiKey = ApiKey::make()->getOne()->apikey;
-        if ($this->apiKey === null) {
-            throw new YoutubeApiInvalidKeyException(
-                'We failed to obtain a valid api key.'
-            );
-        }
-
+        $this->apiKey = $apikey;
+        
         /**
          * Setting api key
          */
         $this->youtubeObj = new \Madcoda\Youtube\Youtube([
-            'key' => $this->apiKey,
+            'key' => $this->apiKey->getOne()->apiKey,
         ]);
 
         /**

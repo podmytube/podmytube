@@ -59,7 +59,6 @@ class ChannelUpdateCommand extends Command
             return $channel->hasReachedItslimit() === false;
         });
 
-        dump($channels);
         // get youtube videos for each channel
 
         // save it as a media in db

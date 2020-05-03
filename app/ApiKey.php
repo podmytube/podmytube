@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
@@ -11,29 +12,53 @@ class ApiKey extends Model
     public const PROD_ENV = 1;
     public const LOCAL_ENV = 2;
 
-    protected function getApiKey()
+    public function quotas()
     {
-        return $this->environment()
-            ->inRandomOrder()
-            ->first();
+        return $this->hasMany(Quota::class, 'apikey_id');
+    }
+
+    protected function getOne()
+    {
+        return $this->usableKeysForToday()->first()->apikey;
     }
 
     public function scopeEnvironment(Builder $query)
-    {
-        return $query->where('environment', '=', $this->environment);
-    }
-
-    public function getOne()
     {
         switch (Config::get('APP_ENV')) {
             case 'local':
             case 'testing':
             case 'test':
-                $this->environment = self::LOCAL_ENV;
+                $environment = self::LOCAL_ENV;
                 break;
             default:
-                $this->environment = self::PROD_ENV;
+                $environment = self::PROD_ENV;
         }
-        return $this->getApiKey();
+        return $query->where('environment', '=', $environment);
+    }
+
+    protected static function usableKeysForToday()
+    {
+        // getting keys according to current env
+        return self::environment()
+            ->get()
+            // calc sum of quota used for this key on today
+            ->map(function (ApiKey $apikey) {
+                $apikey->quotaUsed = 0;
+                if ($apikey->quotas->count()) {
+                    $apikey->quotaUsed = $apikey->quotas
+                        ->whereBetween('created_at', [
+                            Carbon::today(),
+                            Carbon::now(),
+                        ])
+                        ->sum('quota_used');
+                }
+                return $apikey;
+            })
+            // removing the one that have already passed the limit
+            ->filter(function ($apikey) {
+                return $apikey->quotaUsed < Quota::LIMIT_PER_DAY;
+            })
+            // ordering by quota used asc
+            ->sortBy('quotaUsed');
     }
 }

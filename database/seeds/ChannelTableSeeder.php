@@ -14,10 +14,7 @@ class ChannelTableSeeder extends Seeder
      */
     public function run()
     {
-        if (
-            App::environment(['local']) &&
-            Config::get('DB_CONNECTION') === 'mysql'
-        ) {
+        if (App::environment(['local']) && env('DB_CONNECTION') === 'mysql') {
             DB::statement('SET FOREIGN_KEY_CHECKS=0');
             Channel::truncate();
             DB::statement('SET FOREIGN_KEY_CHECKS=1');
