@@ -52,10 +52,11 @@ class ChannelUpdateCommand extends Command
         }
 
         // get channel(s) to refresh (free/early/all/..)
-        $channels = Channel::filterByPlans()->filter(function ($channel) {
+        $channels = Channel::byPlanType(
+            $this->argument('channelTypeToUpdate')
+        )->filter(function ($channel) {
             return $channel->hasReachedItslimit() === false;
         });
-
         dump(
             '==== channels to generated ====',
             $channels->pluck('channel_name')

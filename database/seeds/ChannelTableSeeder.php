@@ -3,6 +3,7 @@
 use App\Channel;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Config;
 
 class ChannelTableSeeder extends Seeder
 {
@@ -13,8 +14,13 @@ class ChannelTableSeeder extends Seeder
      */
     public function run()
     {
-        if (!App::environment('production')) {
-            DB::table('channels')->delete();
+        if (
+            App::environment(['local']) &&
+            Config::get('DB_CONNECTION') === 'mysql'
+        ) {
+            DB::statement('SET FOREIGN_KEY_CHECKS=0');
+            Channel::truncate();
+            DB::statement('SET FOREIGN_KEY_CHECKS=1');
 
             /**
              * creating my own user

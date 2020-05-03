@@ -15,6 +15,7 @@ use App\Exceptions\ChannelCreationInvalidUrlException;
 use App\Exceptions\ChannelCreationOnlyYoutubeIsAccepted;
 use App\Podcast\PodcastBuilder;
 use App\Traits\HasLimits;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Lang;
@@ -368,15 +369,26 @@ class Channel extends Model
         return $query->where('active', '=', 1);
     }
 
-    public static function filterByPlanType(string $planType): Collection
+    public static function byPlanType(string $planType): Collection
     {
-        $foo=[
-            'free' => Plan::where('id','=',Plan::FREE_PLAN_ID);
-        ];
-        return Channel::active()
-            ->get()
-            ->filter(function ($channel) use ($plan) {
-                return $channel->subscription->plan_id === $plan->id;
-            });
+        return Channel::select('channel_id', 'channel_name')
+            ->whereHas('subscription', function (
+                \Illuminate\Database\Eloquent\Builder $query
+            ) use ($planType) {
+                switch ($planType) {
+                    case 'free':
+                        $query->where('plan_id', '=', Plan::FREE_PLAN_ID);
+                        break;
+                    case 'paying':
+                        $query->whereNotIn('plan_id', [
+                            Plan::FREE_PLAN_ID,
+                            Plan::EARLY_PLAN_ID,
+                        ]);
+                        break;
+                    default:
+                        break;
+                }
+            })
+            ->get();
     }
 }
