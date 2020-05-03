@@ -2,7 +2,6 @@
 
 namespace Tests\Unit;
 
-use App\Modules\PeriodsHelper;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;

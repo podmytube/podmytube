@@ -6,8 +6,6 @@ use Illuminate\Support\Facades\DB;
 
 class CategoriesTableSeeder extends Seeder
 {
-
-
     /**
      * Run the database seeds.
      *
@@ -15,10 +13,13 @@ class CategoriesTableSeeder extends Seeder
      */
     public function run()
     {
-        /* DB::statement('SET FOREIGN_KEY_CHECKS=0');
-        Category::truncate();
-        DB::statement('SET FOREIGN_KEY_CHECKS=1'); */
-        DB::table('categories')->delete();
+        if (Config::get('DB_CONNECTION') === 'mysql') {
+            DB::statement('SET FOREIGN_KEY_CHECKS=0');
+            Category::truncate();
+            DB::statement('SET FOREIGN_KEY_CHECKS=1');
+        } else {
+            DB::table('categories')->delete();
+        }
         /**
          * Parents categories
          */
@@ -49,19 +50,24 @@ class CategoriesTableSeeder extends Seeder
          * Sub categories
          */
 
-        $artsId = Category::where("name", "arts")->first()->id;
-        $businessId = Category::where("name", "business")->first()->id;
-        $comedyId = Category::where("name", "comedy")->first()->id;
+        $artsId = Category::where('name', 'arts')->first()->id;
+        $businessId = Category::where('name', 'business')->first()->id;
+        $comedyId = Category::where('name', 'comedy')->first()->id;
         $educationId = Category::where('name', 'education')->first()->id;
         $fictionId = Category::where('name', 'fiction')->first()->id;
-        $healthFitnessId = Category::where('name', 'healthFitness')->first()->id;
+        $healthFitnessId = Category::where('name', 'healthFitness')->first()
+            ->id;
         $kidsFamilyId = Category::where('name', 'kidsFamily')->first()->id;
         $leisureId = Category::where('name', 'leisure')->first()->id;
         $musicId = Category::where('name', 'music')->first()->id;
         $newsId = Category::where('name', 'news')->first()->id;
-        $religionSpiritualityId = Category::where('name', 'religionSpirituality')->first()->id;
+        $religionSpiritualityId = Category::where(
+            'name',
+            'religionSpirituality'
+        )->first()->id;
         $scienceId = Category::where('name', 'science')->first()->id;
-        $societyCultureId = Category::where('name', 'societyCulture')->first()->id;
+        $societyCultureId = Category::where('name', 'societyCulture')->first()
+            ->id;
         $sportsId = Category::where('name', 'sports')->first()->id;
         $tvFilmId = Category::where('name', 'tvFilm')->first()->id;
 
