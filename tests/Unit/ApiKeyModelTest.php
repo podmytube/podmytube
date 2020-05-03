@@ -19,6 +19,12 @@ class ApiKeyModelTest extends TestCase
     {
         parent::setUp();
         Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
+        $this->developmentKeys = factory(ApiKey::class, 2)->create([
+            'environment' => ApiKey::LOCAL_ENV,
+        ]);
+        $this->productionKeys = factory(ApiKey::class, 3)->create([
+            'environment' => ApiKey::PROD_ENV,
+        ]);
     }
 
     public function tearDown(): void
@@ -33,10 +39,7 @@ class ApiKeyModelTest extends TestCase
         $this->assertTrue(
             in_array(
                 Apikey::make()->getOne()->apikey,
-                ApiKey::where('environment', '=', ApiKey::LOCAL_ENV)
-                    ->get()
-                    ->pluck('apikey')
-                    ->toArray()
+                
             )
         );
     }

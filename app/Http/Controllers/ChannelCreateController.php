@@ -12,6 +12,7 @@
 
 namespace App\Http\Controllers;
 
+use App\ApiKey;
 use App\Channel;
 use App\Events\ChannelRegistered;
 use App\Exceptions\ChannelCreationHasFailedException;
@@ -76,6 +77,12 @@ class ChannelCreateController extends Controller
             /**
              * Getting basic channel informations
              */
+            $apikey = ApiKey::make()->getOne()->apikey;
+        if ($this->apiKey === null) {
+            throw new YoutubeApiInvalidKeyException(
+                'We failed to obtain a valid api key.'
+            );
+        }
             $channelName = YoutubeChannelCheckingService::init(
                 $channelId
             )->getChannelName();

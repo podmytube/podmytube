@@ -14,8 +14,10 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        if (!App::environment('production')) {
-            DB::table('users')->delete();
+        if (App::environment(['local']) && env('DB_CONNECTION') === 'mysql') {
+            DB::statement('SET FOREIGN_KEY_CHECKS=0');
+            User::truncate();
+            DB::statement('SET FOREIGN_KEY_CHECKS=1');
 
             $data = [
                 [
