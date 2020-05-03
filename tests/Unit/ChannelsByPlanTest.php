@@ -8,6 +8,7 @@ use App\Subscription;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class ChannelsByPlanTest extends TestCase
@@ -20,7 +21,7 @@ class ChannelsByPlanTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Artisan::call('db:seed');
+        DB::table('channels')->delete();
     }
 
     public function testThereShouldBeOnlyPayingChannels()

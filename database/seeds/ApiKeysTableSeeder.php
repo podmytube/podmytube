@@ -13,7 +13,13 @@ class ApiKeysTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('api_keys')->delete();
+        if (env('DB_CONNECTION') === 'mysql') {
+            DB::statement('SET FOREIGN_KEY_CHECKS=0');
+            ApiKey::truncate();
+            DB::statement('SET FOREIGN_KEY_CHECKS=1');
+        } else {
+            DB::table('api_keys')->delete();
+        }
 
         $data = [
             [

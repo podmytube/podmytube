@@ -25,6 +25,8 @@ use App\Subscription;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
+use Madcoda\Youtube\Youtube;
 
 class ChannelCreateController extends Controller
 {
@@ -75,15 +77,17 @@ class ChannelCreateController extends Controller
             $user = Auth::user();
 
             /**
+             * get youtube obj
+             */
+            $youtubeObj = new Youtube([
+                'key' => ApiKey::make()->getOne(),
+            ]);
+
+            /**
              * Getting basic channel informations
              */
-            $apikey = ApiKey::make()->getOne()->apikey;
-        if ($this->apiKey === null) {
-            throw new YoutubeApiInvalidKeyException(
-                'We failed to obtain a valid api key.'
-            );
-        }
             $channelName = YoutubeChannelCheckingService::init(
+                $youtubeObj,
                 $channelId
             )->getChannelName();
 
@@ -134,12 +138,13 @@ class ChannelCreateController extends Controller
                 ->session()
                 ->flash('message', __('messages.flash_channel_id_is_invalid'));
             $request->session()->flash('messageClass', 'alert-danger');
-        } catch (\Exception $exceptionxception) {
+        } catch (\Exception $exception) {
             /**
              * will catch
              * - SubscriptionHasFailedException
              * - ChannelCreationHasFailedException
              */
+
             $request->session()->flash('message', $exception->getMessage());
             $request->session()->flash('messageClass', 'alert-danger');
         } finally {

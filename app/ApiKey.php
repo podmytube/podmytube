@@ -12,19 +12,22 @@ class ApiKey extends Model
     public const PROD_ENV = 1;
     public const LOCAL_ENV = 2;
 
+    /**
+     * define the relationship between an apikey and its quotas used.
+     */
     public function quotas()
     {
         return $this->hasMany(Quota::class, 'apikey_id');
     }
 
-    protected function getOne()
+    public function getOne()
     {
         return $this->usableKeysForToday()->first()->apikey;
     }
 
     public function scopeEnvironment(Builder $query)
     {
-        switch (Config::get('APP_ENV')) {
+        switch (config('app.env')) {
             case 'local':
             case 'testing':
             case 'test':
