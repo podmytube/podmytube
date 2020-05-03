@@ -2,9 +2,11 @@
 
 namespace App\Console\Commands;
 
+use App\ApiKey;
 use App\Channel;
 use App\Plan;
 use Illuminate\Console\Command;
+use Madcoda\Youtube\Youtube;
 
 class ChannelUpdateCommand extends Command
 {
@@ -59,7 +61,13 @@ class ChannelUpdateCommand extends Command
             return $channel->hasReachedItslimit() === false;
         });
 
+        // getting youtube instance with the right api key
+        $youtubeObj = new Youtube([
+            'key' => ApiKey::make()->getOne(),
+        ]);
+
         // get youtube videos for each channel
+        dump($channels);
 
         // save it as a media in db
     }
