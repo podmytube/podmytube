@@ -55,14 +55,11 @@ class ChannelUpdateCommand extends Command
         $channels = Channel::byPlanType(
             $this->argument('channelTypeToUpdate')
         )->filter(function ($channel) {
+            // quota reached control
             return $channel->hasReachedItslimit() === false;
         });
-        dump(
-            '==== channels to generated ====',
-            $channels->pluck('channel_name')
-        );
-        // quota reached control
 
+        dump($channels);
         // get youtube videos for each channel
 
         // save it as a media in db
