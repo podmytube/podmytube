@@ -26,7 +26,7 @@ class YoutubeChannelCheckingServiceTest extends TestCase
         Artisan::call('config:clear');
         Artisan::call('db:seed');
         $this->youtubeObj = new Youtube([
-            'key' => ApiKey::make()->getOne(),
+            'key' => ApiKey::make()->get(),
         ]);
     }
 

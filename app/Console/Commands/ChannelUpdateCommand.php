@@ -4,9 +4,9 @@ namespace App\Console\Commands;
 
 use App\ApiKey;
 use App\Channel;
-use App\Plan;
 use Illuminate\Console\Command;
 use Madcoda\Youtube\Youtube;
+use Madcoda\Youtube\YoutubeQuotas;
 
 class ChannelUpdateCommand extends Command
 {
@@ -63,11 +63,23 @@ class ChannelUpdateCommand extends Command
 
         // getting youtube instance with the right api key
         $youtubeObj = new Youtube([
-            'key' => ApiKey::make()->getOne(),
+            'key' => ApiKey::make()->get(),
         ]);
+        $youtubeObj->injectQuotaCalculator(new YoutubeQuotas());
+
+        if (!$channels->count()) {
+            $this->error(
+                "There is no channels with this kind of plan ({$this->argument(
+                    'channelTypeToUpdate'
+                )})"
+            );
+            return;
+        }
 
         // get youtube videos for each channel
-        dump($channels);
+        foreach ($channels as $channel) {
+            dump("{$channel->channel_name} ($channel->channel_id)");
+        }
 
         // save it as a media in db
     }

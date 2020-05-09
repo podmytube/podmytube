@@ -41,17 +41,17 @@ class ApiKeyModelTest extends TestCase
             });
     }
 
-    public function testGetOneLocalIsRunningFile()
+    public function testGetOneLocalIsRunningFine()
     {
         Config::set('app.env', 'local');
-        $apikey = Apikey::make()->getOne();
+        $apikey = Apikey::make()->get();
         $this->assertTrue($this->developmentKeys->contains($apikey));
     }
 
-    public function testGetOneProductionIsRunningFile()
+    public function testGetOneProductionIsRunningFine()
     {
         Config::set('app.env', 'production');
-        $apikey = Apikey::make()->getOne();
+        $apikey = Apikey::make()->get();
         $this->assertTrue($this->productionKeys->contains($apikey));
     }
 }

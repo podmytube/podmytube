@@ -2,15 +2,18 @@
 
 namespace App;
 
+use App\Exceptions\YoutubeNoApiKeyAvailableException;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Config;
 
 class ApiKey extends Model
 {
     public const PROD_ENV = 1;
     public const LOCAL_ENV = 2;
+
+    /** */
+    protected $selectedOne;
 
     /**
      * define the relationship between an apikey and its quotas used.
@@ -20,9 +23,23 @@ class ApiKey extends Model
         return $this->hasMany(Quota::class, 'apikey_id');
     }
 
-    public function getOne()
+    public function selectOne()
     {
-        return $this->usableKeysForToday()->first()->apikey;
+        if (!$this->usableKeysForToday()->count()) {
+            throw new YoutubeNoApiKeyAvailableException(
+                'There is no youtube api key available.'
+            );
+        }
+        $this->selectedOne = $this->usableKeysForToday()->first();
+        return $this;
+    }
+
+    public function get()
+    {
+        if ($this->selectedOne === null) {
+            $this->selectOne();
+        }
+        return $this->selectedOne->apikey;
     }
 
     public function scopeEnvironment(Builder $query)

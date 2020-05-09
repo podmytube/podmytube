@@ -80,7 +80,7 @@ class ChannelCreateController extends Controller
              * get youtube obj
              */
             $youtubeObj = new Youtube([
-                'key' => ApiKey::make()->getOne(),
+                'key' => ApiKey::make()->get(),
             ]);
 
             /**
