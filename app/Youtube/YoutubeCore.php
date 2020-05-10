@@ -2,60 +2,14 @@
 
 namespace App\Youtube;
 
+use App\Exceptions\YoutubeInvalidEndpointException;
 use App\Exceptions\YoutubeQueryFailureException;
+use App\Traits\YoutubeEndpoints;
 
 class YoutubeCore
 {
-    /** @var $endpoint endpoint to url mapping */
-    protected $endpointUrlMap = [
-        'videos.list' => 'https://www.googleapis.com/youtube/v3/videos',
-        'search.list' => 'https://www.googleapis.com/youtube/v3/search',
-        'channels.list' => 'https://www.googleapis.com/youtube/v3/channels',
-        'playlists.list' => 'https://www.googleapis.com/youtube/v3/playlists',
-        'playlistItems.list' =>
-            'https://www.googleapis.com/youtube/v3/playlistItems',
-    ];
+    use YoutubeEndpoints;
 
-    protected $endpointPartMap = [
-        'channels.list' => [
-            'id',
-            'snippet',
-            'brandingSettings',
-            'contentDetails',
-            'invideoPromotion',
-            'statistics',
-            'status',
-            'topicDetail',
-        ],
-        'videos.list' => [
-            'id',
-            'contentDetails',
-            'fileDetails',
-            'liveStreamingDetails',
-            'localizations',
-            'player',
-            'processingDetails',
-            'recordingDetails',
-            'snippet',
-            'statistics',
-            'status',
-            'suggestions',
-            'topicDetails',
-        ],
-        'playlists.list' => [
-            'id',
-            'player',
-            'contentDetails',
-            'localizations',
-            'snippet',
-            'status',
-        ],
-        'playlistItems.list' => ['id', 'contentDetails', 'snippet', 'status'],
-        'search.list' => '',
-    ];
-
-    /** @var string $baseUrl */
-    protected $baseUrl;
     /** @var string $endpoint */
     protected $endpoint;
     /** @var string $sslpath */
@@ -70,6 +24,8 @@ class YoutubeCore
     protected $errorMessage;
     /** @var array $params query parameters */
     protected $params = [];
+    /** @var array $partParams youtube part parameters */
+    protected $partParams = [];
 
     private function __construct(string $apikey)
     {
@@ -82,23 +38,27 @@ class YoutubeCore
         return new static(...$params);
     }
 
-    public function endpoint(string $endpoint)
+    public function defineEndpoint(string $endpoint)
     {
         if (!isset($this->endpointUrlMap[$endpoint])) {
-            throw new \InvalidArgumentException(
+            throw new YoutubeInvalidEndpointException(
                 "Specified endpoint {$endpoint} does not exists."
             );
         }
         $this->endpoint = $endpoint;
-        $this->baseUrl = $this->endpointUrlMap[$endpoint];
         return $this;
+    }
+
+    public function endpoint()
+    {
+        return $this->endpoint;
     }
 
     public function url()
     {
-        return $this->baseUrl .
-            (strpos($this->baseUrl, '?') === false ? '?' : '') .
-            http_build_query($this->filteredParams());
+        return $this->endpointUrlMap[$this->endpoint] .
+            '?' .
+            http_build_query($this->params());
     }
 
     public function run()
@@ -130,13 +90,12 @@ class YoutubeCore
                 $this->errorCode
             );
         }
-
         return $this;
     }
 
     public function queryHasFailed()
     {
-        if ($this->jsonResult['error'] !== null) {
+        if (isset($this->jsonResult['error'])) {
             $this->errorCode = $this->jsonResult['error']['code'];
             $this->errorMessage = $this->jsonResult['error']['message'];
             return true;
@@ -145,23 +104,32 @@ class YoutubeCore
     }
 
     /**
-     * @param string|array $parts
+     * Add some part params to the query.
+     * Because part params are different for every endpoint,
+     * this one should be set before.
+     *
+     * @param array $parts
      */
-    public function addParts($parts, $delim = ',')
+    public function addParts(array $parts, $delim = ',')
     {
-        if (is_string($parts)) {
-            $parts = explode($delim, $parts);
+        if (!isset($this->endpoint)) {
+            throw new YoutubeInvalidEndpointException(
+                'Endpoint not defined. You should set one before.'
+            );
         }
-        $this->params['part'] = array_merge($this->params['part'], $parts);
-        return $this;
-    }
-
-    /**
-     * @param string $part
-     */
-    public function addPart(string $part)
-    {
-        $this->params['part'][] = $part;
+        $validEndpointsParts = array_keys(
+            $this->endpointPartMap[$this->endpoint]
+        );
+        $this->partParams = array_unique(
+            array_merge(
+                $this->partParams,
+                array_filter($parts, function ($partToCheck) use (
+                    $validEndpointsParts
+                ) {
+                    return in_array($partToCheck, $validEndpointsParts);
+                })
+            )
+        );
         return $this;
     }
 
@@ -173,27 +141,18 @@ class YoutubeCore
 
     public function params()
     {
+        $this->params['part'] = implode(',', $this->partParams());
         ksort($this->params);
         return $this->params;
     }
 
-    /**
-     * Filter part params according to endpoint.
-     * This one is called right before the query to remove parts that are not used
-     * by the endpoint.
-     */
-    private function filteredParams()
+    public function results()
     {
-        $validEndpointsParts = $this->endpointPartMap[$this->endpoint];
-        $this->params['part'] = implode(
-            ',',
-            array_filter(array_unique($this->params['part']), function (
-                $partToCheck
-            ) use ($validEndpointsParts) {
-                return in_array($partToCheck, $validEndpointsParts);
-            })
-        );
-        ksort($this->params);
-        return $this->params;
+        return $this->jsonResult;
+    }
+
+    public function partParams()
+    {
+        return $this->partParams;
     }
 }
