@@ -4,9 +4,8 @@ namespace App\Console\Commands;
 
 use App\ApiKey;
 use App\Channel;
+use App\Youtube\YoutubeCore;
 use Illuminate\Console\Command;
-use Madcoda\Youtube\Youtube;
-use Madcoda\Youtube\YoutubeQuotas;
 
 class ChannelUpdateCommand extends Command
 {
@@ -25,6 +24,7 @@ class ChannelUpdateCommand extends Command
      */
     protected $description = 'This will update list of episodes by type of channels';
 
+    protected $apikey;
     /**
      * Create a new command instance.
      *
@@ -33,6 +33,7 @@ class ChannelUpdateCommand extends Command
     public function __construct()
     {
         parent::__construct();
+        $this->apikey = ApiKey::make()->get();
     }
 
     /**
@@ -61,11 +62,22 @@ class ChannelUpdateCommand extends Command
             return $channel->hasReachedItslimit() === false;
         });
 
-        // getting youtube instance with the right api key
-        $youtubeObj = new Youtube([
-            'key' => ApiKey::make()->get(),
-        ]);
-        $youtubeObj->injectQuotaCalculator(new YoutubeQuotas());
+        /** each channel */
+        $channels->map(function ($channel) {
+            dump($channel);
+            YoutubeCore::init($this->apikey)
+                ->defineEndpoint('channels.list')
+                ->addParams(['id' => $channel->id])
+                ->addParts([
+                    'id',
+                    'snippet',
+                    'invalidPart',
+                    'contentDetails',
+                    'player',
+                    'contentOwnerDetails',
+                ])
+                ->url();
+        });
 
         if (!$channels->count()) {
             $this->error(

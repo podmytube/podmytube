@@ -71,6 +71,7 @@ class YoutubeCore
             curl_setopt($tuCurl, CURLOPT_CAPATH, __DIR__ . '/cert/cacert.pem');
         }
         curl_setopt($tuCurl, CURLOPT_URL, $this->url());
+        dump($this->url()); 
         if ($this->referer !== null) {
             curl_setopt($tuCurl, CURLOPT_REFERER, $this->referer);
         }
