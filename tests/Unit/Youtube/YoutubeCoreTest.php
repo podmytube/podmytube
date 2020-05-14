@@ -39,6 +39,12 @@ class YoutubeCoreTest extends TestCase
         );
     }
 
+    public function testEndpointInvalid()
+    {
+        $this->expectException(YoutubeInvalidEndpointException::class);
+        YoutubeCore::init($this->apikey)->defineEndpoint('LoremIpsum');
+    }
+
     public function testPartParamsOk()
     {
         $expectedPartParams = ['id', 'snippet', 'contentDetails'];
@@ -51,20 +57,20 @@ class YoutubeCoreTest extends TestCase
         );
     }
 
-    public function testEndpointInvalid()
-    {
-        $this->expectException(YoutubeInvalidEndpointException::class);
-        YoutubeCore::init($this->apikey)->defineEndpoint('LoremIpsum');
-    }
-
-    public function testPartParamsFilteredOk()
+    public function testPartParamsCleanedOk()
     {
         $expectedPartParams = ['id', 'snippet', 'contentDetails'];
         $this->assertEqualsCanonicalizing(
             $expectedPartParams,
             YoutubeCore::init($this->apikey)
                 ->defineEndpoint('channels.list')
-                ->addParts(['id', 'lorem ipsum', 'snippet', 'contentDetails'])
+                ->addParts([
+                    'id',
+                    'lorem ipsum',
+                    'snippet',
+                    'snippet',
+                    'contentDetails',
+                ])
                 ->partParams()
         );
     }
@@ -75,7 +81,7 @@ class YoutubeCoreTest extends TestCase
         YoutubeCore::init($this->apikey)->addParts(['id', 'snippet']);
     }
 
-    public function testEndpointUrlOk()
+    public function testEndpointForChannelsListOk()
     {
         $this->assertEquals(
             'https://www.googleapis.com/youtube/v3/channels?key=' .
@@ -83,6 +89,18 @@ class YoutubeCoreTest extends TestCase
                 '&part=',
             YoutubeCore::init($this->apikey)
                 ->defineEndpoint('channels.list')
+                ->url()
+        );
+    }
+
+    public function testEndpointForPlaylistItemsListOk()
+    {
+        $this->assertEquals(
+            'https://www.googleapis.com/youtube/v3/playlistItems?key=' .
+                $this->apikey .
+                '&part=',
+            YoutubeCore::init($this->apikey)
+                ->defineEndpoint('playlistItems.list')
                 ->url()
         );
     }
