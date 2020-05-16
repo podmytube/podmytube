@@ -71,7 +71,6 @@ class YoutubeCore
             curl_setopt($tuCurl, CURLOPT_CAPATH, __DIR__ . '/cert/cacert.pem');
         }
         curl_setopt($tuCurl, CURLOPT_URL, $this->url());
-        dump($this->url()); 
         if ($this->referer !== null) {
             curl_setopt($tuCurl, CURLOPT_REFERER, $this->referer);
         }
@@ -150,6 +149,26 @@ class YoutubeCore
     public function results()
     {
         return $this->jsonResult;
+    }
+
+    public function responseKind()
+    {
+        return $this->jsonResult['kind'];
+    }
+
+    public function totalResults()
+    {
+        return $this->jsonResult['pageInfo']['totalResults'];
+    }
+
+    public function resultsPerPage()
+    {
+        return $this->jsonResult['pageInfo']['resultsPerPage'];
+    }
+
+    public function items()
+    {
+        return $this->jsonResult['items'];
     }
 
     public function partParams()
