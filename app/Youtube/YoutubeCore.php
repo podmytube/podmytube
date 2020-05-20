@@ -3,13 +3,16 @@
 namespace App\Youtube;
 
 use App\Exceptions\YoutubeInvalidEndpointException;
-use App\Exceptions\YoutubeQueryFailureException;
+use App\Modules\Query;
 use App\Traits\YoutubeEndpoints;
+use Illuminate\Support\Facades\Cache;
 
 class YoutubeCore
 {
     use YoutubeEndpoints;
 
+    /** @var string $apikey */
+    protected $apikey;
     /** @var string $endpoint */
     protected $endpoint;
     /** @var string $sslpath */
@@ -18,10 +21,6 @@ class YoutubeCore
     protected $referer;
     /** @var string $jsonResult */
     protected $jsonResult;
-    /** @var int $errorCode */
-    protected $errorCode = 0;
-    /** @var string $errorMessage */
-    protected $errorMessage;
     /** @var array $params query parameters */
     protected $params = [];
     /** @var array $partParams youtube part parameters */
@@ -29,7 +28,7 @@ class YoutubeCore
 
     private function __construct(string $apikey)
     {
-        $this->params['key'] = $apikey;
+        $this->apikey = $apikey;
         $this->params['part'] = [];
     }
 
@@ -49,6 +48,9 @@ class YoutubeCore
         return $this;
     }
 
+    /**
+     * @return string the endpoint used
+     */
     public function endpoint()
     {
         return $this->endpoint;
@@ -57,50 +59,28 @@ class YoutubeCore
     public function url()
     {
         return $this->endpointUrlMap[$this->endpoint] .
-            '?' .
+            "?key={$this->apikey}&" .
             http_build_query($this->params());
     }
 
     public function run()
     {
-        $tuCurl = curl_init();
-        if ($this->sslPath !== null) {
-            curl_setopt($tuCurl, CURLOPT_SSL_VERIFYPEER, true);
-            curl_setopt($tuCurl, CURLOPT_SSL_VERIFYHOST, 2);
-            curl_setopt($tuCurl, CURLOPT_CAINFO, __DIR__ . '/cert/cacert.pem');
-            curl_setopt($tuCurl, CURLOPT_CAPATH, __DIR__ . '/cert/cacert.pem');
-        }
-        curl_setopt($tuCurl, CURLOPT_URL, $this->url());
-        if ($this->referer !== null) {
-            curl_setopt($tuCurl, CURLOPT_REFERER, $this->referer);
-        }
-        curl_setopt($tuCurl, CURLOPT_RETURNTRANSFER, 1);
-        $this->jsonResult = json_decode(curl_exec($tuCurl), true);
-
-        if (curl_errno($tuCurl)) {
-            throw new \InvalidArgumentException(
-                'Curl Error : ' . curl_error($tuCurl),
-                curl_errno($tuCurl)
+        if (Cache::has($this->cacheKey())) {
+            $this->jsonResult = json_decode(
+                Cache::get($this->cacheKey()),
+                true
             );
+            dump('From cache', __FILE__ . '-' . __FUNCTION__);
+            return $this;
         }
 
-        if ($this->queryHasFailed()) {
-            throw new YoutubeQueryFailureException(
-                "Query has failed with message : {$this->errorMessage}",
-                $this->errorCode
-            );
-        }
+        $jsonResult = Query::create($this->url())
+            ->run()
+            ->results();
+
+        Cache::put($this->cacheKey(), $jsonResult, now()->addDays());
+        $this->jsonResult = json_decode($jsonResult, true);
         return $this;
-    }
-
-    public function queryHasFailed()
-    {
-        if (isset($this->jsonResult['error'])) {
-            $this->errorCode = $this->jsonResult['error']['code'];
-            $this->errorMessage = $this->jsonResult['error']['message'];
-            return true;
-        }
-        return false;
     }
 
     /**
@@ -174,5 +154,16 @@ class YoutubeCore
     public function partParams()
     {
         return $this->partParams;
+    }
+
+    protected function cacheKey()
+    {
+        $separator = '_';
+
+        return 'youtube' .
+            $separator .
+            $this->endpoint() .
+            $separator .
+            http_build_query($this->params(), null, $separator);
     }
 }

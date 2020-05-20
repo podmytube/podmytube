@@ -10,7 +10,10 @@ use Tests\TestCase;
 
 class YoutubeCoreTest extends TestCase
 {
+    /** @var \App\ApiKey $apikey */
     protected $apikey;
+    /** @var App\Youtube\YoutubeCore $youtubeCore*/
+    protected $youtubeCore;
 
     public const PERSONAL_CHANNEL_ID = 'UCw6bU9JT_Lihb2pbtqAUGQw';
     public const PERSONAL_CHANNEL_NB_OF_PLAYLISTS = 2;
@@ -21,6 +24,7 @@ class YoutubeCoreTest extends TestCase
         parent::setUp();
         Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
         $this->apikey = ApiKey::make()->get();
+        $this->youtubeCore = YoutubeCore::init($this->apikey);
     }
 
     public function testChannelListEndpointOk()
@@ -35,7 +39,7 @@ class YoutubeCoreTest extends TestCase
         array_map(function ($expectedEndPoint) {
             $this->assertEquals(
                 $expectedEndPoint,
-                YoutubeCore::init($this->apikey)
+                $this->youtubeCore
                     ->defineEndpoint($expectedEndPoint)
                     ->endpoint()
             );
@@ -45,18 +49,18 @@ class YoutubeCoreTest extends TestCase
     public function testEndpointInvalid()
     {
         $this->expectException(YoutubeInvalidEndpointException::class);
-        YoutubeCore::init($this->apikey)->defineEndpoint('LoremIpsum');
+        $this->youtubeCore->defineEndpoint('LoremIpsum');
     }
 
     public function testAddPartWithoutEndpointFail()
     {
         $this->expectException(YoutubeInvalidEndpointException::class);
-        YoutubeCore::init($this->apikey)->addParts(['id', 'snippet']);
+        $this->youtubeCore->addParts(['id', 'snippet']);
     }
 
-    public function testGettingProperIdShouldBeOk()
+    public function testGettingProperIdForChannelListShouldBeOk()
     {
-        $results = YoutubeCore::init($this->apikey)
+        $results = $this->youtubeCore
             ->defineEndpoint('channels.list')
             ->addParts(['id'])
             ->addParams(['id' => self::PEWDIEPIE_CHANNEL_ID])
@@ -66,6 +70,21 @@ class YoutubeCoreTest extends TestCase
         $this->assertEquals(
             'UC-lHJZR3Gqxm24_Vd_AJ5Yw',
             $results['items'][0]['id']
+        );
+    }
+
+    public function testGettingProperIdForPlaylistListShouldBeOk()
+    {
+        $results = $this->youtubeCore
+            ->defineEndpoint('playlists.list')
+            ->addParts(['id', 'snippet'])
+            ->addParams(['channelId' => self::PEWDIEPIE_CHANNEL_ID])
+            ->run()
+            ->results();
+
+        $this->assertEquals(
+            'UC-lHJZR3Gqxm24_Vd_AJ5Yw',
+            $results['items'][0]['snippet']['channelId']
         );
     }
 }
