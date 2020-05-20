@@ -64,7 +64,7 @@ class ChannelUpdateCommand extends Command
 
         /** each channel */
         $channels->map(function ($channel) {
-            dump($channel);
+            dump($channel, __FILE__ . '-' . __FUNCTION__);
             YoutubeCore::init($this->apikey)
                 ->defineEndpoint('channels.list')
                 ->addParams(['id' => $channel->id])
@@ -90,7 +90,10 @@ class ChannelUpdateCommand extends Command
 
         // get youtube videos for each channel
         foreach ($channels as $channel) {
-            dump("{$channel->channel_name} ($channel->channel_id)");
+            dump(
+                "{$channel->channel_name} ($channel->channel_id)",
+                __FILE__ . '-' . __FUNCTION__
+            );
         }
 
         // save it as a media in db
