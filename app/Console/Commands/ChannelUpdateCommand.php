@@ -32,8 +32,7 @@ class ChannelUpdateCommand extends Command
      */
     public function __construct()
     {
-        parent::__construct();
-        $this->apikey = ApiKey::make()->get();
+        parent::__construct();        
     }
 
     /**
@@ -43,6 +42,14 @@ class ChannelUpdateCommand extends Command
      */
     public function handle()
     {
+        /** =============================================
+         * NOT IN THE __CONSTRUCT
+         * construct is read with artisan command. If you try to access a table
+         * before migration happen even artisan list is failing.
+         */
+        $this->apikey = ApiKey::make()->get();
+        // =============================================
+
         // parse argument
         $typesAllowed = ['free', 'paying', 'early', 'all'];
 
