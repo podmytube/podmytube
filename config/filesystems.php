@@ -1,7 +1,12 @@
 <?php
 
-return [
+$sshCredentials = [
+    'user' => 'fred',
+    'host' => 'ns3309553.ip-5-135-160.eu',
+    'path' => base_path() . '/.ssh/kimUpload',
+];
 
+return [
     /*
     |--------------------------------------------------------------------------
     | Default Filesystem Disk
@@ -42,7 +47,6 @@ return [
     */
 
     'disks' => [
-
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app'),
@@ -70,9 +74,9 @@ return [
          */
         'sftpfeeds' => [
             'driver' => 'sftp',
-            'host' => 'ns3309553.ip-5-135-160.eu',
-            'username' => 'fred',
-            'privateKey' => base_path() . '/.ssh/SFTPthumb',
+            'host' => $sshCredentials['host'],
+            'username' => $sshCredentials['user'],
+            'privateKey' => $sshCredentials['path'],
             // 'port' => 22,
             'root' => env('SFTP_PODCASTS_PATH'),
             'timeout' => 20,
@@ -96,9 +100,9 @@ return [
          */
         'sftpthumbs' => [
             'driver' => 'sftp',
-            'host' => 'ns3309553.ip-5-135-160.eu',
-            'username' => 'fred',
-            'privateKey' => base_path() . '/.ssh/SFTPthumb',
+            'host' => $sshCredentials['host'],
+            'username' => $sshCredentials['user'],
+            'privateKey' => $sshCredentials['path'],
             // 'port' => 22,
             'root' => env('SFTP_THUMBS_PATH'),
             'timeout' => 20,
@@ -111,7 +115,5 @@ return [
             'driver' => 'local',
             'root' => base_path('tmp'),
         ],
-
     ],
-
 ];

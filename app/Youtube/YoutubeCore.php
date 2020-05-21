@@ -70,7 +70,6 @@ class YoutubeCore
                 Cache::get($this->cacheKey()),
                 true
             );
-            dump('From cache', __FILE__ . '-' . __FUNCTION__);
             return $this;
         }
 
@@ -124,6 +123,13 @@ class YoutubeCore
         $this->params['part'] = implode(',', $this->partParams());
         ksort($this->params);
         return $this->params;
+    }
+
+    public function clearParams()
+    {
+        $this->params = [];
+        $this->partParams = [];
+        return $this;
     }
 
     public function results()

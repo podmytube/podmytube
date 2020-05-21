@@ -19,14 +19,14 @@ use App\Exceptions\ChannelCreationHasFailedException;
 use App\Exceptions\ChannelCreationInvalidChannelUrlException;
 use App\Exceptions\ChannelCreationInvalidUrlException;
 use App\Exceptions\SubscriptionHasFailedException;
+use App\Exceptions\YoutubeApiInvalidChannelIdException;
 use App\Plan;
-use App\Services\YoutubeChannelCheckingService;
 use App\Subscription;
+use App\Youtube\YoutubeChannel;
+use App\Youtube\YoutubeCore;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Config;
-use Madcoda\Youtube\Youtube;
 
 class ChannelCreateController extends Controller
 {
@@ -72,31 +72,30 @@ class ChannelCreateController extends Controller
             );
 
             /**
-             * Getting current authenticated user
-             */
-            $user = Auth::user();
-
-            /**
              * get youtube obj
              */
-            $youtubeObj = new Youtube([
-                'key' => ApiKey::make()->get(),
-            ]);
+            $apikey = ApiKey::make()->get();
+            $youtubeCore = YoutubeCore::init($apikey);
+            $youtubeChannelObj = YoutubeChannel::init($youtubeCore)->forChannel(
+                $channelId
+            );
 
+            if (!$youtubeChannelObj->exists()) {
+                throw new YoutubeApiInvalidChannelIdException(
+                    "Cannot get channel information for this channel {$channelId}"
+                );
+            }
             /**
              * Getting basic channel informations
              */
-            $channelName = YoutubeChannelCheckingService::init(
-                $youtubeObj,
-                $channelId
-            )->getChannelName();
+            $channelName = $youtubeChannelObj->name();
 
             /**
              * Channel creating
              */
             try {
                 $channel = Channel::create([
-                    'user_id' => $user->user_id,
+                    'user_id' => Auth::id(),
                     'channel_id' => $channelId,
                     'channel_name' => $channelName,
                 ]);

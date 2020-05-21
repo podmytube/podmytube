@@ -10,8 +10,6 @@ class PodcastBuilder
 {
     public const LOCAL_FEED_DISK = 'feeds';
 
-    public const REMOTE_FEED_DISK = 'sftpfeeds';
-
     public const FEED_FILENAME = 'podcast.xml';
 
     /** @var Channel $channel is a Model/Channel object for the channel to generate */

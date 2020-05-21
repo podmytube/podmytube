@@ -1,15 +1,18 @@
 To be able to push on thumb repository you should run
+
 ```
-ssh-keygen -t rsa -b 4096 -C "sftpThumb from micromania" -f SFTPthumb -P ""
+ssh-keygen -t rsa -b 4096 -C "kimUpload from msi-laptop" -f kimUpload -P ""
 ```
 
-then 
+then
+
 ```
-ssh-copy-id -i SFTPthumb.pub kim1
+ssh-copy-id -i kimUpload.pub kim1
 ```
 
 and finally give rights to apache user on this file
-```
-please chown www-data:$USER .ssh/SFTPthumb*
-```
 
+```
+sudo chown www-data:$USER .ssh/kimUpload*
+sudo chmod ug+rw .ssh/kimUpload*
+```

@@ -8,10 +8,7 @@ use App\Channel;
 use App\Exceptions\FeedDoesNotExist;
 use App\Podcast\PodcastUpload;
 use App\Podcast\PodcastBuilder;
-
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class PodcastUploadTest extends TestCase
 {
