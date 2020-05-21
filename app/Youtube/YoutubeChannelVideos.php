@@ -10,8 +10,8 @@ class YoutubeChannelVideos
     protected $channelId;
     /** @var string $uploadsPlaylistId $youtube 'uploads' playlist id */
     protected $uploadsPlaylistId;
-    /** @var array $videoIds pile of video ids */
-    protected $videoIds = [];
+    /** @var array $videos pile of video obtained from youtube api */
+    protected $videos = [];
 
     private function __construct(YoutubeCore $youtubeCore)
     {
@@ -40,27 +40,27 @@ class YoutubeChannelVideos
         return $this;
     }
 
-    public function obtainVideos()
+    protected function obtainVideos()
     {
         /**
          * get all the uploaded videos for that playlist
          */
-        $results = $this->youtubeCore
+        $this->videos = $this->youtubeCore
             ->defineEndpoint('playlistItems.list')
             ->clearParams()
             ->addParams([
                 'playlistId' => $this->uploadsPlaylistId,
                 'maxResults' => 50,
             ])
-            ->addParts(['id', 'snippet'])
-            ->url();
-        /* run()
-         ->results(); */
-        dump($results);
+            ->addParts(['id', 'contentDetails'])
+            ->run()
+            ->items();
     }
 
-    public function videos()
+    public function videoIds()
     {
-        return $this->videoIds;
+        return array_map(function ($videoItem) {
+            return $videoItem['contentDetails']['videoId'];
+        }, $this->videos);
     }
 }
