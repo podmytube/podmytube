@@ -2,10 +2,9 @@
 
 namespace App\Console\Commands;
 
-use App\ApiKey;
 use App\Channel;
+use App\Media;
 use App\Youtube\YoutubeChannel;
-use App\Youtube\YoutubeCore;
 use Illuminate\Console\Command;
 
 class ChannelUpdateCommand extends Command
@@ -48,15 +47,6 @@ class ChannelUpdateCommand extends Command
      */
     public function handle()
     {
-        /** =============================================
-         * NOT IN THE __CONSTRUCT
-         * construct is read with artisan command. If you try to access a table
-         * before migration happen even artisan list is failing.
-         */
-        $this->apikey = ApiKey::make()->get();
-        $this->youtubeCore = YoutubeCore::init($this->apikey);
-        // =============================================
-
         // parse argument
         $typesAllowed = ['free', 'paying', 'early', 'all'];
 
@@ -85,11 +75,23 @@ class ChannelUpdateCommand extends Command
             return;
         }
 
-        /** each channel */
+        /** for each channel */
         $channels->map(function ($channel) {
-            /** get videos */
-            //YoutubeChannel::init($this->youtubeCore)->forChannel($channel->channel_id)->
-            /** save it as a media in db */
+            array_map(function ($video) {
+                
+                /** check if the video already exist in database */
+                if (!($media = Media::find($video['media_id']))) {
+                    $media = new Media();
+                    $media->media_id = $video['media_id'];
+                    $media->channel_id = $video['channel_id'];
+                }
+                $media->title = $video['title'];
+                $media->description = $video['description'];
+                $media->published_at = $video['published_at'];
+
+                /** save it as a media in db */
+                $media->save();
+            }, YoutubeChannel::forChannel($channel->channel_id)->videos());
         });
     }
 }
