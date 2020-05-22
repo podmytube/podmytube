@@ -11,6 +11,7 @@ class Media extends Model
 {
     protected $table = 'medias';
     protected $primaryKey = 'media_id';
+    public $incrementing = false;
 
     /**
      * those fields are converted into Carbon mutator
