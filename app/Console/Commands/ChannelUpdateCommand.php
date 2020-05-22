@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Channel;
+use App\Events\MediaRegistered;
 use App\Media;
 use App\Youtube\YoutubeChannel;
 use Illuminate\Console\Command;
@@ -59,12 +60,7 @@ class ChannelUpdateCommand extends Command
         }
 
         // get channel(s) to refresh (free/early/all/..)
-        $channels = Channel::byPlanType(
-            $this->argument('channelTypeToUpdate')
-        )->filter(function ($channel) {
-            // quota reached control
-            return $channel->hasReachedItslimit() === false;
-        });
+        $channels = Channel::byPlanType($this->argument('channelTypeToUpdate'));
 
         if (!$channels->count()) {
             $this->error(
@@ -86,11 +82,13 @@ class ChannelUpdateCommand extends Command
         $channels->map(function ($channel) {
             /** for each channel video */
             array_map(function ($video) {
+                $newMedia = false;
                 /** check if the video already exist in database */
                 if (!($media = Media::find($video['media_id']))) {
                     $media = new Media();
                     $media->media_id = $video['media_id'];
                     $media->channel_id = $video['channel_id'];
+                    $newMedia = true;
                 }
                 // update it
                 $media->title = $video['title'];
@@ -99,6 +97,11 @@ class ChannelUpdateCommand extends Command
 
                 /** save it */
                 $media->save();
+
+                if ($newMedia) {
+                    dump('New media', __FILE__ . '-' . __FUNCTION__);
+                    event(new MediaRegistered($media));
+                }
             }, YoutubeChannel::forChannel($channel->channel_id)->videos());
             if ($this->getOutput()->isVerbose()) {
                 $this->bar->advance();
