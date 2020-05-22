@@ -17,13 +17,12 @@ class YoutubeQuotasTest extends TestCase
     {
         parent::setUp();
         Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
-        $this->apikey = ApiKey::make()->get();
     }
 
     public function testMinimalChannelListShouldBeOk()
     {
         $expectedQuota = 1;
-        $youtubeCore = YoutubeCore::init($this->apikey)
+        $youtubeCore = YoutubeCore::init()
             ->defineEndpoint('channels.list')
             ->addParams(['id' => self::PEWDIEPIE_CHANNEL_ID])
             ->addParts(['id']);
@@ -37,7 +36,7 @@ class YoutubeQuotasTest extends TestCase
     public function testChannelListWithSomePartsShouldBeOk()
     {
         $expectedQuota = 7;
-        $youtubeCore = YoutubeCore::init($this->apikey)
+        $youtubeCore = YoutubeCore::init()
             ->defineEndpoint('channels.list')
             ->addParams(['id' => self::PEWDIEPIE_CHANNEL_ID])
             ->addParts(['id', 'snippet', 'auditDetails']);
@@ -51,7 +50,7 @@ class YoutubeQuotasTest extends TestCase
     public function testChannelListWithAllPartsShouldBeOk()
     {
         $expectedQuota = 21;
-        $youtubeCore = YoutubeCore::init($this->apikey)
+        $youtubeCore = YoutubeCore::init()
             ->defineEndpoint('channels.list')
             ->addParams(['id' => self::PEWDIEPIE_CHANNEL_ID])
             ->addParts([

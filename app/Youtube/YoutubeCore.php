@@ -2,10 +2,12 @@
 
 namespace App\Youtube;
 
+use App\ApiKey;
 use App\Exceptions\YoutubeInvalidEndpointException;
 use App\Modules\Query;
 use App\Traits\YoutubeEndpoints;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
 
 class YoutubeCore
 {
@@ -19,22 +21,34 @@ class YoutubeCore
     protected $sslPath;
     /** @var string $referer */
     protected $referer;
-    /** @var string $jsonResult */
-    protected $jsonResult;
+    /** @var array $jsonDecoded contain the whole response */
+    protected $jsonDecoded = [];
+    /** @var array $items contains only the items */
+    protected $items = [];
+    /** @var int $limit max number of items to get */
+    protected $limit = 0;
     /** @var array $params query parameters */
     protected $params = [];
     /** @var array $partParams youtube part parameters */
     protected $partParams = [];
 
-    private function __construct(string $apikey)
+    private function __construct()
     {
-        $this->apikey = $apikey;
+        $this->apikey = $this->getApiKey();
         $this->params['part'] = [];
     }
 
     public static function init(...$params)
     {
         return new static(...$params);
+    }
+
+    protected function getApiKey()
+    {
+        if (Config::has('apikey')) {
+            return Config::get('apikey');
+        }
+        return (new ApiKey())->get();
     }
 
     public function defineEndpoint(string $endpoint)
@@ -65,21 +79,60 @@ class YoutubeCore
 
     public function run()
     {
-        if (Cache::has($this->cacheKey())) {
-            $this->jsonResult = json_decode(
-                Cache::get($this->cacheKey()),
-                true
-            );
-            return $this;
-        }
+        do {
+            $rawResults = $this->getRawResults();
+            $this->jsonDecoded = json_decode($rawResults, true);
 
-        $jsonResult = Query::create($this->url())
+            if (isset($this->jsonDecoded['items'])) {
+                $this->items = array_merge(
+                    $this->items,
+                    $this->jsonDecoded['items']
+                );
+            }
+
+            if (isset($this->jsonDecoded['nextPageToken'])) {
+                $this->setPageToken($this->jsonDecoded['nextPageToken']);
+            }
+        } while ($this->doWeGetNextPage());
+
+        return $this;
+    }
+
+    /**
+     *
+     */
+    protected function doWeGetNextPage()
+    {
+        if ($this->limit > 0 && count($this->items()) > $this->limit) {
+            return false;
+        }
+        if (!isset($this->jsonDecoded['nextPageToken'])) {
+            return false;
+        }
+        return true;
+    }
+
+    public function setLimit(int $limit)
+    {
+        if ($limit > 0) {
+            $this->limit = $limit;
+        }
+        return $this;
+    }
+
+    protected function getRawResults()
+    {
+        // get it from cache (if any)
+        if (Cache::has($this->cacheKey())) {
+            return Cache::get($this->cacheKey());
+        }
+        // querying api
+        $rawResults = Query::create($this->url())
             ->run()
             ->results();
-
-        Cache::put($this->cacheKey(), $jsonResult, now()->addDays());
-        $this->jsonResult = json_decode($jsonResult, true);
-        return $this;
+        // putting results in cache for next time
+        Cache::put($this->cacheKey(), $rawResults, now()->addDays());
+        return $rawResults;
     }
 
     /**
@@ -118,6 +171,12 @@ class YoutubeCore
         return $this;
     }
 
+    protected function setPageToken($pageToken)
+    {
+        $this->params['pageToken'] = $pageToken;
+        return $this;
+    }
+
     public function params()
     {
         $this->params['part'] = implode(',', $this->partParams());
@@ -134,27 +193,17 @@ class YoutubeCore
 
     public function results()
     {
-        return $this->jsonResult;
-    }
-
-    public function responseKind()
-    {
-        return $this->jsonResult['kind'];
+        return $this->jsonDecoded;
     }
 
     public function totalResults()
     {
-        return $this->jsonResult['pageInfo']['totalResults'];
-    }
-
-    public function resultsPerPage()
-    {
-        return $this->jsonResult['pageInfo']['resultsPerPage'];
+        return $this->jsonDecoded['pageInfo']['totalResults'];
     }
 
     public function items()
     {
-        return $this->jsonResult['items'];
+        return $this->items;
     }
 
     public function partParams()

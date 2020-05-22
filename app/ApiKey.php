@@ -6,6 +6,7 @@ use App\Exceptions\YoutubeNoApiKeyAvailableException;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Config;
 
 class ApiKey extends Model
 {
@@ -39,6 +40,7 @@ class ApiKey extends Model
         if ($this->selectedOne === null) {
             $this->selectOne();
         }
+        Config::set('apikey', $this->selectedOne->apikey);
         return $this->selectedOne->apikey;
     }
 

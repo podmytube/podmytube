@@ -2,7 +2,7 @@
 
 namespace App\Youtube;
 
-class YoutubeChannelPlaylists
+class YoutubePlaylists
 {
     /** @var \App\Youtube\YoutubeCore $youtubeCore  */
     protected $youtubeCore;
@@ -11,21 +11,10 @@ class YoutubeChannelPlaylists
     /** @var array $playlistIds ['uploads' => 'id1', 'xyz' => 'id2' ]*/
     protected $playlistIds = [];
 
-    private function __construct(YoutubeCore $youtubeCore)
-    {
-        $this->youtubeCore = $youtubeCore;
-    }
-
-    public static function init(...$params)
-    {
-        return new static(...$params);
-    }
-
-    public function forChannel(string $channelId)
+    private function __construct(string $channelId)
     {
         $this->channelId = $channelId;
-
-        $items = $this->youtubeCore
+        $items = YoutubeCore::init()
             ->defineEndpoint('channels.list')
             ->addParams([
                 'id' => $this->channelId,
@@ -39,21 +28,16 @@ class YoutubeChannelPlaylists
         ) {
             $this->playlistIds[$playlistName] = $playlistId;
         }
-        return $this;
     }
 
-    /**
-     * Time to keep the cache.
-     *
-     */
-    protected function cacheDuration()
+    public static function forChannel(...$params)
     {
-        return now()->addDays(1);
+        return new static(...$params);
     }
 
     /**
      * return the 'uploads' playlist id.
-     * 
+     *
      * @return string the uploads playlist id
      */
     public function uploadsPlaylistId()
