@@ -57,6 +57,9 @@ class YoutubeChannel
             $this->channelId
         )->uploadsPlaylistId();
 
+        /**
+         * get videos from youtube
+         */
         $videos = YoutubeCore::init()
             ->defineEndpoint('playlistItems.list')
             ->clearParams()
@@ -68,9 +71,12 @@ class YoutubeChannel
             ->run()
             ->items();
 
-        return array_map(function ($videoItem) {
+        /**
+         * format results
+         */
+        $this->videos = array_map(function ($videoItem) {
             return [
-                'videoId' => $videoItem['contentDetails']['videoId'],
+                'media_id' => $videoItem['contentDetails']['videoId'],
                 'channel_id' => $videoItem['snippet']['channelId'],
                 'title' => $videoItem['snippet']['title'],
                 'description' => $videoItem['snippet']['description'],
@@ -79,5 +85,11 @@ class YoutubeChannel
                 ))->setTimezone('UTC'),
             ];
         }, $videos);
+
+        usort($this->videos, function ($item1, $item2) {
+            return $item2['published_at'] <=> $item1['published_at'];
+        });
+
+        return $this->videos;
     }
 }
