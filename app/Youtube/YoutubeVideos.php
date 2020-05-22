@@ -4,52 +4,20 @@ namespace App\Youtube;
 
 use Carbon\Carbon;
 
-class YoutubeChannel
+class YoutubeVideos
 {
+    /** @var \App\Youtube\YoutubeCore $youtubeCore  */
+    protected $youtubeCore;
     /** @var string $channelId $youtube channel id */
     protected $channelId;
-    /** @var array $results result of youtube query */
-    protected $results;
+    /** @var string $uploadsPlaylistId $youtube 'uploads' playlist id */
+    protected $uploadsPlaylistId;
+    /** @var array $videos pile of video obtained from youtube api */
+    protected $videos = [];
 
     private function __construct(string $channelId)
     {
         $this->channelId = $channelId;
-        $this->results = YoutubeCore::init()
-            ->defineEndpoint('channels.list')
-            ->addParts(['id', 'snippet'])
-            ->addParams(['id' => $channelId])
-            ->run()
-            ->results();
-    }
-
-    public static function forChannel(...$params)
-    {
-        return new static(...$params);
-    }
-
-    protected function hasResult()
-    {
-        return $this->results['pageInfo']['totalResults'] <= 0;
-    }
-
-    public function exists()
-    {
-        if ($this->hasResult()) {
-            return false;
-        }
-        return $this->channelId === $this->results['items'][0]['id'];
-    }
-
-    public function name()
-    {
-        if ($this->hasResult()) {
-            return false;
-        }
-        return $this->results['items'][0]['snippet']['title'];
-    }
-
-    public function videos()
-    {
         /**
          * get the uploads playlist id
          */
@@ -57,6 +25,19 @@ class YoutubeChannel
             $this->channelId
         )->uploadsPlaylistId();
 
+        $this->obtainVideos();
+    }
+
+    public static function forChannel(...$params)
+    {
+        return new static(...$params);
+    }
+
+    protected function obtainVideos()
+    {
+        /**
+         * get all the uploaded videos for that playlist
+         */
         $videos = YoutubeCore::init()
             ->defineEndpoint('playlistItems.list')
             ->clearParams()
@@ -68,7 +49,7 @@ class YoutubeChannel
             ->run()
             ->items();
 
-        return array_map(function ($videoItem) {
+        $this->videos = array_map(function ($videoItem) {
             return [
                 'videoId' => $videoItem['contentDetails']['videoId'],
                 'channel_id' => $videoItem['snippet']['channelId'],
@@ -79,5 +60,10 @@ class YoutubeChannel
                 ))->setTimezone('UTC'),
             ];
         }, $videos);
+    }
+
+    public function videos()
+    {
+        return $this->videos;
     }
 }

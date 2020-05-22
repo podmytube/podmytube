@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\ApiKey;
 use App\Channel;
+use App\Youtube\YoutubeChannel;
 use App\Youtube\YoutubeCore;
 use Illuminate\Console\Command;
 
@@ -24,7 +25,12 @@ class ChannelUpdateCommand extends Command
      */
     protected $description = 'This will update list of episodes by type of channels';
 
+    /** @var \App\ApiKey $apikey youtube apikey to use */
     protected $apikey;
+
+    /** @var \App\Youtube\YoutubeCore $youtubeCore */
+    protected $youtubeCore;
+
     /**
      * Create a new command instance.
      *
@@ -32,7 +38,7 @@ class ChannelUpdateCommand extends Command
      */
     public function __construct()
     {
-        parent::__construct();        
+        parent::__construct();
     }
 
     /**
@@ -48,6 +54,7 @@ class ChannelUpdateCommand extends Command
          * before migration happen even artisan list is failing.
          */
         $this->apikey = ApiKey::make()->get();
+        $this->youtubeCore = YoutubeCore::init($this->apikey);
         // =============================================
 
         // parse argument
@@ -58,7 +65,7 @@ class ChannelUpdateCommand extends Command
                 'Only these options are available : ' .
                     implode(', ', $typesAllowed)
             );
-            return false;
+            return;
         }
 
         // get channel(s) to refresh (free/early/all/..)
@@ -67,23 +74,6 @@ class ChannelUpdateCommand extends Command
         )->filter(function ($channel) {
             // quota reached control
             return $channel->hasReachedItslimit() === false;
-        });
-
-        /** each channel */
-        $channels->map(function ($channel) {
-            dump($channel, __FILE__ . '-' . __FUNCTION__);
-            YoutubeCore::init($this->apikey)
-                ->defineEndpoint('channels.list')
-                ->addParams(['id' => $channel->id])
-                ->addParts([
-                    'id',
-                    'snippet',
-                    'invalidPart',
-                    'contentDetails',
-                    'player',
-                    'contentOwnerDetails',
-                ])
-                ->url();
         });
 
         if (!$channels->count()) {
@@ -95,14 +85,11 @@ class ChannelUpdateCommand extends Command
             return;
         }
 
-        // get youtube videos for each channel
-        foreach ($channels as $channel) {
-            dump(
-                "{$channel->channel_name} ($channel->channel_id)",
-                __FILE__ . '-' . __FUNCTION__
-            );
-        }
-
-        // save it as a media in db
+        /** each channel */
+        $channels->map(function ($channel) {
+            /** get videos */
+            //YoutubeChannel::init($this->youtubeCore)->forChannel($channel->channel_id)->
+            /** save it as a media in db */
+        });
     }
 }
