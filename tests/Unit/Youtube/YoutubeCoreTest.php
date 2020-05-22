@@ -90,7 +90,6 @@ class YoutubeCoreTest extends TestCase
             count(
                 $this->youtubeCore
                     ->defineEndpoint('playlistItems.list')
-                    ->clearParams()
                     ->addParams([
                         'playlistId' => self::NOWTECH_PLAYLIST_ID,
                         'maxResults' => 15,

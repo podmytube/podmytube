@@ -75,23 +75,38 @@ class ChannelUpdateCommand extends Command
             return;
         }
 
+        $this->info('Updating channels.', 'v');
+
+        if ($this->getOutput()->isVerbose()) {
+            $this->bar = $this->output->createProgressBar($channels->count());
+            $this->bar->start();
+        }
+
         /** for each channel */
         $channels->map(function ($channel) {
+            /** for each channel video */
             array_map(function ($video) {
-                
                 /** check if the video already exist in database */
                 if (!($media = Media::find($video['media_id']))) {
                     $media = new Media();
                     $media->media_id = $video['media_id'];
                     $media->channel_id = $video['channel_id'];
                 }
+                // update it
                 $media->title = $video['title'];
                 $media->description = $video['description'];
                 $media->published_at = $video['published_at'];
 
-                /** save it as a media in db */
+                /** save it */
                 $media->save();
             }, YoutubeChannel::forChannel($channel->channel_id)->videos());
+            if ($this->getOutput()->isVerbose()) {
+                $this->bar->advance();
+            }
         });
+
+        if ($this->getOutput()->isVerbose()) {
+            $this->bar->finish();
+        }
     }
 }

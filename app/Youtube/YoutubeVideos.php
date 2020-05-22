@@ -40,7 +40,6 @@ class YoutubeVideos
          */
         $videos = YoutubeCore::init()
             ->defineEndpoint('playlistItems.list')
-            ->clearParams()
             ->addParams([
                 'playlistId' => $this->uploadsPlaylistId,
                 'maxResults' => 50,

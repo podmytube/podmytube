@@ -43,7 +43,13 @@ class YoutubeCore
         return new static(...$params);
     }
 
-    protected function getApiKey()
+    /**
+     * Will get a youtube api key from DB or from Config.
+     * If one is obtained, same one is used for next queries.
+     *
+     * @return string $apikey to use
+     */
+    protected function getApiKey(): string
     {
         if (Config::has('apikey')) {
             return Config::get('apikey');
@@ -65,31 +71,48 @@ class YoutubeCore
     /**
      * @return string the endpoint used
      */
-    public function endpoint()
+    public function endpoint(): string
     {
         return $this->endpoint;
     }
 
-    public function url()
+    /**
+     * Will return the youtube api url to query.
+     *
+     * @return string $url to query.
+     */
+    public function url(): string
     {
         return $this->endpointUrlMap[$this->endpoint] .
             "?key={$this->apikey}&" .
             http_build_query($this->params());
     }
 
+    /**
+     * run the query(ies) and get results.
+     */
     public function run()
     {
         do {
             $rawResults = $this->getRawResults();
+
+            /**
+             * convert json string into a hash table.
+             */
             $this->jsonDecoded = json_decode($rawResults, true);
 
+            /**
+             * if response has items, adding them to previous results
+             */
             if (isset($this->jsonDecoded['items'])) {
                 $this->items = array_merge(
                     $this->items,
                     $this->jsonDecoded['items']
                 );
             }
-
+            /**
+             * if response is multi page, prepare next youtube query.
+             */
             if (isset($this->jsonDecoded['nextPageToken'])) {
                 $this->setPageToken($this->jsonDecoded['nextPageToken']);
             }
@@ -99,7 +122,9 @@ class YoutubeCore
     }
 
     /**
-     *
+     * return if we are qyuerying youtube api next page.
+     * According to an eventual limit set or the presence of a nextPageToken
+     * in the response we are going to make another youtube api query
      */
     protected function doWeGetNextPage()
     {
@@ -112,14 +137,23 @@ class YoutubeCore
         return true;
     }
 
+    /**
+     * Define a limit.
+     *
+     * @param int $limit maximum number of items we need. 0=unlimited.
+     */
     public function setLimit(int $limit)
     {
-        if ($limit > 0) {
+        if ($limit >= 0) {
             $this->limit = $limit;
         }
         return $this;
     }
 
+    /**
+     * Return the raw json result.
+     * May come from the cache of from youtube api.
+     */
     protected function getRawResults()
     {
         // get it from cache (if any)
@@ -184,13 +218,6 @@ class YoutubeCore
         return $this->params;
     }
 
-    public function clearParams()
-    {
-        $this->params = [];
-        $this->partParams = [];
-        return $this;
-    }
-
     public function results()
     {
         return $this->jsonDecoded;
@@ -214,7 +241,6 @@ class YoutubeCore
     protected function cacheKey()
     {
         $separator = '_';
-
         return 'youtube' .
             $separator .
             $this->endpoint() .

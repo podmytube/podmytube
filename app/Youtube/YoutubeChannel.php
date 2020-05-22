@@ -62,7 +62,6 @@ class YoutubeChannel
          */
         $videos = YoutubeCore::init()
             ->defineEndpoint('playlistItems.list')
-            ->clearParams()
             ->addParams([
                 'playlistId' => $this->uploadsPlaylistId,
                 'maxResults' => 50,
@@ -74,7 +73,7 @@ class YoutubeChannel
         /**
          * format results
          */
-        $this->videos = array_map(function ($videoItem) {
+        return array_map(function ($videoItem) {
             return [
                 'media_id' => $videoItem['contentDetails']['videoId'],
                 'channel_id' => $videoItem['snippet']['channelId'],
@@ -85,11 +84,5 @@ class YoutubeChannel
                 ))->setTimezone('UTC'),
             ];
         }, $videos);
-
-        usort($this->videos, function ($item1, $item2) {
-            return $item2['published_at'] <=> $item1['published_at'];
-        });
-
-        return $this->videos;
     }
 }
