@@ -2,6 +2,11 @@
 
 namespace App\Youtube;
 
+/**
+ * This class intends to get channels's playlist oredered by name.
+ * 'uploads' => xliqsjfdumsldodsikpqs
+ * 'favorites' => msldodsikpqsxliqsjfdu
+ */
 class YoutubePlaylists
 {
     /** @var \App\Youtube\YoutubeCore $youtubeCore  */

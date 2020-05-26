@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Youtube;
 
+use App\Exceptions\YoutubeNoResultsException;
 use App\Youtube\YoutubePlaylists;
 use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
@@ -11,7 +12,7 @@ class YoutubePlaylistsTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);        
+        Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
     }
 
     public function testChannelIsGettingTheRightUploadsPlaylist()
@@ -32,5 +33,13 @@ class YoutubePlaylistsTest extends TestCase
                 YoutubeCoreTest::PERSONAL_CHANNEL_ID
             )->favoritesPlaylistId()
         );
+    }
+
+    public function testInvalidChannelIdShouldThrowAnException()
+    {
+        $this->expectException(YoutubeNoResultsException::class);
+        YoutubePlaylists::forChannel(
+            'ForSureThisChannelWillNeverEverExist'
+        )->uploadsPlaylistId();
     }
 }

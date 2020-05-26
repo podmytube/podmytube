@@ -4,6 +4,7 @@ namespace App\Youtube;
 
 use App\ApiKey;
 use App\Exceptions\YoutubeInvalidEndpointException;
+use App\Exceptions\YoutubeNoResultsException;
 use App\Modules\Query;
 use App\Traits\YoutubeEndpoints;
 use Illuminate\Support\Facades\Cache;
@@ -100,6 +101,12 @@ class YoutubeCore
              * convert json string into a hash table.
              */
             $this->jsonDecoded = json_decode($rawResults, true);
+
+            if (!isset($this->jsonDecoded['items'])) {
+                throw new YoutubeNoResultsException(
+                    'No results for ' . $this->url()
+                );
+            }
 
             /**
              * if response has items, adding them to previous results

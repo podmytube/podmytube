@@ -3,6 +3,7 @@
 namespace Tests\Unit\Youtube;
 
 use App\Exceptions\YoutubeInvalidEndpointException;
+use App\Exceptions\YoutubeNoResultsException;
 use App\Youtube\YoutubeCore;
 use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
@@ -35,6 +36,16 @@ class YoutubeCoreTest extends TestCase
     {
         $this->expectException(YoutubeInvalidEndpointException::class);
         $this->youtubeCore->addParts(['id', 'snippet']);
+    }
+
+    public function testInvalidChannelShouldThrowException()
+    {
+        $this->expectException(YoutubeNoResultsException::class);
+        $this->youtubeCore
+            ->defineEndpoint('channels.list')
+            ->addParts(['id'])
+            ->addParams(['id' => 'ForSureThisChannelIdIsInvalid'])
+            ->run();
     }
 
     public function testGettingProperIdForChannelListShouldBeOk()

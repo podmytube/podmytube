@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Youtube;
 
+use App\Exceptions\YoutubeNoResultsException;
 use App\Youtube\YoutubeChannel;
 use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
@@ -37,10 +38,9 @@ class YoutubeChannelTest extends TestCase
 
     public function testThisOneShouldNotExistsAtAll()
     {
-        $this->assertFalse(
-            YoutubeChannel::forChannel(
-                'Je-Doute-Que-Ce-Channel-Existe-Un-Jour-Meme-Lointain-Pour-De-Vrai'
-            )->exists()
-        );
+        $this->expectException(YoutubeNoResultsException::class);
+        YoutubeChannel::forChannel(
+            'Je-Doute-Que-Ce-Channel-Existe-Un-Jour-Meme-Lointain-Pour-De-Vrai'
+        )->exists();
     }
 }
