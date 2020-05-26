@@ -3,37 +3,23 @@
 namespace App\Listeners;
 
 use App\Events\MediaRegistered;
+use App\Jobs\MailChannelHasReachedItsLimit;
 
 class QuotaReachedWarning
 {
     /**
-     * Create the event listener.
+     * handle MediaRegistered Event.
+     * will create a send an email job to warn user this media will not be generated.
      *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
-     * Handle the event.
-     *
-     * @param  object  $event
-     *
-     * @return void
+     * @param \App\Events\MediaRegistered $event
      */
     public function handle(MediaRegistered $event)
     {
-        /**
-         * This process will add the job SendThumbBySFTP to the queue (upload is long).
-         * Jobs are runned with one supervisor.
-         * !! IMPORTANT !!
-         * QUEUE_DRIVER in .env should be set to database and commands
-         * php artisan queue:table
-         * php artisan migrate
-         * should have been run
-         */
-        dump('New MediaRegistered', __FILE__ . '-' . __FUNCTION__);
+        $channel = $event->getMedia()->channel->first();
+        if ($channel->hasReachedItslimit()) {
+            MailChannelHasReachedItsLimit::dispatch($event->getMedia())->delay(
+                now()
+            );
+        }
     }
 }
