@@ -2,8 +2,8 @@
 
 namespace App\Jobs;
 
-use App\Channel;
-use App\Mail\ChannelIsRegistered;
+use App\Mail\ChannelHasReachedItsLimits;
+use App\Media;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -11,20 +11,20 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Mail;
 
-class MailChannelIsRegistered implements ShouldQueue
+class MailChannelHasReachedItsLimit implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $channel;
+    protected $media;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Channel $channel)
+    public function __construct(Media $media)
     {
-        $this->channel = $channel;
+        $this->media = $media;
     }
 
     /**
@@ -34,8 +34,8 @@ class MailChannelIsRegistered implements ShouldQueue
      */
     public function handle()
     {
-        Mail::to($this->channel->user)->send(
-            new ChannelIsRegistered($this->channel)
+        Mail::to($this->media->media->user)->send(
+            new ChannelHasReachedItsLimits($this->media)
         );
     }
 }

@@ -99,7 +99,6 @@ class ChannelUpdateCommand extends Command
                 $media->save();
 
                 if ($newMedia) {
-                    dump('New media', __FILE__ . '-' . __FUNCTION__);
                     event(new MediaRegistered($media));
                 }
             }, YoutubeChannel::forChannel($channel->channel_id)->videos());

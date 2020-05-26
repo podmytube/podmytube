@@ -12,19 +12,15 @@ class ChannelIsRegistered extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $user;
-    public $channel;
-    public $logo;
+    protected $channel;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(User $user, Channel $channel)
+    public function __construct(Channel $channel)
     {
-        $this->logo = public_path('images/logo-small.png');
-        $this->user = $user;
         $this->channel = $channel;
     }
 
@@ -35,9 +31,9 @@ class ChannelIsRegistered extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.channelRegistered')->with(
-            'podmytubeLogo',
-            $this->logo
-        );
+        return $this->view('emails.channelRegistered')->with([
+            'user' => $this->channel->user,
+            'channel' => $this->channel,
+        ]);
     }
 }

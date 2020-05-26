@@ -9,7 +9,7 @@ class MediaRegistered
 {
     use SerializesModels;
 
-    public $media;
+    protected $media;
 
     /**
      * Create a new event instance.
@@ -19,7 +19,14 @@ class MediaRegistered
      */
     public function __construct(Media $media)
     {
-        dump('Media registered', $media, __FILE__ . '-' . __FUNCTION__);
         $this->media = $media;
+    }
+
+    /**
+     * @return \App\Media the media that has been registered
+     */
+    public function getMedia()
+    {
+        return $this->media;
     }
 }
