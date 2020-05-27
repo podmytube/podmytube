@@ -10,9 +10,6 @@
 
 namespace App;
 
-use App\Exceptions\ChannelCreationInvalidChannelUrlException;
-use App\Exceptions\ChannelCreationInvalidUrlException;
-use App\Exceptions\ChannelCreationOnlyYoutubeIsAccepted;
 use App\Podcast\PodcastBuilder;
 use App\Traits\HasLimits;
 use App\Traits\HasManyMedias;

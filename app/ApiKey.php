@@ -13,7 +13,7 @@ class ApiKey extends Model
     public const PROD_ENV = 1;
     public const LOCAL_ENV = 2;
 
-    /** */
+    /** @var App\ApiKey $selectedOne selected model*/
     protected $selectedOne;
 
     /**
@@ -24,6 +24,9 @@ class ApiKey extends Model
         return $this->hasMany(Quota::class, 'apikey_id');
     }
 
+    /**
+     * Select first apikey usable today.
+     */
     public function selectOne()
     {
         if (!$this->usableKeysForToday()->count()) {
@@ -35,7 +38,14 @@ class ApiKey extends Model
         return $this;
     }
 
-    public function get()
+    /**
+     * Get selected api key.
+     * will set an api key in config to avoid querying
+     * api_keys table every 2sec.
+     *
+     * @return string apikey string version
+     */
+    public function get(): string
     {
         if ($this->selectedOne === null) {
             $this->selectOne();
@@ -46,15 +56,17 @@ class ApiKey extends Model
 
     public function scopeEnvironment(Builder $query)
     {
-        switch (config('app.env')) {
-            case 'local':
-            case 'testing':
-            case 'test':
-                $environment = self::LOCAL_ENV;
-                break;
-            default:
-                $environment = self::PROD_ENV;
+        $confMap = [
+            'local' => self::LOCAL_ENV,
+            'testing' => self::LOCAL_ENV,
+            'test' => self::LOCAL_ENV,
+            'production' => self::PROD_ENV,
+        ];
+        $confKey = config('app.env');
+        if (!isset($confMap[$confKey])) {
+            $confKey = 'production';
         }
+        $environment = $confMap[$confKey];
         return $query->where('environment', '=', $environment);
     }
 
