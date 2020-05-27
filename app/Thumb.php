@@ -3,12 +3,15 @@
 namespace App;
 
 use App\Exceptions\ThumbUploadHasFailedException;
+use App\Traits\BelongsToChannel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
 class Thumb extends Model
 {
+    use BelongsToChannel;
+
     public const _LOCAL_STORAGE_DISK = 'thumbs';
     public const REMOTE_STORAGE_DISK = 'sftpthumbs';
     public const _DEFAULT_THUMB_FILE = 'default_thumb.jpg';
@@ -29,11 +32,6 @@ class Thumb extends Model
     public function relativePath()
     {
         return $this->getRelativePathAttribute();
-    }
-
-    public function channel()
-    {
-        return $this->belongsTo(Channel::class, 'channel_id', 'channel_id');
     }
 
     /**

@@ -20,7 +20,7 @@ class EventServiceProvider extends ServiceProvider
             \App\Listeners\RefreshPodcast::class,
         ],
         \App\Events\MediaRegistered::class => [
-            \App\Listeners\QuotaReachedWarning::class,
+            \App\Listeners\QuotaChecker::class,
         ],
         \App\Events\ThumbUpdated::class => [
             \App\Listeners\UploadThumb::class,

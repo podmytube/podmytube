@@ -4,11 +4,14 @@ namespace App;
 
 use App\Exceptions\InvalidStartDateException;
 use App\Modules\EnclosureUrl;
+use App\Traits\BelongsToChannel;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Media extends Model
 {
+    use BelongsToChannel;
+
     protected $table = 'medias';
     protected $primaryKey = 'media_id';
     public $incrementing = false;
@@ -22,14 +25,6 @@ class Media extends Model
         'created_at',
         'updated_at',
     ];
-
-    /**
-     * define the relationship between media and its channel
-     */
-    public function channel()
-    {
-        return $this->belongsTo(Channel::class, 'channel_id', 'channel_id');
-    }
 
     /**
      * define a scope to get medias grabbed between 2 dates.

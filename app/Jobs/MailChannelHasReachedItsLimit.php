@@ -34,6 +34,7 @@ class MailChannelHasReachedItsLimit implements ShouldQueue
      */
     public function handle()
     {
+        info('sending mail ChannelHasReachedItsLimits');
         Mail::to($this->media->media->user)->send(
             new ChannelHasReachedItsLimits($this->media)
         );

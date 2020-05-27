@@ -20,6 +20,7 @@ use App\Exceptions\ChannelCreationInvalidChannelUrlException;
 use App\Exceptions\ChannelCreationInvalidUrlException;
 use App\Exceptions\SubscriptionHasFailedException;
 use App\Exceptions\YoutubeApiInvalidChannelIdException;
+use App\Modules\YoutubeChannelId;
 use App\Plan;
 use App\Subscription;
 use App\Youtube\YoutubeChannel;
@@ -67,9 +68,9 @@ class ChannelCreateController extends Controller
                 'channel_url' => 'required|string|min:27',
             ]);
 
-            $channelId = Channel::extractChannelIdFromUrl(
+            $channelId = YoutubeChannelId::fromUrl(
                 $request->channel_url
-            );
+            )->get();
 
             /**
              * get youtube obj

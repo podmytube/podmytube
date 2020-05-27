@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Channel;
-use App\Events\MediaRegistered;
 use App\Exceptions\YoutubeNoResultsException;
 use App\Media;
 use App\Youtube\YoutubeChannel;
@@ -54,14 +53,7 @@ class ChannelUpdateCommand extends Command
      */
     public function handle()
     {
-        // parse argument
-        $typesAllowed = ['free', 'paying', 'early', 'all'];
-
-        if (!in_array($this->argument('channelTypeToUpdate'), $typesAllowed)) {
-            $this->error(
-                'Only these options are available : ' .
-                    implode(', ', $typesAllowed)
-            );
+        if ($this->checkChannelTypeToUpdate() === false) {
             return;
         }
 
@@ -70,6 +62,7 @@ class ChannelUpdateCommand extends Command
             $this->argument('channelTypeToUpdate')
         );
 
+        // no channel to refresh => nothing to do
         if (!$this->channels->count()) {
             $this->error(
                 "There is no channels with this kind of plan ({$this->argument(
@@ -79,28 +72,18 @@ class ChannelUpdateCommand extends Command
             return;
         }
 
-        $this->info('Updating channels.', 'v');
-
-        if ($this->getOutput()->isVerbose()) {
-            $this->bar = $this->output->createProgressBar(
-                $this->channels->count()
-            );
-            $this->bar->start();
-        }
+        $this->prologue($this->channels->count());
 
         /** for each channel */
         $this->channels->map(function ($channel) {
             try {
                 /** for each channel video */
                 array_map(function ($video) {
-                    $newMedia = false;
-
                     /** check if the video already exist in database */
                     if (!($media = Media::find($video['media_id']))) {
                         $media = new Media();
                         $media->media_id = $video['media_id'];
                         $media->channel_id = $video['channel_id'];
-                        $newMedia = true;
                     }
                     // update it
                     $media->title = $video['title'];
@@ -109,10 +92,6 @@ class ChannelUpdateCommand extends Command
 
                     /** save it */
                     $media->save();
-
-                    if ($newMedia) {
-                        event(new MediaRegistered($media));
-                    }
                 }, YoutubeChannel::forChannel($channel->channel_id)->videos());
             } catch (YoutubeNoResultsException $exception) {
                 $this->errors[] = $exception->getMessage();
@@ -121,6 +100,35 @@ class ChannelUpdateCommand extends Command
             }
         });
 
+        $this->epilogue();
+    }
+
+    protected function checkChannelTypeToUpdate()
+    {
+        // parse argument
+        $typesAllowed = ['free', 'paying', 'early', 'all'];
+
+        if (!in_array($this->argument('channelTypeToUpdate'), $typesAllowed)) {
+            $this->error(
+                'Only these options are available : ' .
+                    implode(', ', $typesAllowed)
+            );
+            return false;
+        }
+        return true;
+    }
+
+    protected function prologue(int $prograssBarNbItems)
+    {
+        $this->info('Updating channels.', 'v');
+        if ($this->getOutput()->isVerbose()) {
+            $this->bar = $this->output->createProgressBar($prograssBarNbItems);
+            $this->bar->start();
+        }
+    }
+
+    protected function epilogue()
+    {
         if ($this->getOutput()->isVerbose()) {
             $this->bar->finish();
         }
@@ -138,7 +146,7 @@ class ChannelUpdateCommand extends Command
         }
     }
 
-    public function makeProgressBarProgress()
+    protected function makeProgressBarProgress()
     {
         if ($this->getOutput()->isVerbose()) {
             $this->bar->advance();
