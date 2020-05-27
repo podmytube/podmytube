@@ -6,9 +6,6 @@ use App\Channel;
 use Carbon\Carbon;
 use Tests\TestCase;
 use App\Podcast\PodcastBuilder;
-use App\Exceptions\ChannelCreationInvalidUrlException;
-use App\Exceptions\ChannelCreationOnlyYoutubeIsAccepted;
-use App\Exceptions\ChannelCreationInvalidChannelUrlException;
 
 class ChannelModelTest extends TestCase
 {
