@@ -11,6 +11,7 @@
 
 namespace App;
 
+use App\Traits\BelongsToChannel;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -18,6 +19,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Playlist extends Model
 {
+    use BelongsToChannel;
+
     /**
      * the way to specify users.user_id is the key (and not users.id)
      */

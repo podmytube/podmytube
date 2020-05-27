@@ -11,7 +11,7 @@ return [
     'limitsReached_body' => <<<EOT
 I'm sorry to tell you that your episode <b>:media_title</b> will not be added to your podcast :'(.<br>
 This is due to the fact that your channel <b>:channel_name</b> has reached its limits.<br>
-Please consider upgrade your plan to get all your episodes included in your podcast.
+Please consider upgrade your plan to get all your episodes included in your podcast without any time limits.
 EOT
     ,
     'newCategories_hello' => 'Hello :name',

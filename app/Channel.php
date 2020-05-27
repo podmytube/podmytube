@@ -15,7 +15,9 @@ use App\Exceptions\ChannelCreationInvalidUrlException;
 use App\Exceptions\ChannelCreationOnlyYoutubeIsAccepted;
 use App\Podcast\PodcastBuilder;
 use App\Traits\HasLimits;
-use Illuminate\Database\Eloquent\Builder;
+use App\Traits\HasManyMedias;
+use App\Traits\HasOneCategory;
+use App\Traits\HasOneThumb;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Lang;
@@ -25,7 +27,7 @@ use Illuminate\Support\Facades\Lang;
  */
 class Channel extends Model
 {
-    use HasLimits;
+    use HasLimits, HasManyMedias, HasOneThumb, HasOneCategory;
 
     public const CREATED_AT = 'channel_createdAt';
     public const UPDATED_AT = 'channel_updatedAt';
@@ -51,34 +53,9 @@ class Channel extends Model
     ];
 
     /**
-     * the field that can be massAssignemented
+     * the field that are guarded
      */
-    protected $fillable = [
-        'channel_id',
-        'channel_name',
-        'user_id',
-        'authors',
-        'email',
-        'description',
-        'category_id',
-        'link',
-        'lang',
-        'explicit',
-        'podcast_title',
-        'podcast_copyright',
-        'accept_video_by_tag',
-        'reject_video_by_keyword',
-        'reject_video_too_old',
-        'channel_createdAt',
-        'channel_updatedAt',
-        'podcast_updatedAt',
-        'ftp_host',
-        'ftp_user',
-        'ftp_pass',
-        'ftp_podcast',
-        'ftp_dir',
-        'ftp_pasv',
-    ];
+    protected $guarded = [];
 
     /**
      * define the relationship between one user and one channel.
@@ -91,35 +68,11 @@ class Channel extends Model
     }
 
     /**
-     * Channel should have only one category.
-     */
-    public function category()
-    {
-        return $this->hasOne(Category::class, 'id', 'category_id');
-    }
-
-    /**
      * We are getting active subscriptions for the channel.
      */
     public function subscription()
     {
         return $this->hasOne(Subscription::class, 'channel_id');
-    }
-
-    /**
-     * define the relationship between one channel and its medias
-     */
-    public function medias()
-    {
-        return $this->HasMany(Media::class, 'channel_id');
-    }
-
-    /**
-     * define the relationship between one channel and its playlists
-     */
-    public function thumb()
-    {
-        return $this->HasOne(Thumb::class, 'channel_id');
     }
 
     /**
@@ -130,61 +83,6 @@ class Channel extends Model
     public function getFeedUrlAttribute()
     {
         return env('PODCAST_URL') . '/' . $this->channel_id . '/podcast.xml';
-    }
-
-    /**
-     * extract the id from a youtube channel url after checkingits valid
-     * https://www.youtube.com/channel/UCZ0o1IeuSSceEixZbSATWtw => UCZ0o1IeuSSceEixZbSATWtw.
-     *
-     * @param string $channelUrl the url of the channel to register
-     *
-     * @return string the channel id
-     */
-    public static function extractChannelIdFromUrl(string $channelUrl)
-    {
-        /**
-         * url should be one
-         */
-        if (
-            !filter_var(
-                $channelUrl,
-                FILTER_VALIDATE_URL,
-                FILTER_FLAG_PATH_REQUIRED
-            )
-        ) {
-            throw new ChannelCreationInvalidUrlException(
-                'flash_channel_id_is_invalid'
-            );
-        }
-
-        if (
-            !in_array(parse_url($channelUrl, PHP_URL_HOST), [
-                'youtube.com',
-                'www.youtube.com',
-            ])
-        ) {
-            throw new ChannelCreationOnlyYoutubeIsAccepted(
-                'Only channels from youtube are accepted !'
-            );
-        }
-
-        /**
-         * checking the url given.
-         * It should contain one youtube url the channel path and the channel_id
-         */
-        if (
-            !preg_match(
-                "#^/channel/(?'channel'[A-Za-z0-9_-]*)/?$#",
-                parse_url($channelUrl, PHP_URL_PATH),
-                $matches
-            )
-        ) {
-            throw new ChannelCreationInvalidChannelUrlException(
-                'flash_channel_id_is_invalid'
-            );
-        }
-
-        return $matches['channel'];
     }
 
     /**

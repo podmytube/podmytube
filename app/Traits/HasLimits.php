@@ -7,7 +7,6 @@ use App\Modules\PeriodsHelper;
 /**
  * This trait is getting limit for one channel.
  * By limits I mean the one that he has subscribed for.
- *
  */
 trait HasLimits
 {

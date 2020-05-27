@@ -5,8 +5,11 @@ namespace App\Listeners;
 use App\Events\MediaRegistered;
 use App\Jobs\MailChannelHasReachedItsLimit;
 
-class QuotaReachedWarning
+class QuotaChecker
 {
+    /** @var \App\Channel $channel */
+    protected $channel;
+
     /**
      * handle MediaRegistered Event.
      * will create a send an email job to warn user this media will not be generated.
@@ -15,10 +18,13 @@ class QuotaReachedWarning
      */
     public function handle(MediaRegistered $event)
     {
-        $channel = $event->getMedia()->channel->first();
-        if ($channel->hasReachedItslimit()) {
+        $this->channel = $event->getMedia()->channel;
+        if ($this->channel->hasReachedItslimit()) {
+            info(
+                "Channel {$this->channel->channel_name} has reached its limits."
+            );
             MailChannelHasReachedItsLimit::dispatch($event->getMedia())->delay(
-                now()
+                now()->addSeconds(20)
             );
         }
     }

@@ -15,6 +15,7 @@ class MediaRegistered
      * Create a new event instance.
      *
      * @param  \App\Media  $media
+     *
      * @return void
      */
     public function __construct(Media $media)

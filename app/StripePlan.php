@@ -2,10 +2,13 @@
 
 namespace App;
 
+use App\Traits\BelongsToPlan;
 use Illuminate\Database\Eloquent\Model;
 
 class StripePlan extends Model
 {
+    use BelongsToPlan;
+
     public const _PROMO_MONTHLY_PLAN_TEST = 'plan_EfYDgsuNMdj8Sb';
     public const _PROMO_MONTHLY_PLAN_PROD = 'plan_EcuGg9SyUBw97i';
 
@@ -20,12 +23,4 @@ class StripePlan extends Model
 
     public const _ACCROPOLIS_PLAN_TEST = 'plan_EfubS6xkc5amyO';
     public const _ACCROPOLIS_PLAN_PROD = 'plan_Ecv3k67W6rsSKk';
-
-    /**
-     * @return object App\Plan
-     */
-    public function plan()
-    {
-        return $this->belongsTo(Plan::class, 'plan_id', 'id');
-    }
 }

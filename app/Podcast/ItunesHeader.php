@@ -28,7 +28,6 @@ class ItunesHeader implements IsRenderableInterface
         $this->author = $attributes['author'] ?? null;
         $this->explicit = $attributes['explicit'] ?? null;
 
-        
         if (isset($attributes['imageUrl'])) {
             $this->setImageUrl($attributes['imageUrl']);
         }
