@@ -5,15 +5,19 @@ namespace App\Youtube;
 use App\ApiKey;
 use App\Exceptions\YoutubeInvalidEndpointException;
 use App\Exceptions\YoutubeNoResultsException;
+use App\Interfaces\QuotasCalculator;
+use App\Interfaces\QuotasConsumer;
 use App\Modules\Query;
 use App\Traits\YoutubeEndpoints;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 
-class YoutubeCore
+abstract class YoutubeCore implements QuotasConsumer
 {
     use YoutubeEndpoints;
 
+    /** @var \App\Interfaces\QuotasCalculator $quotaCalculator */
+    protected $quotaCalculator;
     /** @var string $apikey */
     protected $apikey;
     /** @var string $endpoint */
@@ -33,8 +37,9 @@ class YoutubeCore
     /** @var array $partParams youtube part parameters */
     protected $partParams = [];
 
-    private function __construct()
+    private function __construct(QuotasCalculator $quotaCalculator)
     {
+        $this->quotaCalculator = $quotaCalculator;
         $this->apikey = $this->getApiKey();
         $this->params['part'] = [];
     }
@@ -176,6 +181,11 @@ class YoutubeCore
         return $rawResults;
     }
 
+    protected function hasResult()
+    {
+        return $this->results()['pageInfo']['totalResults'] <= 0;
+    }
+
     /**
      * Add some part params to the query.
      * Because part params are different for every endpoint,
@@ -183,7 +193,7 @@ class YoutubeCore
      *
      * @param array $parts
      */
-    public function addParts(array $parts, $delim = ',')
+    public function addParts(array $parts)
     {
         if (!isset($this->endpoint)) {
             throw new YoutubeInvalidEndpointException(
@@ -253,5 +263,10 @@ class YoutubeCore
             $this->endpoint() .
             $separator .
             http_build_query($this->params(), null, $separator);
+    }
+
+    public function quotasUsed(): int
+    {
+        return $this->quotaCalculator->addQuotaConsumer($this)->quotas();
     }
 }
