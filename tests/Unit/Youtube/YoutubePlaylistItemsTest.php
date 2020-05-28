@@ -2,13 +2,15 @@
 
 namespace Tests\Unit\Youtube;
 
+use App\Youtube\YoutubePlaylistItems;
 use App\Youtube\YoutubeQuotas;
-use App\Youtube\YoutubeVideos;
 use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 
-class YoutubeVideosTest extends TestCase
+class YoutubePlaylistItemsTest extends TestCase
 {
+    protected const MY_PERSONAL_UPLOADS_PLAYLIST_ID = 'UUw6bU9JT_Lihb2pbtqAUGQw';
+
     /** @var \App\Interfaces\QuotasCalculator quotaCalculator */
     protected $quotaCalculator;
 
@@ -19,13 +21,14 @@ class YoutubeVideosTest extends TestCase
         $this->quotaCalculator = new YoutubeQuotas();
     }
 
-    public function testHavingTheRightNumberOfVideos()
+    public function testHavingTheRightNumberOfItemsInPlaylist()
     {
         $this->assertCount(
             2,
-            YoutubeVideos::init($this->quotaCalculator)
-                ->forChannel(YoutubeCoreTest::PERSONAL_CHANNEL_ID)
+            ($videos = YoutubePlaylistItems::init($this->quotaCalculator))
+                ->forPlaylist(self::MY_PERSONAL_UPLOADS_PLAYLIST_ID)
                 ->videos()
         );
+        $this->assertEquals(222, $videos->quotasUsed());
     }
 }

@@ -4,6 +4,8 @@ namespace App\Youtube;
 
 use App\Exceptions\YoutubeInvalidEndpointException;
 use App\Exceptions\YoutubeInvalidPartParamException;
+use App\Interfaces\QuotasCalculator;
+use App\Interfaces\QuotasConsumer;
 use App\Traits\YoutubeEndpoints;
 
 /**
@@ -11,19 +13,20 @@ use App\Traits\YoutubeEndpoints;
  *
  * @version 1
  */
-class YoutubeQuotas
+class YoutubeQuotas implements QuotasCalculator
 {
     use YoutubeEndpoints;
 
     protected $endpointBaseQuotaCostMap = [
-        'videos.list' => 1,
-        'search.list' => 100,
         'channels.list' => 1,
-        'playlists.list' => 1,
         'playlistItems.list' => 1,
+        'playlists.list' => 1,
+        'search.list' => 100,
+        'videos.list' => 1,
     ];
 
-    protected $quotaUsed = 0;
+    /** @var int $quotaConsumed */
+    protected $quotaConsumed = 0;
 
     /**
      * classic constructor.
@@ -34,35 +37,32 @@ class YoutubeQuotas
      *
      * @return YoutubeQuotas object
      */
-    public function __construct(YoutubeCore $youtubeCore)
+    public function __construct()
     {
-        $this->youtubeCore = $youtubeCore;
+    }
+
+    public function addQuotaConsumer(QuotasConsumer $quotaConsumer)
+    {
+        $this->quotaConsumer = $quotaConsumer;
         if (
             !isset(
-                $this->endpointBaseQuotaCostMap[$this->youtubeCore->endpoint()]
+                $this->endpointBaseQuotaCostMap[
+                    $this->quotaConsumer->endpoint()
+                ]
             )
         ) {
             throw new YoutubeInvalidEndpointException(
-                "Unknown endpoint {$this->youtubeCore->endpoint()}."
+                "Unknown endpoint {$this->quotaConsumer->endpoint()}."
             );
         }
         /**
          * each call has a min quota cost
          */
-        $this->quotaUsed +=
-            $this->endpointBaseQuotaCostMap[$this->youtubeCore->endpoint()];
+        $this->quotaConsumed +=
+            $this->endpointBaseQuotaCostMap[$this->quotaConsumer->endpoint()];
 
         $this->quotaCalculator();
-    }
-
-    /**
-     * Static constructor
-     *
-     * @return YoutubeQuotas object
-     */
-    public static function init(...$params)
-    {
-        return new static(...$params);
+        return $this;
     }
 
     /**
@@ -72,26 +72,28 @@ class YoutubeQuotas
      */
     protected function quotaCalculator()
     {
-        $scoreByPartMap = $this->getEndpointMap($this->youtubeCore->endpoint());
+        $scoreByPartMap = $this->getEndpointMap(
+            $this->quotaConsumer->endpoint()
+        );
 
-        foreach ($this->youtubeCore->partParams() as $part) {
+        foreach ($this->quotaConsumer->partParams() as $part) {
             if (!isset($scoreByPartMap[$part])) {
                 throw new YoutubeInvalidPartParamException(
                     "This part param {$part} is invalid",
                     1
                 );
             }
-            $this->quotaUsed += $scoreByPartMap[$part];
+            $this->quotaConsumed += $scoreByPartMap[$part];
         }
     }
 
     /**
-     * getter quotaUsed.
+     * getter quotas.
      *
-     * @return int quota used on query(ies)
+     * @return int quota consumed on query(ies)
      */
-    public function quotaUsed()
+    public function quotas(): int
     {
-        return $this->quotaUsed;
+        return $this->quotaConsumed;
     }
 }
