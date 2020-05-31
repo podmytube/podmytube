@@ -73,13 +73,9 @@ class ChannelCreateController extends Controller
             )->get();
 
             /**
-             * get youtube obj
+             * check channel exists
              */
-            $apikey = ApiKey::make()->get();
-            $youtubeCore = YoutubeCore::init($apikey);
-            $youtubeChannelObj = YoutubeChannel::init($youtubeCore)->forChannel(
-                $channelId
-            );
+            $youtubeChannelObj = (new YoutubeChannel())->forChannel($channelId);
 
             if (!$youtubeChannelObj->exists()) {
                 throw new YoutubeApiInvalidChannelIdException(

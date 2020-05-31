@@ -12,42 +12,44 @@ class YoutubePlaylistsTest extends TestCase
 {
     protected const MY_PERSONAL_UPLOADS_PLAYLIST_ID = 'UUw6bU9JT_Lihb2pbtqAUGQw';
 
-    /** @var \App\Interfaces\QuotasCalculator quotaCalculator */
-    protected $quotaCalculator;
-
     public function setUp(): void
     {
         parent::setUp();
         Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
-        $this->quotaCalculator = new YoutubeQuotas();
     }
 
     public function testChannelIsGettingTheRightUploadsPlaylist()
     {
         $this->assertEquals(
             self::MY_PERSONAL_UPLOADS_PLAYLIST_ID,
-            ($playlists = YoutubePlaylists::init($this->quotaCalculator))
+            ($playlists = new YoutubePlaylists())
                 ->forChannel(YoutubeCoreTest::PERSONAL_CHANNEL_ID)
                 ->uploadsPlaylistId()
         );
-        $this->assertEquals(3, $playlists->quotasUsed());
+        $this->assertEquals(
+            3,
+            YoutubeQuotas::forUrls($playlists->queriesUsed())->quotaConsumed()
+        );
     }
 
     public function testChannelIsGettingTheRightFavoritesPlaylist()
     {
         $this->assertEquals(
             'FLw6bU9JT_Lihb2pbtqAUGQw',
-            ($playlists = YoutubePlaylists::init($this->quotaCalculator))
+            ($playlists = new YoutubePlaylists())
                 ->forChannel(YoutubeCoreTest::PERSONAL_CHANNEL_ID)
                 ->favoritesPlaylistId()
         );
-        $this->assertEquals(3, $playlists->quotasUsed());
+        $this->assertEquals(
+            3,
+            YoutubeQuotas::forUrls($playlists->queriesUsed())->quotaConsumed()
+        );
     }
 
     public function testInvalidChannelIdShouldThrowAnException()
     {
         $this->expectException(YoutubeNoResultsException::class);
-        YoutubePlaylists::init($this->quotaCalculator)
+        (new YoutubePlaylists())
             ->forChannel('ForSureThisChannelWillNeverEverExist')
             ->uploadsPlaylistId();
     }

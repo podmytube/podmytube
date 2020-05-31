@@ -2,76 +2,55 @@
 
 namespace Tests\Unit\Youtube;
 
-use App\Youtube\YoutubeChannel;
-use App\Youtube\YoutubeCore;
-use App\Youtube\YoutubePlaylists;
 use App\Youtube\YoutubeQuotas;
-use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 
 class YoutubeQuotasTest extends TestCase
 {
-    const PEWDIEPIE_CHANNEL_ID = 'UC-lHJZR3Gqxm24_Vd_AJ5Yw';
-
-    public function setUp(): void
-    {
-        parent::setUp();
-        Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
-        $this->quotaCalculator = new YoutubeQuotas();
-    }
-
-    public function testMinimalChannelListShouldBeOk()
-    {
-        $expectedQuota = 1;
-
-        $this->assertEquals(
-            $expectedQuota,
-            YoutubeChannel::init($this->quotaCalculator)
-                ->forChannel(
-                    YoutubeCoreTest::PEWDIEPIE_CHANNEL_ID,
-                    $parts = ['id']
-                )
-                ->quotasUsed()
-        );
-    }
-
-    public function testChannelListWithSomePartsShouldBeOk()
+    public function testSimpleUrlQuotaCostShouldBeOk()
     {
         $expectedQuota = 7;
-        // base(1) + id(0) + snippet(2) + contentDetails(2) + status(2)
+        $queries = [
+            'https://www.googleapis.com/youtube/v3/channels?key=AIzaSyDu5_d6Etu8N0biP6zfDN4FNe675FcgRkk&id=UC-lHJZR3Gqxm24_Vd_AJ5Yw&part=id%2Csnippet%2CcontentDetails%2Cstatus',
+        ];
         $this->assertEquals(
             $expectedQuota,
-            YoutubeChannel::init($this->quotaCalculator)
-                ->forChannel(
-                    YoutubeCoreTest::PEWDIEPIE_CHANNEL_ID,
-                    $parts = ['id', 'snippet', 'contentDetails', 'status']
-                )
-                ->quotasUsed()
+            YoutubeQuotas::forUrls($queries)->quotaConsumed()
         );
     }
 
-    /*  public function testChannelListWithAllPartsShouldBeOk()
+    public function testManyUrlsShouldBeOk()
     {
-        $expectedQuota = 21;
+        $expectedQuota = 16;
+        $queries = [
+            'https://www.googleapis.com/youtube/v3/channels?key=AIzaSyDu5_d6Etu8N0biP6zfDN4FNe675FcgRkk&id=UC-lHJZR3Gqxm24_Vd_AJ5Yw&part=id', // 1
+            'https://www.googleapis.com/youtube/v3/channels?key=AIzaSyDu5_d6Etu8N0biP6zfDN4FNe675FcgRkk&id=UC-lHJZR3Gqxm24_Vd_AJ5Yw&part=id%2Csnippet', // 3
+            'https://www.googleapis.com/youtube/v3/channels?key=AIzaSyDu5_d6Etu8N0biP6zfDN4FNe675FcgRkk&id=UC-lHJZR3Gqxm24_Vd_AJ5Yw&part=id%2Csnippet%2CcontentDetails', // 5
+            'https://www.googleapis.com/youtube/v3/channels?key=AIzaSyDu5_d6Etu8N0biP6zfDN4FNe675FcgRkk&id=UC-lHJZR3Gqxm24_Vd_AJ5Yw&part=id%2Csnippet%2CcontentDetails%2Cstatus', // 7
+        ];
         $this->assertEquals(
             $expectedQuota,
-            YoutubeChannel::init($this->quotaCalculator)
-                ->forChannel(
-                    YoutubeCoreTest::PEWDIEPIE_CHANNEL_ID,
-                    $parts = [
-                        'auditDetails',
-                        'brandingSettings',
-                        'contentDetails',
-                        'contentOwnerDetails',
-                        'id',
-                        'localizations',
-                        'snippet',
-                        'statistics',
-                        'status',
-                        'topicDetails',
-                    ]
-                )
-                ->quotasUsed()
+            YoutubeQuotas::forUrls($queries)->quotaConsumed()
         );
-    } */
+    }
+
+    public function testInvalidEndPointShouldThrowAnException()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        YoutubeQuotas::forUrls([
+            'https://www.googleapis.com/invalidEndpoint',
+        ])->quotaConsumed();
+    }
+
+    public function testInvalidEndpointShouldStillReturnSomeResults()
+    {
+        $expectedQuota = 3;
+        $queries = [
+            'https://www.googleapis.com/youtube/v3/channels?part=id%2Csnippet%2CinvalidPartParams', // 3
+        ];
+        $this->assertEquals(
+            $expectedQuota,
+            YoutubeQuotas::forUrls($queries)->quotaConsumed()
+        );
+    }
 }

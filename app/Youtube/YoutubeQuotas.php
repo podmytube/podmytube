@@ -2,28 +2,15 @@
 
 namespace App\Youtube;
 
-use App\Exceptions\YoutubeInvalidEndpointException;
-use App\Exceptions\YoutubeInvalidPartParamException;
 use App\Interfaces\QuotasCalculator;
-use App\Interfaces\QuotasConsumer;
 use App\Traits\YoutubeEndpoints;
 
 /**
  * Youtube Data API quota calculator.
- *
- * @version 1
  */
 class YoutubeQuotas implements QuotasCalculator
 {
     use YoutubeEndpoints;
-
-    protected $endpointBaseQuotaCostMap = [
-        'channels.list' => 1,
-        'playlistItems.list' => 1,
-        'playlists.list' => 1,
-        'search.list' => 100,
-        'videos.list' => 1,
-    ];
 
     /** @var int $quotaConsumed */
     protected $quotaConsumed = 0;
@@ -37,62 +24,40 @@ class YoutubeQuotas implements QuotasCalculator
      *
      * @return YoutubeQuotas object
      */
-    public function __construct()
+    public function __construct(array $urls)
     {
-    }
-
-    public function addQuotaConsumer(QuotasConsumer $quotaConsumer)
-    {
-        $this->quotaConsumer = $quotaConsumer;
-        if (
-            !isset(
-                $this->endpointBaseQuotaCostMap[
-                    $this->quotaConsumer->endpoint()
-                ]
-            )
-        ) {
-            throw new YoutubeInvalidEndpointException(
-                "Unknown endpoint {$this->quotaConsumer->endpoint()}."
-            );
+        foreach ($urls as $url) {
+            $this->quotaConsumed += $this->calculateQuotaConsumed($url);
         }
-        /**
-         * each call has a min quota cost
-         */
-        $this->quotaConsumed +=
-            $this->endpointBaseQuotaCostMap[$this->quotaConsumer->endpoint()];
-
-        $this->quotaCalculator();
-        return $this;
     }
 
-    /**
-     * main calculator.
-     *
-     * @param array params and the quota they consume
-     */
-    protected function quotaCalculator()
+    public static function forUrls(...$params)
     {
-        $scoreByPartMap = $this->getEndpointMap(
-            $this->quotaConsumer->endpoint()
-        );
+        return new static(...$params);
+    }
 
-        foreach ($this->quotaConsumer->partParams() as $part) {
-            if (!isset($scoreByPartMap[$part])) {
-                throw new YoutubeInvalidPartParamException(
-                    "This part param {$part} is invalid",
-                    1
-                );
+    protected function calculateQuotaConsumed(string $url): int
+    {
+        // parsing the url
+        $parsedUrl = parse_url($url);
+
+        $endpoint = $parsedUrl['path'];
+        $this->checkEndpoint($endpoint);
+        $quotaCost = $this->baseQuotaCost($endpoint);
+
+        //parsing the query string
+        parse_str($parsedUrl['query'], $queryParams);
+
+        if (isset($queryParams['part'])) {
+            $partParams = explode(',', $queryParams['part']);
+            foreach ($partParams as $part) {
+                $quotaCost += $this->partQuotaCost($endpoint, $part);
             }
-            $this->quotaConsumed += $scoreByPartMap[$part];
         }
+        return $quotaCost;
     }
 
-    /**
-     * getter quotas.
-     *
-     * @return int quota consumed on query(ies)
-     */
-    public function quotas(): int
+    public function quotaConsumed(): int
     {
         return $this->quotaConsumed;
     }

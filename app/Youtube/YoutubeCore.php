@@ -5,7 +5,6 @@ namespace App\Youtube;
 use App\ApiKey;
 use App\Exceptions\YoutubeInvalidEndpointException;
 use App\Exceptions\YoutubeNoResultsException;
-use App\Interfaces\QuotasCalculator;
 use App\Interfaces\QuotasConsumer;
 use App\Modules\Query;
 use App\Traits\YoutubeEndpoints;
@@ -16,8 +15,8 @@ abstract class YoutubeCore implements QuotasConsumer
 {
     use YoutubeEndpoints;
 
-    /** @var \App\Interfaces\QuotasCalculator $quotaCalculator */
-    protected $quotaCalculator;
+    public const YOUTUBE_API_BASE_URL = 'https://www.googleapis.com';
+
     /** @var string $apikey */
     protected $apikey;
     /** @var string $endpoint */
@@ -36,17 +35,13 @@ abstract class YoutubeCore implements QuotasConsumer
     protected $params = [];
     /** @var array $partParams youtube part parameters */
     protected $partParams = [];
+    /** @var array $queries list of valid queries used */
+    protected $queries = [];
 
-    private function __construct(QuotasCalculator $quotaCalculator)
+    public function __construct()
     {
-        $this->quotaCalculator = $quotaCalculator;
         $this->apikey = $this->getApiKey();
         $this->params['part'] = [];
-    }
-
-    public static function init(...$params)
-    {
-        return new static(...$params);
     }
 
     /**
@@ -65,11 +60,7 @@ abstract class YoutubeCore implements QuotasConsumer
 
     public function defineEndpoint(string $endpoint)
     {
-        if (!isset($this->endpointUrlMap[$endpoint])) {
-            throw new YoutubeInvalidEndpointException(
-                "Specified endpoint {$endpoint} does not exists."
-            );
-        }
+        $this->checkEndpoint($endpoint);
         $this->endpoint = $endpoint;
         return $this;
     }
@@ -89,7 +80,8 @@ abstract class YoutubeCore implements QuotasConsumer
      */
     public function url(): string
     {
-        return $this->endpointUrlMap[$this->endpoint] .
+        return self::YOUTUBE_API_BASE_URL .
+            $this->endpoint .
             "?key={$this->apikey}&" .
             http_build_query($this->params());
     }
@@ -176,6 +168,8 @@ abstract class YoutubeCore implements QuotasConsumer
         $rawResults = Query::create($this->url())
             ->run()
             ->results();
+        // adding url to the list of queries used
+        $this->queries[] = $this->url();
         // putting results in cache for next time
         Cache::put($this->cacheKey(), $rawResults, now()->addDays());
         return $rawResults;
@@ -200,16 +194,14 @@ abstract class YoutubeCore implements QuotasConsumer
                 'Endpoint not defined. You should set one before.'
             );
         }
-        $validEndpointsParts = array_keys(
-            $this->endpointPartMap[$this->endpoint]
-        );
         $this->partParams = array_unique(
             array_merge(
                 $this->partParams,
-                array_filter($parts, function ($partToCheck) use (
-                    $validEndpointsParts
-                ) {
-                    return in_array($partToCheck, $validEndpointsParts);
+                array_filter($parts, function ($partToCheck) {
+                    return in_array(
+                        $partToCheck,
+                        $this->endpointParts($this->endpoint)
+                    );
                 })
             )
         );
@@ -268,5 +260,10 @@ abstract class YoutubeCore implements QuotasConsumer
     public function quotasUsed(): int
     {
         return $this->quotaCalculator->addQuotaConsumer($this)->quotas();
+    }
+
+    public function queriesUsed(): array
+    {
+        return $this->queries;
     }
 }
