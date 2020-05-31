@@ -14,7 +14,7 @@ class YoutubeChannel extends YoutubeCore
         array $parts = ['id', 'snippet']
     ): self {
         $this->channelId = $channelId;
-        $this->results = $this->defineEndpoint('channels.list')
+        $this->results = $this->defineEndpoint('/youtube/v3/channels')
             ->addParams(['id' => $channelId])
             ->addParts($parts)
             ->run()

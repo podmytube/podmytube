@@ -19,7 +19,7 @@ class YoutubePlaylistItems extends YoutubeCore
         /**
          * get all the uploaded videos for that playlist
          */
-        $videos = $this->defineEndpoint('playlistItems.list')
+        $videos = $this->defineEndpoint('/youtube/v3/playlistItems')
             ->addParams([
                 'playlistId' => $this->playlistId,
                 'maxResults' => 50,

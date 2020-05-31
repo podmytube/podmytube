@@ -6,14 +6,16 @@ use App\Exceptions\YoutubeInvalidEndpointException;
 use App\Exceptions\YoutubeNoResultsException;
 use App\Youtube\YoutubeCore;
 use Illuminate\Support\Facades\Artisan;
+use InvalidArgumentException;
 use Tests\TestCase;
 
 class YoutubeCoreTest extends TestCase
 {
     /** @var App\Youtube\YoutubeCore $youtubeCore*/
-    protected $youtubeCore;
+    protected $abstractCore;
 
     public const PERSONAL_CHANNEL_ID = 'UCw6bU9JT_Lihb2pbtqAUGQw';
+    public const PERSONAL_UPLOADS_PLAYLIST_ID = 'UUw6bU9JT_Lihb2pbtqAUGQw';
     public const PERSONAL_CHANNEL_NB_OF_PLAYLISTS = 2;
     public const PEWDIEPIE_CHANNEL_ID = 'UC-lHJZR3Gqxm24_Vd_AJ5Yw';
     public const NOWTECH_CHANNEL_ID = 'UCVwG9JHqGLfEO-4TkF-lf2g';
@@ -23,26 +25,41 @@ class YoutubeCoreTest extends TestCase
     {
         parent::setUp();
         Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
-        $this->youtubeCore = YoutubeCore::init();
+        // Create a new instance from the Abstract Class
+        $this->abstractCore = new class extends YoutubeCore {
+            // Just a sample public function that returns this anonymous instance
+            public function returnThis()
+            {
+                return $this;
+            }
+        };
+    }
+
+    public function testingAbstractInstance()
+    {
+        $this->assertInstanceOf(
+            YoutubeCore::class,
+            $this->abstractCore->returnThis()
+        );
     }
 
     public function testEndpointInvalid()
     {
-        $this->expectException(YoutubeInvalidEndpointException::class);
-        $this->youtubeCore->defineEndpoint('LoremIpsum');
+        $this->expectException(InvalidArgumentException::class);
+        $this->abstractCore->defineEndpoint('LoremIpsum');
     }
 
     public function testAddPartWithoutEndpointFail()
     {
         $this->expectException(YoutubeInvalidEndpointException::class);
-        $this->youtubeCore->addParts(['id', 'snippet']);
+        $this->abstractCore->addParts(['id', 'snippet']);
     }
 
     public function testInvalidChannelShouldThrowException()
     {
         $this->expectException(YoutubeNoResultsException::class);
-        $this->youtubeCore
-            ->defineEndpoint('channels.list')
+        $this->abstractCore
+            ->defineEndpoint('/youtube/v3/channels')
             ->addParts(['id'])
             ->addParams(['id' => 'ForSureThisChannelIdIsInvalid'])
             ->run();
@@ -50,8 +67,8 @@ class YoutubeCoreTest extends TestCase
 
     public function testGettingProperIdForChannelListShouldBeOk()
     {
-        $items = $this->youtubeCore
-            ->defineEndpoint('channels.list')
+        $items = $this->abstractCore
+            ->defineEndpoint('/youtube/v3/channels')
             ->addParts(['id'])
             ->addParams(['id' => self::PEWDIEPIE_CHANNEL_ID])
             ->run()
@@ -62,8 +79,8 @@ class YoutubeCoreTest extends TestCase
 
     public function testGettingProperIdForPlaylistListShouldBeOk()
     {
-        $items = $this->youtubeCore
-            ->defineEndpoint('playlists.list')
+        $items = $this->abstractCore
+            ->defineEndpoint('/youtube/v3/playlists')
             ->addParts(['id', 'snippet'])
             ->addParams([
                 'channelId' => self::NOWTECH_CHANNEL_ID,
@@ -78,10 +95,31 @@ class YoutubeCoreTest extends TestCase
         );
     }
 
+    public function testGettingProperIdForPlaylistItemsListShouldBeOk()
+    {
+        $myUploadsPlaylistId = 'UUw6bU9JT_Lihb2pbtqAUGQw';
+        $items = $this->abstractCore
+            ->defineEndpoint('/youtube/v3/playlistItems')
+            ->addParts(['id', 'snippet'])
+            ->addParams([
+                'playlistId' => $myUploadsPlaylistId,
+            ])
+            ->run()
+            ->items();
+
+        $this->assertCount(2, $items);
+        array_map(function ($item) {
+            $this->assertEquals(
+                self::PERSONAL_CHANNEL_ID,
+                $item['snippet']['channelId']
+            );
+        }, $items);
+    }
+
     public function testGettingOnlyFirstPewDiePiePlaylistsShouldBeQuick()
     {
-        $items = $this->youtubeCore
-            ->defineEndpoint('playlists.list')
+        $items = $this->abstractCore
+            ->defineEndpoint('/youtube/v3/playlists')
             ->setLimit(1)
             ->addParts(['id', 'snippet'])
             ->addParams(['channelId' => self::PEWDIEPIE_CHANNEL_ID])
@@ -99,8 +137,8 @@ class YoutubeCoreTest extends TestCase
         $this->assertGreaterThanOrEqual(
             20,
             count(
-                $this->youtubeCore
-                    ->defineEndpoint('playlistItems.list')
+                $this->abstractCore
+                    ->defineEndpoint('/youtube/v3/playlistItems')
                     ->addParams([
                         'playlistId' => self::NOWTECH_PLAYLIST_ID,
                         'maxResults' => 15,

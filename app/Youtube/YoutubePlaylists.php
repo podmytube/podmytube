@@ -17,7 +17,7 @@ class YoutubePlaylists extends YoutubeCore
     public function forChannel(string $channelId): self
     {
         $this->channelId = $channelId;
-        $items = $this->defineEndpoint('channels.list')
+        $items = $this->defineEndpoint('/youtube/v3/channels')
             ->addParams([
                 'id' => $this->channelId,
             ])
