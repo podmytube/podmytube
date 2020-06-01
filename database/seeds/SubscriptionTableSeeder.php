@@ -7,7 +7,6 @@ use Illuminate\Database\Seeder;
 
 class SubscriptionTableSeeder extends Seeder
 {
-
     /**
      * Run the database seeds.
      *
@@ -15,7 +14,6 @@ class SubscriptionTableSeeder extends Seeder
      */
     public function run()
     {
-
         if (App::environment(['dev', 'local', 'rec', 'testing'])) {
             Subscription::truncate();
         }
@@ -23,8 +21,12 @@ class SubscriptionTableSeeder extends Seeder
         /**
          * getting channels informations
          */
-        $channels = Channel::select(['channel_id', 'channel_name', 'channel_premium', 'channel_createdAt'])
-            ->get();
+        $channels = Channel::select([
+            'channel_id',
+            'channel_name',
+            'channel_premium',
+            'channel_createdAt',
+        ])->get();
 
         if ($channels->count()) {
             /**
@@ -33,8 +35,10 @@ class SubscriptionTableSeeder extends Seeder
             foreach ($channels as $channel) {
                 try {
                     ChannelPremiumToSubscriptionService::transform($channel);
-                } catch (\Exception $e) {
-                    die("Channel subscription transformation has failed with message : {{$e->getMessage()}} ");
+                } catch (\Exception $exception) {
+                    die(
+                        "Channel subscription transformation has failed with message : {{$e->getMessage()}} "
+                    );
                 }
             }
         }
