@@ -58,6 +58,11 @@ abstract class YoutubeCore implements QuotasConsumer
         return (new ApiKey())->get();
     }
 
+    public function apikey()
+    {
+        return $this->apikey;
+    }
+
     public function defineEndpoint(string $endpoint)
     {
         $this->checkEndpoint($endpoint);
@@ -177,7 +182,7 @@ abstract class YoutubeCore implements QuotasConsumer
 
     protected function hasResult()
     {
-        return $this->results()['pageInfo']['totalResults'] <= 0;
+        return $this->results()['pageInfo']['totalResults'] > 0;
     }
 
     /**

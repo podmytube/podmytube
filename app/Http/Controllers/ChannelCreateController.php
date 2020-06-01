@@ -19,22 +19,21 @@ use App\Exceptions\ChannelCreationHasFailedException;
 use App\Exceptions\ChannelCreationInvalidChannelUrlException;
 use App\Exceptions\ChannelCreationInvalidUrlException;
 use App\Exceptions\SubscriptionHasFailedException;
-use App\Exceptions\YoutubeApiInvalidChannelIdException;
+use App\Http\Requests\ChannelCreationRequest;
 use App\Modules\YoutubeChannelId;
 use App\Plan;
+use App\Quota;
 use App\Subscription;
 use App\Youtube\YoutubeChannel;
-use App\Youtube\YoutubeCore;
+use App\Youtube\YoutubeQuotas;
+use Carbon\Carbon;
 use Illuminate\Database\QueryException;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ChannelCreateController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
+    /** @var App\Youtube\YoutubeChannel $youtubeChannelObj */
+    protected $youtubeChannelObj;
 
     /**
      * Display the form channel creation
@@ -57,35 +56,25 @@ class ChannelCreateController extends Controller
      *
      * @return void
      */
-    public function store(Request $request)
+    public function store(ChannelCreationRequest $request)
     {
         try {
-            /**
-             * The only field required is the channel id. We are asking for the url channel
-             * It should be 26 characters long too contain at least http://youtube.com/channel/
-             */
-            $request->validate([
-                'channel_url' => 'required|string|min:27',
-            ]);
-
+            $validatedParams = $request->validated();
             $channelId = YoutubeChannelId::fromUrl(
-                $request->channel_url
+                $validatedParams['channel_url']
             )->get();
 
             /**
              * check channel exists
              */
-            $youtubeChannelObj = (new YoutubeChannel())->forChannel($channelId);
+            ($this->youtubeChannelObj = new YoutubeChannel())
+                ->forChannel($channelId)
+                ->exists();
 
-            if (!$youtubeChannelObj->exists()) {
-                throw new YoutubeApiInvalidChannelIdException(
-                    "Cannot get channel information for this channel {$channelId}"
-                );
-            }
             /**
-             * Getting basic channel informations
+             * Update quota usage
              */
-            $channelName = $youtubeChannelObj->name();
+            $this->updateQuotaConsumption();
 
             /**
              * Channel creating
@@ -94,7 +83,7 @@ class ChannelCreateController extends Controller
                 $channel = Channel::create([
                     'user_id' => Auth::id(),
                     'channel_id' => $channelId,
-                    'channel_name' => $channelName,
+                    'channel_name' => $this->youtubeChannelObj->name(),
                 ]);
             } catch (QueryException $exception) {
                 throw new ChannelCreationHasFailedException(
@@ -125,7 +114,7 @@ class ChannelCreateController extends Controller
             $request->session()->flash(
                 'message',
                 __('messages.flash_channel_has_been_created', [
-                    'channel' => $channelName,
+                    'channel' => $this->youtubeChannelObj->name(),
                 ])
             );
             $request->session()->flash('messageClass', 'alert-success');
@@ -139,6 +128,7 @@ class ChannelCreateController extends Controller
              * will catch
              * - SubscriptionHasFailedException
              * - ChannelCreationHasFailedException
+             * - YoutubeNoResultsException
              */
 
             $request->session()->flash('message', $exception->getMessage());
@@ -146,5 +136,24 @@ class ChannelCreateController extends Controller
         } finally {
             return redirect()->route('home');
         }
+    }
+
+    /**
+     * will persist quota consumption.
+     */
+    protected function updateQuotaConsumption()
+    {
+        $apikeysAndQuotas = YoutubeQuotas::forUrls(
+            $this->youtubeChannelObj->queriesUsed()
+        )->quotaConsumed();
+        array_walk($apikeysAndQuotas, function ($quota, $apikey) {
+            Quota::create([
+                'apikey_id' => ApiKey::where('apikey', '=', $apikey)->first()
+                    ->id,
+                'script' => pathinfo(__FILE__, PATHINFO_BASENAME),
+                'quota_used' => $quota,
+                'created_at' => Carbon::now(),
+            ]);
+        });
     }
 }

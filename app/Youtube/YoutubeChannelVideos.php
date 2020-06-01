@@ -14,6 +14,8 @@ class YoutubeChannelVideos implements QuotasConsumer
     protected $videos = [];
     /** @var array $queries */
     protected $queries = [];
+    /** @var string $apikey */
+    protected $apikey;
 
     public function __construct()
     {
@@ -29,6 +31,7 @@ class YoutubeChannelVideos implements QuotasConsumer
             ->forChannel($this->channelId)
             ->uploadsPlaylistId();
 
+        $this->apikey = $playlist->apikey();
         $this->queries = array_merge($this->queries, $playlist->queriesUsed());
         $this->obtainVideos();
         return $this;
@@ -56,5 +59,10 @@ class YoutubeChannelVideos implements QuotasConsumer
     public function queriesUsed(): array
     {
         return $this->queries;
+    }
+
+    public function apikey()
+    {
+        return $this->apikey;
     }
 }

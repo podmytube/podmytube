@@ -29,8 +29,8 @@ class YoutubeVideosTest extends TestCase
          * obtaining channel uploads playlistid => 3
          * obtaining uploads videos => 5
          */
-        $this->assertEquals(
-            8,
+        $this->assertEqualsCanonicalizing(
+            [$videos->apikey() => 8],
             YoutubeQuotas::forUrls($videos->queriesUsed())->quotaConsumed()
         );
     }
