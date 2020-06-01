@@ -18,9 +18,16 @@
             margin-right: auto;
             display: block;
         }
-        
+
+        .bgsuccess {
+            background-color: #28a745;
+        }
+
+        .bgfailure {
+            background-color: #dc3545;
+        }
+
         .button {
-            background-color: #858585;
             border: none;
             color: white;
             padding: 20px;

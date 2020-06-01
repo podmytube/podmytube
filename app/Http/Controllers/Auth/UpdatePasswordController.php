@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
@@ -28,6 +29,7 @@ class UpdatePasswordController extends Controller
      * Update the password for the user.
      *
      * @param  Request  $request
+     *
      * @return Response
      */
     public function update(Request $request)

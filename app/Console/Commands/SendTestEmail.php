@@ -3,8 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Channel;
+use App\Mail\ChannelHasReachedItsLimits;
 use App\Mail\ChannelIsRegistered;
 use App\Mail\WelcomeToPodmytube;
+use App\Media;
 use App\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
@@ -35,8 +37,9 @@ class SendTestEmail extends Command
         parent::__construct();
 
         $this->availableEmails = [
-            1 => ['label' => 'A new user has successfully registered'],
-            2 => ['label' => 'A new channel has been registered'],
+            1 => ['label' => 'A new user has successfully registered.'],
+            2 => ['label' => 'A new channel has been registered.'],
+            3 => ['label' => 'Channel has reached its limits.'],
         ];
     }
 
@@ -79,13 +82,16 @@ class SendTestEmail extends Command
 
         switch ($emailIdToSend) {
             case 1:
-                $user = User::first();
-                Mail::to($email)->send(new WelcomeToPodmytube($user));
+                Mail::to($email)->send(new WelcomeToPodmytube(User::first()));
                 break;
             case 2:
-                $channel = Channel::first();
                 Mail::to($email)->send(
-                    new ChannelIsRegistered($channel->user, $channel)
+                    new ChannelIsRegistered(Channel::first())
+                );
+                break;
+            case 3:
+                Mail::to($email)->send(
+                    new ChannelHasReachedItsLimits(Media::first())
                 );
                 break;
         }
@@ -96,7 +102,7 @@ class SendTestEmail extends Command
         $this->comment(
             'Email {' .
                 $this->availableEmails[$emailIdToSend]['label'] .
-                "} has been sent to $email."
+                "} has been sent to {$email}."
         );
     }
 }

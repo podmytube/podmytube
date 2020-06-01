@@ -7,24 +7,25 @@ use App\Jobs\CreateVignetteFromThumb;
 
 class RefreshVignette
 {
-  /**
-   * Create the event listener.
-   *
-   * @return void
-   */
-  public function __construct()
-  {
-    //
-  }
+    /**
+     * Create the event listener.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        //
+    }
 
-  /**
-   * Handle the event.
-   *
-   * @param  object  $event
-   * @return void
-   */
-  public function handle(OccursOnChannel $event)
-  {
-    CreateVignetteFromThumb::dispatchNow($event->channel->thumb);
-  }
+    /**
+     * Handle the event.
+     *
+     * @param  object  $event
+     *
+     * @return void
+     */
+    public function handle(OccursOnChannel $event)
+    {
+        CreateVignetteFromThumb::dispatchNow($event->channel->thumb);
+    }
 }

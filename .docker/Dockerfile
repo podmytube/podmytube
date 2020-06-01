@@ -42,14 +42,15 @@ RUN     docker-php-ext-install pdo \
             pdo_mysql \
             gd
 
-# default vhost replaced by custom one
-# mainly documentRoot /app/public
+# default vhost replaced by custom one                                                                                                                                                                                          
+# mainly documentRoot /app/public       
 COPY    .docker/vhost.conf /etc/apache2/sites-available/000-default.conf
 # copying supervisor conf for queue worker
 COPY    .docker/laravel-worker.conf /etc/supervisor/conf.d/
 
 # disabling php short tags (IE : <? ?>)
 COPY    .docker/disablingShortTags.ini /usr/local/etc/php/conf.d/
+COPY    .docker/timezone.ini /usr/local/etc/php/conf.d/
 
 # creating appropriate user
 RUN         addgroup --gid $GROUP_ID dockeruser

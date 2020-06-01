@@ -6,8 +6,11 @@ use Illuminate\Http\Request;
 
 class SubscribeController extends Controller
 {
+    /**
+     * @todo to be done
+     */
     public function store(Request $request)
     {
-        info(__CLASS__ . '-' . __FUNCTION__ . ' TO BE DONE');
+        // code
     }
 }

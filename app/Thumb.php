@@ -3,20 +3,17 @@
 namespace App;
 
 use App\Exceptions\ThumbUploadHasFailedException;
+use App\Traits\BelongsToChannel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class Thumb extends Model
 {
-    /** @var string _LOCAL_STORAGE_DISK where thumbs and vigs are stored locally */
+    use BelongsToChannel;
+
     public const _LOCAL_STORAGE_DISK = 'thumbs';
-
-    /** @var string _REMOTE_STORAGE_DISK where thumbs and vigs are stored remotely */
-    public const _REMOTE_STORAGE_DISK = 'sftpthumbs';
-
-    /** @var string _DEFAULT_THUMB_FILE default thumb file (1400x1400) and default vignette one. */
+    public const REMOTE_STORAGE_DISK = 'sftpthumbs';
     public const _DEFAULT_THUMB_FILE = 'default_thumb.jpg';
 
     protected $fillable = ['channel_id', 'file_name', 'file_disk', 'file_size'];
@@ -35,16 +32,6 @@ class Thumb extends Model
     public function relativePath()
     {
         return $this->getRelativePathAttribute();
-    }
-
-    /**
-     * This function defines the relation between one thumb and its channel (the channel it is belonging to).
-     *
-     * @return Object Channel
-     */
-    public function channel()
-    {
-        return $this->belongsTo(Channel::class, 'channel_id', 'channel_id');
     }
 
     /**
@@ -82,9 +69,9 @@ class Thumb extends Model
     }
 
     /**
-     * This function is checking if one thumbnail is existing for a specific channel.
+     * Check if thumbnail exists
      *
-     * @return boolean true if thumb present false else.
+     * @return bool true if thumb present false else.
      */
     public function exists()
     {
@@ -128,37 +115,32 @@ class Thumb extends Model
      */
     public function upload()
     {
-        try {
-            /**
-             * put is taking 2 arguments
-             * - the relative path from SFTP_THUMBS_PATH where to store data
-             * - the file content (data)
-             */
-            Storage::disk(self::_REMOTE_STORAGE_DISK)->put(
-                $this->relativePath,
-                $this->getData()
-            );
+        /**
+         * put is taking 2 arguments
+         * - the relative path from SFTP_THUMBS_PATH where to store data
+         * - the file content (data)
+         */
+        Storage::disk(self::REMOTE_STORAGE_DISK)->put(
+            $this->relativePath,
+            $this->getData()
+        );
 
-            /** Once uploaded, we are setting the channel_path on the remote to public visibility  */
-            Storage::disk(self::_REMOTE_STORAGE_DISK)->setVisibility(
-                $this->channelId(),
-                'public'
-            );
-        } catch (\Exception $e) {
-            Log::alert(
-                'Uploading image ' .
-                    $this->relativePath .
-                    " on remote image repository has failed with message {{$e->getMessage()}}."
-            );
-            throw $e;
-        }
+        /**
+         * Once uploaded, we are setting the channel_path
+         * on the remote to public visibility
+         */
+        Storage::disk(self::REMOTE_STORAGE_DISK)->setVisibility(
+            $this->channelId(),
+            'public'
+        );
     }
 
     /**
-     * This function will set/update a new thumb for the specified channel.
+     * set/update a new thumb for the specified channel.
      *
      * @param UploadedFile $uploadedFile the uploaded file
      * @param Channel $channel to be associated with thumb
+     *
      * @return Thumb object
      */
     public function attachItToChannel(
@@ -180,10 +162,9 @@ class Thumb extends Model
                     'file_disk' => self::_LOCAL_STORAGE_DISK,
                 ]
             );
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             throw new ThumbUploadHasFailedException(
-                "Attaching new thumb to channel {{$channel->channelId()}} has failed with message : " .
-                    $e->getMessage()
+                "Attaching thumb to {$channel->channelId()} has failed {$exception->getMessage()}"
             );
         }
         return $thumb;
