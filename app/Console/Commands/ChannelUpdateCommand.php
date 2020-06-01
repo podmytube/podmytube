@@ -2,10 +2,14 @@
 
 namespace App\Console\Commands;
 
+use App\ApiKey;
 use App\Channel;
 use App\Exceptions\YoutubeNoResultsException;
 use App\Media;
-use App\Youtube\YoutubeChannel;
+use App\Quota;
+use App\Youtube\YoutubeChannelVideos;
+use App\Youtube\YoutubeQuotas;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 
 class ChannelUpdateCommand extends Command
@@ -24,9 +28,6 @@ class ChannelUpdateCommand extends Command
      * @var string
      */
     protected $description = 'This will update list of episodes by type of channels';
-
-    /** @var \App\ApiKey $apikey youtube apikey to use */
-    protected $apikey;
 
     /** @var \App\Youtube\YoutubeCore $youtubeCore */
     protected $youtubeCore;
@@ -77,13 +78,15 @@ class ChannelUpdateCommand extends Command
         /** for each channel */
         $this->channels->map(function ($channel) {
             try {
+                $channelVideos = new YoutubeChannelVideos();
+
                 /** for each channel video */
-                array_map(function ($video) {
+                array_map(function ($video) use ($channel) {
                     /** check if the video already exist in database */
                     if (!($media = Media::find($video['media_id']))) {
                         $media = new Media();
                         $media->media_id = $video['media_id'];
-                        $media->channel_id = $video['channel_id'];
+                        $media->channel_id = $channel->channel_id;
                     }
                     // update it
                     $media->title = $video['title'];
@@ -92,7 +95,26 @@ class ChannelUpdateCommand extends Command
 
                     /** save it */
                     $media->save();
-                }, YoutubeChannel::forChannel($channel->channel_id)->videos());
+                }, $channelVideos->forChannel($channel->channel_id)->videos());
+
+                $apikeysAndQuotas = YoutubeQuotas::forUrls(
+                    $channelVideos->queriesUsed()
+                )->quotaConsumed();
+
+                $dataToInsert = [];
+                foreach ($apikeysAndQuotas as $apikey => $quota) {
+                    $dataToInsert[] = [
+                        'apikey_id' => ApiKey::where(
+                            'apikey',
+                            '=',
+                            $apikey
+                        )->first()->id,
+                        'script' => pathinfo(__FILE__, PATHINFO_BASENAME),
+                        'quota_used' => $quota,
+                        'created_at' => Carbon::now(),
+                    ];
+                }
+                Quota::insert($dataToInsert);
             } catch (YoutubeNoResultsException $exception) {
                 $this->errors[] = $exception->getMessage();
             } finally {

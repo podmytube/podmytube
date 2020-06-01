@@ -30,7 +30,7 @@ class YoutubePlaylistItems extends YoutubeCore
 
         $this->videos = array_map(function ($videoItem) {
             return [
-                'videoId' => $videoItem['contentDetails']['videoId'],
+                'media_id' => $videoItem['contentDetails']['videoId'],
                 'playlist_id' => $videoItem['snippet']['playlistId'],
                 'title' => $videoItem['snippet']['title'],
                 'description' => $videoItem['snippet']['description'],
