@@ -6,6 +6,7 @@ use App\Exceptions\VignetteCreationFromMissingThumbException;
 use App\Exceptions\VignetteCreationFromThumbException;
 use App\Exceptions\VignetteUploadException;
 use App\Thumb;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Image;
 
