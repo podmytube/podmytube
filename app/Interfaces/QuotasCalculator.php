@@ -8,5 +8,9 @@ namespace App\Interfaces;
  */
 interface QuotasCalculator
 {
-    public function quotaConsumed(): int;
+    /**
+     * should return quota consumption by key used
+     * IE : ['key1' => 7, 'key2' => 3]
+     */
+    public function quotaConsumed(): array;
 }

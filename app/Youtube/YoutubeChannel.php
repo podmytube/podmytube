@@ -2,6 +2,8 @@
 
 namespace App\Youtube;
 
+use App\Exceptions\YoutubeNoResultsException;
+
 class YoutubeChannel extends YoutubeCore
 {
     /** @var string $channelId $youtube channel id */
@@ -22,18 +24,29 @@ class YoutubeChannel extends YoutubeCore
         return $this;
     }
 
+    /**
+     * check channel id existence on youtube api.
+     *
+     * @return bool true is channel exists
+     *
+     * @throws App\Exceptions\YoutubeNoResultsException if channel does not exists
+     */
     public function exists()
     {
-        if ($this->hasResult()) {
-            return false;
+        if (!$this->hasResult()) {
+            throw new YoutubeNoResultsException(
+                "Cannot get information for this channel {$this->channelId}"
+            );
         }
-        return $this->channelId === $this->results['items'][0]['id'];
+        return $this->channelId === $this->results['items'][0]['id']; // double check
     }
 
     public function name()
     {
-        if ($this->hasResult()) {
-            return false;
+        if (!$this->hasResult()) {
+            throw new YoutubeNoResultsException(
+                "Cannot get information for this channel {$this->channelId}"
+            );
         }
         return $this->results['items'][0]['snippet']['title'];
     }

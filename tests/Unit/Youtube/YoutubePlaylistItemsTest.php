@@ -32,8 +32,8 @@ class YoutubePlaylistItemsTest extends TestCase
          * contentDetails : 2
          */
 
-        $this->assertEquals(
-            5,
+        $this->assertEqualsCanonicalizing(
+            [$videos->apikey() => 5],
             YoutubeQuotas::forUrls($videos->queriesUsed())->quotaConsumed()
         );
     }

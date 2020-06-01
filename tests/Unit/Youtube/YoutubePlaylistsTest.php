@@ -26,8 +26,8 @@ class YoutubePlaylistsTest extends TestCase
                 ->forChannel(YoutubeCoreTest::PERSONAL_CHANNEL_ID)
                 ->uploadsPlaylistId()
         );
-        $this->assertEquals(
-            3,
+        $this->assertEqualsCanonicalizing(
+            [$playlists->apikey() => 3],
             YoutubeQuotas::forUrls($playlists->queriesUsed())->quotaConsumed()
         );
     }
@@ -40,8 +40,8 @@ class YoutubePlaylistsTest extends TestCase
                 ->forChannel(YoutubeCoreTest::PERSONAL_CHANNEL_ID)
                 ->favoritesPlaylistId()
         );
-        $this->assertEquals(
-            3,
+        $this->assertEqualsCanonicalizing(
+            [$playlists->apikey() => 3],
             YoutubeQuotas::forUrls($playlists->queriesUsed())->quotaConsumed()
         );
     }

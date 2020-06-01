@@ -2,7 +2,6 @@
 
 namespace Tests\Unit;
 
-use Artisan;
 use App\ApiKey;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
