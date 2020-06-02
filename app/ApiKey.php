@@ -54,27 +54,9 @@ class ApiKey extends Model
         return $this->selectedOne->apikey;
     }
 
-    public function scopeEnvironment(Builder $query)
-    {
-        $confMap = [
-            'local' => self::LOCAL_ENV,
-            'testing' => self::LOCAL_ENV,
-            'test' => self::LOCAL_ENV,
-            'production' => self::PROD_ENV,
-        ];
-        $confKey = config('app.env');
-        if (!isset($confMap[$confKey])) {
-            $confKey = 'production';
-        }
-        $environment = $confMap[$confKey];
-        return $query->where('environment', '=', $environment);
-    }
-
     protected static function usableKeysForToday()
     {
-        // getting keys according to current env
-        return self::environment()
-            ->get()
+        return self::all()
             // calc sum of quota used for this key on today
             ->map(function (ApiKey $apikey) {
                 $apikey->quotaUsed = 0;
