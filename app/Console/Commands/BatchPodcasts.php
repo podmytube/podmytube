@@ -86,16 +86,14 @@ class BatchPodcasts extends Command
 
         if ($this->getOutput()->isVerbose()) {
             $this->progressBar->finish();
+            $this->line('');
+            $this->info(implode(PHP_EOL, $this->getSuccess()));
         }
-
-        $this->line('');
-        $this->info(implode(PHP_EOL, $this->getSuccess()));
 
         /**
          * Used with a crontab errors will be sent by email if any.
          */
         if ($this->getErrors()) {
-            $this->line('');
             $this->error(implode(PHP_EOL, $this->getErrors()));
         }
     }
