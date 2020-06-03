@@ -95,7 +95,9 @@ class ChannelUpdateCommand extends Command
 
                     /** save it */
                     $media->save();
-                }, $channelVideos->forChannel($channel->channel_id)->videos());
+                }, $channelVideos
+                    ->forChannel($channel->channel_id, 50)
+                    ->videos());
 
                 $apikeysAndQuotas = YoutubeQuotas::forUrls(
                     $channelVideos->queriesUsed()

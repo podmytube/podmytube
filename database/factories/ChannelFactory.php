@@ -16,15 +16,15 @@ $factory->define(App\Channel::class, function (
                 return factory(App\User::class)->create()->user_id;
             },
         'channel_name' => $faker->sentence(
-            $nbWords = "3",
+            $nbWords = '3',
             $variableNbWords = true
         ),
         'podcast_title' => $faker->sentence(
-            $nbWords = "5",
+            $nbWords = '5',
             $variableNbWords = true
         ),
         'podcast_copyright' => $faker->sentence(
-            $nbWords = "10",
+            $nbWords = '10',
             $variableNbWords = true
         ),
         'authors' => $faker->name,
@@ -36,7 +36,9 @@ $factory->define(App\Channel::class, function (
         },
         'lang' => $attributes['lang'] ?? $faker->randomElement(['FR', 'EN']),
         'explicit' => $faker->boolean(),
-        'channel_createdAt' => $faker->dateTimeInInterval('now', '-5 days'),
+        'channel_createdAt' =>
+            $attributes['created_at'] ??
+            $faker->dateTimeInInterval('now', '-5 days'),
         'channel_updatedAt' => $faker->dateTimeInInterval('now', '-3 days'),
         'podcast_updatedAt' => $faker->dateTimeInInterval('now', '-2 days'),
         'accept_video_by_tag' => isset($attributes['accept_video_by_tag'])

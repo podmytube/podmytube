@@ -150,10 +150,7 @@ class Channel extends Model
             ['active', 1],
             ['subscriptions.plan_id', '=', Plan::EARLY_PLAN_ID],
         ])
-            ->with('User')
-            ->with('Category')
-            ->with('Thumb')
-            ->with('Subscription')
+            ->with(['User', 'Category', 'Thumb', 'Subscription'])
             ->join(
                 'subscriptions',
                 'subscriptions.channel_id',
@@ -174,10 +171,7 @@ class Channel extends Model
             ['active', 1],
             ['subscriptions.plan_id', '=', Plan::FREE_PLAN_ID],
         ])
-            ->with('User')
-            ->with('Category')
-            ->with('Thumb')
-            ->with('Subscription')
+            ->with(['User', 'Category', 'Thumb', 'Subscription'])
             ->join(
                 'subscriptions',
                 'subscriptions.channel_id',
@@ -199,10 +193,7 @@ class Channel extends Model
             ['active', 1],
             ['subscriptions.plan_id', '>', Plan::EARLY_PLAN_ID],
         ])
-            ->with('User')
-            ->with('Category')
-            ->with('Thumb')
-            ->with('Subscription')
+            ->with(['User', 'Category', 'Thumb', 'Subscription'])
             ->join(
                 'subscriptions',
                 'subscriptions.channel_id',
@@ -215,10 +206,7 @@ class Channel extends Model
     public static function allActiveChannels()
     {
         return self::where('active', 1)
-            ->with('User')
-            ->with('Category')
-            ->with('Thumb')
-            ->with('Subscription')
+            ->with(['User', 'Category', 'Thumb', 'Subscription'])
             ->get();
     }
 
