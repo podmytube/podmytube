@@ -13,7 +13,10 @@ class BatchPodcasts extends Command
     protected const FAILURE = 0;
     protected const SUCCESS = 1;
 
+    /** @var array $messages */
     protected $messages = [];
+
+    protected $progressBar;
 
     /**
      * The name and signature of the console command.
@@ -60,11 +63,13 @@ class BatchPodcasts extends Command
         }
 
         if ($this->getOutput()->isVerbose()) {
-            $bar = $this->output->createProgressBar(count($channels));
-            $bar->start();
+            $this->progressBar = $this->output->createProgressBar(
+                count($channels)
+            );
+            $this->progressBar->start();
         }
 
-        $channels->map(function ($channel) use ($bar) {
+        $channels->map(function ($channel) {
             try {
                 if (PodcastBuilder::prepare($channel)->save()) {
                     // uploading feed
@@ -75,21 +80,21 @@ class BatchPodcasts extends Command
                 $this->recordFailure($channel, $exception);
             }
             if ($this->getOutput()->isVerbose()) {
-                $bar->advance();
+                $this->progressBar->advance();
             }
         });
 
         if ($this->getOutput()->isVerbose()) {
-            $bar->finish();
+            $this->progressBar->finish();
+            $this->line('');
+            $this->info(implode(PHP_EOL, $this->getSuccess()));
         }
-
-        $this->info(PHP_EOL . implode(PHP_EOL, $this->getSuccess()), 'v');
 
         /**
          * Used with a crontab errors will be sent by email if any.
          */
         if ($this->getErrors()) {
-            $this->error($this->getErrors());
+            $this->error(implode(PHP_EOL, $this->getErrors()));
         }
     }
 
