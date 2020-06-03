@@ -94,7 +94,7 @@ abstract class YoutubeCore implements QuotasConsumer
     /**
      * run the query(ies) and get results.
      */
-    public function run()
+    public function run(): self
     {
         do {
             $rawResults = $this->getRawResults();
@@ -119,6 +119,7 @@ abstract class YoutubeCore implements QuotasConsumer
                     $this->jsonDecoded['items']
                 );
             }
+
             /**
              * if response is multi page, prepare next youtube query.
              */
@@ -135,9 +136,9 @@ abstract class YoutubeCore implements QuotasConsumer
      * According to an eventual limit set or the presence of a nextPageToken
      * in the response we are going to make another youtube api query
      */
-    protected function doWeGetNextPage()
+    protected function doWeGetNextPage(): bool
     {
-        if ($this->limit > 0 && count($this->items()) > $this->limit) {
+        if ($this->limit > 0 && $this->nbItemsGrabbed() >= $this->limit) {
             return false;
         }
         if (!isset($this->jsonDecoded['nextPageToken'])) {
@@ -146,12 +147,17 @@ abstract class YoutubeCore implements QuotasConsumer
         return true;
     }
 
+    protected function nbItemsGrabbed()
+    {
+        return count($this->items());
+    }
+
     /**
      * Define a limit.
      *
      * @param int $limit maximum number of items we need. 0=unlimited.
      */
-    public function setLimit(int $limit)
+    public function setLimit(int $limit): self
     {
         if ($limit >= 0) {
             $this->limit = $limit;
@@ -163,7 +169,7 @@ abstract class YoutubeCore implements QuotasConsumer
      * Return the raw json result.
      * May come from the cache of from youtube api.
      */
-    protected function getRawResults()
+    protected function getRawResults(): string
     {
         // get it from cache (if any)
         if (Cache::has($this->cacheKey())) {
@@ -192,7 +198,7 @@ abstract class YoutubeCore implements QuotasConsumer
      *
      * @param array $parts
      */
-    public function addParts(array $parts)
+    public function addParts(array $parts): self
     {
         if (!isset($this->endpoint)) {
             throw new YoutubeInvalidEndpointException(
