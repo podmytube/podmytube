@@ -3,15 +3,16 @@
 /* @var $factory \Illuminate\Database\Eloquent\Factory */
 
 use App\Channel;
+use Carbon\Carbon;
 use Faker\Generator as Faker;
 
 $factory->define(App\Media::class, function (Faker $faker, $attributes) {
     /** preparing published and grabbed at period */
     $publishedAt =
-        $attributes['publishedAt'] ??
-        $faker->dateTimeBetween('-30 days', 'yesterday');
+        $attributes['published_at'] ??
+        $faker->dateTimeBetween(Carbon::now()->startOfMonth(), 'now');
     $grabbedAt =
-        $attributes['grabbedAt'] ??
+        $attributes['grabbed_at'] ??
         $faker->dateTimeBetween($publishedAt, 'now');
 
     /** returning our nice new media */
