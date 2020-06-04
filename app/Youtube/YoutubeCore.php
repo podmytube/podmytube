@@ -157,7 +157,7 @@ abstract class YoutubeCore implements QuotasConsumer
      *
      * @param int $limit maximum number of items we need. 0=unlimited.
      */
-    public function setLimit(int $limit): self
+    public function setLimit(int $limit)
     {
         if ($limit >= 0) {
             $this->limit = $limit;
@@ -182,7 +182,7 @@ abstract class YoutubeCore implements QuotasConsumer
         // adding url to the list of queries used
         $this->queries[] = $this->url();
         // putting results in cache for next time
-        Cache::put($this->cacheKey(), $rawResults, now()->addDays());
+        Cache::put($this->cacheKey(), $rawResults, now()->addHours(6));
         return $rawResults;
     }
 
