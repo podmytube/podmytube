@@ -14,6 +14,10 @@ This is due to the fact that your channel <b>:channel_name</b> has reached its l
 Please consider upgrade your plan to get all your episodes included in your podcast without any time limits.
 EOT
     ,
+    'monthlyReport_subject' => 'Here is your :period report for :channel_name',
+    'monthlyReport_channelShouldUpgrade_callToAction' =>
+        'To benefit all Podmytube features and get all your episodes included, please consider upgrading your account.',
+
     'newCategories_hello' => 'Hello :name',
     'newCategories_body' =>
         'Recently apple has made a big categories update on its podcast catalog.' .

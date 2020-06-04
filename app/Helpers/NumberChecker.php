@@ -4,6 +4,11 @@ namespace App\Helpers;
 
 class NumberChecker
 {
+    /**
+     * tell if number is really betwenn specified numbers.
+     *
+     * @throws InvalidArgumentException
+     */
     public static function isBetween(int $number, int $min, int $max)
     {
         if ($min <= $number && $number <= $max) {

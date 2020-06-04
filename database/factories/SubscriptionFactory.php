@@ -13,7 +13,7 @@ $factory->define(Subscription::class, function (
     return [
         'channel_id' =>
             $attributes['channel_id'] ??
-            function () use ($attributes) {
+            function () {
                 return factory(Channel::class)->create()->channel_id;
             },
         'plan_id' => $attributes['plan_id'] ?? $faker->numberBetween(1, 7),
