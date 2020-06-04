@@ -32,10 +32,14 @@ class ChannelUpdateCommand extends Command
     /** @var \App\Youtube\YoutubeCore $youtubeCore */
     protected $youtubeCore;
 
-    /** @var array $channels list of channel models */
+    /** @var App\Channel[] $channels list of channel models */
     protected $channels = [];
 
+    /** @var string[] $errors list of errors that occured */
     protected $errors = [];
+
+    /** @var int $mediasAdded nb medias added during process */
+    protected $mediasAdded = 0;
 
     /**
      * Create a new command instance.
@@ -54,7 +58,7 @@ class ChannelUpdateCommand extends Command
      */
     public function handle()
     {
-        if ($this->checkChannelTypeToUpdate() === false) {
+        if (!$this->checkChannelTypeToUpdate()) {
             return;
         }
 
@@ -87,6 +91,10 @@ class ChannelUpdateCommand extends Command
                         $media = new Media();
                         $media->media_id = $video['media_id'];
                         $media->channel_id = $channel->channel_id;
+                        info(
+                            "Media {{$video['title']}} has been registered for channel {{$channel->channel_name}}."
+                        );
+                        $this->mediasAdded++;
                     }
                     // update it
                     $media->title = $video['title'];
@@ -158,6 +166,7 @@ class ChannelUpdateCommand extends Command
         }
 
         $this->displayErrors();
+        info("There were {$this->mediasAdded} media(s) added during process.");
     }
 
     protected function displayErrors()
