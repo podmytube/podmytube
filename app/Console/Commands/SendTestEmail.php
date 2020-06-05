@@ -2,30 +2,35 @@
 
 namespace App\Console\Commands;
 
-use App\Channel;
-use App\Mail\ChannelHasReachedItsLimits;
 use App\Mail\ChannelIsRegistered;
+use App\Mail\MonthlyReportMail;
 use App\Mail\WelcomeToPodmytube;
 use App\Media;
+use App\Plan;
+use App\Subscription;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 
 class SendTestEmail extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'email:test {emailAddress=frederick@podmytube.com}';
+    protected const MY_USER_ID = 1;
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
+    /** @var string $signature The name and signature of the console command. */
+    protected $signature = 'email:test';
+
+    /** @var string $description The console command description. */
     protected $description = 'This command is allowing me to send test email to myself (by default) and check if everything is fine.';
+
+    /** @var int $emailIdToSend email id to be sent */
+    protected $emailIdToSend;
+
+    /** @var App\User $user  */
+    protected $user;
+
+    /** App\Subscription $subscription subscription model */
+    protected $subscription;
 
     /**
      * Create a new command instance.
@@ -39,7 +44,11 @@ class SendTestEmail extends Command
         $this->availableEmails = [
             1 => ['label' => 'A new user has successfully registered.'],
             2 => ['label' => 'A new channel has been registered.'],
-            3 => ['label' => 'Channel has reached its limits.'],
+            3 => ['label' => 'Monthly report for free plan.'],
+            4 => [
+                'label' =>
+                    'Monthly report for paying user (no upgrade message) .',
+            ],
         ];
     }
 
@@ -50,59 +59,80 @@ class SendTestEmail extends Command
      */
     public function handle()
     {
-        if (
-            filter_var(
-                $email = $this->argument('emailAddress'),
-                FILTER_VALIDATE_EMAIL
-            ) === false
-        ) {
-            throw new \InvalidArgumentException(
-                "Email address {$email} is not valid !"
-            );
+        if (!$this->askUserWhatMailToSend()) {
+            return;
         }
 
+        $this->user = User::find(self::MY_USER_ID);
+
+        switch ($this->emailIdToSend) {
+            case 1:
+                $mailable = new WelcomeToPodmytube($this->user);
+                break;
+            case 2:
+                $mailable = new ChannelIsRegistered(
+                    $this->user->channels->first()
+                );
+                break;
+            case 3: // monthly report with upgrade message
+                $this->createFakeChannelWithVideos(Plan::FREE_PLAN_ID, 3);
+                $mailable = new MonthlyReportMail($this->subscription->channel);
+                break;
+            case 4: // monthly with upgrade message
+                $this->createFakeChannelWithVideos(Plan::WEEKLY_PLAN_ID, 5);
+                $mailable = new MonthlyReportMail($this->subscription->channel);
+                break;
+        }
+
+        // send it to me with the right locale
+        Mail::to($this->user)->queue($mailable);
+
+        /** cleaning */
+        $this->cleaning();
+
+        $this->comment(
+            'Email "' .
+                $this->availableEmails[$this->emailIdToSend]['label'] .
+                "\" has been queued to be sent to {{$this->user->email}}."
+        );
+    }
+
+    protected function cleaning()
+    {
+        if ($this->subscription) {
+            $this->subscription->channel->user->delete();
+        }
+    }
+
+    protected function createFakeChannelWithVideos(int $planId, int $nbVideos)
+    {
+        $this->subscription = factory(Subscription::class)->create([
+            'plan_id' => $planId,
+        ]);
+        factory(Media::class, $nbVideos)->create([
+            'channel_id' => $this->subscription->channel->channel_id,
+            'published_at' => Carbon::now()->subMonth(),
+        ]);
+    }
+
+    /**
+     * ask what kind of mail to send
+     *
+     * @return bool
+     */
+    protected function askUserWhatMailToSend(): bool
+    {
         $this->comment('Here are the mails you can send :');
         foreach ($this->availableEmails as $id => $availableEmail) {
             $this->info($id . ' - ' . $availableEmail['label']);
         }
 
-        $emailIdToSend = $this->ask('Which one do you want to send ?');
-
+        $this->emailIdToSend = $this->ask('Which one do you want to send ?');
         if (
-            !in_array(
-                $emailIdToSend,
-                $allowedIds = array_keys($this->availableEmails)
-            )
+            !in_array($this->emailIdToSend, array_keys($this->availableEmails))
         ) {
-            $this->error(
-                'Only number (' . implode(', ', $allowedIds) . ') are accepted.'
-            );
-            exit(1);
+            return false;
         }
-
-        switch ($emailIdToSend) {
-            case 1:
-                Mail::to($email)->send(new WelcomeToPodmytube(User::first()));
-                break;
-            case 2:
-                Mail::to($email)->send(
-                    new ChannelIsRegistered(Channel::first())
-                );
-                break;
-            case 3:
-                Mail::to($email)->send(
-                    new ChannelHasReachedItsLimits(Media::first())
-                );
-                break;
-        }
-
-        #$class = ChannelIsRegistered::class;
-        #Mail::to($email)->send(new $class($channel->user, $channel));
-
-        $this->comment(
-            'Email {' .
-                $this->availableEmails[$emailIdToSend]['label'] .
-                "} has been sent to {$email}."
-        );
+        return true;
     }
 }

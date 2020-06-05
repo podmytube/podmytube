@@ -13,6 +13,10 @@
             color:#555555;
         }
 
+        .text-is-grey{
+            color:grey;
+        }
+
         #logo img {
             margin-left: auto;
             margin-right: auto;
