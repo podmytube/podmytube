@@ -85,7 +85,7 @@ class SendTestEmail extends Command
         }
 
         // send it to me with the right locale
-        Mail::to($this->user)->send($mailable);
+        Mail::to($this->user)->queue($mailable);
 
         /** cleaning */
         $this->cleaning();
@@ -93,7 +93,7 @@ class SendTestEmail extends Command
         $this->comment(
             'Email "' .
                 $this->availableEmails[$this->emailIdToSend]['label'] .
-                "\" has been sent to {{$this->user->email}}."
+                "\" has been queued to be sent to {{$this->user->email}}."
         );
     }
 
@@ -131,15 +131,6 @@ class SendTestEmail extends Command
         if (
             !in_array($this->emailIdToSend, array_keys($this->availableEmails))
         ) {
-            $this->error(
-                'Only numbers between ' .
-                    array_keys($this->availableEmails)[0] .
-                    '-' .
-                    array_keys($this->availableEmails)[
-                        count($this->availableEmails) - 1
-                    ] .
-                    '  are accepted.'
-            );
             return false;
         }
         return true;

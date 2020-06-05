@@ -12,6 +12,18 @@ return [
     |
     */
 
+    'common_hello' => 'Bonjour :name',
+    'common_if_you_have_any_questions' =>
+        'Si vous avez la moindre remarque, vous pouvez répondre à cet email.<br>Amicalement.<br>Fred',
+    'common_upgrade_my_plan' => 'Je veux changer de forfait.',
+
+    'monthlyReport_subject' =>
+        'Voici votre rapport de :period pour la chaine :channel_name',
+    'monthlyReport_channelShouldUpgrade_callToAction' =>
+        'Pour profiter de toutes les fonctionnalités de Podmytube et ne pas perdre vos épisodes, changez de forfait.',
+    'monthlyReport_no_media_published' =>
+        'Aucune vidéo publiée durant ce mois.',
+
     'welcome_aboard' => 'Bienvenue sur Podmytube,',
     'welcome_p_first_line' =>
         "Je suis ravi de l'intérêt que tu portes à mon service !",
