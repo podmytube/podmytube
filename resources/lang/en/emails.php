@@ -14,6 +14,11 @@ This is due to the fact that your channel <b>:channel_name</b> has reached its l
 Please consider upgrade your plan to get all your episodes included in your podcast without any time limits.
 EOT
     ,
+    'monthlyReport_subject' => 'Here is your :period report for :channel_name',
+    'monthlyReport_channelShouldUpgrade_callToAction' =>
+        "To take advantage of all of Podmytube's features and have all of your episodes included for an unlimited period of time, please consider upgrading your account.",
+    'monthlyReport_no_media_published' => 'No media published this month',
+
     'newCategories_hello' => 'Hello :name',
     'newCategories_body' =>
         'Recently apple has made a big categories update on its podcast catalog.' .
@@ -27,7 +32,7 @@ EOT
         '<li>and set the category you want.</li>' .
         '</ul>',
 
-    'welcome_h1_welcome' => 'Welcome :name,',
+    'welcome_aboard' => 'Welcome on Podmytube,',
     'welcome_p_first_line' => "I'm delighted by your interest in my service !",
     'welcome_p_register' =>
         'Now that you are registered, you should add the youtube channel you want to convert, in a magnificent podcast',

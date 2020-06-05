@@ -4,8 +4,10 @@ namespace App;
 
 use App\Exceptions\InvalidStartDateException;
 use App\Modules\EnclosureUrl;
+use App\Modules\PeriodsHelper;
 use App\Traits\BelongsToChannel;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class Media extends Model
@@ -52,11 +54,11 @@ class Media extends Model
     /**
      * define a scope to get medias published between 2 dates.
      *
-     * @param object query is the query object
+     * @param Illuminate\Database\Eloquent\Builder query is the query object
      * @param array value should have 2 date in it [0] is the startDate, [1] is the endDate
      */
     public function scopePublishedBetween(
-        $query,
+        Builder $query,
         Carbon $startDate,
         Carbon $endDate
     ) {
@@ -67,9 +69,29 @@ class Media extends Model
         }
 
         return $query->whereBetween('published_at', [
-            $startDate->toDateString(),
-            $endDate->toDateString(),
+            $startDate->toDateTimeString(),
+            $endDate->toDateTimeString(),
         ]);
+    }
+
+    /**
+     * will get
+     */
+    public function scopePublishedLastMonth(Builder $query)
+    {
+        return $query
+            ->publishedBetween(
+                Carbon::now()
+                    ->startOfDay()
+                    ->subMonth()
+                    ->startOfMonth()
+                    ->subDay(),
+                Carbon::now()
+                    ->startOfDay()
+                    ->subMonth()
+                    ->endOfMonth()
+            )
+            ->orderBy('published_at', 'desc');
     }
 
     public function enclosureUrl()

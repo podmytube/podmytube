@@ -14,25 +14,13 @@
 <p> {!! __('emails.registered_p_one_last_word', ['name' => $channel->channel_id]) !!} </p>
 
 <p>
-    <a href="{{ url('/') }}/channel/{{ $channel->channel_id }}/edit" class="button" style="color:white;"> 
-        @lang('emails.registered_a_select_a_category') 
+    <a href="{{ route ('channel.edit', $channel) }}" class="button bgsuccess"> 
+        {{ __('emails.registered_a_select_a_category') }}
     </a>
 
-    <a href="{{ url('/') }}/channel/{{ $channel->channel_id }}/thumbs/edit" class="button" style="color:white;"> 
+    <a href="{{ route ('channel.thumbs.edit', $channel) }}" class="button bgsuccess">  
         @lang('emails.registered_a_add_an_illustration') 
     </a>
 </p>
-
-@if ( App::getLocale() == 'fr')
-<p>
-    <a href="http://blog.podmytube.com/inscrire-son-podcast-sur-itunes/" class="button" style="color:white;"> 
-        Inscrire son podcast sur iTunes
-    </a>
-</p>
-@endif  
-
-<p> {!! __('emails.registered_p_if_you_have_any_questions') !!} </p>
-
-
 
 @endsection

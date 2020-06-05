@@ -6,9 +6,12 @@ use App\Channel;
 use Carbon\Carbon;
 use Tests\TestCase;
 use App\Podcast\PodcastBuilder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ChannelModelTest extends TestCase
 {
+    use RefreshDatabase;
+
     /** @var \App\Channel $channel channel model */
     protected $channel;
 
