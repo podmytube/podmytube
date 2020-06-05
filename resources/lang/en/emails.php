@@ -17,6 +17,7 @@ EOT
     'monthlyReport_subject' => 'Here is your :period report for :channel_name',
     'monthlyReport_channelShouldUpgrade_callToAction' =>
         "To take advantage of all of Podmytube's features and have all of your episodes included for an unlimited period of time, please consider upgrading your account.",
+    'monthlyReport_no_media_published' => 'No media published this month',
 
     'newCategories_hello' => 'Hello :name',
     'newCategories_body' =>

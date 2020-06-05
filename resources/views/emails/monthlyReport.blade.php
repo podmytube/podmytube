@@ -41,14 +41,14 @@
     @if ($shouldChannelBeUpgraded)
     <div style="text-align:center;">
         <p class="text-is-grey">
-            {{__('emails.monthlyReport_channelShouldUpgrade_callToAction')}}
+            {{ __('emails.monthlyReport_channelShouldUpgrade_callToAction') }}
         </p>
         <a href="{{ route('plans.index', $channel) }}" class="button bgsuccess">{{ __('emails.common_upgrade_my_plan') }}</a>
     </div>
     @endif
 
 @else
-<p>No media published this month</p>
+<p> {{ __('emails.monthlyReport_no_media_published') }} </p>
 @endif
 
 @endsection
