@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Channel;
 use App\Mail\ChannelIsRegistered;
 use App\Mail\MonthlyReportMail;
 use App\Mail\WelcomeToPodmytube;
@@ -16,25 +15,19 @@ use Illuminate\Support\Facades\Mail;
 
 class SendTestEmail extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'email:test {emailAddress=frederick@podmytube.com}';
+    protected const MY_USER_ID = 1;
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
+    /** @var string $signature The name and signature of the console command. */
+    protected $signature = 'email:test';
+
+    /** @var string $description The console command description. */
     protected $description = 'This command is allowing me to send test email to myself (by default) and check if everything is fine.';
-
-    /** @var string $email email address */
-    protected $email;
 
     /** @var int $emailIdToSend email id to be sent */
     protected $emailIdToSend;
+
+    /** @var App\User $user  */
+    protected $user;
 
     /** App\Subscription $subscription subscription model */
     protected $subscription;
@@ -66,30 +59,20 @@ class SendTestEmail extends Command
      */
     public function handle()
     {
-        if (!$this->checkEmail()) {
-            $this->error("Email address {$this->email} is not valid !");
+        if (!$this->askUserWhatMailToSend()) {
             return;
         }
 
-        if (!$this->askUserWhatMailToSend()) {
-            $this->error(
-                'Only numbers between ' .
-                    array_keys($this->availableEmails)[0] .
-                    '-' .
-                    array_keys($this->availableEmails)[
-                        count($this->availableEmails) - 1
-                    ] .
-                    '  are accepted.'
-            );
-            return;
-        }
+        $this->user = User::find(self::MY_USER_ID);
 
         switch ($this->emailIdToSend) {
             case 1:
-                $mailable = new WelcomeToPodmytube(User::first());
+                $mailable = new WelcomeToPodmytube($this->user);
                 break;
             case 2:
-                $mailable = new ChannelIsRegistered(Channel::first());
+                $mailable = new ChannelIsRegistered(
+                    $this->user->channels->first()
+                );
                 break;
             case 3: // monthly report with upgrade message
                 $this->createFakeChannelWithVideos(Plan::FREE_PLAN_ID, 3);
@@ -100,18 +83,17 @@ class SendTestEmail extends Command
                 $mailable = new MonthlyReportMail($this->subscription->channel);
                 break;
         }
-        Mail::to($this->email)->send($mailable);
+
+        // send it to me with the right locale
+        Mail::to($this->user)->send($mailable);
 
         /** cleaning */
         $this->cleaning();
 
-        #$class = ChannelIsRegistered::class;
-        #Mail::to($email)->send(new $class($channel->user, $channel));
-
         $this->comment(
-            'Email {' .
+            'Email "' .
                 $this->availableEmails[$this->emailIdToSend]['label'] .
-                "} has been sent to {$this->email}."
+                "\" has been sent to {{$this->user->email}}."
         );
     }
 
@@ -134,24 +116,6 @@ class SendTestEmail extends Command
     }
 
     /**
-     * check email.
-     *
-     * @return bool
-     */
-    protected function checkEmail(): bool
-    {
-        if (
-            filter_var(
-                $this->email = $this->argument('emailAddress'),
-                FILTER_VALIDATE_EMAIL
-            ) === false
-        ) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
      * ask what kind of mail to send
      *
      * @return bool
@@ -167,6 +131,15 @@ class SendTestEmail extends Command
         if (
             !in_array($this->emailIdToSend, array_keys($this->availableEmails))
         ) {
+            $this->error(
+                'Only numbers between ' .
+                    array_keys($this->availableEmails)[0] .
+                    '-' .
+                    array_keys($this->availableEmails)[
+                        count($this->availableEmails) - 1
+                    ] .
+                    '  are accepted.'
+            );
             return false;
         }
         return true;
