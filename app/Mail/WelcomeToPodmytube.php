@@ -10,8 +10,9 @@ use Illuminate\Queue\SerializesModels;
 class WelcomeToPodmytube extends Mailable
 {
     use Queueable, SerializesModels;
-    public $user;
-    public $logo;
+
+    /** App\User $user model */
+    protected $user;
 
     /**
      * Create a new message instance.
@@ -20,7 +21,6 @@ class WelcomeToPodmytube extends Mailable
      */
     public function __construct(User $user)
     {
-        $this->logo = public_path('images/logo-small.png');
         $this->user = $user;
     }
 
@@ -31,9 +31,9 @@ class WelcomeToPodmytube extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.welcome')->with(
-            'podmytubeLogo',
-            $this->logo
-        );
+        $subject = __('emails.welcome_aboard');
+        return $this->subject($subject)
+            ->view('emails.welcome')
+            ->with(['subject' => $subject, 'user' => $this->user]);
     }
 }

@@ -43,14 +43,12 @@
         <p class="text-is-grey">
             {{__('emails.monthlyReport_channelShouldUpgrade_callToAction')}}
         </p>
-        <a href="{{ url('/') }}" class="button bgsuccess"> @lang('emails.common_upgrade_my_plan') </a>
+        <a href="{{ route('plans.index', $channel) }}" class="button bgsuccess">{{ __('emails.common_upgrade_my_plan') }}</a>
     </div>
     @endif
 
 @else
 <p>No media published this month</p>
 @endif
-
-<p> {!! __('emails.common_if_you_have_any_questions') !!} </p>
 
 @endsection
