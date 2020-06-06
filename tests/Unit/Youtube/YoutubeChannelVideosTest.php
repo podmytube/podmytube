@@ -7,7 +7,7 @@ use App\Youtube\YoutubeQuotas;
 use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 
-class YoutubeVideosTest extends TestCase
+class YoutubeChannelVideosTest extends TestCase
 {
     public function setUp(): void
     {
