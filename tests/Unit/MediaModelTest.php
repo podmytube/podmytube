@@ -58,4 +58,23 @@ class MediaModelTest extends TestCase
                 ->get()
         );
     }
+
+    public function testIsBeingGrabbedShouldBeFine()
+    {
+        $media = factory(Media::class)->create([
+            'channel_id' => $this->channel->channel_id,
+            'grabbed_at' => null,
+            'published_at' => Carbon::now()
+                ->startOfDay()
+                ->subMonth(),
+        ]);
+        $this->assertFalse($media->hasBeenGrabbed());
+        $media = factory(Media::class)->create([
+            'channel_id' => $this->channel->channel_id,
+            'published_at' => Carbon::now()
+                ->startOfDay()
+                ->subMonth(),
+        ]);
+        $this->assertTrue($media->hasBeenGrabbed());
+    }
 }
