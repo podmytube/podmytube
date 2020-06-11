@@ -79,10 +79,18 @@ class LastMediaPublishedChecker extends Command
                  */
                 return;
             }
-
+            $this->error(
+                "Channel {$channelToCheck->channel_name} is in trouble !",
+                'v'
+            );
             $this->addChannelInTrouble($channelToCheck);
         });
 
+        $this->info(
+            'Nb paying channels in trouble : ' .
+                count($this->channelsInTrouble),
+            'v'
+        );
         if (count($this->channelsInTrouble)) {
             /**
              * Send myself an email with channels in trouble
