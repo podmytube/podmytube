@@ -3,16 +3,21 @@
 namespace App\Console\Commands;
 
 use App\Channel;
+use App\Mail\LastMediaNotGrabbedMail;
 use App\Media;
 use App\Youtube\YoutubeChannelVideos;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Mail;
 
 class LastMediaPublishedChecker extends Command
 {
-    public const NB_HOURS_AGO = 600000000000000000000;
-
+    public const NB_HOURS_AGO = 6;
+    /**
+     * @var array App\Channels[] $channelsInTrouble
+     */
+    protected $channelsInTrouble = [];
     /**
      * The name and signature of the console command.
      *
@@ -57,21 +62,44 @@ class LastMediaPublishedChecker extends Command
                 ->videos();
             $lastVideo = $videos->videos()[0];
 
+            /**
+             * if published recently, we are letting a little more time.
+             */
             if ($this->hasBeenPublishedRecently($lastVideo['published_at'])) {
                 return;
             }
 
+            /**
+             * media has been published some hours ago.
+             * has it been grabbed
+             */
             if ($this->HasMediaBeenGrabbed($lastVideo['media_id'])) {
+                /**
+                 * media has been grabbed everything ok.
+                 */
                 return;
             }
 
-            $this->error(
-                "{$lastVideo['title']} ({$lastVideo['media_id']}) has not been grabbed !"
-            );
+            $this->addChannelInTrouble($channelToCheck);
         });
+
+        if (count($this->channelsInTrouble)) {
+            /**
+             * Send myself an email with channels in trouble
+             */
+            Mail::to(env('EMAIL_TO_WARN'))->queue(
+                new LastMediaNotGrabbedMail($this->channelsInTrouble)
+            );
+        }
+        $this->comment("It's all folks.", 'v');
     }
 
-    protected function HasMediaBeenGrabbed($mediaId)
+    protected function addChannelInTrouble(Channel $channel)
+    {
+        $this->channelsInTrouble[] = $channel;
+    }
+
+    protected function HasMediaBeenGrabbed(string $mediaId): bool
     {
         try {
             $media = Media::findOrFail($mediaId);
@@ -82,7 +110,10 @@ class LastMediaPublishedChecker extends Command
         }
     }
 
-    protected function hasBeenPublishedRecently(Carbon $publishedAt)
+    /**
+     * check if media has been published recently.
+     */
+    protected function hasBeenPublishedRecently(Carbon $publishedAt): bool
     {
         return $publishedAt->isAfter($this->someHoursAgo);
     }
