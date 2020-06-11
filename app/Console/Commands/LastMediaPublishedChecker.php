@@ -62,6 +62,10 @@ class LastMediaPublishedChecker extends Command
                 ->videos();
             $lastVideo = $videos->videos()[0];
 
+            $this->info(
+                "Checking media {$lastVideo['media_id']} for {$channelToCheck->channel_name}",
+                'v'
+            );
             /**
              * if published recently, we are letting a little more time.
              */
