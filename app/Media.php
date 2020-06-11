@@ -108,4 +108,12 @@ class Media extends Model
     {
         return $this->duration;
     }
+
+    /**
+     * check if a media has already been grabbed
+     */
+    public function hasBeenGrabbed()
+    {
+        return $this->grabbed_at !== null;
+    }
 }
