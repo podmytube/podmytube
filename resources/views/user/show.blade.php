@@ -15,7 +15,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col">
-                {{ __('messages.name_label') }}
+                {{ __('account.name') }}
 			</div>
 			<div class="col">
                 {{ $user->name }}
@@ -23,7 +23,7 @@
 		</div>
         <div class="row">
 			<div class="col">
-                {{ __('messages.email_label') }}
+                {{ __('account.email') }}
 			</div>
 			<div class="col">
                 {{ $user->email }}
@@ -31,7 +31,7 @@
 		</div>
         <div class="row">
 			<div class="col">
-                {{ __('messages.language_label') }}
+                {{ __('account.language') }}
 			</div>
 			<div class="col">
                 {{ $user->language }}
@@ -40,7 +40,7 @@
     </div>
 
     <div class="mx-auto" style="width:200px">
-        <a href="{{ route('user.edit') }}"><button type="button" class="btn btn-primary">{{ __('messages.button_modify_label') }}</button></a>
+        <a href="{{ route('user.edit', $user ) }}"><button type="button" class="btn btn-success">{{ __('messages.button_modify_label') }}</button></a>
     </div>
 
 

@@ -2,51 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class UsersController extends Controller
 {
-    /**
-     * mainly useful to guard some routes
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
     /**
      * Display the specified resource.
      *
@@ -54,9 +16,9 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function show()
+    public function show(User $user)
     {
-        $user = auth()->user();
+        $this->authorize('view', $user);
         return view('user.show', compact('user'));
     }
 
@@ -67,9 +29,9 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function edit()
+    public function edit(User $user)
     {
-        $user = auth()->user();
+        $this->authorize('edit', $user);
         return view('user.edit', compact('user'));
     }
 
@@ -81,9 +43,9 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(Request $request, User $user)
     {
-        $user = auth()->user();
+        $this->authorize('update', $user);
 
         $user->update($request->all());
 
@@ -94,6 +56,6 @@ class UsersController extends Controller
         Session::flash('message', 'User successfully updated !');
         Session::flash('alert-class', 'alert-success');
 
-        return redirect('/user/');
+        return redirect(route('user.show', $user));
     }
 }
