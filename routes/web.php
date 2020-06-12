@@ -95,10 +95,11 @@ Route::middleware(['auth'])->group(function () {
     );
 
     /**
-     * User
+     * User profile
      */
-    Route::get('/user/', 'UsersController@show')->name('user.index');
-    Route::get('/user/show', 'UsersController@show')->name('user.show');
-    Route::get('/user/edit', 'UsersController@edit')->name('user.edit');
-    Route::patch('/user/', 'UsersController@update')->name('user.patch');
+    Route::resource('user', 'UsersController')->only([
+        'show',
+        'edit',
+        'update',
+    ]);
 });

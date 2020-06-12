@@ -1,6 +1,7 @@
 <?php
 /**
- * English Translations
+ * Messages is the legacy part of this app.
+ * It will keep common translations.
  */
 
 return [
