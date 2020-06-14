@@ -80,7 +80,6 @@ return [
             // 'port' => 22,
             'root' => env('SFTP_PODCASTS_PATH'),
             'timeout' => 20,
-            'url' => env('PODCASTS_URL'),
             'visibility' => 'public',
             'permPublic' => 0755,
         ],
@@ -91,8 +90,23 @@ return [
         'thumbs' => [
             'driver' => 'local',
             'root' => storage_path('app/public/thumbs'),
-            'url' => env('APP_URL') . '/storage/thumbs',
+            'url' => env('THUMBS_URL'),
             'visibility' => 'public',
+        ],
+
+        /**
+         * Medias
+         */
+        'medias' => [
+            'driver' => 'sftp',
+            'host' => $sshCredentials['host'],
+            'username' => $sshCredentials['user'],
+            'privateKey' => $sshCredentials['path'],
+            // 'port' => 22,
+            'root' => env('SFTP_MP3_PATH'),
+            'timeout' => 20,
+            'visibility' => 'public',
+            'permPublic' => 0755,
         ],
 
         /**
