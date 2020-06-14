@@ -24,7 +24,7 @@ class MediaModelTest extends TestCase
     public function testPublishedBetweenShouldBeFine()
     {
         $expectedNbMedias = 5;
-        $medias = factory(Media::class, $expectedNbMedias)->create([
+        factory(Media::class, $expectedNbMedias)->create([
             'channel_id' => $this->channel->channel_id,
             'published_at' => Carbon::createFromDate(2019, 12, 15),
         ]);
@@ -43,7 +43,7 @@ class MediaModelTest extends TestCase
     public function testPublishedLastMonthShouldBeFine()
     {
         $expectedNbMedias = 3;
-        $medias = factory(Media::class, $expectedNbMedias)->create([
+        factory(Media::class, $expectedNbMedias)->create([
             'channel_id' => $this->channel->channel_id,
             'published_at' => Carbon::now()
                 ->startOfDay()
@@ -59,7 +59,7 @@ class MediaModelTest extends TestCase
         );
     }
 
-    public function testIsBeingGrabbedShouldBeFine()
+    public function testHasBeenGrabbedShouldBeFine()
     {
         $media = factory(Media::class)->create([
             'channel_id' => $this->channel->channel_id,
@@ -69,6 +69,7 @@ class MediaModelTest extends TestCase
                 ->subMonth(),
         ]);
         $this->assertFalse($media->hasBeenGrabbed());
+
         $media = factory(Media::class)->create([
             'channel_id' => $this->channel->channel_id,
             'published_at' => Carbon::now()
@@ -76,5 +77,13 @@ class MediaModelTest extends TestCase
                 ->subMonth(),
         ]);
         $this->assertTrue($media->hasBeenGrabbed());
+    }
+
+    public function testMediaExists()
+    {
+        $media = factory(Media::class)->create([
+            'channel_id' => $this->channel->channel_id,
+        ]);
+        $this->assertFalse($media->exists());
     }
 }

@@ -31,7 +31,7 @@ class ThumbService
     {
         $filePath = $uploadedFile->store(
             $channel->channel_id,
-            Thumb::_LOCAL_STORAGE_DISK
+            Thumb::LOCAL_STORAGE_DISK
         );
         return substr($filePath, strlen($channel->channel_id) + 1);
     }
@@ -67,7 +67,7 @@ class ThumbService
                 [
                     'channel_id' => $channel->channel_id,
                     'file_name' => $fileName,
-                    'file_disk' => Thumb::_LOCAL_STORAGE_DISK,
+                    'file_disk' => Thumb::LOCAL_STORAGE_DISK,
                     'file_size' => $fileSize,
                 ]
             );
@@ -99,7 +99,7 @@ class ThumbService
      */
     public static function pathExists($thumbPath)
     {
-        return Storage::disk(Thumb::_LOCAL_STORAGE_DISK)->exists($thumbPath);
+        return Storage::disk(Thumb::LOCAL_STORAGE_DISK)->exists($thumbPath);
     }
 
     /**
@@ -109,7 +109,7 @@ class ThumbService
      */
     public static function getDefaultThumbUrl()
     {
-        return getenv('THUMBS_URL') . '/' . Thumb::_DEFAULT_THUMB_FILE;
+        return getenv('THUMBS_URL') . '/' . Thumb::DEFAULT_THUMB_FILE;
     }
 
     /**
