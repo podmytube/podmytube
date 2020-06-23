@@ -58,4 +58,9 @@ class User extends Authenticatable implements HasLocalePreference
     {
         return $this->user_id;
     }
+
+    public function isSuperAdmin()
+    {
+        return $this->id() === 1;
+    }
 }
