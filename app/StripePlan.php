@@ -24,9 +24,9 @@ class StripePlan extends Model
     public const ACCROPOLIS_PLAN_TEST = 'plan_EfubS6xkc5amyO'; // 6€/month
     public const ACCROPOLIS_PLAN_PROD = 'plan_Ecv3k67W6rsSKk'; // 6€/month
 
-    public const PROMOWEEKLY_PLAN_TEST = 'prod_HSxtqW3XoBcPGa'; // 9€ => 6€/month
-    public const PROMOWEEKLY_PLAN_PROD = 'prod_HSxTgLr1bQgE7I'; // 9€ => 6€/month
+    public const PROMO_WEEKLY_PLAN_TEST = 'price_1Gu1xiLrQ8vSqYZEwgjVhGBC'; // 9€ => 6€/month
+    public const PROMO_WEEKLY_PLAN_PROD = 'price_1Gu1YPLrQ8vSqYZERxvBFAgu*'; // 9€ => 6€/month
 
-    public const PROMODAILY_PLAN_TEST = 'prod_HSxuudHQru3P4n'; // 29€ => 25€/month
-    public const PROMODAILY_PLAN_PROD = 'prod_HSxZl7buRrFxQE'; // 29€ => 25€/month
+    public const PROMO_DAILY_PLAN_TEST = 'price_1Gu1yVLrQ8vSqYZESNvD0bK7'; // 29€ => 25€/month
+    public const PROMO_DAILY_PLAN_PROD = 'price_1Gu1nTLrQ8vSqYZEBRGDkeky'; // 29€ => 25€/month
 }
