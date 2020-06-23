@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Mail\ChannelIsRegistered;
 use App\Mail\MonthlyReportMail;
+use App\Mail\Newsletter;
 use App\Mail\WelcomeToPodmytube;
 use App\Media;
 use App\Plan;
@@ -49,6 +50,7 @@ class SendTestEmail extends Command
                 'label' =>
                     'Monthly report for paying user (no upgrade message) .',
             ],
+            5 => ['label' => 'Newsletter.'],
         ];
     }
 
@@ -81,6 +83,9 @@ class SendTestEmail extends Command
             case 4: // monthly with upgrade message
                 $this->createFakeChannelWithVideos(Plan::WEEKLY_PLAN_ID, 5);
                 $mailable = new MonthlyReportMail($this->subscription->channel);
+                break;
+            case 5:
+                $mailable = new Newsletter($this->user);
                 break;
         }
 

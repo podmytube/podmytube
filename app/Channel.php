@@ -11,6 +11,7 @@
 namespace App;
 
 use App\Podcast\PodcastBuilder;
+use App\Traits\BelongsToUser;
 use App\Traits\HasLimits;
 use App\Traits\HasManyMedias;
 use App\Traits\HasOneCategory;
@@ -24,7 +25,7 @@ use Illuminate\Support\Facades\Lang;
  */
 class Channel extends Model
 {
-    use HasLimits, HasManyMedias, HasOneThumb, HasOneCategory;
+    use HasLimits, HasManyMedias, HasOneThumb, HasOneCategory, BelongsToUser;
 
     public const CREATED_AT = 'channel_createdAt';
     public const UPDATED_AT = 'channel_updatedAt';
@@ -53,16 +54,6 @@ class Channel extends Model
      * the field that are guarded
      */
     protected $guarded = [];
-
-    /**
-     * define the relationship between one user and one channel.
-     *
-     * @return object the user that own this channel
-     */
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'user_id', 'user_id');
-    }
 
     /**
      * We are getting active subscriptions for the channel.

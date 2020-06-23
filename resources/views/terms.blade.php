@@ -12,11 +12,12 @@
     </div>
 
     <h3>Terms of service</h3>
-    <span class="text-muted">Last updated on march 7, 2021</span>
+    <span class="text-muted">Last updated on march 7, 2020</span>
     <p>Use of the Podmytube web site and all associated services is offered subject to agreement to the following terms of service.</p>
 
     <h3>Welcome to Podmytube</h3>
-    <p>Podmytube offer service that enable Youtube Creator to host any podcast. These podcast are generated from their Youtube channel(s) content.</p>
+    <p>Podmytube offer service that enable Youtube Creator to host any podcast.
+        These podcast are generated from their Youtube channel(s) content with the author agreement.</p>
 
     <h4>Free account</h4>
     <p>Podmytube is providing a free acount plan. This plan is subject to any modification at any time and for any reason (or no reason).</p>

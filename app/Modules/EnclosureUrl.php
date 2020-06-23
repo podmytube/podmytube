@@ -17,9 +17,7 @@ class EnclosureUrl
     {
         if (!getenv(self::MP3_URL_KEY)) {
             throw new UndefinedEnvironmentVariable(
-                'Environment variable {' .
-                    getenv(self::MP3_URL_KEY) .
-                    '} is not defined.'
+                'Environment variable {MP3_URL_KEY} is not defined.'
             );
         }
         $this->media = $media;
@@ -33,11 +31,12 @@ class EnclosureUrl
 
     protected function setEnclosureUrl()
     {
+        $separator = '/';
         $this->enclosureUrl =
             getenv(self::MP3_URL_KEY) .
-            '/' .
+            $separator .
             $this->media->channel_id .
-            '/' .
+            $separator .
             $this->media->media_id .
             '.mp3';
     }
