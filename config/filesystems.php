@@ -59,6 +59,11 @@ return [
             'visibility' => 'public',
         ],
 
+        'newsletter' => [
+            'driver' => 'local',
+            'root' => base_path('resources/views/emails/newsletters/'),
+        ],
+
         /**
          * Podcast feeds
          */

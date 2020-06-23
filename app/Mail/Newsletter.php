@@ -20,14 +20,18 @@ class Newsletter extends Mailable
     /** @var App\User $user */
     protected $user;
 
+    /** @var string $newsletter the body of the newsletter */
+    protected $newsletterBody;
+
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(User $user)
+    public function __construct(User $user, string $newsletterBody)
     {
         $this->user = $user;
+        $this->newsletterBody = $newsletterBody;
     }
 
     /**
@@ -37,19 +41,14 @@ class Newsletter extends Mailable
      */
     public function build()
     {
-        $period =
-            Carbon::now()->locale($this->user->preferredLocale())->monthName .
-            ' ' .
-            date('Y');
+        $period = Carbon::now()->locale('en')->monthName . ' ' . date('Y');
 
-        $subject = __('emails.newsletter_subject', [
-            'period' => $period,
-        ]);
-
-        return $this->view('emails.newsletter')
-            ->subject($subject)
+        $subject = "Podmytube Newsletter - $period";
+        return $this->subject($subject)
+            ->view('emails.newsletter')
             ->with([
                 'subject' => $subject,
+                'newsletterBody' => $this->newsletterBody,
                 'user' => $this->user,
             ]);
     }
