@@ -4,16 +4,8 @@
 
 @section ('content')
 
-<h1>
-    {{ $subject }}
-</h1>
+<p> Hello {{ $user->name }} </p>
 
-<p>
-    {{ __('emails.common_hello', ['name' => $user->name]) }}
-</p>
-
-
-
---include ('emails.newsletters.2020-06-free-plan-update')--
+@include('emails.newsletters.'.$newsletterBody)
 
 @endsection
