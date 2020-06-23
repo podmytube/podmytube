@@ -53,4 +53,6 @@ EOT
         "If you have any question, you only have to ask, I'm here to help :).<br>Cheers.<br>Fred",
     'registered_a_select_a_category' => 'Select your podcast category',
     'registered_a_add_an_illustration' => 'Add your illustration',
+
+    'newsletter_subject' => ':period newsletter',
 ];

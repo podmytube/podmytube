@@ -15,10 +15,7 @@ class PlansController extends Controller
      */
     public function index(Channel $channel)
     {
-        $plans = Plan::byIds([
-            Plan::WEEKLY_PLAN_PROMO_ID,
-            Plan::DAILY_PLAN_PROMO_ID,
-        ]);
+        $plans = Plan::byIds([Plan::WEEKLY_PLAN_PROMO_ID, Plan::DAILY_PLAN_ID]);
 
         return view('plans.index', compact('channel', 'plans'));
     }
