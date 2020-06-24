@@ -47,4 +47,6 @@ return [
     'registered_a_select_a_category' =>
         'Selectionne la catégorie de ton podcast',
     'registered_a_add_an_illustration' => 'Ajoute ton visuel',
+
+    'newsletter_subject' => 'Newsletter de :period',
 ];

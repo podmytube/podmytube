@@ -15,7 +15,10 @@
                 <img class="card-img-top" src="{{$channel->vigUrl}}" style="max-width:300px;" alt="{{ __('messages.channel_vignette_alt') }}">
             </div>
             <div class="card-body text-center">
-                <h5 class="card-title">{{$channel->title()}}</h5>
+                <h5 class="card-title">{{ $channel->title() }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">
+                    {{ __('plans.'.$channel->subscription->plan->name) }}
+                </h6>
                 <a href="{{ $channel->podcastUrl() }}" target="_blank" class="btn btn-success btn">
                     <i class="fas fa-podcast fa-lg"></i> {{ __('messages.podcast_link_label') }}
                 </a>
@@ -32,10 +35,10 @@
                 @endif
 
             </div>
-            <div class="card-footer text-center">
+            <div class="card-footer p-0 text-center">
                 <div class="btn-group " role="group" aria-label="link to your podcast.">
                     <a href="{{ route('channel.show', $channel) }}" class="btn btn-primary btn-sm">
-                    <i class="far fa-eye"></i> {{ __('messages.button_show_channel_label') }}
+                        <i class="far fa-eye"></i> {{ __('messages.button_show_channel_label') }}
                     </a>
                     <a href="{{ route('channel.edit', $channel) }}" class="btn btn-primary btn-sm">
                         <i class="far fa-edit"></i> {{ __('messages.button_edit_channel_label') }}
