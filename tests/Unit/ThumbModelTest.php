@@ -10,36 +10,21 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ThumbModelTest extends TestCase
 {
-    //use RefreshDatabase;
+    use RefreshDatabase;
 
     /** @var bool true, database is ready to run tests upon */
     protected static $dbIsWarm = false;
 
     /** @var Channel channel obj used for the test */
-    protected static $channel;
-
-    /** @var Thumb thumb object used by the tests */
-    protected static $thumb;
-
-    /**
-     * This function will create a channel, thumb and everyt item required to run theses tests.
-     */
-    protected static function warmDb()
-    {
-        self::$channel = factory(Channel::class)->create();
-        self::$thumb = factory(Thumb::class)->create([
-            'channel_id' => self::$channel->channelId(),
-        ]);
-        self::$dbIsWarm = true;
-    }
+    protected $channel;
 
     public function setUp(): void
     {
         parent::setUp();
-
-        if (!static::$dbIsWarm) {
-            static::warmDb();
-        }
+        $this->channel = factory(Channel::class)->create();
+        factory(Thumb::class)->create([
+            'channel_id' => $this->channel->channelId(),
+        ]);
     }
 
     public function testingDefaultUrl()
@@ -50,54 +35,27 @@ class ThumbModelTest extends TestCase
 
     public function testingThumbExists()
     {
-        $this->assertTrue(self::$thumb->exists());
+        $this->assertTrue($this->channel->thumb->exists());
     }
 
     public function testingFileName()
     {
-        $this->assertEquals(self::$thumb->file_name, self::$thumb->fileName());
+        $this->assertEquals($this->channel->thumb->file_name, $this->channel->thumb->fileName());
     }
 
-    public function testingChannelId()
-    {
-        $this->assertEquals(
-            self::$channel->channelId(),
-            self::$thumb->channelId()
-        );
-    }
-
-    /**
-     * @depends testingChannelId
-     */
     public function testingRelativePath()
     {
         $expectedResult =
-            self::$thumb->channelId() . '/' . self::$thumb->fileName();
-        $this->assertEquals($expectedResult, self::$thumb->relativePath());
+            $this->channel->channelId() . '/' . $this->channel->thumb->fileName();
+        $this->assertEquals($expectedResult, $this->channel->thumb->relativePath());
     }
 
-    /**
-     * @depends testingRelativePath
-     */
-    public function testingDashboardUrl()
-    {
-        $expectedUrl =
-            env('APP_URL') . '/storage/thumbs/' . self::$thumb->relativePath();
-        $this->assertEquals($expectedUrl, self::$thumb->dashboardUrl());
-    }
-
-    /**
-     * @depends testingDashboardUrl
-     */
     public function testingPodcastUrl()
     {
-        $expectedUrl = env('THUMBS_URL') . '/' . self::$thumb->relativePath();
-        $this->assertEquals($expectedUrl, self::$thumb->podcastUrl());
+        $expectedUrl = env('THUMBS_URL') . '/' . $this->channel->thumb->relativePath();
+        $this->assertEquals($expectedUrl, $this->channel->thumb->podcastUrl());
     }
 
-    /**
-     * @depends testingPodcastUrl
-     */
     public function testingChannelReplaceItsThumb()
     {
         /** creating fake uploaded image */
@@ -110,7 +68,7 @@ class ThumbModelTest extends TestCase
         /** attach it to channel */
         $this->assertInstanceOf(
             Thumb::class,
-            Thumb::make()->attachItToChannel($uploadedFile, self::$channel)
+            Thumb::make()->attachItToChannel($uploadedFile, $this->channel)
         );
     }
 
