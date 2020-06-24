@@ -54,7 +54,7 @@ return [
     'button_update_channel_label' => "Update my channel's information",
     'button_create_channel_label' => "Convert one new channel",
     'button_need_assistance_label' => "Contact me",
-    'button_modify_label' => 'Modify',
+    'button_modify_label' => 'Update',
     'button_submit_label' => 'Submit',
     'button_upgrade_my_plan' => 'Upgrade my plan',
 
