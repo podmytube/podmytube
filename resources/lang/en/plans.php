@@ -1,22 +1,22 @@
 <?php
 
 return [
+    'forever_free' => 'Free forever',
     'weekly_youtuber' => 'Weekly Youtuber',
     'weekly_youtuber_promo' =>
-        'Weekly Youtuber <del class="text-muted">(9€/month)</del>',
+    'Weekly Youtuber <del class="text-muted">(9€/month)</del>',
     'daily_youtuber' => 'Daily Youtuber',
     'daily_youtuber_promo' =>
-        'Daily Youtuber <del class="text-muted">(29€/month)</del>',
+    'Daily Youtuber <del class="text-muted">(29€/month)</del>',
     'price_monthly' => ':price € <small class="text-muted">/ month</small>',
     'episodes_per_month' =>
-        '<li>Up to <strong>:nb episodes</strong> added to your podcast every month</li>',
+    '<li>Up to <strong>:nb episodes</strong> added to your podcast every month</li>',
     'standard_paying_features' => <<<EOD
 <li><strong>No time limitation</strong>. Once added to your podcast every episode will stay in.</li>
 <li>Podcast filtering</li>
 <li>Reactive and super friendly customer support</li>
 <li><strong>Setup once and forget !</strong></li>
-EOD
-    ,
+EOD,
     /*
     |--------------------------------------------------------------------------
     | plans subscription paiement
@@ -44,31 +44,31 @@ EOD
 
     'pricing_li_free_plan' => 'Free (forever)',
     'pricing_li_free_plan_radio_button_label' =>
-        'I publish only 2 videos per month',
+    'I publish only 2 videos per month',
 
     'pricing_li_N_new_epidodes_per_month' =>
-        'My podcast will get <strong>:number new episodes</strong> each month',
+    'My podcast will get <strong>:number new episodes</strong> each month',
     'pricing_li_data_podcast_filtering' =>
-        'Filter the videos you want to convert by youtube tag ou by keyword',
+    'Filter the videos you want to convert by youtube tag ou by keyword',
     'pricing_li_I_may_filter_videos_to_be_added_to_my_podcast' =>
-        'I may filter videos to be added to my podcast',
+    'I may filter videos to be added to my podcast',
     'pricing_li_I_can_convert_N_of_my_playlist_into_a_podcast' =>
-        'I can convert <strong>:playlistNumber playlist(s)</strong> into a podcast too',
+    'I can convert <strong>:playlistNumber playlist(s)</strong> into a podcast too',
 
     'pricing_li_weekly_youtuber' => 'Weekly Youtuber',
     'pricing_li_weekly_youtuber_radio_button_label' =>
-        'I will publish 10 videos (max) per month',
+    'I will publish 10 videos (max) per month',
     'pricing_li_weekly_youtuber_intro' =>
-        'Up to <b>10 episodes</b> added to your podcast every month',
+    'Up to <b>10 episodes</b> added to your podcast every month',
     'pricing_li_weekly_youtuber_monthly_price' => '9 €',
     'pricing_li_monthly_price' => ':pricePerMonth €',
     'pricing_li_free_plan_monthly_price' => 'Free !',
 
     'pricing_li_daily_youtuber' => 'Daily Youtuber',
     'pricing_li_daily_youtuber_radio_button_label' =>
-        'I will publish 33 videos (max) per month',
+    'I will publish 33 videos (max) per month',
     'pricing_li_daily_youtuber_intro' =>
-        'Up to <b>33 episodes</b> added to your podcast every month',
+    'Up to <b>33 episodes</b> added to your podcast every month',
     'pricing_li_daily_youtuber_monthly_price' => '29 €',
 
     'pricing_li_I_choose_this_plan' => 'I choose this plan !',
@@ -77,28 +77,28 @@ EOD
 
     'pricing_li_per_month' => '/ month',
     'pricing_li_data_only_some_episodes' =>
-        'Only some episodes are converted at first but all the next videos will be converted',
+    'Only some episodes are converted at first but all the next videos will be converted',
     'pricing_li_your_podcast_begin' =>
-        'My podcast begin with <strong>:number episodes</strong>',
+    'My podcast begin with <strong>:number episodes</strong>',
     'pricing_li_data_podcast_filtering' =>
-        'Filter the videos you want to convert by youtube tag ou by keyword',
+    'Filter the videos you want to convert by youtube tag ou by keyword',
     'pricing_li_podcast_filtering' => 'Podcast filtering',
     'pricing_li_data_custom_url' =>
-        'Podcast may be hosted on your domain if you choose to. All you need is one FTP account.',
+    'Podcast may be hosted on your domain if you choose to. All you need is one FTP account.',
     'pricing_li_custom_url' =>
-        'Custom podcast address<br/>(<i>under conditions</i>)',
+    'Custom podcast address<br/>(<i>under conditions</i>)',
     'pricing_li_data_no_hidden_cost' =>
-        'Bandwidth and storage costs are included.',
+    'Bandwidth and storage costs are included.',
     'pricing_li_no_hidden_cost' => 'No hidden cost',
     'pricing_li_data_analytics' =>
-        'For now only the downloads number is available (but more is coming soon)',
+    'For now only the downloads number is available (but more is coming soon)',
     'pricing_li_analytics' => 'Audience statistics (beta)',
     'pricing_li_setup_once_and_forget' =>
-        '<strong>Setup once and forget</strong>',
+    '<strong>Setup once and forget</strong>',
     'pricing_li_reactive_support' =>
-        'Reactive and super friendly customer support',
+    'Reactive and super friendly customer support',
     'pricing_li_no_time_limit' =>
-        '<b>No time limitation</b>. Once added to your podcast every episode will stay in.',
+    '<b>No time limitation</b>. Once added to your podcast every episode will stay in.',
 
     'pricing_button_subscribe' => 'Subscribe',
 ];
