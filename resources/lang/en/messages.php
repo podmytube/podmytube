@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Messages is the legacy part of this app.
  * It will keep common translations.
@@ -28,11 +29,11 @@ return [
     'channel_stats_link_last15_period' => 'last 15 days',
     'channel_stats_link_last30_period' => 'last 30 days',
     'channel_stats_link_last90_period' => 'last 90 days',
-    
+
     // breadcrumb
     'page_title_home_breadcrumb' => 'Welcome',
     'page_title_podcasts_breadcrumb' => 'Your podcasts',
-    
+
     // flash
     'flash_channel_has_been_created' => "Podcast :channel has been successfully registered :)",
     'flash_channel_id_is_invalid' => "The youtube url you entered was invalid !",
@@ -45,7 +46,7 @@ return [
 
     'button_update_label' => 'Update',
     'button_cancel_label' => 'Cancel',
-    
+
     'button_show_channel_label' => "View",
     'button_edit_channel_label' => "Edit",
     'button_edit_thumb_label' => "Update thumb",
@@ -56,15 +57,15 @@ return [
     'button_modify_label' => 'Modify',
     'button_submit_label' => 'Submit',
     'button_upgrade_my_plan' => 'Upgrade my plan',
-        
+
     // home part
     'no_channels_at_this_moment' => "You have no channel at this time.",
     'title_application_label' => 'Dashboard',
     'title_channel_index_label' => 'Your channels',
     'danger_podcast_is_no_more_updated' => 'Your podcast is no more updated, please consider upgrading your plan.',
-    'button_i_want_to_upgrade_now' => 'I want to upgrade now.',
+    'button_i_want_to_upgrade_now' => 'Upgrade',
     'one_of_your_podcast_is_no_more_updated' => "One of your podcast is no more updated, and your new episodes will not be added to your podcast. Please consider upgrading your plan.",
-    
+
     // user part
     'button_update_user_label' => 'update',
 
@@ -83,28 +84,28 @@ return [
     'thumbs_edit_new_thumb_form_label' => 'Select your new podcast image.',
     'thumbs_edit_error_image_required' => 'You should select a new image before clicking on the update button.',
     'thumbs_edit_error_image_dimensions' => 'The new image must be a square one between 1400x1400 and 3000x3000.',
-    
+
 
     //channel index part
-    
+
 
     // adding a channel part
     'channel_owner_warning_checkbox_label' => "By checking this case, I certify to be the owner of this channel",
     'channel_to_be_validated' => '--- VALIDATION WAITING ---',
-	'youtube_channel_url_label' => "Your youtube channel url (by ex : https://www.youtube.com/channel/UCVeMw72tepFl1Zt5fvf9QKQ)",
-	'create_youtube_channel_url_help' => "Your youtube channel url should look like this one https://www.youtube.com/channel/UCVeMw72tepFl1Zt5fvf9QKQ",
-	'create_youtube_channel_url_error' => "Your youtube channel url seems to be invalid. It should be something like that https://www.youtube.com/channel/UCVeMw72tepFl1Zt5fvf9QKQ",
+    'youtube_channel_url_label' => "Your youtube channel url (by ex : https://www.youtube.com/channel/UCVeMw72tepFl1Zt5fvf9QKQ)",
+    'create_youtube_channel_url_help' => "Your youtube channel url should look like this one https://www.youtube.com/channel/UCVeMw72tepFl1Zt5fvf9QKQ",
+    'create_youtube_channel_url_error' => "Your youtube channel url seems to be invalid. It should be something like that https://www.youtube.com/channel/UCVeMw72tepFl1Zt5fvf9QKQ",
 
-	// register/login/reset password part
-	'title_register_label' => 'Sign up',
-	'button_register_label' => 'Sign up',
+    // register/login/reset password part
+    'title_register_label' => 'Sign up',
+    'button_register_label' => 'Sign up',
 
     'title_login_label' => 'Sign in',
     'title_logout_label' => 'Logout',
     'button_login_label' => 'Sign in',
     'button_lost_password' => 'Send Password Reset Link',
     'button_reset_password' => 'Reset password',
-    
+
     'name_label' => 'Name',
     'email_label' => 'Email address',
     'password_label' => 'Password',
@@ -140,25 +141,25 @@ return [
 
     'channel_category_label' => "Category",
     'channel_category_help' => "In which category is your podcast ?",
-    
+
     'no_category_defined_label' => "This podcast has no category.",
     'no_filter_defined_label' => "No filter has been entered. All episodes (according to your plan) are included in your podcast.",
-    
+
     'channel_lang_label' => "Podcast Language",
     'channel_lang_help' => "Your podcast language.",
 
     'channel_explicit_label' => "This podcast uses an explicit language.",
     'channel_explicit_help' => "If your podcast is using explicit content, you should check this check box.",
-    
+
     'channel_filter_by_tag_label' => "Tag filter",
     'channel_filter_by_tag_help' => "Only videos that have been tagged (under Youtube) will be included in your podcast. For example \"podcast\"",
-    
+
     'channel_filters_label' => 'Filters',
     'filters_warning' => '<b>Warning</b> by applying incorrect filters you may empty your podcast.',
     'accept_video_by_tag' => "Only youtube videos tagged with tag <b>{:tag}</b> will be included into your podcast. Don't forget to apply tag !",
     'reject_video_by_keyword' => "Videos with this keyword <b>{:keyword}</b> in their title will not be included in your podcast. However, all the others will be included.",
     'reject_video_too_old' => "Only videos published after this date <b>{:date}</b> will be included.",
-    
+
     'channel_filter_by_date_label' => "Date filter",
     'channel_filter_by_date_help' => "Only videos published after this date will be included in your podcast. For example: \"18/09/2016\"",
 
@@ -192,11 +193,9 @@ return [
     'no_ftp_pasv_defined_label' => "Active mode",
     'ftp_pasv_defined_label' => "Passive mode",
 
-	// footer
-	'layout_footer_slogan' => '- Convert your youtube channel in a wonderful podcast in a snap !',
-	'layout_footer_legal_notice' => 'Legal Notice',
-	'layout_footer_legal_notice_url' => 'http://fr.podmytube.com/mentions-legales',
-    
-];
+    // footer
+    'layout_footer_slogan' => '- Convert your youtube channel in a wonderful podcast in a snap !',
+    'layout_footer_legal_notice' => 'Legal Notice',
+    'layout_footer_legal_notice_url' => 'http://fr.podmytube.com/mentions-legales',
 
-?>
+];
