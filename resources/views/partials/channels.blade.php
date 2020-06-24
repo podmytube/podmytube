@@ -19,20 +19,22 @@
                 <h6 class="card-subtitle mb-2 text-muted">
                     {{ __('plans.'.$channel->subscription->plan->name) }}
                 </h6>
-                <a href="{{ $channel->podcastUrl() }}" target="_blank" class="btn btn-success btn">
-                    <i class="fas fa-podcast fa-lg"></i> {{ __('messages.podcast_link_label') }}
-                </a>
 
-                @if ($channel->isQuotaExceeded)
-                <div class="alert alert-danger mt-2" role="alert">
-                    <p>{{ __('messages.danger_podcast_is_no_more_updated') }}</p>
-                    <p class=" text-center">
-                        <a class="btn btn-success text-center" href="{{ route('plans.index', ['channel' => $channel]) }}" role="button">
-                            {{ __('messages.button_i_want_to_upgrade_now') }}
-                        </a>
-                    </p>
-                </div>
+                @if($channel->subscription->plan->id==\App\Plan::FREE_PLAN_ID)
+                <p>
+                    <a class="btn btn-success text-center" href="{{ route('plans.index', $channel) }}" role="button">
+                        {{ __('messages.button_i_want_to_upgrade_now') }}
+                    </a>
+                </p>
                 @endif
+
+
+                <p>
+                    <a href="{{ $channel->podcastUrl() }}" target="_blank" class="btn btn-purple btn">
+                        <i class="fas fa-podcast fa-lg"></i> {{ __('messages.podcast_link_label') }}
+                    </a>
+                </p>
+
 
             </div>
             <div class="card-footer p-0 text-center">

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * French Translations
  */
@@ -35,7 +36,7 @@ return [
     // flash
     'flash_channel_has_been_created' => "Le podcast :channel est désormais inscrit :)",
     'flash_channel_id_is_invalid' => "L'adresse Youtube saisie est invalide !",
-    
+
     // commons
     'only_for_premiums_label' => "Cette partie n'est disponible que pour les abonnés premiums.",
     'yes' => "oui",
@@ -55,13 +56,13 @@ return [
     'button_modify_label' => 'Modifier',
     'button_submit_label' => 'Valider',
     'button_upgrade_my_plan' => 'Modifier mon forfait',
-    
+
     // home part
     'no_channels_at_this_moment' => 'Vous n\'avez enregistré aucune chaine à ce jour.',
     'title_application_label' => 'Tableau de bord',
     'title_channel_index_label' => 'Vos chaines',
     'danger_podcast_is_no_more_updated' => "Ton podcast n'est plus mis à jour, passer au forfait supérieur devrait régler la question :).",
-    'button_i_want_to_upgrade_now' => "J'upgrade mon compte",
+    'button_i_want_to_upgrade_now' => "Upgrade",
     'one_of_your_podcast_is_no_more_updated' => "un de tes podcasts n'est plus mis à jour et tes nouveaux épisodes ne seront plus ajoutés à ton podcast. Pense à passer au forfait supérieur.",
 
     // user part
@@ -84,7 +85,7 @@ return [
 
 
     //channel index part
-    
+
 
     // adding a channel part
     'channel_owner_warning_checkbox_label' => 'En cochant cette case, je certifie être bien le propriétaire de cette chaine',
@@ -102,7 +103,7 @@ return [
     'button_login_label' => 'Connexion',
     'button_lost_password' => 'Réinitialiser mon mot de passe',
     'button_reset_password' => 'Réinitialiser mon mot de passe',
-    
+
     'name_label' => 'Nom',
     'email_label' => 'Adresse email',
     'password_label' => 'Mot de passe',
@@ -138,16 +139,16 @@ return [
 
     'channel_category_label' => "Catégorie",
     'channel_category_help' => "Dans quelle catégorie se range votre podcast.",
-    
+
     'no_category_defined_label' => "Aucune categorie n'a été renseignée.",
     'no_filter_defined_label' => "Aucun filtre n'a été défini. Toutes les vidéos seront donc inclues (selon le forfait souscrit) à votre podcast.",
-    
+
     'channel_lang_label' => "Langue du podcast",
     'channel_lang_help' => "La langue de votre podcast.",
 
     'channel_explicit_label' => "Ce podcast est destiné à un public majeur et averti",
     'channel_explicit_help' => "Si votre podcast est destiné à une public majeur et averti.",
-    
+
     'channel_filter_by_tag_label' => "Filtre par tag",
     'channel_filter_by_tag_help' => "Seules les vidéos qui auront été tagguées (sous Youtube) seront incluses dans votre podcast. Par exemple \"podcast\"",
 
@@ -156,7 +157,7 @@ return [
     'accept_video_by_tag' => "Seules les vidéos Youtube comportant le tag <b>{:tag}</b> seront inclues dans votre podcast. N'oubliez pas de le mettre !",
     'reject_video_by_keyword' => "Les vidéos comportant le mot clé <b>{:keyword}</b> dans leur titre ne seront pas inclues dans votre podcast. Par contre toutes les autres le seront.",
     'reject_video_too_old' => "Seules les vidéos publiées après le <b>{:date}</b> seront inclues.",
-    
+
     'channel_filter_by_date_label' => "Filtre par date",
     'channel_filter_by_date_help' => "Seules les vidéos antérieures à cette date seront incluses dans votre podcast. Par exemple : \"18/09/2016\"",
 
@@ -190,9 +191,9 @@ return [
     'no_ftp_pasv_defined_label' => "Transfert actif",
     'ftp_pasv_defined_label' => "Transfert passif",
 
-	// footer
-	'layout_footer_slogan' => '- Transformez votre chaine Youtube en podcast tout simplement !',
-	'layout_footer_legal_notice' => 'Mentions legales',
-	'layout_footer_legal_notice_url' => 'http://fr.podmytube.com/mentions-legales',
-    
+    // footer
+    'layout_footer_slogan' => '- Transformez votre chaine Youtube en podcast tout simplement !',
+    'layout_footer_legal_notice' => 'Mentions legales',
+    'layout_footer_legal_notice_url' => 'http://fr.podmytube.com/mentions-legales',
+
 ];
