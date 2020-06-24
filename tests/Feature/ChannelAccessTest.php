@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\User;
 use App\Channel;
+use App\Subscription;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -30,7 +31,14 @@ class ChannelAccessTest extends TestCase
             'user_id' => $this->user->userId(),
         ]);
 
-        $response = $this->actingAs($this->user)
+
+        $channels->map(function ($channel) {
+            factory(Subscription::class)->create(['channel_id' => $channel->channel_id]);
+        });
+
+
+        $response = $this->followingRedirects()
+            ->actingAs($this->user)
             ->get(route('channel.index'))
             ->assertSuccessful()
             ->assertViewIs('channel.index');
