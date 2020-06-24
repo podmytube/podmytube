@@ -41,7 +41,7 @@ class SendNewsletter extends Command
         /**
          * getting users list
          */
-        $users = User::all(); //User::take(1)->get();
+        $users = User::where('newsletter', '=', true)->get();
 
         /**
          * sending newsletter to every user
