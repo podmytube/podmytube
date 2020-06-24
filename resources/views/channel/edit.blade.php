@@ -15,8 +15,6 @@
 
 	<hr>
 
-	@include ('partials.errors')
-
 	<form method="POST" action="{{ route('channel.update', $channel) }}">
 
 		{{ method_field('PATCH') }}
