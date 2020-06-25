@@ -11,8 +11,7 @@
     <thead class="thead-dark">
         <tr>
             <th scope="col">{{__('medias.index_table_col_media_title')}}</th>
-            <th scope="col">{{__('medias.index_table_col_media_published_at')}}</th>
-            <th scope="col">{{__('medias.index_table_col_media_grabbed_at')}}</th>
+            <th scope="col">Status</th>
         </tr>
     </thead>
     <tbody>
@@ -20,7 +19,6 @@
         @foreach ($medias as $media)
         <tr>
             <th scope="row">{{ $media->title }}</th>
-            <td>{{ $media->published_at->format(__('config.dateFormat')) }}</td>
             <td>
                 @if (isset($media->grabbed_at))
                 {{ $media->grabbed_at->format(__('config.dateFormat')) }}
@@ -33,7 +31,7 @@
     </tbody>
 </table>
 <div class="mx-auto" style="width: 300px;">
-          {{ $medias->links() }}
+    {{ $medias->links() }}
 </div>
 @else
 <div class="alert alert-dark" role="alert">

@@ -55,6 +55,6 @@ class UsersController extends Controller
         return redirect(route('user.show', $user))->with(
             'success',
             'User has been successfully updated.'
-        );;
+        );
     }
 }

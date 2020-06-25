@@ -38,11 +38,6 @@ class CreateStripePlans extends Migration
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
         });
-
-        Artisan::call('db:seed', [
-            '--class' => StripePlansTableSeeder::class
-        ]);
-
     }
 
     /**

@@ -28,7 +28,7 @@
 			</label>
 
 			<div class="col-md-10">
-				<input type="text" id="podcastName" name="podcast_title" class="form-control" placeholder="{{ __('messages.channel_podcast_name_label') }}">
+				<input type="text" id="podcastName" name="podcast_title" class="form-control" value="{{ $channel->title() }}" placeholder="{{ __('messages.channel_podcast_name_label') }}">
 			</div>
 		</div>
 
@@ -100,8 +100,15 @@
 			</div>
 		</div>
 
+		<div class="mx-auto" style="width:200px">
+			<button type="submit" class="btn btn-success">{{ __('messages.button_update_label') }}</button>
+			<a href="{{ route('channel.show', $channel->channel_id) }}" class="btn btn-secondary">
+				{{ __('messages.button_cancel_label') }}
+			</a>
+		</div>
+
 		<h3>{{ __('messages.channel_filters_label') }}</h3>
-		<div class="alert alert-warning" role="alert">
+		<div class="alert alert-danger text-center" role="alert">
 			{!! __('messages.filters_warning') !!}
 		</div>
 
@@ -128,101 +135,6 @@
 		</div>
 
 
-		<hr>
-
-		{{--
-		<h3> FTP </h3>
-		<p>{{ __('messages.channel_ftp_feature_description') }}</p>
-
-		<table class="table table-striped">
-			<tbody>
-				<tr>
-					<th scope="row" width="25%">
-
-						{{ __('messages.channel_ftp_host_label') }}
-
-						<a href="#" title="{{ __('messages.channel_ftp_host_help') }}"><img src="/images/glyphicons-195-question-sign.png" class="float-right"></a>
-
-					</th>
-					<td>
-
-						<input type="text" class="form-control" name="ftp_host" value="{{ $channel->ftp_host }}">
-
-					</td>
-				</tr>
-				<tr>
-					<th scope="row">
-
-						{{ __('messages.channel_ftp_user_label') }}
-
-						<a href="#" title="{{ __('messages.channel_ftp_user_help') }}"><img src="/images/glyphicons-195-question-sign.png" class="float-right"></a>
-
-					</th>
-					<td>
-
-						<input type="text" class="form-control" name="ftp_user" value="{{ $channel->ftp_user }}">
-
-					</td>
-				</tr>
-				<tr>
-					<th scope="row">
-
-						{{ __('messages.channel_ftp_pass_label') }}
-
-						<a href="#" title="{{ __('messages.channel_ftp_pass_help') }}"><img src="/images/glyphicons-195-question-sign.png" class="float-right"></a>
-
-					</th>
-					<td>
-
-						<input type="password" class="form-control" name="ftp_pass" value="{{ $channel->ftp_pass }}">
-
-					</td>
-				</tr>
-				<tr>
-					<th scope="row">
-
-						{{ __('messages.channel_ftp_dir_label') }}
-
-						<a href="#" title="{{ __('messages.channel_ftp_dir_help') }}"><img src="/images/glyphicons-195-question-sign.png" class="float-right"></a>
-
-					</th>
-					<td>
-
-						<input type="text" class="form-control" name="ftp_dir" value="{{ $channel->ftp_dir }}">
-
-					</td>
-				</tr>
-				<tr>
-					<th scope="row">
-
-						{{ __('messages.channel_ftp_podcast_label') }}
-
-						<a href="#" title="{{ __('messages.channel_ftp_podcast_help') }}"><img src="/images/glyphicons-195-question-sign.png" class="float-right"></a>
-
-					</th>
-					<td>
-
-						<input type="text" class="form-control" name="ftp_podcast" value="{{ $channel->ftp_podcast }}">
-
-					</td>
-				</tr>
-				<tr>
-					<th scope="row">
-
-						{{ __('messages.channel_ftp_pasv_label') }}
-
-						<a href="#" title="{{ __('messages.channel_ftp_pasv_help') }}"><img src="/images/glyphicons-195-question-sign.png" class="float-right"></a>
-
-					</th>
-					<td>
-
-						<input type="checkbox" name="ftp_pasv" value="1" {{ $channel->ftp_pasv == 1 ? 'checked' : ''}}>
-
-					</td>
-				</tr>
-			</tbody>
-		</table>
-		--}}
 		<div class="mx-auto" style="width:200px">
 			<button type="submit" class="btn btn-success">{{ __('messages.button_update_label') }}</button>
 			<a href="{{ route('channel.show', $channel->channel_id) }}" class="btn btn-secondary">
