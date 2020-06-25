@@ -146,4 +146,9 @@ class Media extends Model
     {
         return Storage::disk(self::DISK)->exists($this->relativePath());
     }
+
+    public function scopeGrabbedBefore(Builder $query, Carbon $date)
+    {
+        return $query->whereDate('grabbed_at', '<', $date);
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Events\ChannelUpdated;
 use App\Media;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -40,8 +41,13 @@ class MediaCleaning implements ShouldQueue
         /**
          * soft deleting db entry
          */
-        $this->mediaToDelete->update(['length' => 0, 'duration' => 0]);
+        $this->mediaToDelete->update(['length' => 0, 'duration' => 0, 'grabbed_at' => null]);
         $this->mediaToDelete->save();
         $this->mediaToDelete->delete();
+
+        /**
+         * sending event to rebuild podcast
+         */
+        event(new ChannelUpdated($this->mediaToDelete->channel));
     }
 }

@@ -153,7 +153,7 @@ return [
     'channel_filter_by_tag_help' => "Seules les vidéos qui auront été tagguées (sous Youtube) seront incluses dans votre podcast. Par exemple \"podcast\"",
 
     'channel_filters_label' => 'Filtres',
-    'filters_warning' => '<b>Attention</b> en appliquant des filtres incorrects vous risquez de vider votre podcast de tous ses épisodes.',
+    'filters_warning' => '<i class="fas fa-exclamation-triangle"></i> Appliquer des filtres incorrects peut vider votre podcast de ses épisodes. N\'utiliser que si vous savez ce que vous faites <i class="fas fa-exclamation-triangle"></i>.',
     'accept_video_by_tag' => "Seules les vidéos Youtube comportant le tag <b>{:tag}</b> seront inclues dans votre podcast. N'oubliez pas de le mettre !",
     'reject_video_by_keyword' => "Les vidéos comportant le mot clé <b>{:keyword}</b> dans leur titre ne seront pas inclues dans votre podcast. Par contre toutes les autres le seront.",
     'reject_video_too_old' => "Seules les vidéos publiées après le <b>{:date}</b> seront inclues.",
