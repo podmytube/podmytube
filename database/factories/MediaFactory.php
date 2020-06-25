@@ -19,8 +19,8 @@ $factory->define(App\Media::class, function (Faker $faker, $attributes) {
     return [
         'media_id' => $faker->regexify('[a-zA-Z0-9-_]{8}'),
         'channel_id' =>
-            $attributes['channel_id'] ??
-            function () use ($attributes) {
+        $attributes['channel_id'] ??
+            function () {
                 return factory(Channel::class)->create()->channel_id;
             },
         'title' => $faker->sentence($nbWords = '3', $variableNbWords = true),
