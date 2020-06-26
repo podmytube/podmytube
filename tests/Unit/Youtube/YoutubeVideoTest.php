@@ -23,8 +23,16 @@ class YoutubeVideoTest extends TestCase
         );
     }
 
+
+    /**
+     * for this one it depends on youtube. I cannot have a test video 
+     * that is "upcoming". I should have 1000 subscribers on my youtube
+     * personnal channel and an upcoming live upcoming forever
+     */
+    /*
     public function testUpcomingVideo()
     {
         $this->assertFalse((new YoutubeVideo('ZkCJ5KZyyOA'))->isAvailable());
-    }
+    } 
+    */
 }
