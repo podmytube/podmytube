@@ -23,7 +23,7 @@
 			<li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle" href="#" id="accountDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ Auth::user()->name }}</a>
 				<div class="dropdown-menu dropdown-menu-right" aria-labelledby="accountDropdown">
-					<a class="dropdown-item" href="{{ route('user.show') }}">{{ __('messages.page_title_user_show') }}</a>
+					<a class="dropdown-item" href="{{ route('user.show', auth()->user() ) }}">{{ __('messages.page_title_user_show') }}</a>
 					<a class="dropdown-item" href="{{ route('password.form') }}">{{ __('messages.change_password_label') }}</a>
 				</div>
 			</li>

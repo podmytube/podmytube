@@ -88,9 +88,9 @@ class ChannelsController extends Controller
 
         event(new ChannelUpdated($channel));
 
-        \Session::flash('message', 'Channel successfully updated !');
-        \Session::flash('alert-class', 'alert-success');
-
-        return redirect('channel/' . $channel->channel_id);
+        return redirect(route('channel.show', $channel))->with(
+            'success',
+            'Channel successfully updated !'
+        );
     }
 }

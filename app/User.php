@@ -27,7 +27,7 @@ class User extends Authenticatable implements HasLocalePreference
      *
      * @var array
      */
-    protected $fillable = ['name', 'email', 'password', 'language'];
+    protected $fillable = ['name', 'email', 'password', 'language', 'newsletter'];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -57,5 +57,10 @@ class User extends Authenticatable implements HasLocalePreference
     public function id()
     {
         return $this->user_id;
+    }
+
+    public function isSuperAdmin()
+    {
+        return $this->superadmin === 1;
     }
 }
