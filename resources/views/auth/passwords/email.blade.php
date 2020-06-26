@@ -10,8 +10,6 @@
 		<img class="mb-4" src="/images/logo-small.png" alt="" width="133" />
 	</div>
 
-	@include ('partials.errors')
-	
 	@if (session('status'))
 	<div class="alert alert-success">
 		{{ session('status') }}

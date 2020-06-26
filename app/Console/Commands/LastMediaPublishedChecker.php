@@ -6,6 +6,7 @@ use App\Channel;
 use App\Mail\LastMediaNotGrabbedMail;
 use App\Media;
 use App\Youtube\YoutubeChannelVideos;
+use App\Youtube\YoutubeVideo;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -66,10 +67,18 @@ class LastMediaPublishedChecker extends Command
                 "Checking media {$lastVideo['media_id']} for {$channelToCheck->channel_name}",
                 'v'
             );
-            /**
-             * if published recently, we are letting a little more time.
-             */
+
             if ($this->hasBeenPublishedRecently($lastVideo['published_at'])) {
+                /**
+                 * if published recently, we are letting a little more time.
+                 */
+                return;
+            }
+
+            if (!(new YoutubeVideo($lastVideo['media_id']))->isAvailable()) {
+                /**
+                 * If video is not available (upcoming live) do not send an alert
+                 */
                 return;
             }
 

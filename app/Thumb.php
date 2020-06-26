@@ -12,9 +12,9 @@ class Thumb extends Model
 {
     use BelongsToChannel;
 
-    public const _LOCAL_STORAGE_DISK = 'thumbs';
+    public const LOCAL_STORAGE_DISK = 'thumbs';
     public const REMOTE_STORAGE_DISK = 'sftpthumbs';
-    public const _DEFAULT_THUMB_FILE = 'default_thumb.jpg';
+    public const DEFAULT_THUMB_FILE = 'default_thumb.jpg';
 
     protected $fillable = ['channel_id', 'file_name', 'file_disk', 'file_size'];
 
@@ -107,7 +107,7 @@ class Thumb extends Model
     {
         return getenv('THUMBS_URL') .
             DIRECTORY_SEPARATOR .
-            self::_DEFAULT_THUMB_FILE;
+            self::DEFAULT_THUMB_FILE;
     }
 
     /**
@@ -156,10 +156,10 @@ class Thumb extends Model
                     'file_name' => basename(
                         $uploadedFile->store(
                             $channel->channelId(),
-                            self::_LOCAL_STORAGE_DISK
+                            self::LOCAL_STORAGE_DISK
                         )
                     ),
-                    'file_disk' => self::_LOCAL_STORAGE_DISK,
+                    'file_disk' => self::LOCAL_STORAGE_DISK,
                 ]
             );
         } catch (\Exception $exception) {
