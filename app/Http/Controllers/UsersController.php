@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserRequest;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -38,24 +39,22 @@ class UsersController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param int  $id
-     *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(UserRequest $request, User $user)
     {
         $this->authorize('update', $user);
 
-        $user->update($request->all());
-
-        if (in_array($user->language, \Config::get('app.locales'))) {
-            Session::put('locale', $user->language);
+        $validatedParams = $request->validated();
+        if (!array_key_exists('newsletter', $validatedParams)) {
+            $validatedParams['newsletter'] = false;
         }
+        
+        $user->update($validatedParams);
 
-        Session::flash('message', 'User successfully updated !');
-        Session::flash('alert-class', 'alert-success');
-
-        return redirect(route('user.show', $user));
+        return redirect(route('user.show', $user))->with(
+            'success',
+            'User has been successfully updated.'
+        );
     }
 }

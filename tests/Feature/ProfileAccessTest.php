@@ -63,6 +63,9 @@ class ProfileAccessTest extends TestCase
             ->actingAs($this->user)
             ->patch(route('user.update', $this->user), [
                 'name' => 'Another name',
+                'email' => 'valid@example.com',
+                'language' => 'fr',
+                'newsletter' => '1',
             ])
             ->assertSuccessful()
             ->assertViewIs('user.show')
@@ -76,6 +79,9 @@ class ProfileAccessTest extends TestCase
             ->actingAs($anotherUser)
             ->patch(route('user.update', $this->user), [
                 'name' => 'Another name',
+                'email' => 'valid@example.com',
+                'language' => 'fr',
+                'newsletter' => '1',
             ])
             ->assertForbidden();
     }

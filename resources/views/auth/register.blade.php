@@ -16,7 +16,6 @@
         <img class="mb-4" src="/images/logo-small.png" alt="" width="133" />
     </div>
 
-    @include ('partials.errors')
     <div class="form-label-group">
         <input type="text" name="name" id="inputName" class="form-control" placeholder="{{ __('messages.name_label') }}" value="{{ old('name') }}" required autofocus />
         <label for="inputName">{{ __('messages.name_label') }}</label>

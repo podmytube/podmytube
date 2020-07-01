@@ -2,6 +2,9 @@
 
 namespace App\Console;
 
+use App\Console\Commands\BatchPodcasts;
+use App\Console\Commands\ChannelUpdateCommand;
+use App\Console\Commands\CleanFreeChannelMedias;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -25,8 +28,19 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        /**
+         * cleaning free medias old episodes
+         */
+        $schedule->command(CleanFreeChannelMedias::class)->monthlyOn($day = 1, $time = '12:0');
+        /**
+         * updating channels
+         */
+        $schedule->command(ChannelUpdateCommand::class, ['all'])->hourlyAt('2');
+
+        /**
+         * Building podcasts
+         */
+        $schedule->command(BatchPodcasts::class, ['all'])->hourlyAt('50');
     }
 
     /**
