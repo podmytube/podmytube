@@ -8,11 +8,12 @@ use App\Traits\BelongsToChannel;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
 
 class Media extends Model
 {
-    use BelongsToChannel;
+    use BelongsToChannel, SoftDeletes;
 
     public const DISK = 'medias';
     public const FILE_EXTENSION = '.mp3';
@@ -25,6 +26,7 @@ class Media extends Model
     /** @var bool $incrementing come with my fucking legacy media_id */
     public $incrementing = false;
 
+    protected $guarded = [];
     /**
      * those fields are converted into Carbon mutator
      */
@@ -143,5 +145,10 @@ class Media extends Model
     public function exists()
     {
         return Storage::disk(self::DISK)->exists($this->relativePath());
+    }
+
+    public function scopeGrabbedBefore(Builder $query, Carbon $date)
+    {
+        return $query->whereDate('grabbed_at', '<', $date);
     }
 }

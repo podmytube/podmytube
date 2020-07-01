@@ -1,16 +1,14 @@
-@extends('layouts.app') 
+@extends('layouts.app')
 
 @section('pageTitle', __('messages.page_title_home_index') )
 
-@section('breadcrumbs') 
+@section('breadcrumbs')
 
-	{{ Breadcrumbs::render('home') }}
+{{ Breadcrumbs::render('home') }}
 
 @endsection
 
-@section('content') 
-
-@include ('partials.errors')
+@section('content')
 
 <div class="container">
 	@include ('partials.channels')

@@ -38,28 +38,28 @@
 	</div>
 
 	<div class="row mb-2 border-bottom p-0">
-		<div class="col"><b>{{ __('messages.channel_authors_label') }}</b> : </div>
-		<div class="col">{{ $channel->authors }}</div>
+		<div class="col-4"><b>{{ __('messages.channel_authors_label') }}</b></div>
+		<div class="col-8">{{ $channel->authors }}</div>
 	</div>
 	<div class="row mb-2 border-bottom p-0">
-		<div class="col"><b>{{ __('messages.channel_email_label') }}</b> : </div>
-		<div class="col">{{ $channel->email }}</div>
+		<div class="col-4"><b>{{ __('messages.channel_email_label') }}</b></div>
+		<div class="col-8">{{ $channel->email }}</div>
 	</div>
 	<div class="row mb-2 border-bottom p-0">
-		<div class="col"><b>{{ __('messages.channel_link_label') }}</b> : </div>
-		<div class="col">{{ $channel->link }}</div>
+		<div class="col-4"><b>{{ __('messages.channel_link_label') }}</b></div>
+		<div class="col-8">{{ $channel->link }}</div>
 	</div>
 	<div class="row mb-2 border-bottom p-0">
-		<div class="col">
-			<p><b>{{ __('messages.channel_category_label') }}</b> : </p>
+		<div class="col-4">
+			<p><b>{{ __('messages.channel_category_label') }}</b></p>
 			@if ($channel->category)
 			{{ __("categories.".$channel->category->name) }}
 			@else
 			{{ __('messages.no_category_defined_label') }}
 			@endif
 		</div>
-		<div class="col">
-			<p><b>{{ __('messages.channel_lang_label') }}</b> : </p>
+		<div class="col-4">
+			<p><b>{{ __('messages.channel_lang_label') }}</b></p>
 			{{ __("localized.".$channel->lang) }}
 		</div>
 	</div>

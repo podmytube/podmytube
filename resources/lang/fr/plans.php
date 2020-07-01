@@ -2,6 +2,10 @@
 
 return [
     'forever_free' => 'Gratuit',
+    'early_bird_2017' => 'Early bird',
+    'promo_monthly' => "Ancien tarif mensuel",
+    'promo_yearly' => "Ancien tarif annuel",
+    'accropolis_6_euros' => "Special Accropolis",
     'weekly_youtuber' => 'Youtuber hebdo',
     'weekly_youtuber_promo' =>
     'Youtuber hebdo <del class="text-muted">(9€/mois)</del>',
