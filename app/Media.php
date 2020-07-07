@@ -142,7 +142,12 @@ class Media extends Model
         return $this->grabbed_at !== null;
     }
 
-    public function exists()
+    /**
+     * check if media file is really there.
+     * 
+     * @return bool true if file really exists
+     */
+    public function fileExists(): bool
     {
         return Storage::disk(self::DISK)->exists($this->relativePath());
     }
