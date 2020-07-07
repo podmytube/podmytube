@@ -23,8 +23,8 @@ Route::get('privacy', function () {
 /**
  * not a user interaction
  */
-Route::post('/stripe/webhooks', 'StripeWebhookController@handle');
-
+//Route::post('/stripe/webhooks', 'StripeWebhookController@handle');
+Route::stripeWebhooks('/stripe/webhooks');
 Auth::routes();
 
 Route::middleware(['auth'])->group(function () {

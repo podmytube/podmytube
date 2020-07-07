@@ -32,10 +32,9 @@
 
         @include("partials.stripeButton", [
         "buttonId" => $plan->name,
-        "planToSubscribe" => $plan->stripe_id,
-        "successUrl" => env("APP_URL")."/success",
-        "cancelUrl" => env("APP_URL")."/cancelled"
+        "checkout_session_id" => $plan->stripeSession->id,
         ])
+
       </div>
     </div>
 
