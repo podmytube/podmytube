@@ -87,7 +87,7 @@ class ChannelUpdateCommand extends Command
                 /** for each channel video */
                 array_map(function ($video) use ($channel) {
                     /** check if the video already exist in database */
-                    if (!($media = Media::find($video['media_id']))) {
+                    if (!($media = Media::withTrashed()->find($video['media_id']))) {
                         $media = new Media();
                         $media->media_id = $video['media_id'];
                         $media->channel_id = $channel->channel_id;
