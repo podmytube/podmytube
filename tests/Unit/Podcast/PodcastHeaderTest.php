@@ -25,7 +25,7 @@ class PodcastHeaderTest extends TestCase
     /**
      * Laravel is encoding.
      * So i'm encoding the same way to be sure tests will stay green.
-     * By example "d'angelo" => "d&#039angelo";
+     * By example "d'angelo" => "d&#039;angelo"
      */
     public function stringEncodingLikeLaravel(string $str)
     {
@@ -177,7 +177,9 @@ class PodcastHeaderTest extends TestCase
         );
         $this->assertStringContainsString('<itunes:owner>', $renderedResult);
         $this->assertStringContainsString(
-            '<itunes:name>' . $this->channel->authors . '</itunes:name>',
+            '<itunes:name>' .
+                $this->stringEncodingLikeLaravel($this->channel->authors) .
+                '</itunes:name>',
             $renderedResult
         );
         $this->assertStringContainsString(
