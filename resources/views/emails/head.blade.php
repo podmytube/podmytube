@@ -5,16 +5,24 @@
     <style>
         body {
             margin: 0 20px;
-            font-family:Helvetica,Arial,sans-serif;
-            color:#666666
+            font-family: Helvetica, Arial, sans-serif;
+            color: #666666
         }
 
         h1 {
-            color:#555555;
+            color: #555555;
         }
 
-        .text-is-grey{
-            color:grey;
+        .text-is-grey {
+            color: grey;
+        }
+
+        .text-success {
+            color: #28a745;
+        }
+
+        .text-danger {
+            color: #dc3545;
         }
 
         #logo img {
@@ -41,6 +49,10 @@
             font-size: 16px;
             margin: 4px 2px;
             border-radius: 12px;
+        }
+
+        .bordered {
+            border: 1px solid grey;
         }
     </style>
 </head>

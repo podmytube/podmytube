@@ -13,39 +13,39 @@
 </p>
 
 @if ($publishedMedias->count())
-    <table class="table table-striped">
-        <thead class="thead-dark">
-            <tr>
-                <th scope="col">{{__('medias.index_table_col_media_title')}}</th>
-                <th scope="col">{{__('medias.index_table_col_media_published_at')}}</th>
-                <th scope="col">{{__('medias.index_table_col_media_grabbed_at')}}</th>
-            </tr>
-        </thead>
-        <tbody>
+<table>
+    <thead>
+        <tr>
+            <th class="bordered" width="50%">Title</th>
+            <th class="bordered" width="25%">Published</th>
+            <th class="bordered" width="25%">Status</th>
+        </tr>
+    </thead>
+    <tbody>
         @foreach ($publishedMedias as $media)
         <tr>
-            <td>{{ $media->title }}</td>
-            <td>{{ $media->published_at->format(__('config.dateFormat')) }}</td>
-            <td>
+            <td class="bordered" style="text-align:left;">{{ $media->title }}</td>
+            <td class="bordered" style="text-align:center;">{{ $media->published_at->format(__('config.dateFormat')) }}</td>
+            <td class="bordered" style="text-align:center;">
                 @if (isset($media->grabbed_at))
-                {{ $media->grabbed_at->format(__('config.dateFormat')) }}
+                <span class="text-success">Ok</span>
                 @else
-                <span class="badge badge-pill badge-danger">{{__('medias.index_episode_not_included_badge')}}</span>
+                <span class="text-danger">Fail</span>
                 @endif
             </td>
         </tr>
         @endforeach
-        </tbody>
-    </table>
+    </tbody>
+</table>
 
-    @if ($shouldChannelBeUpgraded)
-    <div style="text-align:center;">
-        <p class="text-is-grey">
-            {{ __('emails.monthlyReport_channelShouldUpgrade_callToAction') }}
-        </p>
-        <a href="{{ route('plans.index', $channel) }}" class="button bgsuccess">{{ __('emails.common_upgrade_my_plan') }}</a>
-    </div>
-    @endif
+@if ($shouldChannelBeUpgraded)
+<div style="text-align:center;">
+    <p class="text-is-grey">
+        {{ __('emails.monthlyReport_channelShouldUpgrade_callToAction') }}
+    </p>
+    <a href="{{ route('plans.index', $channel) }}" class="button bgsuccess">{{ __('emails.common_upgrade_my_plan') }}</a>
+</div>
+@endif
 
 @else
 <p> {{ __('emails.monthlyReport_no_media_published') }} </p>

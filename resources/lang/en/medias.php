@@ -7,7 +7,9 @@ return [
     'page_title_index' => 'Episodes list',
 
     /** columns title */
-    'index_table_col_media_title' => 'Titles',
+    'index_table_col_media_title' => 'Title',
+    'index_table_col_media_published_at' => 'Published on',
+    'monthly_report_status' => 'Status',
 
     /** index labels */
     'index_episode_not_included_badge' => 'Not included yet',
