@@ -16,6 +16,7 @@ use App\Traits\HasLimits;
 use App\Traits\HasManyMedias;
 use App\Traits\HasOneCategory;
 use App\Traits\HasOneThumb;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Lang;
@@ -137,17 +138,11 @@ class Channel extends Model
      */
     public static function earlyBirdsChannels(): Collection
     {
-        return self::where([
-            ['active', 1],
-            ['subscriptions.plan_id', '=', Plan::EARLY_PLAN_ID],
-        ])
+        return static::active()
+            ->whereHas('subscription', function (Builder $query) {
+                $query->where('plan_id', '=', Plan::EARLY_PLAN_ID);
+            })
             ->with(['User', 'Category', 'Thumb', 'Subscription'])
-            ->join(
-                'subscriptions',
-                'subscriptions.channel_id',
-                '=',
-                'channels.channel_id'
-            )
             ->get();
     }
 
@@ -158,17 +153,11 @@ class Channel extends Model
      */
     public static function freeChannels(): Collection
     {
-        return self::where([
-            ['active', 1],
-            ['subscriptions.plan_id', '=', Plan::FREE_PLAN_ID],
-        ])
+        return static::active()
+            ->whereHas('subscription', function (Builder $query) {
+                $query->where('plan_id', '=', Plan::FREE_PLAN_ID);
+            })
             ->with(['User', 'Category', 'Thumb', 'Subscription'])
-            ->join(
-                'subscriptions',
-                'subscriptions.channel_id',
-                '=',
-                'channels.channel_id'
-            )
             ->get();
     }
 
@@ -180,23 +169,17 @@ class Channel extends Model
      */
     public static function payingChannels(): Collection
     {
-        return self::where([
-            ['active', 1],
-            ['subscriptions.plan_id', '>', Plan::EARLY_PLAN_ID],
-        ])
+        return static::active()
+            ->whereHas('subscription', function (Builder $query) {
+                $query->where('plan_id', '>', Plan::EARLY_PLAN_ID);
+            })
             ->with(['User', 'Category', 'Thumb', 'Subscription'])
-            ->join(
-                'subscriptions',
-                'subscriptions.channel_id',
-                '=',
-                'channels.channel_id'
-            )
             ->get();
     }
 
     public static function allActiveChannels()
     {
-        return self::where('active', 1)
+        return self::active()
             ->with(['User', 'Category', 'Thumb', 'Subscription'])
             ->get();
     }
@@ -238,7 +221,7 @@ class Channel extends Model
         return $results;
     }
 
-    public function scopeActive($query)
+    public function scopeActive(Builder $query)
     {
         return $query->where('active', '=', 1);
     }
