@@ -52,12 +52,17 @@ class LastMediaPublishedChecker extends Command
         /**
          * get paying channels
          */
-        $channelsToCheck = Channel::payingChannels();
+        $this->channelsToCheck = Channel::payingChannels();
+
+        /**
+         * add now tech
+         */
+        $this->addNowTech();
 
         /**
          * get last episode
          */
-        $channelsToCheck->map(function ($channelToCheck) {
+        $this->channelsToCheck->map(function ($channelToCheck) {
             ($videos = new YoutubeChannelVideos())
                 ->forChannel($channelToCheck->channel_id, 1)
                 ->videos();
@@ -137,5 +142,16 @@ class LastMediaPublishedChecker extends Command
     protected function hasBeenPublishedRecently(Carbon $publishedAt): bool
     {
         return $publishedAt->isAfter($this->someHoursAgo);
+    }
+
+    /**
+     * add now tech
+     */
+    protected function addNowTech()
+    {
+        $nowtech = Channel::find('UCRU38zigLJNtMIh7oRm2hIg');
+        if ($nowtech !== null) {
+            $this->channelsToCheck->push($nowtech);
+        }
     }
 }

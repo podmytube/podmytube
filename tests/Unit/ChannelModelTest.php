@@ -3,9 +3,11 @@
 namespace Tests\Unit;
 
 use App\Channel;
+use App\Plan;
 use Carbon\Carbon;
 use Tests\TestCase;
 use App\Podcast\PodcastBuilder;
+use App\Subscription;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ChannelModelTest extends TestCase
@@ -37,5 +39,20 @@ class ChannelModelTest extends TestCase
                 PodcastBuilder::FEED_FILENAME,
             $this->channel->podcastUrl()
         );
+    }
+
+    public function testGettingChannelsByKindShouldWorkFine()
+    {
+        factory(Subscription::class, 5)->create(['plan_id' => Plan::FREE_PLAN_ID]);
+        factory(Subscription::class, 2)->create(['plan_id' => Plan::EARLY_PLAN_ID]);
+        $this->assertCount(5, Channel::freeChannels());
+        $this->assertCount(2, Channel::earlyBirdsChannels());
+        $this->assertCount(0, Channel::payingChannels());
+
+        factory(Subscription::class, 2)->create(['plan_id' => Plan::WEEKLY_PLAN_ID]);
+        factory(Subscription::class, 1)->create(['plan_id' => Plan::DAILY_PLAN_ID]);
+        $this->assertCount(5, Channel::freeChannels());
+        $this->assertCount(2, Channel::earlyBirdsChannels());
+        $this->assertCount(3, Channel::payingChannels());
     }
 }
