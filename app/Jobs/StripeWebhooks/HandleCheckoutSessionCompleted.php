@@ -13,6 +13,7 @@ use App\Exceptions\UnknownStripePlanReceivedFromStripeException;
 use App\StripePlan;
 use App\Subscription;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -32,6 +33,9 @@ class HandleCheckoutSessionCompleted implements ShouldQueue
 
     /** var \App\StripePlan $stripePlan */
     protected $stripePlan;
+
+    /** var int $endsAt contain a timestamp returned by stripe for subscription ending */
+    protected $endsAt;
 
     /** @var \Spatie\WebhookClient\Models\WebhookCall */
     public $webhookCall;
@@ -70,7 +74,6 @@ class HandleCheckoutSessionCompleted implements ShouldQueue
         $this->updateSubscription();
     }
 
-
     protected function checkStripeUser(): bool
     {
         $customerStripeId = $this->customerId();
@@ -85,6 +88,7 @@ class HandleCheckoutSessionCompleted implements ShouldQueue
 
         return false;
     }
+
     /**
      * will affect stripe customer id to user.
      */
@@ -176,6 +180,10 @@ class HandleCheckoutSessionCompleted implements ShouldQueue
             $subscriptionId,
             []
         );
+        $currentPeriodEnd = $subscription['current_period_end'] ?? null;
+        if ($currentPeriodEnd !== null) {
+            $this->endsAt = Carbon::createFromTimestamp($currentPeriodEnd);
+        }
 
         $stripePlanId = $subscription['items']['data'][0]['plan']['id'] ?? null;
         if ($stripePlanId === null) {
@@ -192,11 +200,9 @@ class HandleCheckoutSessionCompleted implements ShouldQueue
 
     protected function updateSubscription()
     {
-        /**
-         * get subscription
-         */
         $actualSubscription = Subscription::where('channel_id', '=', $this->channel->channel_id)->first();
         $actualSubscription->plan_id = $this->stripePlan->plan_id;
+        $actualSubscription->ends_at = $this->endsAt;
         $actualSubscription->save();
     }
 }
