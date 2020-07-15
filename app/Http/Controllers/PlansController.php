@@ -25,18 +25,25 @@ class PlansController extends Controller
          * foreach plan create a session id that will be associated with plan
          */
         $plans->map(function ($plan) use ($channel) {
-            $plan->stripeSession =
-                Session::create([
-                    'payment_method_types' => ['card'],
-                    'line_items' => [[
-                        'price' => $plan->stripe_id,
-                        'quantity' => 1,
-                    ]],
-                    'mode' => 'subscription',
-                    'success_url' => env("APP_URL") . '/success?session_id={CHECKOUT_SESSION_ID}',
-                    'cancel_url' => env("APP_URL") . '/cancel',
-                    "metadata" => ["channel_id" => $channel->channel_id],
-                ]);
+            $stripeSessionParams = [
+                'payment_method_types' => ['card'],
+                'line_items' => [[
+                    'price' => $plan->stripe_id,
+                    'quantity' => 1,
+                ]],
+                'mode' => 'subscription',
+                'success_url' => env("APP_URL") . '/success?session_id={CHECKOUT_SESSION_ID}',
+                'cancel_url' => env("APP_URL") . '/cancel',
+                "metadata" => ["channel_id" => $channel->channel_id],
+            ];
+
+            if ($channel->user->stripe_id !== null) {
+                $stripeSessionParams['customer'] = $channel->user->stripe_id;
+            } else {
+                $stripeSessionParams['customer_email'] = $channel->user->email;
+            }
+
+            $plan->stripeSession = Session::create($stripeSessionParams);
         });
 
         return view('plans.index', compact('channel', 'plans'));

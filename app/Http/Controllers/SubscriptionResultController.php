@@ -12,7 +12,6 @@ class SubscriptionResultController extends Controller
     {
         $stripe = new StripeClient(env("STRIPE_SECRET"));
         $stripe->checkout->sessions->retrieve($request->get('session_id'), []);
-        dump($stripe);
         return view('subscription.success');
     }
 
