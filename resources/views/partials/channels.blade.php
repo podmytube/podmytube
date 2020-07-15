@@ -23,6 +23,7 @@
                 @if($channel->subscription->plan->id==\App\Plan::FREE_PLAN_ID)
                 <p>
                     <a class="btn btn-success text-center" href="{{ route('plans.index', $channel) }}" role="button">
+                        <i class="fas fa-rocket"></i>
                         {{ __('messages.button_i_want_to_upgrade_now') }}
                     </a>
                 </p>
