@@ -44,10 +44,6 @@ class CleanFreeChannelMedias extends Command
             })
             ->get();
 
-        if (!$this->confirm('All medias before ' . $removeBeforeThisDate->format('d/m/Y') . ' will be soft deleted. Are you sure ? (y/n) [n]')) {
-            return false;
-        }
-
         $this->comment("There is {$mediasToDelete->count()} medias to delete", 'v');
         /**
          * remove each of them
