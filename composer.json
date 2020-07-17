@@ -28,6 +28,7 @@
         "sebastian/version": "^2.0|^3.0",
         "sentry/sentry-laravel": "^1",
         "spatie/laravel-stripe-webhooks": "^2.3",
+        "stripe/stripe-php": "^7.39",
         "symfony/console": "^4.0|^5.0"
     },
     "require-dev": {

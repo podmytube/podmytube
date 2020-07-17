@@ -20,9 +20,11 @@ Route::get('privacy', function () {
     return view('privacy');
 })->name('privacy');
 
-// patie-stripe-webhooks
-Route::stripeWebhooks('/stripe/capture');
-
+/**
+ * not a user interaction
+ */
+//Route::post('/stripe/webhooks', 'StripeWebhookController@handle');
+Route::stripeWebhooks('/stripe/webhooks');
 Auth::routes();
 
 Route::middleware(['auth'])->group(function () {
@@ -52,6 +54,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/change-password', 'Auth\UpdatePasswordController@index')->name(
         'password.form'
     );
+
     Route::post(
         '/change-password',
         'Auth\UpdatePasswordController@update'
@@ -66,7 +69,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/success', 'SubscriptionResultController@success');
     Route::get('/canceled', 'SubscriptionResultController@failure');
 
-    //Route::post('stripewebhook', 'StripeWebhookController@receive');
 
     /**
      * Subscription

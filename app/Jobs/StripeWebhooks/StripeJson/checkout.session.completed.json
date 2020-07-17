@@ -1,0 +1,33 @@
+{
+    "id": "evt_1H56PgLrQ8vSqYZEHb6hdW0O",
+    "object": "event",
+    "api_version": "2020-03-02",
+    "created": 1594803388,
+    "data": {
+        "object": {
+            "id": "cs_test_JBcjzjg7KKQhXrA76F2JjHJE4e0SYM3248jeSoejjOXM0lH5rv0yhd88",
+            "object": "checkout.session",
+            "billing_address_collection": null,
+            "cancel_url": "http://dash.local.pmt/cancel",
+            "client_reference_id": null,
+            "customer": "cus_HePEmeXlWckYit",
+            "customer_email": "frederick@podmytube.com",
+            "livemode": false,
+            "locale": null,
+            "metadata": { "channel_id": "UCw6bU9JT_Lihb2pbtqAUGQw" },
+            "mode": "subscription",
+            "payment_intent": null,
+            "payment_method_types": ["card"],
+            "setup_intent": null,
+            "shipping": null,
+            "shipping_address_collection": null,
+            "submit_type": null,
+            "subscription": "sub_HePERJr3qUtPKY",
+            "success_url": "http://dash.local.pmt/success?session_id={CHECKOUT_SESSION_ID}"
+        }
+    },
+    "livemode": false,
+    "pending_webhooks": 1,
+    "request": { "id": "req_F41Y7WeA4Tf1vw", "idempotency_key": null },
+    "type": "checkout.session.completed"
+}
