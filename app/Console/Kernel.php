@@ -41,6 +41,11 @@ class Kernel extends ConsoleKernel
          * Building podcasts
          */
         $schedule->command(BatchPodcasts::class, ['all'])->hourlyAt('50');
+
+        /**
+         * monthly report on first monday
+         */
+        $schedule->command(SendMonthlyReports::class)->monthly()->days([1])->timezone('Europe/Paris')->at('11:00');
     }
 
     /**
