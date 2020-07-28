@@ -1,4 +1,5 @@
 // Fonts
+@import url('https://fonts.googleapis.com/css?family=Heebo');
 @import url('https://fonts.googleapis.com/css?family=Nunito');
 @import url('https://fonts.googleapis.com/css?family=Raleway+Dots%7cRaleway:400,100,300,500,600,700,800,900,200');
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700');
@@ -12,10 +13,10 @@
 @import '~@fortawesome/fontawesome-free/scss/solid';
 @import '~@fortawesome/fontawesome-free/scss/brands';
 
-@import 'signin';
+@import 'signin', 'index';
 
 /*podmytube red*/
-$podmytube-red: #ce1701;
+$main-color: #ce1701;
 $footer-height: 50px;
 
 .btn-purple,
@@ -31,16 +32,21 @@ $footer-height: 50px;
 html,
 body {
     height: 100%;
-}
-
-body {
     /* Margin bottom by footer height */
     margin-bottom: $footer-height;
 }
 
+.bg-main-color {
+    background-color: $main-color;
+}
+
+.text-main-color {
+    color: $main-color;
+}
+
 a,
 a.page-link {
-    color: $podmytube-red;
+    color: $main-color;
 }
 
 a:hover {
@@ -52,7 +58,7 @@ h2,
 h3,
 h4,
 h5 {
-    color: $podmytube-red;
+    color: $main-color;
 }
 
 nav h1 {
@@ -61,7 +67,7 @@ nav h1 {
 }
 
 .pmt-logo {
-    background: url('/images/logo-small.png') no-repeat;
+    background: url('../images/logo-small.png') no-repeat;
     height: 100px;
     width: 133px;
     margin: 2px 0;
@@ -81,7 +87,7 @@ nav h1 {
 .btn-primary:hover {
     background: #eee;
     border: solid 1px #555;
-    color: $podmytube-red;
+    color: $main-color;
 }
 
 .font-italic {
@@ -89,7 +95,7 @@ nav h1 {
 }
 
 .pricing h3 {
-    color: $podmytube-red;
+    color: $main-color;
     padding: 1rem;
     margin: 0;
     font-size: 22px;
