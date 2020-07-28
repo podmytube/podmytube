@@ -1,0 +1,129 @@
+/*===============================================================================================*/
+/*main value proposal*/
+
+.my-header {
+    margin: 0;
+}
+
+.header-visual {
+    background-image: url(../images/youtube_available_on_itunes.jpg);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-color: #fff;
+    width: 100%;
+    height: 0;
+    padding-top: 24%; /* (img-height / img-width * container-width) */
+    /* (930 / 228 * 100) */
+}
+
+.header-textpart {
+    text-align: center;
+}
+
+.slogan {
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.promise-text {
+    margin: 0;
+    font-size: 40px;
+    letter-spacing: -2px;
+    font-weight: 400;
+    color: black;
+}
+
+.features {
+    text-align: center;
+    line-height: 1.6;
+    font-size: 14px;
+    color: #60636d;
+}
+
+/*===============================================================================================*/
+/*feedback*/
+.feedback-section,
+.feedback-section a {
+    color: white;
+}
+
+.feedback-section h2 {
+    padding-left: 15px;
+}
+
+.feedback-section h3 {
+    margin-bottom: 60px;
+    margin-left: 25px;
+    margin-right: 25px;
+    font-size: 20px;
+}
+
+section.feedback-section {
+    padding-bottom: 80px;
+}
+
+.comments-avatar img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin-right: 10px;
+    border-color: #aa1701;
+    border-width: 3px;
+    border-style: solid;
+}
+
+.cyro {
+    background: url(../images/cyro-torres.jpg) center;
+}
+
+.jeanviet {
+    background: url(../images/jean-viet.jpg) center;
+}
+
+.vito {
+    background: url(../images/la-pause-tech.jpg) center;
+}
+
+.comments-avatar {
+    margin-top: 25px;
+    margin-left: 22px;
+}
+
+.comments-avatar .comments-name {
+    font-weight: 600;
+    font-size: 1em;
+}
+
+.comments-channel a {
+    font-weight: 300;
+    text-decoration: underline;
+}
+
+.bubble {
+    position: relative;
+    height: 210px;
+    padding: 20px;
+    background: #fff;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    font-style: italic;
+    color: #333;
+    border: 1px;
+    box-shadow: 0 0 10px 1px rgba(80, 155, 232, 0.75);
+    -moz-box-shadow: 0 0 10px 1px rgba(80, 155, 232, 0.75);
+    -webkit-box-shadow: 0 0 10px 1px rgba(80, 155, 232, 0.75);
+}
+
+.bubble:after {
+    content: '';
+    position: absolute;
+    border-style: solid;
+    border-width: 15px 14px 0;
+    border-color: #fff transparent;
+    display: block;
+    width: 0;
+    z-index: 1;
+    bottom: -15px;
+    left: 30px;
+}

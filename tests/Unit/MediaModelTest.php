@@ -86,4 +86,15 @@ class MediaModelTest extends TestCase
         ]);
         $this->assertFalse($media->fileExists());
     }
+
+    public function testGrabbedAtShouldBeFine()
+    {
+        $expectedResult = 20;
+        $medias = factory(Media::class, $expectedResult)->create([
+            'channel_id' => $this->channel->channel_id,
+            'grabbed_at' => Carbon::now()
+        ]);
+
+        $this->assertEquals($expectedResult, Media::grabbedAt()->count());
+    }
 }

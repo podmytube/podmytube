@@ -100,6 +100,17 @@ class Media extends Model
     }
 
     /**
+     * define a scope to get medias that are grabbed.
+     *
+     * @param Illuminate\Database\Eloquent\Builder query is the query object
+     */
+    public function scopeGrabbedAt(
+        Builder $query
+    ) {
+        return $query->whereNotNull('grabbed_at');
+    }
+
+    /**
      * will get
      */
     public function scopePublishedLastMonth(Builder $query)
