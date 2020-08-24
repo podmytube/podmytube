@@ -2,9 +2,12 @@
 
 @section ('content')
 
-{{ Breadcrumbs::render('thumbs.index', $channel) }}
-
 <div class="container h100 text-center">
+
+    <h2>
+		Cover for {{ $channel->title() }}
+	</h2>
+
     <p>
     <a href="{{ route('channel.thumbs.edit', $channel) }}">
         <button type="button" class="btn btn-primary">

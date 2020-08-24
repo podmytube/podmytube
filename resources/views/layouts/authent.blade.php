@@ -2,7 +2,7 @@
 <html lang="{{ app()->getLocale() }}">
 @include ('partials.head')
 
-<body id="authent">
+<body id="authent" style="background-color: #f5f5f5;">
     <div id="app" class="container">
         <!--main container-->
         @include ('partials.flash')

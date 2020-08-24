@@ -4,8 +4,6 @@
 
 @section ('content')
 
-{{ Breadcrumbs::render('medias.index', $channel) }}
-
 @if ($medias->count()>0)
 <table class="table ">
     <thead class="thead-dark">

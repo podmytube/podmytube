@@ -4,8 +4,6 @@
 
 @section ('content')
 
-{{ Breadcrumbs::render('channel.index') }}
-
 @include ('partials.channels')
 
 @endsection
