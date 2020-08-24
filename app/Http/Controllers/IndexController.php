@@ -18,9 +18,21 @@ class IndexController extends Controller
          * With no DB Config, creating plans list
          */
         $plans = [
-            'free' => ['name' => 'free_plan', 'nb_episodes_per_month' => 2, 'price' => 0],
-            'weekly' => ['name' => 'weekly_youtuber', 'nb_episodes_per_month' => 10, 'price' => 9],
-            'daily' => ['name' => 'daily_youtuber', 'nb_episodes_per_month' => 33, 'price' => 29],
+            'free' => [
+                'name' => 'Free forever',
+                'nb_episodes_per_month' => 2,
+                'price' => 0,
+            ],
+            'weekly' => [
+                'name' => 'Weekly Youtuber',
+                'nb_episodes_per_month' => 10,
+                'price' => 9,
+            ],
+            'daily' => [
+                'name' => 'Daily Youtuber',
+                'nb_episodes_per_month' => 33,
+                'price' => 29,
+            ],
         ];
 
         /**

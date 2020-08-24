@@ -1,11 +1,40 @@
-<nav class="navbar navbar-expand-sm navbar-light bg-light">
-	<a class="navbar-brand pmt-logo" href="{{ route('home') }}"> </a>
-	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainCollapsingNav" aria-controls="mainCollapsingNav" aria-expanded="false" aria-label="Toggle navigation">
-		<span class="navbar-toggler-icon"></span>
-	</button>
+<nav class="navbar navbar-expand-sm navbar-light fixed-top navbar-default bg-light py-0">
+    <a class="navbar-brand" href="{{ route('index') }}">
+        <img
+            src="/images/podmytube-logo.svg"
+            width="80"
+            alt="{{ __('messages.navbar_podmytube_logo') }} • Podmytube"
+        />
+    </a>
 
-	<div class="collapse navbar-collapse" id="mainCollapsingNav">
-		<ul class="navbar-nav ml-auto">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="navbar-collapse collapse" id="navbarNav">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('index') }}#main">
+                    Home
+            	</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('index') }}#features">
+                    Features
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('index') }}#pricing">
+                    Plans
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('index') }}#about">
+                    About
+                </a>
+            </li>
+        </ul>
+        <ul class="navbar-nav ml-auto">
 			@guest
 			<li class="nav-item"><a href="{{ route('login') }}" class="nav-link">{{ __('messages.page_title_user_login') }}</a></li>
 			<li class="nav-item"><a href="{{ route('register') }}" class="nav-link">{{__('messages.page_title_user_register')}}</a></li>
@@ -29,5 +58,13 @@
 			</li>
 			@endguest
 		</ul>
-	</div>
+    </div>
 </nav>
+
+<script>
+    $(document).ready(function() {
+        $('.navbar-nav>li>a').on('click', function(){
+            $('#navbarNav').collapse('hide');
+        });
+    });
+</script>

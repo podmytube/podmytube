@@ -1,0 +1,35 @@
+version: '3.3'
+services:
+    node:
+        image: 'node:12'
+        restart: 'no'
+        working_dir: /home/node/app
+        volumes:
+            - ./:/home/node/app
+    composer:
+        image: 'composer:latest'
+        restart: 'no'
+        volumes:
+            - .:/app
+        command: install
+    app:
+        container_name: dashboard.podmytube.com
+        build:
+            context: .
+            dockerfile: .docker/Dockerfile
+            args:
+                USER_ID: ${USER_ID}
+                GROUP_ID: ${GROUP_ID}
+        image: dash.pmt
+        restart: always
+        healthcheck:
+            test: bash -c "[ -f /app/vendor/autoload.php ]"
+            timeout: 10s
+            retries: 30
+        depends_on:
+            - composer
+            - node
+
+networks:
+    nginx-proxy:
+        external: true
