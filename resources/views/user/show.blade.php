@@ -4,8 +4,6 @@
 
 @section ('content')
 
-{{ Breadcrumbs::render('user.show', $user) }}
-
 <div class="container">
 	<!--section container-->
 

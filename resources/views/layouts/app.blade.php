@@ -3,11 +3,10 @@
 @include ('partials.head')
 
 <body>
+    
+    @include ('partials.navbar')
+
     <div id="app" class="container">
-        <!--main container-->
-
-        @yield('breadcrumbs')
-
         @include ('partials.flash')
 
         @yield('content')

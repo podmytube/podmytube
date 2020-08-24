@@ -4,8 +4,6 @@
 
 @section ('content')
 
-{{ Breadcrumbs::render('channel.create') }}
-
 <div class="container"><!--section container-->
 
 	<h2> 
