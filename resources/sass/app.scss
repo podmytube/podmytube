@@ -13,12 +13,11 @@
 @import '~@fortawesome/fontawesome-free/scss/solid';
 @import '~@fortawesome/fontawesome-free/scss/brands';
 
-@import 'signin', 'index';
+// mine
+@import 'variables';
+@import 'signin', 'index', 'navbar';
 
-/*podmytube red*/
-$main-color: #ce1701;
-$footer-height: 50px;
-
+// podcast button
 .btn-purple,
 .btn-purple:hover {
     background: rgb(219, 111, 247);
@@ -31,9 +30,22 @@ $footer-height: 50px;
 
 html,
 body {
-    height: 100%;
-    /* Margin bottom by footer height */
+    font-family: 'Open sans', helvetica, arial, sans-serif;
+    font-size: 14px;
+    background-color: white;
     margin-bottom: $footer-height;
+    min-height: $navbar-height;
+    padding-top: 4rem;
+}
+
+html {
+    background-color: #f5f5f5;
+}
+
+section:before {
+    height: 9.5em;
+    content: '';
+    display: block;
 }
 
 .bg-main-color {

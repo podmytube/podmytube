@@ -1,66 +1,66 @@
 version: '3.3'
 services:
-  node:
-    image: "node:12"
-    restart: 'no'
-    working_dir: /home/node/app
-    volumes:
-      - ./:/home/node/app
-    #command: bash -c "npm install && npm run watch"  
-    command: bash -c "npm install && npm run production"  
-  composer:
-    image: "composer:latest"
-    restart: 'no'
-    volumes:
-      - .:/app
-    command: install
-  # ==============================================================
-  # here we are building image from the .docker/Dockerfile
-  # this image is starting from a official php-apache docker
-  # and creating host dashboard-pmt
-  dashboard-pmt:
-    container_name: dashboard.podmytube.com
-    build:
-      context: .
-      dockerfile: .docker/Dockerfile
-      args:
-        USER_ID: ${USER_ID}
-        GROUP_ID: ${GROUP_ID}
-    image: dash.pmt
-    restart: always
-    expose:
-        - "80"
-        - "443"
-    # VIRTUAL_HOST should be only the domain (without http://)
-    # by example : www.example.com or sub.domain.fr
-    environment:
-      - VIRTUAL_HOST=${VIRTUAL_HOST:?set it in .env}      
-      - APACHE_RUN_USER=www-data
-      - APACHE_RUN_GROUP=www-data
-      - LETSENCRYPT_HOST=${VIRTUAL_HOST:?set it in .env}
-      - LETSENCRYPT_EMAIL=frederick@podmytube.com
-    # we are copying files into /app (into Dockerfile)
-    volumes:
-      - .:/app
-    # health : checking if vendor/autoload exists
-    healthcheck:
-      test: bash -c "[ -f /app/vendor/autoload.php ]"
-      timeout: 10s
-      retries: 30
-    # VERY IMPORTANT
-    # to work with mysql docker on service(revdb)
-    # both have to be on the same network
-    # the only thing that change if that in the .env 
-    # file we are changing 
-    # DB_HOST=127.0.0.1 to DB_HOST=revdb
-    # that s all
-    networks:
-      - nginx-proxy
-    depends_on:
-      - composer
-      - node
-    
+    node:
+        image: 'node:12'
+        container_name: dashnode
+        restart: 'no'
+        working_dir: /home/node/app
+        volumes:
+            - ./:/home/node/app
+        #command: bash -c "npm install && npm run watch"
+        command: bash -c "npm install && npm run production"
+    composer:
+        image: 'composer:latest'
+        restart: 'no'
+        volumes:
+            - .:/app
+        command: install
+    # ==============================================================
+    # here we are building image from the .docker/Dockerfile
+    # this image is starting from a official php-apache docker
+    # and creating host dashboard-pmt
+    dashboard-pmt:
+        container_name: dashboard.podmytube.com
+        build:
+            context: .
+            dockerfile: .docker/Dockerfile
+            args:
+                USER_ID: ${USER_ID}
+                GROUP_ID: ${GROUP_ID}
+        image: dash.pmt
+        restart: always
+        expose:
+            - '80'
+            - '443'
+        # VIRTUAL_HOST should be only the domain (without http://)
+        # by example : www.example.com or sub.domain.fr
+        environment:
+            - VIRTUAL_HOST=${VIRTUAL_HOST:?set it in .env}
+            - APACHE_RUN_USER=www-data
+            - APACHE_RUN_GROUP=www-data
+            - LETSENCRYPT_HOST=${VIRTUAL_HOST:?set it in .env}
+            - LETSENCRYPT_EMAIL=frederick@podmytube.com
+        # we are copying files into /app (into Dockerfile)
+        volumes:
+            - .:/app
+        # health : checking if vendor/autoload exists
+        healthcheck:
+            test: bash -c "[ -f /app/vendor/autoload.php ]"
+            timeout: 10s
+            retries: 30
+        # VERY IMPORTANT
+        # to work with mysql docker on service(revdb)
+        # both have to be on the same network
+        # the only thing that change if that in the .env
+        # file we are changing
+        # DB_HOST=127.0.0.1 to DB_HOST=revdb
+        # that s all
+        networks:
+            - nginx-proxy
+        depends_on:
+            - composer
+            - node
 
 networks:
-  nginx-proxy:
-    external: true
+    nginx-proxy:
+        external: true

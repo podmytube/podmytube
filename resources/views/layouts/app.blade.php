@@ -6,8 +6,6 @@
     <div id="app" class="container">
         <!--main container-->
 
-        @include ('partials.navbar')
-
         @yield('breadcrumbs')
 
         @include ('partials.flash')

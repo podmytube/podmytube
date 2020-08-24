@@ -7,6 +7,14 @@
  *
  * @author Frederick Tyteca <fred@podmytube.com>
  */
+
+Route::get('terms', function () {
+    return view('terms');
+})->name('terms');
+Route::get('privacy', function () {
+    return view('privacy');
+})->name('privacy');
+
 Route::domain(env('WWW_DOMAIN'))->group(function () {
     Route::get('/', 'IndexController@index')->name('index');
 });
@@ -17,12 +25,6 @@ Route::domain(env('DASH_DOMAIN'))->group(function () {
     Route::get('/', function () {
         return view('auth.login');
     })->name('root');
-    Route::get('terms', function () {
-        return view('terms');
-    })->name('terms');
-    Route::get('privacy', function () {
-        return view('privacy');
-    })->name('privacy');
 
     /**
      * not a user interaction
@@ -54,9 +56,10 @@ Route::domain(env('DASH_DOMAIN'))->group(function () {
             'update',
         ]);
 
-        Route::get('/change-password', 'Auth\UpdatePasswordController@index')->name(
-            'password.form'
-        );
+        Route::get(
+            '/change-password',
+            'Auth\UpdatePasswordController@index'
+        )->name('password.form');
 
         Route::post(
             '/change-password',
@@ -71,7 +74,6 @@ Route::domain(env('DASH_DOMAIN'))->group(function () {
         );
         Route::get('/success', 'SubscriptionResultController@success');
         Route::get('/canceled', 'SubscriptionResultController@failure');
-
 
         /**
          * Subscription
@@ -89,15 +91,18 @@ Route::domain(env('DASH_DOMAIN'))->group(function () {
         Route::get('/channel/{channel}/thumbs', 'ThumbsController@index')->name(
             'channel.thumbs.index'
         );
-        Route::get('/channel/{channel}/thumbs/edit', 'ThumbsController@edit')->name(
-            'channel.thumbs.edit'
-        );
-        Route::post('/channel/{channel}/thumbs', 'ThumbsController@store')->name(
-            'channel.thumbs.store'
-        );
-        Route::patch('/channel/{channel}/thumbs', 'ThumbsController@update')->name(
-            'channel.thumbs.update'
-        );
+        Route::get(
+            '/channel/{channel}/thumbs/edit',
+            'ThumbsController@edit'
+        )->name('channel.thumbs.edit');
+        Route::post(
+            '/channel/{channel}/thumbs',
+            'ThumbsController@store'
+        )->name('channel.thumbs.store');
+        Route::patch(
+            '/channel/{channel}/thumbs',
+            'ThumbsController@update'
+        )->name('channel.thumbs.update');
 
         /**
          * User profile
