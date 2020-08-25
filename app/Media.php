@@ -111,7 +111,7 @@ class Media extends Model
     }
 
     /**
-     * will get
+     * scope episodes published last month.
      */
     public function scopePublishedLastMonth(Builder $query)
     {

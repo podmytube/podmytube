@@ -45,6 +45,7 @@ class MediaModelTest extends TestCase
         $expectedNbMedias = 3;
         factory(Media::class, $expectedNbMedias)->create([
             'channel_id' => $this->channel->channel_id,
+            'grabbed_at' => null,
             'published_at' => Carbon::now()
                 ->startOfDay()
                 ->subMonth(),
@@ -59,7 +60,7 @@ class MediaModelTest extends TestCase
         );
     }
 
-    public function testHasBeenGrabbedShouldBeFine()
+    public function testHasBeenGrabbedShouldBeFalse()
     {
         $media = factory(Media::class)->create([
             'channel_id' => $this->channel->channel_id,
@@ -69,7 +70,10 @@ class MediaModelTest extends TestCase
                 ->subMonth(),
         ]);
         $this->assertFalse($media->hasBeenGrabbed());
+    }
 
+    public function testHasBeenGrabbedShouldBeTrue()
+    {
         $media = factory(Media::class)->create([
             'channel_id' => $this->channel->channel_id,
             'published_at' => Carbon::now()
@@ -79,7 +83,7 @@ class MediaModelTest extends TestCase
         $this->assertTrue($media->hasBeenGrabbed());
     }
 
-    public function testMediaFileExists()
+    public function testMediaFileExistsShouldBeFalse()
     {
         $media = factory(Media::class)->create([
             'channel_id' => $this->channel->channel_id,
@@ -89,10 +93,18 @@ class MediaModelTest extends TestCase
 
     public function testGrabbedAtShouldBeFine()
     {
+        if (Media::grabbedAt()->count()) {
+            /**
+             * I don't know why, on this specific test,
+             * db may be not empty (as expected)
+             * so I truncated it to avoid false positive.
+             */
+            Media::truncate();
+        }
         $expectedResult = 20;
-        $medias = factory(Media::class, $expectedResult)->create([
+        factory(Media::class, $expectedResult)->create([
             'channel_id' => $this->channel->channel_id,
-            'grabbed_at' => Carbon::now()
+            'grabbed_at' => Carbon::now(),
         ]);
 
         $this->assertEquals($expectedResult, Media::grabbedAt()->count());
