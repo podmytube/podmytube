@@ -43,7 +43,7 @@ class YoutubeChannel extends YoutubeCore
 
     public function name()
     {
-        if (!$this->hasResult()) {
+        if (!$this->exists()) {
             throw new YoutubeNoResultsException(
                 "Cannot get information for this channel {$this->channelId}"
             );

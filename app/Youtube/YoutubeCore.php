@@ -186,9 +186,16 @@ abstract class YoutubeCore implements QuotasConsumer
         return $rawResults;
     }
 
-    protected function hasResult()
+    /**
+     * Tell if yes or no this api request has results.
+     * I was testing pageInfo.totalResults but this key disappeared recently
+     * from queries answer.
+     *
+     * @return bool true if query has results.
+     */
+    protected function hasResult(): bool
     {
-        return $this->results()['pageInfo']['totalResults'] > 0;
+        return $this->nbItemsGrabbed() > 0;
     }
 
     /**
