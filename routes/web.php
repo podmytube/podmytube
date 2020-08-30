@@ -19,7 +19,7 @@ Route::domain(env('WWW_DOMAIN'))->group(function () {
     Route::get('/', 'IndexController@index')->name('index');
 });
 
-Route::domain(env('DASH_DOMAIN'))->group(function () {
+Route::domain(env('APP_DOMAIN'))->group(function () {
     // ================================================
     // Dash homepage is the login screen
     Route::get('/', function () {
