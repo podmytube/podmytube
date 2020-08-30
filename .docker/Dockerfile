@@ -22,14 +22,14 @@ RUN     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezo
 # curl is used to download npm
 RUN     apt-get update -y && \
         apt-get install -y -qq sendmail \
-            libpng-dev \
-            libjpeg-dev \
-            supervisor \
-            sqlite \
-            libzip-dev \
-            zip \
-            git
-            
+        libpng-dev \
+        libjpeg-dev \
+        supervisor \
+        sqlite \
+        libzip-dev \
+        zip \
+        git
+
 RUN     rm -rf /var/lib/apt/lists/*;
 
 RUN     docker-php-ext-install zip
@@ -39,8 +39,8 @@ RUN     docker-php-ext-configure gd --with-jpeg
 # pdo & pdo_mysql for db connection
 # gd ----- NOT SURE -----
 RUN     docker-php-ext-install pdo \
-            pdo_mysql \
-            gd
+        pdo_mysql \
+        gd
 
 # default vhost replaced by custom one                                                                                                                                                                                          
 # mainly documentRoot /app/public       
