@@ -23,7 +23,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('css/app.css') }}">
 
     @if (App::environment('production'))
-    <script async defer data-domain="podmytube.com" src="https://plausible.io/js/plausible.js"></script>
+    <script async defer data-domain="podmytube.com" src="https://stats.podmytube.com/js/index.js"></script>
     @endif
 
 </head>
