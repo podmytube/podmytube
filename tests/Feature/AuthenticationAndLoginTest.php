@@ -4,12 +4,9 @@ namespace Tests\Feature;
 
 use App\User;
 use Tests\TestCase;
-use Tests\Traits\HasDomain;
 
 class AuthenticationAndLoginTest extends TestCase
 {
-    use HasDomain;
-
     protected static $db_inited = false;
     protected static $rightPassword = "'i-love-laravel'";
 
@@ -25,8 +22,6 @@ class AuthenticationAndLoginTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        $this->setDomain(env('APP_DOMAIN'));
 
         if (!self::$db_inited) {
             static::$db_inited = true;
@@ -63,16 +58,14 @@ class AuthenticationAndLoginTest extends TestCase
     public function testingLoginForm()
     {
         $response = $this->followingRedirects()
-            ->get($this->getDomain() . '/login')
+            ->get(route('login'))
             ->assertSuccessful()
             ->assertViewIs('auth.login');
     }
 
     public function testAuthUserIsRedirectFromLoginForm()
     {
-        $response = $this->actingAs(self::$user)->get(
-            $this->getDomain() . '/login'
-        );
+        $response = $this->actingAs(self::$user)->get(route('login'));
         $response->assertRedirect('/home');
     }
 
