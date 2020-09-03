@@ -15,11 +15,12 @@ Route::get('privacy', function () {
     return view('privacy');
 })->name('privacy');
 
-Route::domain(env('WWW_DOMAIN'))->group(function () {
-    Route::get('/', 'IndexController@index')->name('index');
+Route::domain('www.' . config('app.domain'))->group(function () {
+    Route::get('/', 'IndexController@index')->name('www.index');
 });
 
-Route::domain(env('APP_DOMAIN'))->group(function () {
+Route::domain('dashboard.' . config('app.domain'))->group(function () {
+    Auth::routes();
     // ================================================
     // Dash homepage is the login screen
     Route::get('/', function () {
@@ -30,7 +31,6 @@ Route::domain(env('APP_DOMAIN'))->group(function () {
      * not a user interaction
      */
     Route::stripeWebhooks('/stripe/webhooks');
-    Auth::routes();
 
     Route::middleware(['auth'])->group(function () {
         Route::get('/home', 'HomeController@index')->name('home');

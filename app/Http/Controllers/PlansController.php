@@ -16,8 +16,7 @@ class PlansController extends Controller
      */
     public function index(Channel $channel)
     {
-
-        Stripe::setApiKey(env("STRIPE_SECRET"));
+        Stripe::setApiKey(env('STRIPE_SECRET'));
 
         $plans = Plan::byIds([Plan::WEEKLY_PLAN_ID, Plan::DAILY_PLAN_ID]);
 
@@ -27,14 +26,18 @@ class PlansController extends Controller
         $plans->map(function ($plan) use ($channel) {
             $stripeSessionParams = [
                 'payment_method_types' => ['card'],
-                'line_items' => [[
-                    'price' => $plan->stripe_id,
-                    'quantity' => 1,
-                ]],
+                'line_items' => [
+                    [
+                        'price' => $plan->stripe_id,
+                        'quantity' => 1,
+                    ],
+                ],
                 'mode' => 'subscription',
-                'success_url' => env("APP_URL") . '/success?session_id={CHECKOUT_SESSION_ID}',
-                'cancel_url' => env("APP_URL") . '/cancel',
-                "metadata" => ["channel_id" => $channel->channel_id],
+                'success_url' =>
+                    config('app.url') .
+                    '/success?session_id={CHECKOUT_SESSION_ID}',
+                'cancel_url' => config('app.url') . '/cancel',
+                'metadata' => ['channel_id' => $channel->channel_id],
             ];
 
             if ($channel->user->stripe_id !== null) {

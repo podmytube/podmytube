@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-sm navbar-light fixed-top navbar-default bg-light py-0">
-    <a class="navbar-brand" href="{{ route('index') }}">
+    <a class="navbar-brand" href="{{ route('www.index') }}">
         <img
             src="/images/podmytube-logo.svg"
             width="80"
@@ -14,22 +14,22 @@
     <div class="navbar-collapse collapse" id="navbarNav">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('index') }}#main">
+                <a class="nav-link" href="{{ route('www.index') }}#main">
                     Home
             	</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('index') }}#features">
+                <a class="nav-link" href="{{ route('www.index') }}#features">
                     Features
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('index') }}#pricing">
+                <a class="nav-link" href="{{ route('www.index') }}#pricing">
                     Plans
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('index') }}#about">
+                <a class="nav-link" href="{{ route('www.index') }}#about">
                     About
                 </a>
             </li>

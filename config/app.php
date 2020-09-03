@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Application Name
@@ -14,6 +13,8 @@ return [
     */
 
     'name' => env('APP_NAME', 'Podmytube.com'),
+
+    'domain' => env('DOMAIN', 'podmytube.com'),
 
     /*
     |--------------------------------------------------------------------------
@@ -79,7 +80,7 @@ return [
     */
 
     'locale' => 'en',
-    'locales' => ['en','fr'],
+    'locales' => ['en', 'fr'],
 
     /*
     |--------------------------------------------------------------------------
@@ -138,7 +139,6 @@ return [
     */
 
     'providers' => [
-
         /*
          * Laravel Framework Service Providers...
          */
@@ -180,7 +180,6 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-
     ],
 
     /*
@@ -195,7 +194,6 @@ return [
     */
 
     'aliases' => [
-
         'App' => Illuminate\Support\Facades\App::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,
         'Auth' => Illuminate\Support\Facades\Auth::class,
@@ -231,8 +229,6 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'NoCaptcha' => Anhskohbo\NoCaptcha\Facades\NoCaptcha::class,
-        'Image' => Intervention\Image\Facades\Image::class
-
+        'Image' => Intervention\Image\Facades\Image::class,
     ],
-
 ];
