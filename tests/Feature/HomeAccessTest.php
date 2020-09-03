@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Channel;
 use App\User;
 use Artisan;
 use Tests\TestCase;
@@ -20,29 +21,31 @@ class HomeAccessTest extends TestCase
 
     public function testGuestIsRejected()
     {
-        $response = $this->get('/home')->assertRedirect('/login');
+        $response = $this->get(route('home'))->assertRedirect(route('login'));
     }
 
     public function testUserCanAccessHomeWithNoChannels()
     {
         $response = $this->followingRedirects()
             ->actingAs($this->user)
-            ->get('/home')
+            ->get(route('home'))
             ->assertSuccessful()
             ->assertViewIs('home');
     }
 
-    /* public function testUserShouldSeeHisChannel()
+    /**
+     *  @todo fix this test
+     */
+    /*
+    public function testUserShouldSeeHisChannel()
     {
-        $channel = factory(Channel::class)->create(['user_id'=>$this->user->userId()]);
-        dump(
-            "user channel : ".$this->user->channels->first()->channel_name,
-            "channel name : ".$channel->channel_name
-        );
-        dd();
+        $channel = factory(Channel::class)->create([
+            'user_id' => $this->user->userId(),
+        ]);
         $response = $this->followingRedirects()
             ->actingAs($this->user)
-            ->get('/home')
+            ->get(route('home'))
+            ->dump()
             ->assertSuccessful()
             ->assertViewIs('home')
             ->assertSee($channel->channel_name);
