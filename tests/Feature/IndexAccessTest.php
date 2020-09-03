@@ -4,21 +4,19 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\Traits\HasDomain;
 
 class IndexAccessTest extends TestCase
 {
-    use RefreshDatabase, HasDomain;
+    use RefreshDatabase;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->setDomain(env('WWW_DOMAIN'));
     }
 
     public function testEveryoneIsAllowed()
     {
-        $this->get($this->getDomain() . '/')
+        $this->get(route('index'))
             ->assertSuccessful()
             ->assertSeeInOrder([
                 'Home',
