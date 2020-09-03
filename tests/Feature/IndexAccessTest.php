@@ -3,20 +3,12 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class IndexAccessTest extends TestCase
 {
-    use RefreshDatabase;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-    }
-
     public function testEveryoneIsAllowed()
     {
-        $this->get(route('index'))
+        $this->get(route('www.index'))
             ->assertSuccessful()
             ->assertSeeInOrder([
                 'Home',
