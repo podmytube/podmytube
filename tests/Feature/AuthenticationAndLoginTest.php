@@ -31,7 +31,7 @@ class AuthenticationAndLoginTest extends TestCase
 
     public function testUserStayGuestWithInvalidPassword()
     {
-        $response = $this->from(route('login'))->post('/login', [
+        $response = $this->from(route('login'))->post(route('login'), [
             'email' => self::$user->email,
             'password' => 'invalid-password',
         ]);
@@ -45,7 +45,7 @@ class AuthenticationAndLoginTest extends TestCase
 
     public function testUserIsConnectedWithRightPassword()
     {
-        $response = $this->from(route('login'))->post('/login', [
+        $response = $this->from(route('login'))->post(route('login'), [
             'email' => self::$user->email,
             'password' => self::$rightPassword,
         ]);
@@ -84,7 +84,7 @@ class AuthenticationAndLoginTest extends TestCase
 
     public function testUserWithCorrectCredentialsWillAuthenticate()
     {
-        $response = $this->post('/login', [
+        $response = $this->post(route('login'), [
             'email' => self::$user->email,
             'password' => self::$rightPassword,
         ]);
@@ -95,7 +95,7 @@ class AuthenticationAndLoginTest extends TestCase
 
     public function testInvalidPasswordShouldNotAuthenticate()
     {
-        $response = $this->from(route('login'))->post('/login', [
+        $response = $this->from(route('login'))->post(route('login'), [
             'email' => self::$user->email,
             'password' => 'invalid-password',
         ]);
