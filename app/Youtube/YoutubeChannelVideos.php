@@ -19,10 +19,6 @@ class YoutubeChannelVideos implements QuotasConsumer
     /** @var string $apikey */
     protected $apikey;
 
-    public function __construct()
-    {
-    }
-
     /**
      * retrieve videos for one specified channel.
      *
@@ -46,7 +42,7 @@ class YoutubeChannelVideos implements QuotasConsumer
      * It's a trick to accelerate channel update process and reduce quota usage but I'm not sure
      * it will last forever.
      */
-    protected function obtainUploadPlaylistIdBeingSmart()
+    protected function obtainUploadPlaylistIdBeingSmart(): void
     {
         $this->uploadsPlaylistId = $this->channelId;
         $this->uploadsPlaylistId[1] = 'U';
@@ -55,7 +51,7 @@ class YoutubeChannelVideos implements QuotasConsumer
     /**
      * getting 'uploads' playlist id the normal way.
      */
-    protected function obtainUploadsPlaylistIdFromYoutube()
+    protected function obtainUploadsPlaylistIdFromYoutube(): void
     {
         /**
          * get the uploads playlist id
@@ -68,7 +64,7 @@ class YoutubeChannelVideos implements QuotasConsumer
         $this->queries = array_merge($this->queries, $playlist->queriesUsed());
     }
 
-    protected function obtainVideos()
+    protected function obtainVideos(): void
     {
         /**
          * get all the uploaded videos for that playlist
@@ -83,7 +79,7 @@ class YoutubeChannelVideos implements QuotasConsumer
         );
     }
 
-    public function videos()
+    public function videos(): array
     {
         return $this->videos;
     }
@@ -93,7 +89,7 @@ class YoutubeChannelVideos implements QuotasConsumer
         return $this->queries;
     }
 
-    public function apikey()
+    public function apikey(): string
     {
         return $this->apikey;
     }
