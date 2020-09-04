@@ -4,6 +4,12 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 
+/**
+ * This class is testing if medias used by paypal shop
+ * or email signature are availables on /medias.
+ * I failed to test file is really accessible from uri
+ * because the local domain is unknown in the container.
+ */
 class EmailPaypalMediasAreAvailablesTest extends TestCase
 {
     protected $emailAndPaypalMedias = [
