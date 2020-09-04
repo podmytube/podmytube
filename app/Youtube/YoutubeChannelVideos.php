@@ -89,7 +89,7 @@ class YoutubeChannelVideos implements QuotasConsumer
         return $this->queries;
     }
 
-    public function apikey(): string
+    public function apikey(): ?string
     {
         return $this->apikey;
     }
