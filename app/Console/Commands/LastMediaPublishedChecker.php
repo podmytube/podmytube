@@ -71,7 +71,7 @@ class LastMediaPublishedChecker extends Command
                 ->forChannel($channelToCheck->channel_id, 1)
                 ->videos();
 
-            if (!$videos) {
+            if (!count($videos->videos())) {
                 $this->info(
                     "Channel {$channelToCheck->channel_id} seems to have no video at all.",
                     'v'
