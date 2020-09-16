@@ -16,6 +16,7 @@ storage/database.sqlite
 .env
 .env.local
 .env.testing
+.env-testing
 # ===============================================
 # ssh part
 # ===============================================
