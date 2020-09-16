@@ -16,6 +16,8 @@ return [
 
     'domain' => env('DOMAIN', 'podmytube.com'),
 
+    'wpbackend' => env('WPBACKEND_URL'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment
