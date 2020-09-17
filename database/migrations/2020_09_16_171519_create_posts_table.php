@@ -19,15 +19,15 @@ class CreatePostsTable extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('wp_id');
-            $table->unsignedTinyInteger('user_id');
+            $table->string('author');
             $table->string('title');
             $table->string('slug');
-            $table->string('featured_image');
-            $table->boolean('featured')->default(false);
+            $table->string('featured_image')->nullable();
+            $table->boolean('sticky')->default(false);
             $table->text('excerpt')->nullable();
             $table->text('content')->nullable();
             $table->string('format')->default('standard');
-            $table->unsignedTinyInteger('status')->default(Post::STATUS_PUBLISHED);
+            $table->boolean('status')->default(true);
             $table->dateTime('published_at')->default(Carbon::now());
             $table->timestamps();
             $table->unsignedTinyInteger('category_id')->default(PostCategory::NEWS);

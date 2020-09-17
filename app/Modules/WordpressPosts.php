@@ -2,48 +2,84 @@
 
 namespace App\Modules;
 
+use App\Exceptions\NoPostsObtainedException;
 use App\Post;
+use App\PostCategory;
 use Carbon\Carbon;
 
 class WordpressPosts
 {
-    private function __construct(string $url)
+    protected $endpoint = 'posts';
+    protected $page = 1;
+    protected $posts = [];
+
+    private function __construct()
     {
-        $this->url = $url;
-        $this->importPosts();
     }
 
-    public static function fromWordpressBackend(...$params)
+    public static function init(...$params)
     {
         return new static(...$params);
     }
 
-    public function importPosts($page = 1)
+    public function baseUrl()
     {
-        collect($this->getJson($this->url))
-            ->map(function ($post) {
-                $this->syncPost($post);
-            });
+        return config('app.wpbackend') . '/wp-json/wp/v2/';
     }
 
-    protected function getJson($url)
+    public function url()
     {
-        $response = file_get_contents($url, false);
-        dd(json_decode($response));
-        return json_decode($response);
+        return $this->baseUrl() . $this->endpoint . '/?_embed&filter[orderby]=modified&page=' . $this->page;
     }
 
-    protected function syncPost($data)
+    /**
+     * will obtain posts from remote.
+     */
+    public function getPostsFromRemote(): self
     {
-        $found = Post::where('wp_id', $data->id)->first();
+        $response = file_get_contents($this->url(), false);
+        $this->posts = json_decode($response);
+        return $this;
+    }
 
-        if (!$found) {
-            return $this->createPost($data);
+    /**
+     * will obtain posts from one file (mainly for tests).
+     * 
+     * @param string $filename
+     */
+    public function getPostsFromFile(string $filename): self
+    {
+        $response = file_get_contents($filename, false);
+        $this->posts = json_decode($response);
+        return $this;
+    }
+
+    public function posts(): array
+    {
+        return $this->posts;
+    }
+
+    public function update(): self
+    {
+        if (!count($this->posts())) {
+            throw new NoPostsObtainedException("No post has been obtained yet. You should use getPostsFromRemote/getPostsFromFile before.");
         }
 
-        if ($found and $found->updated_at->format("Y-m-d H:i:s") < $this->carbonDate($data->modified)->format("Y-m-d H:i:s")) {
-            return $this->updatePost($found, $data);
-        }
+        array_map(
+            function ($postData) {
+                $postModel = Post::byWordpressId($postData->id);
+
+                if ($postModel === null) {
+                    return $this->createPost($postData);
+                }
+
+                /* if ($postModel and $postModel->updated_at->format("Y-m-d H:i:s") < $this->carbonDate($data->modified)->format("Y-m-d H:i:s")) {
+                return $this->updatePost($postModel, $data);
+            } */
+            },
+            $this->posts
+        );
+        return $this;
     }
 
     protected function carbonDate($date)
@@ -53,24 +89,51 @@ class WordpressPosts
 
     protected function createPost($data)
     {
-        $post = new Post();
-        $post->id = $data->id;
-        $post->wp_id = $data->id;
-        $post->user_id = $this->getAuthor($data->_embedded->author);
-        $post->title = $data->title->rendered;
-        $post->slug = $data->slug;
-        $post->featured_image = $this->featuredImage($data->_embedded);
-        $post->featured = ($data->sticky) ? 1 : null;
-        $post->excerpt = $data->excerpt->rendered;
-        $post->content = $data->content->rendered;
-        $post->format = $data->format;
-        $post->status = 'publish';
-        $post->publishes_at = $this->carbonDate($data->date);
-        $post->created_at = $this->carbonDate($data->date);
-        $post->updated_at = $this->carbonDate($data->modified);
-        $post->category_id = $this->getCategory($data->_embedded->{"wp:term"});
-        $post->save();
-        $this->syncTags($post, $data->_embedded->{"wp:term"});
-        return $post;
+        return Post::create(
+            [
+                'wp_id' => $data->id,
+                'author' => "fred", //$this->getAuthor($data->_embedded->author),
+                'title' => $data->title->rendered,
+                'slug' => $data->slug,
+                'featured_image' => $this->featuredImage($data->_embedded),
+                'sticky' => $data->sticky,
+                'excerpt' => $data->excerpt->rendered,
+                'content' => $data->content->rendered,
+                'format' => $data->format,
+                'status' => true,
+                'published_at' => $this->carbonDate($data->date),
+                'created_at' => $this->carbonDate($data->date),
+                'updated_at' => $this->carbonDate($data->modified),
+                'category_id' => PostCategory::NEWS, // $this->getCategory($data->_embedded->{"wp:term"}),
+            ]
+        );
+    }
+
+    public function featuredImage($data)
+    {
+        if (property_exists($data, "wp:featuredmedia")) {
+            $data = head($data->{"wp:featuredmedia"});
+            if (isset($data->source_url)) {
+                return $data->source_url;
+            }
+        }
+        return null;
+    }
+
+    public function getCategory($data)
+    {
+        $category = collect($data)->collapse()->where('taxonomy', 'category')->first();
+        $found = PostCategory::where('wp_id', $category->id)->first();
+        if ($found) {
+            return $found->id;
+        }
+        $cat = new PostCategory();
+        $cat->id = $category->id;
+        $cat->wp_id = $category->id;
+        $cat->name = $category->name;
+        $cat->slug = $category->slug;
+        $cat->description = '';
+        $cat->save();
+        return $cat->id;
     }
 }

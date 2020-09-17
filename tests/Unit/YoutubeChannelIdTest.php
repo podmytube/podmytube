@@ -2,10 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Channel;
-use Carbon\Carbon;
 use Tests\TestCase;
-use App\Podcast\PodcastBuilder;
 use App\Exceptions\ChannelCreationInvalidUrlException;
 use App\Exceptions\ChannelCreationOnlyYoutubeIsAccepted;
 use App\Exceptions\ChannelCreationInvalidChannelUrlException;
@@ -40,8 +37,7 @@ class YoutubeChannelIdTest extends TestCase
     public function testingValidYoutubeUrls()
     {
         $expectedChannelId = 'UCw6bU9JT_Lihb2pbtqAUGQw-';
-        foreach (
-            [
+        foreach ([
                 'http://www.youtube.com/channel/UCw6bU9JT_Lihb2pbtqAUGQw-/',
                 'http://www.youtube.com/channel/UCw6bU9JT_Lihb2pbtqAUGQw-',
                 'https://www.youtube.com/channel/UCw6bU9JT_Lihb2pbtqAUGQw-/',
@@ -50,8 +46,7 @@ class YoutubeChannelIdTest extends TestCase
                 'https://www.youtube.com/channel/UCw6bU9JT_Lihb2pbtqAUGQw-?view_as=subscriber',
                 'https://www.youtube.com/channel/UCw6bU9JT_Lihb2pbtqAUGQw-?MyTailorIsRich&view_as=subscriber&whateverYouMightTypeAfter',
             ]
-            as $youtubeUrl
-        ) {
+            as $youtubeUrl) {
             $this->assertEquals(
                 $expectedChannelId,
                 $result = YoutubeChannelId::fromUrl($youtubeUrl)->get(),
