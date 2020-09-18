@@ -14,4 +14,9 @@ class Post extends Model
     {
         return self::where('wp_id', '=', $wpId)->first();
     }
+
+    public function postCategory()
+    {
+        return $this->belongsTo(PostCategory::class);
+    }
 }

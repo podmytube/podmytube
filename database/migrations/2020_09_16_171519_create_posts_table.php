@@ -30,7 +30,11 @@ class CreatePostsTable extends Migration
             $table->boolean('status')->default(true);
             $table->dateTime('published_at')->default(Carbon::now());
             $table->timestamps();
-            $table->unsignedTinyInteger('category_id')->default(PostCategory::NEWS);
+            $table->unsignedSmallInteger('post_category_id')->default(1);
+            $table->foreign('post_category_id')
+                ->references('id')->on('post_categories')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
         });
     }
 

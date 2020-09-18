@@ -22,4 +22,17 @@ class PostCategoryModelTest extends TestCase
         $this->assertEquals($expectedPostCategory->id, $postModel->id);
         $this->assertInstanceOf(PostCategory::class, $postModel);
     }
+
+    public function testBySlugShouldReturnNull()
+    {
+        $this->assertNull(PostCategory::bySlug('db-is-empty'));
+    }
+
+    public function testBySlugIsWorkingFine()
+    {
+        $expectedPostCategory = factory(PostCategory::class)->create();
+        $postModel = PostCategory::bySlug($expectedPostCategory->slug);
+        $this->assertEquals($expectedPostCategory->id, $postModel->id);
+        $this->assertInstanceOf(PostCategory::class, $postModel);
+    }
 }
