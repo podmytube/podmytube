@@ -104,7 +104,7 @@ class WordpressPosts
                 'published_at' => $this->carbonDate($data->date),
                 'created_at' => $this->carbonDate($data->date),
                 'updated_at' => $this->carbonDate($data->modified),
-                'category_id' => PostCategory::NEWS, // $this->getCategory($data->_embedded->{"wp:term"}),
+                'category_id' => $this->getCategory($data->_embedded->{"wp:term"})->id,
             ]
         );
     }
@@ -121,19 +121,28 @@ class WordpressPosts
     }
 
     public function getCategory($data)
-    {
+    {        
+        /**
+         * extracting first category from json
+         */
         $category = collect($data)->collapse()->where('taxonomy', 'category')->first();
-        $found = PostCategory::where('wp_id', $category->id)->first();
-        if ($found) {
-            return $found->id;
+        /**
+         * check if we have this one
+         */
+        $postCategoryModel = PostCategory::byWordpressId($category->id);
+        if ($postCategoryModel === null) {
+            return $this->createPostCategory($category);
         }
-        $cat = new PostCategory();
-        $cat->id = $category->id;
-        $cat->wp_id = $category->id;
-        $cat->name = $category->name;
-        $cat->slug = $category->slug;
-        $cat->description = '';
-        $cat->save();
-        return $cat->id;
+    }
+
+    protected function createPostCategory($data)
+    {
+        return PostCategory::create(
+            [
+                'wp_id' => $data->id,
+                'name' => $data->name,
+                'slug' => $data->slug,
+            ]
+        );
     }
 }

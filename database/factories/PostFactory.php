@@ -1,6 +1,5 @@
 <?php
 
-use App\Post;
 use App\PostCategory;
 use Illuminate\Support\Str;
 use Faker\Generator as Faker;
@@ -29,6 +28,10 @@ $factory->define(App\Post::class, function (Faker $faker, array $attributes = []
         'format' => $attributes['format'] ?? 'standard',
         'status' => true, // api does not export unpublished/draft posts - I keek this to eventually disable one post from pod.
         'published_at' => $attributes['published_at'] ?? $faker->dateTimeBetween('1 month ago', 'now'),
-        'category_id' => PostCategory::NEWS,
+        'post_category_id' =>
+        $attributes['post_category_id'] ??
+            function () {
+                return factory(PostCategory::class)->create()->id;
+            },
     ];
 });

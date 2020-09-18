@@ -46,6 +46,6 @@ class WordpressPostsTest extends TestCase
         $this->assertGreaterThan(0, Post::count());
 
         $insertedPost = Post::byWordpressId(12);
-        dd($insertedPost);
+        dd($insertedPost->postCat);
     }
 }

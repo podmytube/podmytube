@@ -23,7 +23,6 @@ class DatabaseSeeder extends Seeder
                 ChannelTableSeeder::class,
                 StripePlansTableSeeder::class,
                 ApiKeysTableSeeder::class,
-                PostCategoriesSeeder::class,
             ]);
 
             Model::reguard();
