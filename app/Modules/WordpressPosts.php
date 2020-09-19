@@ -11,7 +11,13 @@ class WordpressPosts
 {
     protected $endpoint = 'posts';
     protected $page = 1;
+
+    /** @var array json decoded posts */
     protected $posts = [];
+
+    protected $allowedCategoriesId = [
+        2, // podmytube
+    ];
 
     private function __construct()
     {
@@ -38,7 +44,7 @@ class WordpressPosts
     public function getPostsFromRemote(): self
     {
         $response = file_get_contents($this->url(), false);
-        $this->posts = json_decode($response);
+        $this->posts = json_decode($response, true);
         return $this;
     }
 
@@ -67,27 +73,40 @@ class WordpressPosts
 
         array_map(
             function ($postData) {
-                $postModel = Post::byWordpressId($postData->id);
 
+                dump($postData);
+                /** importing only the categories I need */
+                if (!in_array($this->getPostCategoryId($postData), $this->allowedCategoriesId)) {
+                    return false;
+                }
+
+                $postModel = Post::byWordpressId($postData->id);
                 if ($postModel === null) {
+                    /** if post does not exist we create it */
                     return $this->createPost($postData);
                 }
 
-                /* if ($postModel and $postModel->updated_at->format("Y-m-d H:i:s") < $this->carbonDate($data->modified)->format("Y-m-d H:i:s")) {
-                return $this->updatePost($postModel, $data);
-            } */
+                /** if it has been modified on wpbackend, update the local copy */
+                /* if ($postModel->updated_at < $this->carbonDate($postData->modified)) {
+                    return $this->updatePost($postModel, $postData);
+                } */
             },
             $this->posts
         );
         return $this;
     }
 
-    protected function carbonDate($date)
+    protected function getPostCategoryId($postData)
     {
-        return Carbon::parse($date);
+        return collect($postData->_embedded->{"wp:term"})->collapse()->where('taxonomy', 'category')->first()->id;
     }
 
-    protected function createPost($data)
+    protected function carbonDate($date)
+    {
+        return Carbon::parse($date, "Europe/Paris");
+    }
+
+    protected function createPost($data): \App\Post
     {
         return Post::create(
             [
@@ -96,7 +115,7 @@ class WordpressPosts
                 'title' => $data->title->rendered,
                 'slug' => $data->slug,
                 'featured_image' => $this->featuredImage($data->_embedded),
-                'sticky' => $data->sticky,
+                'sticky' => $data->sticky ?? false,
                 'excerpt' => $data->excerpt->rendered,
                 'content' => $data->content->rendered,
                 'format' => $data->format,
@@ -104,7 +123,7 @@ class WordpressPosts
                 'published_at' => $this->carbonDate($data->date),
                 'created_at' => $this->carbonDate($data->date),
                 'updated_at' => $this->carbonDate($data->modified),
-                'category_id' => $this->getCategory($data->_embedded->{"wp:term"})->id,
+                'post_category_id' => $this->getCategory($data->_embedded->{"wp:term"})->id,
             ]
         );
     }
@@ -121,16 +140,14 @@ class WordpressPosts
     }
 
     public function getCategory($data)
-    {        
-        /**
-         * extracting first category from json
-         */
+    {
+        /** extracting first category from json */
         $category = collect($data)->collapse()->where('taxonomy', 'category')->first();
-        /**
-         * check if we have this one
-         */
+
+        /** check if we have this one */
         $postCategoryModel = PostCategory::byWordpressId($category->id);
         if ($postCategoryModel === null) {
+            /** if not creating category */
             return $this->createPostCategory($category);
         }
     }

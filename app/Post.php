@@ -2,13 +2,18 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
-    public const STATUS_PUBLISHED = 1;
-
     protected $guarded = [];
+
+    protected $casts = [
+        'sticky' => 'boolean',
+    ];
+
+    //protected $dates = ['created_at', 'updated_at', 'published_at'];
 
     public static function byWordpressId(int $wpId)
     {
