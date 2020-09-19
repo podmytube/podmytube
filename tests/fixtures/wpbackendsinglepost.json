@@ -1,0 +1,273 @@
+{
+    "id": 12,
+    "date": "2020-09-17T18:30:49",
+    "date_gmt": "2020-09-17T16:30:49",
+    "guid": {
+        "rendered": "https:\/\/wpbackend.tyteca.net\/?p=12"
+    },
+    "modified": "2020-09-17T22:08:48",
+    "modified_gmt": "2020-09-17T20:08:48",
+    "slug": "featured-image-post",
+    "status": "publish",
+    "type": "post",
+    "link": "https:\/\/wpbackend.tyteca.net\/testing\/",
+    "title": {
+        "rendered": "featured image post"
+    },
+    "content": {
+        "rendered": "\n<p class=\"has-text-align-center\">This post is only a test.<\/p>\n\n\n\n<div class=\"wp-block-image\"><figure class=\"aligncenter size-large\"><img loading=\"lazy\" width=\"500\" height=\"500\" src=\"https:\/\/wpbackend.tyteca.net\/wp-content\/uploads\/2020\/09\/main-square-500x500-1.jpg\" alt=\"\" class=\"wp-image-13\" srcset=\"https:\/\/wpbackend.tyteca.net\/wp-content\/uploads\/2020\/09\/main-square-500x500-1.jpg 500w, https:\/\/wpbackend.tyteca.net\/wp-content\/uploads\/2020\/09\/main-square-500x500-1-300x300.jpg 300w, https:\/\/wpbackend.tyteca.net\/wp-content\/uploads\/2020\/09\/main-square-500x500-1-150x150.jpg 150w\" sizes=\"(max-width: 500px) 100vw, 500px\" \/><\/figure><\/div>\n",
+        "protected": false
+    },
+    "excerpt": {
+        "rendered": "<p>This post is only a test.<\/p>\n",
+        "protected": false
+    },
+    "author": 1,
+    "featured_media": 13,
+    "comment_status": "open",
+    "ping_status": "open",
+    "sticky": false,
+    "template": "",
+    "format": "standard",
+    "meta": [],
+    "categories": [
+        1
+    ],
+    "tags": [],
+    "_links": {
+        "self": [
+            {
+                "href": "https:\/\/wpbackend.tyteca.net\/wp-json\/wp\/v2\/posts\/12"
+            }
+        ],
+        "collection": [
+            {
+                "href": "https:\/\/wpbackend.tyteca.net\/wp-json\/wp\/v2\/posts"
+            }
+        ],
+        "about": [
+            {
+                "href": "https:\/\/wpbackend.tyteca.net\/wp-json\/wp\/v2\/types\/post"
+            }
+        ],
+        "author": [
+            {
+                "embeddable": true,
+                "href": "https:\/\/wpbackend.tyteca.net\/wp-json\/wp\/v2\/users\/1"
+            }
+        ],
+        "replies": [
+            {
+                "embeddable": true,
+                "href": "https:\/\/wpbackend.tyteca.net\/wp-json\/wp\/v2\/comments?post=12"
+            }
+        ],
+        "version-history": [
+            {
+                "count": 2,
+                "href": "https:\/\/wpbackend.tyteca.net\/wp-json\/wp\/v2\/posts\/12\/revisions"
+            }
+        ],
+        "predecessor-version": [
+            {
+                "id": 15,
+                "href": "https:\/\/wpbackend.tyteca.net\/wp-json\/wp\/v2\/posts\/12\/revisions\/15"
+            }
+        ],
+        "wp:featuredmedia": [
+            {
+                "embeddable": true,
+                "href": "https:\/\/wpbackend.tyteca.net\/wp-json\/wp\/v2\/media\/13"
+            }
+        ],
+        "wp:attachment": [
+            {
+                "href": "https:\/\/wpbackend.tyteca.net\/wp-json\/wp\/v2\/media?parent=12"
+            }
+        ],
+        "wp:term": [
+            {
+                "taxonomy": "category",
+                "embeddable": true,
+                "href": "https:\/\/wpbackend.tyteca.net\/wp-json\/wp\/v2\/categories?post=12"
+            },
+            {
+                "taxonomy": "post_tag",
+                "embeddable": true,
+                "href": "https:\/\/wpbackend.tyteca.net\/wp-json\/wp\/v2\/tags?post=12"
+            }
+        ],
+        "curies": [
+            {
+                "name": "wp",
+                "href": "https:\/\/api.w.org\/{rel}",
+                "templated": true
+            }
+        ]
+    },
+    "_embedded": {
+        "author": [
+            {
+                "id": 1,
+                "name": "fred",
+                "url": "http:\/\/blog.local.tyteca.net",
+                "description": "",
+                "link": "https:\/\/wpbackend.tyteca.net\/author\/fred\/",
+                "slug": "fred",
+                "avatar_urls": {
+                    "24": "https:\/\/secure.gravatar.com\/avatar\/e9c9b11eef77f9fe3ac495d35303d544?s=24&d=mm&r=g",
+                    "48": "https:\/\/secure.gravatar.com\/avatar\/e9c9b11eef77f9fe3ac495d35303d544?s=48&d=mm&r=g",
+                    "96": "https:\/\/secure.gravatar.com\/avatar\/e9c9b11eef77f9fe3ac495d35303d544?s=96&d=mm&r=g"
+                },
+                "_links": {
+                    "self": [
+                        {
+                            "href": "https:\/\/wpbackend.tyteca.net\/wp-json\/wp\/v2\/users\/1"
+                        }
+                    ],
+                    "collection": [
+                        {
+                            "href": "https:\/\/wpbackend.tyteca.net\/wp-json\/wp\/v2\/users"
+                        }
+                    ]
+                }
+            }
+        ],
+        "wp:featuredmedia": [
+            {
+                "id": 13,
+                "date": "2020-09-17T18:30:16",
+                "slug": "main-square-500x500-1",
+                "type": "attachment",
+                "link": "https:\/\/wpbackend.tyteca.net\/testing\/main-square-500x500-1\/",
+                "title": {
+                    "rendered": "main-square-500&#215;500-1"
+                },
+                "author": 1,
+                "caption": {
+                    "rendered": ""
+                },
+                "alt_text": "",
+                "media_type": "image",
+                "mime_type": "image\/jpeg",
+                "media_details": {
+                    "width": 500,
+                    "height": 500,
+                    "file": "2020\/09\/main-square-500x500-1.jpg",
+                    "sizes": {
+                        "medium": {
+                            "file": "main-square-500x500-1-300x300.jpg",
+                            "width": 300,
+                            "height": 300,
+                            "mime_type": "image\/jpeg",
+                            "source_url": "https:\/\/wpbackend.tyteca.net\/wp-content\/uploads\/2020\/09\/main-square-500x500-1-300x300.jpg"
+                        },
+                        "thumbnail": {
+                            "file": "main-square-500x500-1-150x150.jpg",
+                            "width": 150,
+                            "height": 150,
+                            "mime_type": "image\/jpeg",
+                            "source_url": "https:\/\/wpbackend.tyteca.net\/wp-content\/uploads\/2020\/09\/main-square-500x500-1-150x150.jpg"
+                        },
+                        "full": {
+                            "file": "main-square-500x500-1.jpg",
+                            "width": 500,
+                            "height": 500,
+                            "mime_type": "image\/jpeg",
+                            "source_url": "https:\/\/wpbackend.tyteca.net\/wp-content\/uploads\/2020\/09\/main-square-500x500-1.jpg"
+                        }
+                    },
+                    "image_meta": {
+                        "aperture": "0",
+                        "credit": "",
+                        "camera": "",
+                        "caption": "",
+                        "created_timestamp": "0",
+                        "copyright": "",
+                        "focal_length": "0",
+                        "iso": "0",
+                        "shutter_speed": "0",
+                        "title": "",
+                        "orientation": "0",
+                        "keywords": []
+                    }
+                },
+                "source_url": "https:\/\/wpbackend.tyteca.net\/wp-content\/uploads\/2020\/09\/main-square-500x500-1.jpg",
+                "_links": {
+                    "self": [
+                        {
+                            "href": "https:\/\/wpbackend.tyteca.net\/wp-json\/wp\/v2\/media\/13"
+                        }
+                    ],
+                    "collection": [
+                        {
+                            "href": "https:\/\/wpbackend.tyteca.net\/wp-json\/wp\/v2\/media"
+                        }
+                    ],
+                    "about": [
+                        {
+                            "href": "https:\/\/wpbackend.tyteca.net\/wp-json\/wp\/v2\/types\/attachment"
+                        }
+                    ],
+                    "author": [
+                        {
+                            "embeddable": true,
+                            "href": "https:\/\/wpbackend.tyteca.net\/wp-json\/wp\/v2\/users\/1"
+                        }
+                    ],
+                    "replies": [
+                        {
+                            "embeddable": true,
+                            "href": "https:\/\/wpbackend.tyteca.net\/wp-json\/wp\/v2\/comments?post=13"
+                        }
+                    ]
+                }
+            }
+        ],
+        "wp:term": [
+            [
+                {
+                    "name": "Foo item to be sure I will grab category",
+                    "slug": "podmytube",
+                    "taxonomy": "useless"
+                },
+                {
+                    "id": 12,
+                    "link": "https:\/\/wpbackend.tyteca.net\/category\/uncategorized\/",
+                    "name": "Podmytube.com",
+                    "slug": "podmytube",
+                    "taxonomy": "category",
+                    "_links": {
+                        "self": [
+                            {
+                                "href": "https:\/\/wpbackend.tyteca.net\/wp-json\/wp\/v2\/categories\/1"
+                            }
+                        ],
+                        "collection": [
+                            {
+                                "href": "https:\/\/wpbackend.tyteca.net\/wp-json\/wp\/v2\/categories"
+                            }
+                        ],
+                        "about": [
+                            {
+                                "href": "https:\/\/wpbackend.tyteca.net\/wp-json\/wp\/v2\/taxonomies\/category"
+                            }
+                        ],
+                        "wp:post_type": [
+                            {
+                                "href": "https:\/\/wpbackend.tyteca.net\/wp-json\/wp\/v2\/posts?categories=1"
+                            }
+                        ],
+                        "curies": [
+                            {
+                                "name": "wp",
+                                "href": "https:\/\/api.w.org\/{rel}",
+                                "templated": true
+                            }
+                        ]
+                    }
+                }
+            ]
+        ]
+    }
+}

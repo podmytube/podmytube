@@ -2,36 +2,23 @@
 
 namespace Tests\Unit;
 
-use App\Post;
+use App\Factories\PostFactory;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class PostModelTest extends TestCase
+class PostFactoryTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testByWordpressIdShouldReturnNull()
-    {
-        $this->assertNull(Post::byWordpressId(-12));
-    }
-
-    public function testByWordpressIdIsWorkingFine()
-    {
-        $expectedPost = factory(Post::class)->create();
-        $postModel = Post::byWordpressId($expectedPost->wp_id);
-        $this->assertEquals($expectedPost->id, $postModel->id);
-        $this->assertInstanceOf(Post::class, $postModel);
-    }
-
     public function testMinimalChecking()
     {
-        $post = Post::make()->parse(
-            json_decode(
-                file_get_contents(__DIR__ . '/../fixtures/wpbackendsinglepost.json'),
-                true
-            )
+        $postFactory = PostFactory::create(
+            json_decode(file_get_contents(__DIR__ . '/../fixtures/wpbackendsinglepost.json'), true)
         );
+
+        $post = $postFactory->post();
+        $category = $postFactory->category();
         /** basic elements */
         $this->assertEquals(12, $post->wp_id);
         $this->assertEquals('fred', $post->author);
@@ -60,10 +47,8 @@ class PostModelTest extends TestCase
         $this->assertEquals('2020-09-17 22:08:48', $post->updated_at->format('Y-m-d H:i:s'));
 
         /** category part */
-        $this->assertEquals(12, $post->postCategory->wp_id);
-        $this->assertEquals('Podmytube.com', $post->postCategory->name);
-        $this->assertEquals('podmytube', $post->postCategory->slug);
-
-        $this->assertTrue($post->save());
+        $this->assertEquals(12, $category->wp_id);
+        $this->assertEquals('Podmytube.com', $category->name);
+        $this->assertEquals('podmytube', $category->slug);
     }
 }
