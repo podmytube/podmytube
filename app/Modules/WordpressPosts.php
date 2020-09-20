@@ -25,6 +25,9 @@ class WordpressPosts
     /** @var array json decoded posts */
     protected $posts = [];
 
+    /** @var int $importedPosts */
+    protected $importedPosts = 0;
+
     private function __construct()
     {
     }
@@ -71,6 +74,11 @@ class WordpressPosts
         return $this->posts;
     }
 
+    public function importedPosts()
+    {
+        return $this->importedPosts;
+    }
+
     public function update(): self
     {
         if (!count($this->posts())) {
@@ -78,9 +86,10 @@ class WordpressPosts
         }
 
         array_map(
-            function ($postData) {
+            function ($postData) use (&$imported) {
                 try {
                     PostFactory::create($postData);
+                    $this->importedPosts++;
                 } catch (PostCategoryNotWantedHereException $exception) {
                     Log::debug("Post {{$postData['title']['rendered']}} does not belong here");
                 }

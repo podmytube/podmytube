@@ -3,7 +3,6 @@
 namespace Tests\Unit;
 
 use App\Post;
-use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -22,48 +21,5 @@ class PostModelTest extends TestCase
         $postModel = Post::byWordpressId($expectedPost->wp_id);
         $this->assertEquals($expectedPost->id, $postModel->id);
         $this->assertInstanceOf(Post::class, $postModel);
-    }
-
-    public function testMinimalChecking()
-    {
-        $post = Post::make()->parse(
-            json_decode(
-                file_get_contents(__DIR__ . '/../fixtures/wpbackendsinglepost.json'),
-                true
-            )
-        );
-        /** basic elements */
-        $this->assertEquals(12, $post->wp_id);
-        $this->assertEquals('fred', $post->author);
-        $this->assertEquals('featured image post', $post->title);
-        $this->assertEquals('featured-image-post', $post->slug);
-        $this->assertFalse($post->sticky);
-        $this->assertStringContainsString('This post is only a test.', $post->excerpt);
-        $this->assertStringContainsString('class="has-text-align-center">This post is only a test.</p>', $post->content);
-        $this->assertEquals('standard', $post->format);
-        $this->assertTrue($post->status);
-
-        /** featured image */
-        $this->assertEquals(
-            'https://wpbackend.tyteca.net/wp-content/uploads/2020/09/main-square-500x500-1.jpg',
-            $post->featured_image
-        );
-
-        /** dates */
-        $this->assertInstanceOf(Carbon::class, $post->published_at);
-        $this->assertEquals('2020-09-17 18:30:49', $post->published_at->format('Y-m-d H:i:s'));
-
-        $this->assertInstanceOf(Carbon::class, $post->created_at);
-        $this->assertEquals('2020-09-17 18:30:49', $post->created_at->format('Y-m-d H:i:s'));
-
-        $this->assertInstanceOf(Carbon::class, $post->updated_at);
-        $this->assertEquals('2020-09-17 22:08:48', $post->updated_at->format('Y-m-d H:i:s'));
-
-        /** category part */
-        $this->assertEquals(12, $post->postCategory->wp_id);
-        $this->assertEquals('Podmytube.com', $post->postCategory->name);
-        $this->assertEquals('podmytube', $post->postCategory->slug);
-
-        $this->assertTrue($post->save());
     }
 }

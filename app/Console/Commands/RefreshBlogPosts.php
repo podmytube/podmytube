@@ -38,6 +38,10 @@ class RefreshBlogPosts extends Command
      */
     public function handle()
     {
-        WordpressPosts::init()->getPostsFromRemote()->update();
+        $wpPosts = WordpressPosts::init()->getPostsFromRemote()->update();
+        $this->comment(
+            "Nb posts imported : {$wpPosts->importedPosts()}",
+            'v'
+        );
     }
 }
