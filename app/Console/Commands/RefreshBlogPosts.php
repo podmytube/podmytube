@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Modules\WordpressPosts;
 use Illuminate\Console\Command;
 
 class RefreshBlogPosts extends Command
@@ -37,6 +38,6 @@ class RefreshBlogPosts extends Command
      */
     public function handle()
     {
-        
+        WordpressPosts::init()->getPostsFromRemote()->update();
     }
 }

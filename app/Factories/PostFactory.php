@@ -2,6 +2,7 @@
 
 namespace App\Factories;
 
+use App\Exceptions\PostCategoryNotWantedHereException;
 use App\Post;
 use App\PostCategory;
 use Carbon\Carbon;
@@ -18,6 +19,9 @@ class PostFactory
     /** @var \App\PostCategory $postCategoryModel */
     protected $postCategoryModel;
 
+    protected $allowedCategories = [
+        'podmytube',
+    ];
 
     /** @var array $postData */
     protected $postData;
@@ -26,9 +30,8 @@ class PostFactory
     {
         $this->postData = $postData;
 
-        $this->postCategoryModel = $this->extractCategory();
-        if ($this->postCategoryModel === null) {
-            /** @todo */
+        if (!$this->HasItTheGoodCategory()) {
+            throw new PostCategoryNotWantedHereException("This post category should not appear on this app.");
         }
 
         $this->postModel = Post::create([
@@ -68,9 +71,9 @@ class PostFactory
      * extract the category from post.
      * filtering non-category before gettiong the first one.
      */
-    public function extractCategory(): PostCategory
+    public function HasItTheGoodCategory(): bool
     {
-        $availableCategories = array_values(
+        $postCategories = array_values(
             array_filter($this->postData['_embedded']['wp:term'][0], function ($item) {
                 if ($item['taxonomy'] === 'category') {
                     return true;
@@ -79,24 +82,30 @@ class PostFactory
             })
         );
 
-        if (!count($availableCategories)) {
-            return null;
+        if (!count($postCategories)) {
+            return false;
+        }
+
+        $firstCategorySlug = $postCategories[0]['slug'];
+        if (!in_array($firstCategorySlug, $this->allowedCategories)) {
+            return false;
         }
 
         /** check if category do exist */
-        $postCategoryModel = PostCategory::byWordpressId($availableCategories[0]['id']);
-        if ($postCategoryModel !== null) {
-            return $postCategoryModel;
+        $this->postCategoryModel = PostCategory::bySlug($firstCategorySlug);
+        if ($this->postCategoryModel !== null) {
+            return true;
         }
 
         /** if category does not exist => creating category */
-        return PostCategory::create(
+        $this->postCategoryModel = PostCategory::create(
             [
                 /** extracting first category from json */
-                'wp_id' => $availableCategories[0]['id'],
-                'name' => $availableCategories[0]['name'],
-                'slug' => $availableCategories[0]['slug'],
+                'wp_id' => $postCategories[0]['id'],
+                'name' => $postCategories[0]['name'],
+                'slug' => $postCategories[0]['slug'],
             ]
         );
+        return true;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Exceptions\PostCategoryNotWantedHereException;
 use App\Factories\PostFactory;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -14,11 +15,11 @@ class PostFactoryTest extends TestCase
     public function testMinimalChecking()
     {
         $postFactory = PostFactory::create(
-            json_decode(file_get_contents(__DIR__ . '/../fixtures/wpbackendsinglepost.json'), true)
+            json_decode(file_get_contents(__DIR__ . '/../fixtures/wpbackendSinglePost.json'), true)
         );
 
         $post = $postFactory->post();
-        $category = $postFactory->category();
+
         /** basic elements */
         $this->assertEquals(12, $post->wp_id);
         $this->assertEquals('fred', $post->author);
@@ -47,8 +48,17 @@ class PostFactoryTest extends TestCase
         $this->assertEquals('2020-09-17 22:08:48', $post->updated_at->format('Y-m-d H:i:s'));
 
         /** category part */
+        $category = $postFactory->category();
         $this->assertEquals(12, $category->wp_id);
         $this->assertEquals('Podmytube.com', $category->name);
         $this->assertEquals('podmytube', $category->slug);
+    }
+
+    public function testCategoryNotAllowedShouldBeRejected()
+    {
+        $this->expectException(PostCategoryNotWantedHereException::class);
+        PostFactory::create(
+            json_decode(file_get_contents(__DIR__ . '/../fixtures/wpbackendRejectedPost.json'), true)
+        );
     }
 }
