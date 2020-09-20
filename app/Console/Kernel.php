@@ -6,6 +6,7 @@ use App\Console\Commands\BatchPodcasts;
 use App\Console\Commands\ChannelUpdateCommand;
 use App\Console\Commands\CleanFreeChannelMedias;
 use App\Console\Commands\LastMediaPublishedChecker;
+use App\Console\Commands\RefreshBlogPosts;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -37,6 +38,9 @@ class Kernel extends ConsoleKernel
 
         /** Check media */
         $schedule->command(LastMediaPublishedChecker::class)->everySixHours('2');
+
+        /** Check blog post */
+        $schedule->command(RefreshBlogPosts::class)->everyFifteenMinutes();
 
         /** Building podcasts */
         $schedule->command(BatchPodcasts::class, ['all'])->hourlyAt('50');

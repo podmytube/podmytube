@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Exceptions\PostCategoryNotWantedHereException;
 use App\Factories\PostFactory;
+use App\Post;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -60,5 +61,14 @@ class PostFactoryTest extends TestCase
         PostFactory::create(
             json_decode(file_get_contents(__DIR__ . '/../fixtures/wpbackendRejectedPost.json'), true)
         );
+    }
+
+    public function testPostIsOnlyInsertedOnce()
+    {
+        PostFactory::create(json_decode(file_get_contents(__DIR__ . '/../fixtures/wpbackendSinglePost.json'), true));
+        PostFactory::create(json_decode(file_get_contents(__DIR__ . '/../fixtures/wpbackendSinglePostEdited.json'), true));
+        $this->assertEquals(1, Post::count());
+        $this->assertEquals("featured image post modified", Post::first()->title);
+        $this->assertEquals("featured-image-post", Post::first()->slug);
     }
 }

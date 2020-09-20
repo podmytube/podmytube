@@ -34,27 +34,42 @@ class PostFactory
             throw new PostCategoryNotWantedHereException("This post category should not appear on this app.");
         }
 
-        $this->postModel = Post::create([
-            'wp_id' => $this->postData['id'],
-            'author' => $this->postData['_embedded']['author'][0]['name'] ?? self::DEFAULT_AUTHOR,
-            'title' => $this->postData['title']['rendered'],
-            'slug' => $this->postData['slug'],
-            'featured_image' => $this->postData['_embedded']['wp:featuredmedia'][0]['source_url'] ?? self::DEFAULT_FEATURED_IMAGE,
-            'sticky' => $this->postData['sticky'],
-            'excerpt' => $this->postData['excerpt']['rendered'],
-            'content' => $this->postData['content']['rendered'],
-            'format' => $this->postData['format'],
-            'status' => true,
-            'published_at' => Carbon::parse($this->postData['date'], "Europe/Paris"),
-            'created_at' => Carbon::parse($this->postData['date'], "Europe/Paris"),
-            'updated_at' => Carbon::parse($this->postData['modified'], "Europe/Paris"),
-            'post_category_id' => $this->postCategoryModel->id,
-        ]);
+        $this->postModel = Post::byWordpressId($this->postId());
+        if ($this->postModel === null) {
+            $this->postModel = new Post();
+            $this->savePostModel();
+            return $this;
+        }
+
+        if (Carbon::parse($this->postData['modified'])
+            ->greaterThan($this->postModel->updated_at)
+        ) {
+            $this->savePostModel();
+        }
     }
 
     public static function create(...$params)
     {
         return new static(...$params);
+    }
+
+    protected function savePostModel()
+    {
+        $this->postModel->wp_id = $this->postId();
+        $this->postModel->author = $this->postData['_embedded']['author'][0]['name'] ?? self::DEFAULT_AUTHOR;
+        $this->postModel->title = $this->postTitle();
+        $this->postModel->slug = $this->postSlug();
+        $this->postModel->featured_image = $this->postData['_embedded']['wp:featuredmedia'][0]['source_url'] ?? self::DEFAULT_FEATURED_IMAGE;
+        $this->postModel->sticky = $this->postData['sticky'];
+        $this->postModel->excerpt = $this->postData['excerpt']['rendered'];
+        $this->postModel->content = $this->postData['content']['rendered'];
+        $this->postModel->format = $this->postData['format'];
+        $this->postModel->status = true;
+        $this->postModel->published_at = Carbon::parse($this->postData['date'], "Europe/Paris");
+        $this->postModel->created_at = Carbon::parse($this->postData['date'], "Europe/Paris");
+        $this->postModel->updated_at = $this->postLastUpdate();
+        $this->postModel->post_category_id = $this->postCategoryModel->id;
+        $this->postModel->save();
     }
 
     public function post()
@@ -107,5 +122,25 @@ class PostFactory
             ]
         );
         return true;
+    }
+
+    protected function postId()
+    {
+        return $this->postData['id'];
+    }
+
+    protected function postTitle()
+    {
+        return $this->postData['title']['rendered'];
+    }
+
+    protected function postSlug()
+    {
+        return $this->postData['slug'];
+    }
+
+    protected function postLastUpdate()
+    {
+        return Carbon::parse($this->postData['modified'], "Europe/Paris");
     }
 }
