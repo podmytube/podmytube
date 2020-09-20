@@ -5,6 +5,7 @@ namespace App\Console;
 use App\Console\Commands\BatchPodcasts;
 use App\Console\Commands\ChannelUpdateCommand;
 use App\Console\Commands\CleanFreeChannelMedias;
+use App\Console\Commands\LastMediaPublishedChecker;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -28,24 +29,30 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        /**
-         * cleaning free medias old episodes
-         */
+        /** cleaning free medias old episodes */
         $schedule->command(CleanFreeChannelMedias::class)->monthlyOn($day = 1, $time = '12:0');
-        /**
-         * updating channels
-         */
+
+        /** updating channels */
         $schedule->command(ChannelUpdateCommand::class, ['all'])->hourlyAt('2');
 
-        /**
-         * Building podcasts
-         */
+        /** Check media */
+        $schedule->command(LastMediaPublishedChecker::class)->everySixHours('2');
+
+        /** Building podcasts */
         $schedule->command(BatchPodcasts::class, ['all'])->hourlyAt('50');
 
-        /**
-         * monthly report on first monday
-         */
-        $schedule->command(SendMonthlyReports::class)->monthly()->days([1])->timezone('Europe/Paris')->at('11:00');
+        /** monthly report on first monday */
+        $schedule->command(SendMonthlyReports::class)->monthly()->days([1])->at('11:00');
+    }
+
+    /**
+     * Get the timezone that should be used by default for scheduled events.
+     *
+     * @return string
+     */
+    protected function scheduleTimezone(): string
+    {
+        return 'Europe/Paris';
     }
 
     /**

@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Channel;
-use App\Jobs\SendMonthlyReportJob;
 use App\Mail\MonthlyReportMail;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;

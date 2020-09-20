@@ -33,34 +33,9 @@ class WordpressPostsTest extends TestCase
         WordpressPosts::init()->update();
     }
 
-    public function testInsertingFromRemoteShouldBeOk()
+    public function testInsertingFromFileShouldBeOkToo()
     {
-        $expectedResult = [
-            'wp_id' => 12,
-            'author' => 'fred',
-            'title' => 'featured image post',
-            'slug' => 'testing',
-            'featured_image' => 'https://wpbackend.tyteca.net/wp-content/uploads/2020/09/main-square-500x500-1.jpg',
-            'excerpt' => '<p>This post is only a test.</p>' . PHP_EOL,
-            'format' => 'standard',
-            'status' => 1,
-            'published_at' => '2020-09-17 18:30:49',
-            'post_category_id' => '1',
-        ];
-
-        WordpressPosts::init()->getPostsFromRemote()->update();
-
-        /** this post is uncategorized */
-        $this->assertNull(Post::byWordpressId(18));
-
-        $this->assertGreaterThanOrEqual(1, Post::count());
-
-        /** checking the first post if available */
-        $insertedPost = Post::byWordpressId($expectedResult['wp_id']);
-        array_walk($expectedResult, function ($value, $key) use ($insertedPost) {
-            $this->assertEquals($value, $insertedPost->$key, "$key should be $value");
-        });
-        //$this->assertFalse($insertedPost->sticky, "Sticky should be false");
-        $this->assertStringContainsString('<p class="has-text-align-center">This post is only a test.</p>', $insertedPost->content);
+        WordpressPosts::init()->getPostsFromFile(__DIR__ . '/../fixtures/wpbackendSamplePosts.json')->update();
+        $this->assertCount(1, Post::all());
     }
 }
