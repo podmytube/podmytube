@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.blog')
 
 @section('pageTitle', __('medias.page_title_index') )
 
