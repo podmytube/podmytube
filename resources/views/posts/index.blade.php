@@ -10,7 +10,7 @@
     <div>
         <img src="{{ $post->featured_image }}">
     </div>
-    <a href="{{ route('post.show', $post) }}">{{ $post->title }}</a>
+    <a href="{{ route('post.show', $post) }}">{{ $post->title() }}</a>
     {!! $post->excerpt !!}
 </div>
 @endforeach
