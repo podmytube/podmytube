@@ -38,4 +38,9 @@ class Post extends Model
     {
         return html_entity_decode($this->title);
     }
+
+    public function lastUpdate()
+    {
+        return $this->updated_at->format("l jS \of F Y");
+    }
 }
