@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Channel;
 use App\User;
 use Artisan;
 use Tests\TestCase;
