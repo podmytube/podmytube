@@ -15,7 +15,7 @@
 
 // mine
 @import 'variables';
-@import 'signin', 'index', 'navbar', 'tchat';
+@import 'signin', 'index', 'navbar', 'tchat', 'blog';
 
 // podcast button
 .btn-purple,
@@ -35,7 +35,6 @@ body {
     background-color: white;
     margin-bottom: $footer-height;
     min-height: $navbar-height;
-    padding-top: 4rem;
 }
 
 html {
@@ -65,11 +64,7 @@ a:hover {
     color: black;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5 {
+.text-primary {
     color: $main-color;
 }
 
