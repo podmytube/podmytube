@@ -17,6 +17,9 @@ Route::get('privacy', function () {
 
 Route::domain('www.' . config('app.domain'))->group(function () {
     Route::get('/', 'IndexController@index')->name('www.index');
+
+    Route::resource('post', 'PostController')
+        ->only(['index', 'show']);
 });
 
 Route::domain('dashboard.' . config('app.domain'))->group(function () {
