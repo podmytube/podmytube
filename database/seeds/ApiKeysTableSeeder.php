@@ -13,13 +13,7 @@ class ApiKeysTableSeeder extends Seeder
      */
     public function run()
     {
-        if (env('DB_CONNECTION') === 'mysql') {
-            DB::statement('SET FOREIGN_KEY_CHECKS=0');
-            ApiKey::truncate();
-            DB::statement('SET FOREIGN_KEY_CHECKS=1');
-        } else {
-            DB::table('api_keys')->delete();
-        }
+        DB::table('api_keys')->delete();
 
         $data = [
             [
@@ -57,9 +51,17 @@ class ApiKeysTableSeeder extends Seeder
                 'comment' => 'lundesseptsalopards',
                 'created_at' => Carbon::now(),
             ],
-
-            
         ];
+
+        $index = 1;
+        $data = array_map(
+            function ($item) use (&$index) {
+                return array_merge($item, [
+                    'id' => $index++,
+                ]);
+            },
+            $data
+        );
 
         ApiKey::insert($data);
     }

@@ -11,10 +11,8 @@ class YoutubeChannel extends YoutubeCore
     /** @var array $results result of youtube query */
     protected $results;
 
-    public function forChannel(
-        string $channelId,
-        array $parts = ['id', 'snippet']
-    ): self {
+    public function forChannel(string $channelId, array $parts = ['id', 'snippet']): self
+    {
         $this->channelId = $channelId;
         $this->results = $this->defineEndpoint('/youtube/v3/channels')
             ->addParams(['id' => $channelId])
