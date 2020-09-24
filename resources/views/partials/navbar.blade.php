@@ -15,7 +15,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('post.index') }}">
+                <a class="nav-link @if( in_array(\Request::route()->getName(), ['post.index','post.show']))active @endif" href="{{ route('post.index') }}">
                     Blog
                 </a>
             </li>
