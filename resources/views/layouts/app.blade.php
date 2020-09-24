@@ -3,10 +3,10 @@
 @include ('partials.head')
 
 <body>
-    
+
     @include ('partials.navbar')
 
-    <div id="app" class="container">
+    <div id="app" class="container" style="padding-top: 120px;">
         @include ('partials.flash')
 
         @yield('content')
