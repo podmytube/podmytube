@@ -248,4 +248,9 @@ class Channel extends Model
             })
             ->get();
     }
+
+    public static function byChannelId(string $channelId)
+    {
+        return self::where('channel_id', '=', $channelId)->first();
+    }
 }

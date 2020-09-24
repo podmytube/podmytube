@@ -24,114 +24,110 @@ class PlansTableSeeder extends Seeder
     {
         DB::table('plans')->delete();
 
-        /**
+        $data = [
+            /**
          * forever free
          */
-        Plan::insert([
-            'id' => Plan::FREE_PLAN_ID,
-            'name' => 'forever_free',
-            'price' => 0,
-            'nb_episodes_per_month' => self::max_episodes_by_plan['free'],
-            'created_at' => Carbon::createFromDate(2017, 1, 1),
-            'updated_at' => Carbon::now(),
-        ]);
+            [
+                'name' => 'Forever free',
+                'slug' => 'forever_free',
+                'price' => 0,
+                'billing_yearly' => false,
+                'nb_episodes_per_month' => self::max_episodes_by_plan['free'],
+                'created_at' => Carbon::createFromDate(2017, 1, 1),
+                'updated_at' => Carbon::now(),
+            ],
 
-        /**
+            /**
          * 2017
          */
-        Plan::insert([
-            'id' => Plan::EARLY_PLAN_ID,
-            'name' => 'early_bird_2017',
-            'price' => 0,
-            'nb_episodes_per_month' =>
+            [
+                'name' => 'Early bird',
+                'slug' => 'early_bird',
+                'price' => 0,
+                'billing_yearly' => false,
+                'nb_episodes_per_month' =>
                 self::max_episodes_by_plan['vip_premium'],
-            'created_at' => Carbon::createFromDate(2017, 1, 1),
-            'updated_at' => Carbon::now(),
-        ]);
+                'created_at' => Carbon::createFromDate(2017, 1, 1),
+                'updated_at' => Carbon::now(),
+            ],
 
-        /**
+            /**
          * first premium subscribers --- monthly
          */
-        Plan::insert([
-            'id' => Plan::PROMO_MONTHLY_PLAN_ID,
-            'name' => 'promo_monthly',
-            'price' => 6,
-            'nb_episodes_per_month' =>
+            [
+                'name' => 'Promo 6 (monthly)',
+                'slug' => 'monthly_6',
+                'price' => 6,
+                'billing_yearly' => false,
+                'nb_episodes_per_month' =>
                 self::max_episodes_by_plan['standard_premium'],
-            'created_at' => Carbon::createFromDate(2017, 1, 1),
-            'updated_at' => Carbon::now(),
-        ]);
+                'created_at' => Carbon::createFromDate(2017, 1, 1),
+                'updated_at' => Carbon::now(),
+            ],
 
-        /**
+            /**
          * first premium subscribers --- yearly
          */
-        Plan::insert([
-            'id' => Plan::PROMO_YEARLY_PLAN_ID,
-            'name' => 'promo_yearly',
-            'price' => 66,
-            'billing_yearly' => true,
-            'nb_episodes_per_month' =>
+            [
+                'name' => 'Promo 66 (yearly)',
+                'slug' => 'yearly_66',
+                'price' => 66,
+                'billing_yearly' => true,
+                'nb_episodes_per_month' =>
                 self::max_episodes_by_plan['standard_premium'],
-            'created_at' => Carbon::createFromDate(2017, 1, 1),
-            'updated_at' => Carbon::now(),
-        ]);
+                'created_at' => Carbon::createFromDate(2017, 1, 1),
+                'updated_at' => Carbon::now(),
+            ],
 
-        /**
+            /**
          * September 2018
          */
-        Plan::insert([
-            'id' => Plan::WEEKLY_PLAN_ID,
-            'name' => 'weekly_youtuber',
-            'price' => 9,
-            'nb_episodes_per_month' =>
+            [
+                'name' => 'Weekly Youtuber',
+                'slug' => 'weekly_youtuber',
+                'price' => 9,
+                'billing_yearly' => false,
+                'nb_episodes_per_month' =>
                 self::max_episodes_by_plan['standard_premium'],
-            'created_at' => Carbon::createFromDate(2018, 9, 1),
-            'updated_at' => Carbon::now(),
-        ]);
+                'created_at' => Carbon::createFromDate(2018, 9, 1),
+                'updated_at' => Carbon::now(),
+            ],
 
-        Plan::insert([
-            'id' => Plan::DAILY_PLAN_ID,
-            'name' => 'daily_youtuber',
-            'price' => 29,
-            'nb_episodes_per_month' =>
-                self::max_episodes_by_plan['vip_premium'],
-            'created_at' => Carbon::createFromDate(2018, 9, 1),
-            'updated_at' => Carbon::now(),
-        ]);
+            [
+                'name' => 'Daily Youtuber',
+                'slug' => 'daily_youtuber',
+                'price' => 29,
+                'billing_yearly' => false,
+                'nb_episodes_per_month' => self::max_episodes_by_plan['vip_premium'],
+                'created_at' => Carbon::createFromDate(2018, 9, 1),
+                'updated_at' => Carbon::now(),
+            ],
 
-        /**
+            /**
          * Accropolis wart
          */
-        Plan::insert([
-            'id' => Plan::ACCROPOLIS_PLAN_ID,
-            'name' => 'accropolis_6_euros',
-            'price' => 6,
-            'nb_episodes_per_month' => self::max_episodes_by_plan['accropolis'],
-            'created_at' => Carbon::createFromDate(2017, 1, 1),
-            'updated_at' => Carbon::now(),
-        ]);
+            [
+                'name' => 'Spécial accropolis',
+                'slug' => 'accropolis_6_euros',
+                'price' => 6,
+                'billing_yearly' => false,
+                'nb_episodes_per_month' => self::max_episodes_by_plan['accropolis'],
+                'created_at' => Carbon::createFromDate(2017, 1, 1),
+                'updated_at' => Carbon::now(),
+            ],
+        ];
 
-        /**
-         * June 2020
-         */
-        Plan::insert([
-            'id' => Plan::WEEKLY_PLAN_PROMO_ID,
-            'name' => 'weekly_youtuber_promo',
-            'price' => 6,
-            'nb_episodes_per_month' =>
-                self::max_episodes_by_plan['standard_premium'],
-            'created_at' => Carbon::createFromDate(2020, 6, 14),
-            'updated_at' => Carbon::now(),
-        ]);
+        $index = 1;
+        $data = array_map(
+            function ($item) use (&$index) {
+                return array_merge($item, [
+                    'id' => $index++,
+                ]);
+            },
+            $data
+        );
 
-        Plan::insert([
-            'id' => Plan::DAILY_PLAN_PROMO_ID,
-            'name' => 'daily_youtuber_promo',
-            'price' => 25,
-            'nb_episodes_per_month' =>
-                self::max_episodes_by_plan['vip_premium'],
-            'created_at' => Carbon::createFromDate(2020, 6, 14),
-            'updated_at' => Carbon::now(),
-        ]);
+        Plan::insert($data);
     }
 }

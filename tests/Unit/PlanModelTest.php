@@ -37,13 +37,20 @@ class PlanModelTest extends TestCase
             Plan::WEEKLY_PLAN_ID,
             Plan::DAILY_PLAN_ID,
             Plan::ACCROPOLIS_PLAN_ID,
-            Plan::WEEKLY_PLAN_PROMO_ID,
-            Plan::DAILY_PLAN_PROMO_ID,
         ];
 
         $this->assertEqualsCanonicalizing(
             $expectedPlanIds,
             Plan::paying()->get()->pluck('id')->toArray()
         );
+    }
+
+    public function testPlanBySlugIsRunningFine()
+    {
+        $plan = Plan::bySlug('this_will_never_exists');
+        $this->assertNull($plan);
+
+        $plan = Plan::bySlug('forever_free');
+        $this->assertEquals(1, $plan->id);
     }
 }

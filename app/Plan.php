@@ -64,4 +64,9 @@ class Plan extends Model
             ->orderBy('price', 'ASC')
             ->get();
     }
+
+    public static function bySlug(string $slug)
+    {
+        return self::where('slug', '=', strtolower($slug))->first();
+    }
 }

@@ -4,7 +4,9 @@ namespace App\Factories;
 
 use App\Channel;
 use App\Events\ChannelRegistered;
+use App\Exceptions\ChannelAlreadyRegisteredException;
 use App\Exceptions\YoutubeChannelIdDoesNotExistException;
+use App\Exceptions\YoutubeNoResultsException;
 use App\Modules\YoutubeChannelId;
 use App\Plan;
 use App\Subscription;
@@ -14,6 +16,8 @@ use Illuminate\Support\Facades\DB;
 
 class ChannelCreationFactory
 {
+    public const DEFAULT_PLAN_SLUG = 'forever_free';
+
     /** @var \App\Channel $channel */
     protected $channel;
 
@@ -32,7 +36,7 @@ class ChannelCreationFactory
         $this->plan = $plan;
         /** at this time no plan is selectable to choose */
         if ($this->plan === null) {
-            $this->plan = Plan::find(Plan::FREE_PLAN_ID);
+            $this->plan = Plan::bySlug(self::DEFAULT_PLAN_SLUG);
         }
 
         /** extract channel id from url */
@@ -40,8 +44,15 @@ class ChannelCreationFactory
 
         /** check if channel exists in youtube */
         $youtubeChannel = new YoutubeChannel();
-        if (!$youtubeChannel->forChannel($this->channelId)->exists()) {
+        try {
+            $youtubeChannel->forChannel($this->channelId)->exists();
+        } catch (YoutubeNoResultsException $exception) {
             throw new YoutubeChannelIdDoesNotExistException("This channel id {$this->channelId} does not exists on youtube.");
+        }
+
+        $channelExist = Channel::byChannelId($this->channelId);
+        if ($channelExist !== null) {
+            throw new ChannelAlreadyRegisteredException("This channel id {$this->channelId} is already registered.");
         }
 
         DB::transaction(function () use ($youtubeChannel) {
@@ -51,7 +62,6 @@ class ChannelCreationFactory
                 'channel_id' => $this->channelId,
                 'channel_name' => $youtubeChannel->name(),
             ]);
-
 
             /** Creating subscription for channel */
             Subscription::create([
@@ -71,20 +81,5 @@ class ChannelCreationFactory
     public function channel()
     {
         return $this->channel;
-    }
-
-    protected function checkYoutubeChannelExists()
-    {
-        /**
-         * check channel exists
-         */
-        $result = ($this->youtubeChannelObj = new YoutubeChannel())
-            ->forChannel($channelId)
-            ->exists();
-
-        /**
-         * Update quota usage
-         */
-        $this->updateQuotaConsumption();
     }
 }
