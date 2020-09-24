@@ -52,7 +52,7 @@ class ChannelCreationFactory
 
         $channelExist = Channel::byChannelId($this->channelId);
         if ($channelExist !== null) {
-            throw new ChannelAlreadyRegisteredException("This channel id {$this->channelId} is already registered.");
+            throw new ChannelAlreadyRegisteredException("The channel {{$channelExist->channel_name}} with id {{$this->channelId}} is already registered.");
         }
 
         DB::transaction(function () use ($youtubeChannel) {

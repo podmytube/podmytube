@@ -35,7 +35,7 @@ class YoutubeChannelId
             )
         ) {
             throw new ChannelCreationInvalidChannelUrlException(
-                'flash_channel_id_is_invalid'
+                'This channel url is invalid.'
             );
         }
 

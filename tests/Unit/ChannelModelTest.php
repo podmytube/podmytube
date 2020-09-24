@@ -43,6 +43,7 @@ class ChannelModelTest extends TestCase
 
     public function testGettingChannelsByKindShouldWorkFine()
     {
+        $this->markTestIncomplete("You should search for another solution that allow to set a plan right from the ... channel creation factory ?");
         factory(Subscription::class, 5)->create(['plan_id' => Plan::FREE_PLAN_ID]);
         factory(Subscription::class, 2)->create(['plan_id' => Plan::EARLY_PLAN_ID]);
         $this->assertCount(5, Channel::freeChannels());
