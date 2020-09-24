@@ -8,7 +8,7 @@
 
     @include ('partials.navbar')
 
-    <div class="container header-textpart" style="margin-top:100px;">
+    <div class="container header-textpart" style="padding-top:120px">
         <div class="promise-text">
             Grow your <strong>Youtube business</strong> with a <strong>podcast</strong>.
         </div>
