@@ -47,6 +47,7 @@ class ChannelAccessTest extends TestCase
             $response->assertSeeText($channel->title());
         }
     }
+
     public function testChannelEditIsNotPossibleForGuest()
     {
         $channel = factory(Channel::class)->create();

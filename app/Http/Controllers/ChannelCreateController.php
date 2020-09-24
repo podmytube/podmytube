@@ -19,6 +19,7 @@ use App\Exceptions\ChannelCreationHasFailedException;
 use App\Exceptions\ChannelCreationInvalidChannelUrlException;
 use App\Exceptions\ChannelCreationInvalidUrlException;
 use App\Exceptions\SubscriptionHasFailedException;
+use App\Factories\ChannelCreationFactory;
 use App\Http\Requests\ChannelCreationRequest;
 use App\Modules\YoutubeChannelId;
 use App\Plan;
@@ -58,84 +59,15 @@ class ChannelCreateController extends Controller
      */
     public function store(ChannelCreationRequest $request)
     {
+        $validatedParams = $request->validated();
+
         try {
-            $validatedParams = $request->validated();
-            $channelId = YoutubeChannelId::fromUrl(
-                $validatedParams['channel_url']
-            )->get();
-
-            /**
-             * check channel exists
-             */
-            ($this->youtubeChannelObj = new YoutubeChannel())
-                ->forChannel($channelId)
-                ->exists();
-
-            /**
-             * Update quota usage
-             */
-            $this->updateQuotaConsumption();
-
-            /**
-             * Channel creating
-             */
-            try {
-                $channel = Channel::create([
-                    'user_id' => Auth::id(),
-                    'channel_id' => $channelId,
-                    'channel_name' => $this->youtubeChannelObj->name(),
-                ]);
-            } catch (QueryException $exception) {
-                throw new ChannelCreationHasFailedException(
-                    $exception->getMessage()
-                );
-            }
-
-            /**
-             * Creating subscription on one free plan (default)
-             * We will update it once paid.
-             */
-            try {
-                Subscription::create([
-                    'channel_id' => $channelId,
-                    'plan_id' => Plan::FREE_PLAN_ID,
-                ]);
-            } catch (QueryException $exception) {
-                throw new SubscriptionHasFailedException(
-                    $exception->getMessage()
-                );
-            }
-
-            event(new ChannelRegistered($channel));
-
-            /**
-             * All went fine
-             */
-            $request->session()->flash(
-                'message',
-                __('messages.flash_channel_has_been_created', [
-                    'channel' => $this->youtubeChannelObj->name(),
-                ])
-            );
-            $request->session()->flash('messageClass', 'alert-success');
-        } catch (ChannelCreationInvalidUrlException | ChannelCreationInvalidChannelUrlException $exception) {
-            $request
-                ->session()
-                ->flash('message', __('messages.flash_channel_id_is_invalid'));
-            $request->session()->flash('messageClass', 'alert-danger');
+            $factory = ChannelCreationFactory::create($this->user, $validatedParams['channel_url']);
         } catch (\Exception $exception) {
-            /**
-             * will catch
-             * - SubscriptionHasFailedException
-             * - ChannelCreationHasFailedException
-             * - YoutubeNoResultsException
-             */
-
-            $request->session()->flash('message', $exception->getMessage());
-            $request->session()->flash('messageClass', 'alert-danger');
-        } finally {
-            return redirect()->route('home');
+            redirect()->back()->withErrors(['message' => $exception->getMessage()]);
         }
+
+        return redirect()->route('home')->with('success', "Channel {$factory->channel()->name} has been successfully registered.");
     }
 
     /**

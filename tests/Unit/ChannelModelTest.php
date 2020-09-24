@@ -55,4 +55,11 @@ class ChannelModelTest extends TestCase
         $this->assertCount(2, Channel::earlyBirdsChannels());
         $this->assertCount(3, Channel::payingChannels());
     }
+
+    public function testByChannelIdIsRunningFine()
+    {
+        $this->assertNull(Channel::byChannelId('this_will_never_exists'));
+        $channel = factory(Channel::class)->create();
+        $this->assertEquals($channel->channel_id, Channel::byChannelId($channel->channel_id)->channel_id);
+    }
 }

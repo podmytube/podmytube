@@ -15,16 +15,12 @@ class CreatingPlansTable extends Migration
     {
         Schema::create('plans', function (Blueprint $table) {
             $table->unsignedTinyInteger('id')->autoIncrement();
-            $table->string('name',100);
+            $table->string('name', 100);
             $table->unsignedTinyInteger('price');
             $table->unsignedTinyInteger('billing_yearly')->default(false);
             $table->unsignedTinyInteger('nb_episodes_per_month');
             $table->timestamps();
         });
-
-        Artisan::call('db:seed', [
-            '--class' => PlansTableSeeder::class
-        ]);
     }
 
     /**
