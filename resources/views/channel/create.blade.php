@@ -4,21 +4,23 @@
 
 @section ('content')
 
-<div class="container"><!--section container-->
+<div class="container">
+    <!--section container-->
 
-	<h2> 
-    
-    	{{ __('messages.page_title_channel_create') }}
+    <h2>
 
-	</h2>
+        {{ __('messages.page_title_channel_create') }}
 
-	<hr> 
+    </h2>
 
-    <div class="container w-60 mt-2 mb-2"> <!--form container-->
+    <hr>
 
-    	<form method="POST" action="/channel">
+    <div class="container w-60 mt-2 mb-2">
+        <!--form container-->
 
-            {{ csrf_field() }}
+        <form method="POST" action="{{ route('channel.store') }}">
+
+            @csrf
 
             <div class="form-group">
                 <label for="channel_url">{{ __('messages.youtube_channel_url_label') }}</label>
@@ -32,16 +34,18 @@
                 <input class="form-check-input" type="checkbox" name="owner" value="1" required>
                 <div class="alert alert-warning">
                     {{ __('messages.channel_owner_warning_checkbox_label') }}
-                </div>              
+                </div>
             </div>
-        
+
             <div class="form-group text-center">
                 <button type="submit" class="btn btn-primary">{{ __('messages.button_submit_label') }}</button>
             </div>
         </form>
 
-    </div> <!--/form container-->
+    </div>
+    <!--/form container-->
 
-</div><!--/section container-->
+</div>
+<!--/section container-->
 
 @endsection
