@@ -20,7 +20,6 @@ class DatabaseSeeder extends Seeder
                 UsersTableSeeder::class,
                 CategoriesTableSeeder::class,
                 PlansTableSeeder::class,
-                ChannelTableSeeder::class,
                 StripePlansTableSeeder::class,
                 ApiKeysTableSeeder::class,
             ]);
