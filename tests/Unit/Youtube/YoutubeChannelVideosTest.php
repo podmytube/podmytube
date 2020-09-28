@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Youtube;
 
+use App\Exceptions\YoutubeNoResultsException;
 use App\Youtube\YoutubeChannelVideos;
 use App\Youtube\YoutubeQuotas;
 use Illuminate\Support\Facades\Artisan;
@@ -22,22 +23,16 @@ class YoutubeChannelVideosTest extends TestCase
      */
     public function testChannelWithNoVideos()
     {
-        ($videos = new YoutubeChannelVideos())
-            ->forChannel('UCq80IvL314jsE7PgYsTdw7Q')
-            ->videos();
-
-        $this->assertCount(0, $videos->videos());
+        $this->assertCount(0, YoutubeChannelVideos::forChannel('UCq80IvL314jsE7PgYsTdw7Q')->videos());
     }
 
     public function testHavingTheRightNumberOfVideos()
     {
+        $factory = YoutubeChannelVideos::forChannel(YoutubeCoreTest::PERSONAL_CHANNEL_ID, 50);
         $this->assertCount(
             2,
-            ($videos = new YoutubeChannelVideos())
-                ->forChannel(YoutubeCoreTest::PERSONAL_CHANNEL_ID, 50)
-                ->videos(),
-            'Expected number of videos for this channel was 2, obtained ' .
-                count($videos->videos())
+            $videos = $factory->videos(),
+            'Expected number of videos for this channel was 2, obtained ' . count($videos)
         );
         /**
          * quota usage
@@ -45,20 +40,20 @@ class YoutubeChannelVideosTest extends TestCase
          * obtaining videos list for uploads => 5
          */
         $this->assertEqualsCanonicalizing(
-            [$videos->apikey() => 5],
-            YoutubeQuotas::forUrls($videos->queriesUsed())->quotaConsumed()
+            [$factory->apikey() => 5],
+            YoutubeQuotas::forUrls($factory->queriesUsed())->quotaConsumed()
         );
     }
 
     public function testLimitingTheNumberOfResults()
     {
+        $factory = YoutubeChannelVideos::forChannel(YoutubeCoreTest::PEWDIEPIE_CHANNEL_ID, 50);
+
         $this->assertCount(
             50,
-            ($videos = new YoutubeChannelVideos())
-                ->forChannel(YoutubeCoreTest::PEWDIEPIE_CHANNEL_ID, 50)
-                ->videos(),
+            $videos = $factory->videos(),
             'Expected number of videos for this channel was 2, obtained ' .
-                count($videos->videos())
+                count($videos)
         );
 
         /**
@@ -67,8 +62,14 @@ class YoutubeChannelVideosTest extends TestCase
          * obtaining videos list for uploads => 5
          */
         $this->assertEqualsCanonicalizing(
-            [$videos->apikey() => 5],
-            YoutubeQuotas::forUrls($videos->queriesUsed())->quotaConsumed()
+            [$factory->apikey() => 5],
+            YoutubeQuotas::forUrls($factory->queriesUsed())->quotaConsumed()
         );
+    }
+
+    public function testingInvalidChannelShouldThrowException()
+    {
+        $this->expectException(YoutubeNoResultsException::class);
+        YoutubeChannelVideos::forChannel('ThisChannelWillNeverExists');
     }
 }

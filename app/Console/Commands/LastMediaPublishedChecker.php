@@ -67,20 +67,9 @@ class LastMediaPublishedChecker extends Command
                 "Checking channel {$channelToCheck->channel_name} ({$channelToCheck->channel_id}) .",
                 'v'
             );
-            ($videos = new YoutubeChannelVideos())
-                ->forChannel($channelToCheck->channel_id, 1)
-                ->videos();
 
-            if (!count($videos->videos())) {
-                $this->info(
-                    "Channel {$channelToCheck->channel_id} seems to have no video at all.",
-                    'v'
-                );
-                return;
-            }
-
-            $lastVideo = $videos->videos()[0];
-
+            $lastVideo = $this->getChannelLastVideo($channelToCheck);
+            dd($lastVideo);
             $this->info(
                 "Checking media {$lastVideo['media_id']} for {$channelToCheck->channel_name}",
                 'v'
@@ -110,10 +99,17 @@ class LastMediaPublishedChecker extends Command
                  */
                 return;
             }
-            $this->error(
-                "Channel {$channelToCheck->channel_name} is in trouble !",
-                'v'
-            );
+
+            /**
+             * If channel owner is filtering videos, check if this one is filtered
+             */
+            if ($this->VideoIsFiltered())
+                $this->error(
+                    "Channel {$channelToCheck->channel_name} is in trouble !",
+                    'v'
+                );
+
+
             $this->addChannelInTrouble($channelToCheck);
         });
 
@@ -122,6 +118,7 @@ class LastMediaPublishedChecker extends Command
                 count($this->channelsInTrouble),
             'v'
         );
+
         if (count($this->channelsInTrouble)) {
             /**
              * Send myself an email with channels in trouble
@@ -133,6 +130,8 @@ class LastMediaPublishedChecker extends Command
         $this->comment("It's all folks.", 'v');
     }
 
+
+    
     protected function addChannelInTrouble(Channel $channel)
     {
         $this->channelsInTrouble[] = $channel;

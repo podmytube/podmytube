@@ -44,6 +44,11 @@ abstract class YoutubeCore implements QuotasConsumer
         $this->params['part'] = [];
     }
 
+    public static function init(...$params)
+    {
+        return new static(...$params);
+    }
+
     /**
      * Will get a youtube api key from DB or from Config.
      * If one is obtained, same one is used for next queries.
@@ -268,11 +273,7 @@ abstract class YoutubeCore implements QuotasConsumer
     protected function cacheKey()
     {
         $separator = '_';
-        return 'youtube' .
-            $separator .
-            $this->endpoint() .
-            $separator .
-            http_build_query($this->params(), null, $separator);
+        return 'youtube' . $separator . $this->endpoint() . $separator . http_build_query($this->params(), '', $separator);
     }
 
     public function quotasUsed(): int

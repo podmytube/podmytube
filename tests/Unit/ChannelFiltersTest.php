@@ -7,12 +7,6 @@ use Tests\TestCase;
 
 class ChannelFiltersTest extends TestCase
 {
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->channel = factory(Channel::class)->create();
-    }
-
     public function testingHasFilterShouldReturnFalse()
     {
         $channel = factory(Channel::class)->create([

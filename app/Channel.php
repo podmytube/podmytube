@@ -75,21 +75,6 @@ class Channel extends Model
     }
 
     /**
-     * mutator in order to convert input received data from d/m/Y to Y-m-d before to send it in db
-     *
-     * @param date d/m/Y format waited
-     */
-    public function setRejectVideoTooOldAttribute($date)
-    {
-        $date = \DateTime::createFromFormat('d/m/Y', $date);
-        if ($date !== false) {
-            $this->attributes['reject_video_too_old'] = $date->format('Y-m-d');
-        } else {
-            $this->attributes['reject_video_too_old'] = null;
-        }
-    }
-
-    /**
      * Getter : channel_id
      */
     public function channelId()
@@ -186,12 +171,8 @@ class Channel extends Model
 
     public function hasFilter()
     {
-        return (isset($this->accept_video_by_tag) &&
-            $this->accept_video_by_tag !== null) ||
-            (isset($this->reject_video_by_keyword) &&
-                $this->reject_video_by_keyword !== null) ||
-            (isset($this->reject_video_too_old) &&
-                $this->reject_video_too_old !== null);
+        return $this->accept_video_by_tag !== null || $this->reject_video_by_keyword !== null ||
+            $this->reject_video_too_old !== null;
     }
 
     public function getFilters()

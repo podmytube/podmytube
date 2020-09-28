@@ -19,7 +19,7 @@ class YoutubeVideoTest extends TestCase
     public function testVideoIsAvailable()
     {
         $this->assertTrue(
-            (new YoutubeVideo(self::PROCESSED_VIDEO))->isAvailable()
+            YoutubeVideo::forMedia(self::PROCESSED_VIDEO)->isAvailable()
         );
     }
 

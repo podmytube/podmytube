@@ -11,6 +11,7 @@ class YoutubePlaylists extends YoutubeCore
 {
     /** @var string $channelId $youtube channel id */
     protected $channelId;
+    
     /** @var array $playlistIds ['uploads' => 'id1', 'xyz' => 'id2' ]*/
     protected $playlistIds = [];
 
