@@ -25,14 +25,18 @@ class YoutubeChannelVideos implements QuotasConsumer
      * @param string $channelId channel id wanted
      * @param int $limit max number of items wanted (0 = unlimited)
      */
-    public function forChannel(string $channelId, $limit = 0): self
+    private function __construct(string $channelId, $limit = 0)
     {
         $this->channelId = $channelId;
         $this->limit = $limit;
         $this->obtainUploadPlaylistIdBeingSmart();
         //$this->obtainUploadsPlaylistIdFromYoutube();
         $this->obtainVideos();
-        return $this;
+    }
+
+    public static function forChannel(...$params)
+    {
+        return new static(...$params);
     }
 
     /**

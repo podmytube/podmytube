@@ -8,8 +8,7 @@ class YoutubePlaylistItems extends YoutubeCore
 {
     /** @var string $playlistId $youtube playlist id */
     protected $playlistId;
-    /** @var int $cumulatedQuotasUsed */
-    protected $cumulatedQuotasUsed = 0;
+
     /** @var array $videos pile of video obtained from youtube api */
     protected $videos = [];
 

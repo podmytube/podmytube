@@ -41,6 +41,9 @@ class ChannelModelTest extends TestCase
         );
     }
 
+    /**
+     * @todo
+     */
     public function testGettingChannelsByKindShouldWorkFine()
     {
         $this->markTestIncomplete("You should search for another solution that allow to set a plan right from the ... channel creation factory ?");
@@ -63,4 +66,5 @@ class ChannelModelTest extends TestCase
         $channel = factory(Channel::class)->create();
         $this->assertEquals($channel->channel_id, Channel::byChannelId($channel->channel_id)->channel_id);
     }
+
 }

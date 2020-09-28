@@ -12,7 +12,7 @@ class YoutubeVideo extends YoutubeCore
     /** @var string $videoId */
     protected $videoId;
 
-    public function __construct(string $videoId)
+    private function __construct(string $videoId)
     {
         parent::__construct();
         $this->videoId = $videoId;
@@ -21,12 +21,21 @@ class YoutubeVideo extends YoutubeCore
             ->addParts(['id', 'snippet', 'status'])
             ->run()
             ->items();
-        return $this;
+    }
+
+    public static function forMedia(...$params)
+    {
+        return new static(...$params);
     }
 
     public function isAvailable()
     {
         return $this->item[0]['status']['uploadStatus'] === 'processed' &&
             $this->item[0]['snippet']['liveBroadcastContent'] === 'none';
+    }
+
+    public function tags()
+    {
+        return $this->item[0]['snippet']['tags'] ?? null;
     }
 }

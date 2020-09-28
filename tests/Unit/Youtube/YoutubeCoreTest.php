@@ -28,7 +28,8 @@ class YoutubeCoreTest extends TestCase
         parent::setUp();
         Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
         // Create a new instance from the Abstract Class
-        $this->abstractCore = new class extends YoutubeCore {
+        $this->abstractCore = new class extends YoutubeCore
+        {
             // Just a sample public function that returns this anonymous instance
             public function returnThis()
             {
