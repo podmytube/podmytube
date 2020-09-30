@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Quota extends Model
@@ -15,5 +16,25 @@ class Quota extends Model
     public function apiKey()
     {
         return $this->belongsTo(ApiKey::class, 'apikey_id', 'id');
+    }
+
+    public static function byScript(string $script)
+    {
+        return self::where('script', '=', $script)->get();
+    }
+
+    public static function saveScriptConsumption(string $scriptName, array $apikeysAndQuotas)
+    {
+        $dataToInsert = [];
+        foreach ($apikeysAndQuotas as $apikey => $quota) {
+            $apiKey = ApiKey::byApikey($apikey);
+            $dataToInsert[] = [
+                'apikey_id' => $apiKey->id,
+                'script' => $scriptName,
+                'quota_used' => $quota,
+                'created_at' => Carbon::now(),
+            ];
+        }
+        Quota::insert($dataToInsert);
     }
 }

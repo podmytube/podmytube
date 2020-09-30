@@ -167,4 +167,9 @@ class Media extends Model
     {
         return $query->whereDate('grabbed_at', '<', $date);
     }
+
+    public static function byMediaId(string $mediaId)
+    {
+        return self::where('media_id', '=', $mediaId)->first();
+    }
 }

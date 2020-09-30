@@ -2,22 +2,31 @@
 
 namespace App\Factories;
 
+use App\Interfaces\QuotasConsumer;
+use App\Quota;
 use App\Youtube\YoutubeChannelVideos;
+use App\Youtube\YoutubeQuotas;
 use App\Youtube\YoutubeVideo;
 
-class YoutubeLastVideoFactory
+class YoutubeLastVideoFactory implements QuotasConsumer
 {
+    public const SCRIPT_NAME = 'YoutubeLastVideoFactory.php';
+
     /** @var string $channel_id */
     protected $channel_id;
 
     /** @var array $lastMedia */
     protected $lastMedia = [];
 
+    /** @var array $queries */
+    protected $queries = [];
+
     private function __construct(string $channel_id)
     {
         $this->channel_id = $channel_id;
         $this->obtainLastMedia();
         $this->obtainTagsForMedia();
+        $this->saveQuotaConsumption();
     }
 
     public static function forChannel(...$params)
@@ -27,24 +36,50 @@ class YoutubeLastVideoFactory
 
     protected function obtainLastMedia()
     {
-        $this->lastMedia = YoutubeChannelVideos::forChannel($this->channel_id, 1)->videos()[0];
+        $factory = YoutubeChannelVideos::forChannel($this->channel_id, 1);
+        $this->lastMedia = $factory->videos()[0];
+        $this->queries = array_merge($this->queries, $factory->queriesUsed());
     }
 
     protected function obtainTagsForMedia()
     {
-        $this->lastMedia['tags'] = YoutubeVideo::forMedia(
+        $factory = YoutubeVideo::forMedia(
             $this->lastMedia['media_id'],
             ['id', 'status']
-        )->tags();
+        );
+        $this->lastMedia['tags'] = $factory->tags();
+        $this->queries = array_merge($this->queries, $factory->queriesUsed());
     }
 
-    public function quotasConsumed()
+    public function quotasConsumed(): array
     {
-        
+        return YoutubeQuotas::forUrls($this->queries)->quotaConsumed();
     }
 
+    public function queriesUsed(): array
+    {
+        return $this->queries;
+    }
+
+    /**
+     * this function will return the result of the collect about the channel.
+     * last media array will contain :
+     * - media_id (string)
+     * - playlist_id (string)
+     * - title (string)
+     * - description (string)
+     * - published_at (Carbon object)
+     * - tags (array)
+     * 
+     * @return array
+     */
     public function lastMedia()
     {
         return $this->lastMedia;
+    }
+
+    protected function saveQuotaConsumption()
+    {
+        return Quota::saveScriptConsumption(self::SCRIPT_NAME, $this->quotasConsumed());
     }
 }

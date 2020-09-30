@@ -66,5 +66,4 @@ class ChannelModelTest extends TestCase
         $channel = factory(Channel::class)->create();
         $this->assertEquals($channel->channel_id, Channel::byChannelId($channel->channel_id)->channel_id);
     }
-
 }

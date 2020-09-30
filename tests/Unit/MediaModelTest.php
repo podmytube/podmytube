@@ -109,4 +109,14 @@ class MediaModelTest extends TestCase
 
         $this->assertEquals($expectedResult, Media::grabbedAt()->count());
     }
+
+    public function testingByMediaIdShouldBeGood()
+    {
+        /** preparation */
+        $media = factory(Media::class)->create();
+
+        /** checking results */
+        $this->assertEquals($media->title, Media::byMediaId($media->media_id)->title);
+        $this->assertNull(Media::byMediaId('ThisIsNotAMediaId'));
+    }
 }

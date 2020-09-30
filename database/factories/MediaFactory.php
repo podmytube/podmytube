@@ -20,14 +20,17 @@ $factory->define(App\Media::class, function (Faker $faker, $attributes) {
     return [
         'media_id' => $faker->regexify('[a-zA-Z0-9-_]{8}'),
         'channel_id' =>
-            $attributes['channel_id'] ??
+        $attributes['channel_id'] ??
             function () {
                 return factory(Channel::class)->create()->channel_id;
             },
-        'title' => $faker->sentence($nbWords = '3', $variableNbWords = true),
-        'description' => $faker->text(300),
-        'length' => $faker->numberBetween(1000, 40000),
-        'duration' => $faker->numberBetween(30, 65535),
+        'title' => 'Lorem ipsum dolor sit amet',
+        'description' => <<<EOT
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+EOT,
+        'length' => $faker->numberBetween(100, 400),
+        'duration' => $faker->numberBetween(300, 600),
         'published_at' => $publishedAt,
         'grabbed_at' => $grabbedAt,
         'active' => true,
