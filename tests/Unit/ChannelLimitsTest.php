@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Channel;
 use App\Plan;
+use App\Subscription;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -22,8 +23,10 @@ class ChannelLimitsTest extends TestCase
         parent::setUp();
         Artisan::call('db:seed');
         $this->channel = factory(Channel::class)->create();
-        $this->channel->subscription->plan_id = Plan::bySlug('forever_free')->id;
-        $this->channel->save();
+        factory(Subscription::class)->create([
+            'channel_id' => $this->channel->channel_id,
+            'plan_id' => Plan::bySlug('forever_free')->id,
+        ]);
     }
 
     public function testChannelHasNotReachedItsLimits()

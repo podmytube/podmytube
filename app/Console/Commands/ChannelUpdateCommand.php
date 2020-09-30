@@ -82,8 +82,7 @@ class ChannelUpdateCommand extends Command
         /** for each channel */
         $this->channels->map(function ($channel) {
             try {
-                $channelVideos = new YoutubeChannelVideos();
-
+                $factory = YoutubeChannelVideos::forChannel($channel->channel_id, 50);
                 /** for each channel video */
                 array_map(function ($video) use ($channel) {
                     /** check if the video already exist in database */
@@ -103,28 +102,13 @@ class ChannelUpdateCommand extends Command
 
                     /** save it */
                     $media->save();
-                }, $channelVideos
-                    ->forChannel($channel->channel_id, 50)
-                    ->videos());
+                }, $factory->videos());
 
                 $apikeysAndQuotas = YoutubeQuotas::forUrls(
-                    $channelVideos->queriesUsed()
+                    $factory->queriesUsed()
                 )->quotaConsumed();
 
-                $dataToInsert = [];
-                foreach ($apikeysAndQuotas as $apikey => $quota) {
-                    $dataToInsert[] = [
-                        'apikey_id' => ApiKey::where(
-                            'apikey',
-                            '=',
-                            $apikey
-                        )->first()->id,
-                        'script' => pathinfo(__FILE__, PATHINFO_BASENAME),
-                        'quota_used' => $quota,
-                        'created_at' => Carbon::now(),
-                    ];
-                }
-                Quota::insert($dataToInsert);
+                Quota::saveScriptConsumption(pathinfo(__FILE__, PATHINFO_BASENAME), $apikeysAndQuotas);
             } catch (YoutubeNoResultsException $exception) {
                 $this->errors[] = $exception->getMessage();
             } finally {

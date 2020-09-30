@@ -4,7 +4,6 @@ namespace App;
 
 use App\Exceptions\YoutubeNoApiKeyAvailableException;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 
@@ -76,5 +75,10 @@ class ApiKey extends Model
             })
             // ordering by quota used asc
             ->sortBy('quotaUsed');
+    }
+
+    public static function byApikey(string $apikey): self
+    {
+        return self::where('apikey', '=', $apikey)->first();
     }
 }

@@ -16,6 +16,7 @@ use App\Traits\HasLimits;
 use App\Traits\HasManyMedias;
 use App\Traits\HasOneCategory;
 use App\Traits\HasOneThumb;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -173,6 +174,62 @@ class Channel extends Model
     {
         return $this->accept_video_by_tag !== null || $this->reject_video_by_keyword !== null ||
             $this->reject_video_too_old !== null;
+    }
+
+    public function hasAcceptOnlyTags()
+    {
+        return $this->accept_video_by_tag !== null;
+    }
+
+    /**
+     * check if tag is in the allowed tags
+     */
+    public function isTagInAcceptedOnlyTags(string $tag)
+    {
+        /** if channel has no accept only tag */
+        if (!$this->hasAcceptOnlyTags()) {
+            return true;
+        }
+
+        return in_array(
+            $tag,
+            array_map('trim', explode(',', $this->accept_video_by_tag))
+        );
+    }
+
+    public function isTagAccepted(string $tag)
+    {
+        /** no filter set all medias accepted */
+        if (!$this->hasFilter()) {
+            return true;
+        }
+
+        return $this->isTagInAcceptedOnlyTags($tag);
+    }
+
+    public function areTagsAccepted(array $tags)
+    {
+        /** no filter set all medias accepted */
+        if (!$this->hasFilter()) {
+
+            return true;
+        }
+
+        foreach ($tags as $tag) {
+            if ($this->isTagAccepted($tag)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function isDateAccepted(Carbon $date): bool
+    {
+        if ($this->reject_video_too_old === null) {
+            return true;
+        }
+        return $date->isAfter($this->reject_video_too_old);
     }
 
     public function getFilters()

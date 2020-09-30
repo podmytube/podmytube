@@ -1,5 +1,6 @@
 <?php
 
+use App\ApiKey;
 use App\Quota;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -18,12 +19,12 @@ use Faker\Generator as Faker;
 $factory->define(Quota::class, function (Faker $faker, array $attributes = []) {
     return [
         'apikey_id' =>
-            $attributes['apikey_id'] ??
+        $attributes['apikey_id'] ??
             function () {
-                return factory(App\ApiKey::class)->create()->id;
+                return factory(ApiKey::class)->create()->id;
             },
-        'script' => $faker->regexify('[a-z]{8}') . '.php',
-        'quota_used' => $faker->numberBetween(2000, 20000),
-        'created_at' => $attributes['created_at'] ?? Carbon::now(),
+        'script' => $attributes['script'] ?? $faker->regexify('[a-z]{8}') . '.php',
+        'quota_used' => $faker->numberBetween(10, 20),
+        'created_at' => Carbon::now(),
     ];
 });
