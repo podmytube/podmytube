@@ -75,7 +75,7 @@ class ChannelCreationFactoryTest extends TestCase
     public function testCreationWithInvalidYoutubeChannelShouldThrowException()
     {
         $this->expectException(YoutubeChannelIdDoesNotExistException::class);
-        ChannelCreationFactory::create($this->user, "https://www.youtube.com/channel/ThisChannelWillNeverExist?view_as=subscriber");
+        ChannelCreationFactory::create($this->user, 'https://www.youtube.com/channel/ThisChannelWillNeverExist?view_as=subscriber');
     }
 
     public function testTryingToRegisterSameChannelShouldThrowException()

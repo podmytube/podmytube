@@ -5,7 +5,6 @@ namespace App\Modules;
 use App\Channel;
 use App\Factories\YoutubeLastVideoFactory;
 use App\Media;
-use App\Youtube\YoutubeChannelVideos;
 use Carbon\Carbon;
 
 class LastMediaChecker
@@ -32,42 +31,45 @@ class LastMediaChecker
         $this->media = Media::byMediaId($this->lastMediaFromYoutube['media_id']);
     }
 
-    public static function for(...$params)
+    public static function forChannel(...$params)
     {
         return new static(...$params);
     }
 
+    /**
+     * determine if last media should be grabbed
+     */
     public function shouldMediaBeingGrabbed(): bool
     {
-        /** 
-         * if media has been posted recently, 
-         * if media is not filtered by tags
-         * if media is not filtered by date
-         * not necessary to raise an alert
-         */
-        if (
-            $this->mediaHasBeenPublishedRecently() &&
-            !$this->mediaIsExcludedByTag()
-        ) {
-            return false;
-        }
-
-
-
-        /** is it filtered by tags */
-        if ($this->mediaIsExcludedByTag()) {
-            return false;
-        }
-
         /** if already grabbed return false */
         if ($this->isTheMediaGrabbed()) {
+            return false;
+        }
+
+        /**
+         * To raise an alert media should
+         * - have been published long ago
+         * - not being filtered by tag
+         * - not being filtered by date
+         */
+
+        if (
+            $this->isMediaExcludedByTag() === true ||
+            $this->isMediaExcludedByDate() === true
+            ) {
+            /** filtered => no alert should not been grabbed */
+            return false;
+        }
+
+        if ($this->hasMediaBeenPublishedRecently() === true) {
+            /** media is too recent to be already processed */
             return false;
         }
 
         return true;
     }
 
-    public function mediaIsExcludedByTag(): bool
+    public function isMediaExcludedByTag(): bool
     {
         // this media has no tag so there is no filtering to apply
         if (!count($this->lastMediaFromYoutube['tags'])) {
@@ -79,24 +81,27 @@ class LastMediaChecker
 
     public function isMediaExcludedByDate(): bool
     {
-        dump($this->lastMediaFromYoutube['published_at'], $this->channel->isDateAccepted($this->lastMediaFromYoutube['published_at']));
         return !$this->channel->isDateAccepted($this->lastMediaFromYoutube['published_at']);
     }
 
-
     /**
      * check if media has been published recently.
-     * 
+     *
      * @return bool
      */
-    public function mediaHasBeenPublishedRecently(): bool
+    public function hasMediaBeenPublishedRecently(): bool
     {
         return $this->lastMediaFromYoutube['published_at']->isAfter($this->someHoursAgo);
     }
 
-    /** 
-     * check if media has been created in DB and grabbed 
-     * 
+    public function isMediaBeenPublishedSomeHoursAgo()
+    {
+        return !$this->hasMediaBeenPublishedRecently();
+    }
+
+    /**
+     * check if media has been created in DB and grabbed
+     *
      * @return bool
      */
     public function isTheMediaGrabbed(): bool
@@ -105,6 +110,6 @@ class LastMediaChecker
             return false;
         }
 
-        return  $this->media->hasBeenGrabbed();
+        return $this->media->hasBeenGrabbed();
     }
 }

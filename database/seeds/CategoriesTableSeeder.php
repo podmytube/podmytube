@@ -13,13 +13,7 @@ class CategoriesTableSeeder extends Seeder
      */
     public function run()
     {
-        if (env('DB_CONNECTION') === 'mysql') {
-            DB::statement('SET FOREIGN_KEY_CHECKS=0');
-            Category::truncate();
-            DB::statement('SET FOREIGN_KEY_CHECKS=1');
-        } else {
-            DB::table('categories')->delete();
-        }
+        DB::table('categories')->delete();
         /**
          * Parents categories
          */

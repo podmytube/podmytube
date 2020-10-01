@@ -14,33 +14,32 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        if (App::environment(['local']) && env('DB_CONNECTION') === 'mysql') {
-            DB::statement('SET FOREIGN_KEY_CHECKS=0');
-            User::truncate();
-            DB::statement('SET FOREIGN_KEY_CHECKS=1');
+        DB::table('users')->delete();
 
-            $data = [
-                [
-                    'user_id' => 1,
-                    'name' => 'Fred',
-                    'email' => 'frederick@podmytube.com',
-                    'password' =>
-                        '$2y$10$c5.Md.ZOCYFv70pPv/3nAeNSsXzV3ttFguIu.GzEFYhaijHh988se',
+        $data = [
+            [
+                'name' => 'Fred',
+                'email' => 'frederick@podmytube.com',
+                'password' => '$2y$10$c5.Md.ZOCYFv70pPv/3nAeNSsXzV3ttFguIu.GzEFYhaijHh988se',
+            ],
+            [
+                'name' => 'another fred',
+                'email' => 'frederick@tyteca.net',
+                'password' => '$2y$10$/6YHjNFwNuvXqq7023c3NedYMIi1vcjMj8r1UzIYmrBl5y.zVI.m2',
+            ],
+        ];
+        $index = 1;
+        $data = array_map(
+            function ($item) use (&$index) {
+                return array_merge($item, [
+                    'user_id' => $index++,
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now(),
-                ],
-                [
-                    'user_id' => 2,
-                    'name' => 'another fred',
-                    'email' => 'frederick@tyteca.net',
-                    //chat
-                    'password' =>
-                        '$2y$10$/6YHjNFwNuvXqq7023c3NedYMIi1vcjMj8r1UzIYmrBl5y.zVI.m2',
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now(),
-                ],
-            ];
-            User::insert($data);
-        }
+                ]);
+            },
+            $data
+        );
+
+        User::insert($data);
     }
 }

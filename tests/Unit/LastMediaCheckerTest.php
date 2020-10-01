@@ -4,8 +4,6 @@ namespace Tests\Unit;
 
 use App\Channel;
 use App\Modules\LastMediaChecker;
-use App\Plan;
-use App\Subscription;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
@@ -31,12 +29,12 @@ class LastMediaCheckerTest extends TestCase
         Artisan::call('db:seed');
     }
 
-    public function testingMediaHasBeenPublishedRecentlyShouldBeOk()
+    public function testingHasMediaBeenPublishedRecentlyShouldBeOk()
     {
         $channel = factory(Channel::class)->create(['channel_id' => self::PERSONAL_CHANNEL_ID]);
         $this->assertFalse(
-            LastMediaChecker::for($channel)->mediaHasBeenPublishedRecently(),
-            "Last video on my personnal channel has been published long ago."
+            LastMediaChecker::forChannel($channel)->hasMediaBeenPublishedRecently(),
+            'Last video on my personnal channel has been on 28/10/2015. '
         );
     }
 
@@ -44,8 +42,8 @@ class LastMediaCheckerTest extends TestCase
     {
         $channel = factory(Channel::class)->create(['channel_id' => self::PERSONAL_CHANNEL_ID]);
         $this->assertFalse(
-            LastMediaChecker::for($channel)->isTheMediaGrabbed(),
-            "Last video on my personnal channel has never been grabbed."
+            LastMediaChecker::forChannel($channel)->isTheMediaGrabbed(),
+            'Last video on my personnal channel has never been grabbed.'
         );
     }
 
@@ -53,24 +51,24 @@ class LastMediaCheckerTest extends TestCase
     {
         $channel = factory(Channel::class)->create(['channel_id' => self::PERSONAL_CHANNEL_ID]);
         $this->assertFalse(
-            LastMediaChecker::for($channel)->mediaIsExcludedByTag(),
-            "This channel does not reject any video (no filters) last media should not be excluded"
+            LastMediaChecker::forChannel($channel)->isMediaExcludedByTag(),
+            'This channel does not reject any video (no filters) last media should not be excluded'
         );
     }
 
     public function testMediaIsTooOldForThisChannel()
     {
-        /** 
-         * will reject all videos published before yesterday 
+        /**
+         * will reject all videos published before yesterday
          * mine has been published in 2015 => rejection
          */
         $channel = factory(Channel::class)->create([
             'channel_id' => self::PERSONAL_CHANNEL_ID,
-            'reject_video_too_old' => Carbon::parse("yesterday")
+            'reject_video_too_old' => Carbon::parse('yesterday'),
         ]);
         $this->assertTrue(
-            LastMediaChecker::for($channel)->isMediaExcludedByDate(),
-            "This channel is rejecting videos before yesterday. This one should be rejected too."
+            LastMediaChecker::forChannel($channel)->isMediaExcludedByDate(),
+            'This channel is rejecting videos before yesterday. This one should be rejected too.'
         );
     }
 
@@ -79,11 +77,11 @@ class LastMediaCheckerTest extends TestCase
         /** channel is accepting videos since 2009 */
         $channel = factory(Channel::class)->create([
             'channel_id' => self::PERSONAL_CHANNEL_ID,
-            'reject_video_too_old' => Carbon::parse("first day of 2009")
+            'reject_video_too_old' => Carbon::parse('last day of december 2008'),
         ]);
         $this->assertFalse(
-            LastMediaChecker::for($channel)->isMediaExcludedByDate(),
-            "This channel is rejecting videos before 2009. This one should be accepted."
+            LastMediaChecker::forChannel($channel)->isMediaExcludedByDate(),
+            'This channel is rejecting videos before 2009. This one should be accepted.'
         );
     }
 
@@ -94,8 +92,8 @@ class LastMediaCheckerTest extends TestCase
             'channel_id' => self::PERSONAL_CHANNEL_ID,
         ]);
         $this->assertFalse(
-            LastMediaChecker::for($channel)->isMediaExcludedByDate(),
-            "This channel is not rejecting any videos by date. This one should be accepted too."
+            LastMediaChecker::forChannel($channel)->isMediaExcludedByDate(),
+            'This channel is not rejecting any videos by date. This one should be accepted too.'
         );
     }
 
@@ -106,26 +104,50 @@ class LastMediaCheckerTest extends TestCase
             'accept_video_by_tag' => 'poney, cat',
         ]);
         $this->assertTrue(
-            LastMediaChecker::for($channel)->mediaIsExcludedByTag(),
-            "This channel is accepting only animals tag. Mine is not tagged with animals and should be excluded "
+            LastMediaChecker::forChannel($channel)->isMediaExcludedByTag(),
+            'This channel is accepting only animals tag. Mine is not tagged with animals and should be excluded '
         );
     }
 
-    public function testMediaShouldBeGrabbed()
+    public function testNoFiltersMediaShouldBeGrabbed()
     {
-        $this->markTestIncomplete("to be done");
-
-        factory(Subscription::class)->create(
-            [
-                'channel_id' => $this->channel->channel_id,
-                'plan_id' => Plan::bySlug('weekly_youtuber'),
-            ]
+        $channel = factory(Channel::class)->create([
+            'channel_id' => self::PERSONAL_CHANNEL_ID,
+        ]);
+        $this->assertTrue(
+            LastMediaChecker::forChannel($channel)->shouldMediaBeingGrabbed(),
+            'This channel is filtering nothing. Media should have been grabbed.'
         );
-        LastMediaChecker::for($this->channel)->shouldMediaBeingGrabbed();
     }
 
-    public function testMediaShouldHaveBeenGrabbed()
+    public function testMixingFiltersDevTagBefore2015MediaShouldBeGrabbed()
     {
-        $this->markTestIncomplete("to be done");
+        $channel = factory(Channel::class)->create([
+            'channel_id' => self::PERSONAL_CHANNEL_ID,
+            'accept_video_by_tag' => 'dev, doom, kingdom,', // last video of my channel has tags dev,podmytube
+            'reject_video_too_old' => Carbon::create(2015, 10, 1), // my last video has been published on 28/10/2015
+        ]);
+        $this->assertTrue(
+            LastMediaChecker::forChannel($channel)->shouldMediaBeingGrabbed(),
+            'This channel is accepting dev tag and period is good. Media should be accepted.'
+        );
+    }
+
+    public function testMixingFiltersFoolishTagBefore2015MediaShouldBeRejected()
+    {
+        $channel = factory(Channel::class)->create([
+            'channel_id' => self::PERSONAL_CHANNEL_ID,
+            'accept_video_by_tag' => 'foolish, stupid, awesome', // last video of my channel has tags dev,podmytube
+            'reject_video_too_old' => Carbon::create(2015, 10, 1), // my last video has been published on 28/10/2015
+        ]);
+
+        $this->assertTrue(
+            LastMediaChecker::forChannel($channel)->isMediaExcludedByTag(),
+            'My last video have none of this tag. Should be rejected.'
+        );
+        $this->assertFalse(
+            LastMediaChecker::forChannel($channel)->shouldMediaBeingGrabbed(),
+            'My last video have none of this tag. Should be rejected.'
+        );
     }
 }
