@@ -4,8 +4,8 @@ namespace Tests\Unit;
 
 use App\Channel;
 use Carbon\Carbon;
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class ChannelFiltersTest extends TestCase
 {
@@ -65,30 +65,41 @@ class ChannelFiltersTest extends TestCase
         // filtering by date should change nothing
         $channel = factory(Channel::class)->create([
             'accept_video_by_tag' => 'poney, cat, dog, chicken',
-            'reject_video_too_old' => Carbon::parse('10 years ago')
+            'reject_video_too_old' => Carbon::parse('10 years ago'),
         ]);
         $this->assertTrue($channel->areTagsAccepted(['cat', 'mouse']), 'cat is one of the tags that channel is accepting so it should be accepted.');
         $this->assertFalse($channel->areTagsAccepted(['window', 'house']), 'neither window nor house is in the list of allowed tags so it should be rejected.');
     }
 
-    public function testIsDateAccepted()
+    public function testChannelDoesNotCareOfOldVideos()
     {
-        /** 
-         * channel does not care about video too old 
+        /**
+         * channel does not care about video too old
          * all should be accepted
          */
         $channel = factory(Channel::class)->create();
-        $this->assertTrue($channel->isDateAccepted(Carbon::parse("first day of 2009")));
-        $this->assertTrue($channel->isDateAccepted(Carbon::now()));
+        $this->assertTrue(
+            $channel->isDateAccepted(Carbon::parse("first day of 2009")),
+            "Channel is accepting all videos even the old ones. This date should be accepted"
+        );
+        $this->assertTrue(
+            $channel->isDateAccepted(Carbon::now()),
+            "Channel is accepting all videos even the old ones. This date should be accepted"
+        );
+    }
 
-        /**
-         * channel is caring about old videos 
-         * only those published after december 2019 should be accepted
-         */
+    public function testChannelDoesNotWantOldestVideos()
+    {
         $channel = factory(Channel::class)->create([
-            'reject_video_too_old' => Carbon::parse("first day of 2020")
+            'reject_video_too_old' => Carbon::parse("last day of december 2008"),
         ]);
-        $this->assertTrue($channel->isDateAccepted(Carbon::now()));
-        $this->assertFalse($channel->isDateAccepted(Carbon::parse("first day of 2019")));
+        $this->assertTrue(
+            $channel->isDateAccepted(Carbon::now()),
+            "Channel wants only videos since 2009, now should be accepted."
+        );
+        $this->assertFalse(
+            $channel->isDateAccepted(Carbon::parse("first day of february 2008")),
+            "Channel wants only videos since 2009, this one should be rejected."
+        );
     }
 }

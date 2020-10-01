@@ -111,10 +111,10 @@ class Channel extends Model
     public function podcastUrl()
     {
         return getenv('PODCASTS_URL') .
-            DIRECTORY_SEPARATOR .
-            $this->channelId() .
-            DIRECTORY_SEPARATOR .
-            PodcastBuilder::FEED_FILENAME;
+        DIRECTORY_SEPARATOR .
+        $this->channelId() .
+        DIRECTORY_SEPARATOR .
+        PodcastBuilder::FEED_FILENAME;
     }
 
     /**
@@ -173,7 +173,7 @@ class Channel extends Model
     public function hasFilter()
     {
         return $this->accept_video_by_tag !== null || $this->reject_video_by_keyword !== null ||
-            $this->reject_video_too_old !== null;
+        $this->reject_video_too_old !== null;
     }
 
     public function hasAcceptOnlyTags()
