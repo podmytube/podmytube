@@ -4,6 +4,7 @@
 vendor
 node_modules
 .phpunit.result.cache
+.php_cs.cache
 # ===============================================
 # dashboard
 # ===============================================

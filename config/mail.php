@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Mail Driver
@@ -59,6 +58,8 @@ return [
         'address' => env('MAIL_FROM_ADDRESS', 'frederick@podmytube.com'),
         'name' => env('MAIL_FROM_NAME', 'Fred@Podmytube'),
     ],
+
+    'warningRecipient' => env('EMAIL_TO_WARN', 'frederick@podmytube.com'),
 
     /*
     |--------------------------------------------------------------------------
@@ -119,5 +120,4 @@ return [
             resource_path('views/vendor/mail'),
         ],
     ],
-
 ];
