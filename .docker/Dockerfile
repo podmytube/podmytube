@@ -21,8 +21,7 @@ RUN     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezo
 # git -- used by composer
 # curl is used to download npm
 RUN     apt-get update -y && \
-        apt-get install -y -qq sendmail \
-        libpng-dev \
+        apt-get install -y -qq libpng-dev \
         libjpeg-dev \
         supervisor \
         sqlite \
@@ -53,15 +52,18 @@ COPY    .docker/disablingShortTags.ini /usr/local/etc/php/conf.d/
 COPY    .docker/timezone.ini /usr/local/etc/php/conf.d/
 
 # creating appropriate user
-RUN         addgroup --gid $GROUP_ID dockeruser
-RUN         adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID dockeruser
+RUN     addgroup --gid $GROUP_ID dockeruser && \
+# not sure this one is still useful
+        adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID dockeruser && \
+# adding user to www-data
+        usermod -a -G www-data dockeruser
 
 # copying all files (but .dockerignore(d)) in /app
 COPY    . /app
 WORKDIR /app
 RUN 	mkdir -p bootstrap/cache && \
-        chown -R www-data:dockeruser storage bootstrap && \
-        chmod -R ug+rw storage bootstrap && \
+        chown -R www-data:www-data storage bootstrap public && \
+        chmod -R ug+rw storage bootstrap public && \
         chmod g+s storage/logs
 # Adding phpunit to Path
 ENV     PATH="/app/vendor/bin:${PATH}"
