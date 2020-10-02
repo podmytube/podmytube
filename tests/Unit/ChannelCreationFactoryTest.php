@@ -42,8 +42,7 @@ class ChannelCreationFactoryTest extends TestCase
         $this->assertInstanceOf(Channel::class, $channelFactory->channel());
         $this->assertEquals($this->myChannelId, $channelFactory->channel()->channel_id);
 
-        $this->assertEquals($this->user->id(), $channelFactory->channel()->user->id());
-        $this->assertEquals($this->user->id(), $channelFactory->channel()->user->id());
+        $this->assertEquals($this->user->id(), $channelFactory->user()->id());
 
         $this->assertEquals(Plan::FREE_PLAN_ID, $channelFactory->channel()->subscription->plan_id);
 
@@ -61,8 +60,7 @@ class ChannelCreationFactoryTest extends TestCase
         $this->assertInstanceOf(Channel::class, $channelFactory->channel());
         $this->assertEquals($this->myChannelId, $channelFactory->channel()->channel_id);
 
-        $this->assertEquals($this->user->id(), $channelFactory->channel()->user->id());
-        $this->assertEquals($this->user->id(), $channelFactory->channel()->user->id());
+        $this->assertEquals($this->user->id(), $channelFactory->user()->id());
 
         $this->assertEquals(
             $weeklyYoutuberPlan->id,

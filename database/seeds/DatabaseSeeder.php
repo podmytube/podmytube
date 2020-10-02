@@ -12,19 +12,30 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        if (!App::environment('production')) {
-            Model::unguard();
+        /**
+         * These seeders are used every time
+         */
+        Model::unguard();
 
+        $this->call([
+            UsersTableSeeder::class,
+            PlansTableSeeder::class,
+            CategoriesTableSeeder::class,
+            StripePlansTableSeeder::class,
+            ApiKeysTableSeeder::class,
+        ]);
+
+        /**
+         * this one should not be used in testing mode.
+         * In my tests I'm using my personal channel, 
+         * this seeder is doing same, 
+         */
+        if (!App::environment('testing')) {
             $this->call([
-                UsersTableSeeder::class,
-                PlansTableSeeder::class,
                 ChannelsTableSeeder::class,
-                CategoriesTableSeeder::class,
-                StripePlansTableSeeder::class,
-                ApiKeysTableSeeder::class,
             ]);
-
-            Model::reguard();
         }
+
+        Model::reguard();
     }
 }
