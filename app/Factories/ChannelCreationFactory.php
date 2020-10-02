@@ -82,4 +82,9 @@ class ChannelCreationFactory
     {
         return $this->channel;
     }
+
+    public function user()
+    {
+        return $this->user;
+    }
 }
