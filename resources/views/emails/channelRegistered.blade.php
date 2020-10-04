@@ -1,6 +1,6 @@
 @extends('emails.layout')
 
-@section('mailTitle', 'chaton' )
+@section('mailTitle', '' )
 
 @section ('content')
 

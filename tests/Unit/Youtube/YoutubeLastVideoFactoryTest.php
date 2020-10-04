@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Youtube;
 
+use App\Exceptions\YoutubeChannelHasNoVideoException;
 use App\Exceptions\YoutubeNoResultsException;
 use App\Factories\YoutubeLastVideoFactory;
 use App\Quota;
@@ -22,7 +23,7 @@ class YoutubeLastVideoFactoryTest extends TestCase
     public function testGettingLastVideoShouldBeGood()
     {
         /**
-         * this factory is getting the last channel media info+tags, 
+         * this factory is getting the last channel media info+tags,
          * then it is storing the total quota consumption
          */
         $factory = YoutubeLastVideoFactory::forChannel(YoutubeCoreTest::PERSONAL_CHANNEL_ID);
@@ -36,6 +37,12 @@ class YoutubeLastVideoFactoryTest extends TestCase
         $quotaModel = Quota::first();
         $this->assertEquals(10, $quotaModel->quota_used);
         $this->assertEquals(YoutubeLastVideoFactory::SCRIPT_NAME, $quotaModel->script);
+    }
+
+    public function testChannelWithNoVideosShouldThrowException()
+    {
+        $this->expectException(YoutubeChannelHasNoVideoException::class);
+        YoutubeLastVideoFactory::forChannel('UCq80IvL314jsE7PgYsTdw7Q'); // accropolis replays (strangely)
     }
 
     public function testGettingInvalidMediaShouldFail()
