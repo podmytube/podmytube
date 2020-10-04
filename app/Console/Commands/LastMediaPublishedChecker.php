@@ -3,7 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Channel;
-use App\Mail\LastMediaNotGrabbedMail;
+use App\Exceptions\YoutubeChannelHasNoVideoException;
+use App\Mail\ChannelIsInTroubleWarningMail;
 use App\Modules\LastMediaChecker;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -60,36 +61,27 @@ class LastMediaPublishedChecker extends Command
          * get last episode
          */
         $this->channelsToCheck->map(function ($channelToCheck) {
-            $this->info(
-                "Checking channel {$channelToCheck->channel_name} ({$channelToCheck->channel_id}) .",
-                'v'
-            );
+            $this->info("Checking channel {$channelToCheck->channel_name} ({$channelToCheck->channel_id}) .", 'v');
 
-            if (LastMediaChecker::forChannel($channelToCheck)->shouldMediaBeingGrabbed()) {
-                $this->addChannelInTrouble($channelToCheck);
+            try {
+                $factory = LastMediaChecker::forChannel($channelToCheck);
+                if ($factory->shouldMediaBeingGrabbed()) {
+                    $this->channelInTroubleMessages[] = "Channel {$channelToCheck->channel_name} ({$channelToCheck->channel_id}) last video has not been grabbed.";
+                }
+            } catch (YoutubeChannelHasNoVideoException $exception) {
+                $this->channelInTroubleMessages[] = "Channel {$channelToCheck->channel_name} ({$channelToCheck->channel_id}) has no video. It is strange.";
             }
         });
 
-        $this->info(
-            'Nb paying channels in trouble : ' .
-                count($this->channelsInTrouble),
-            'v'
-        );
+        $this->info('Nb paying channels in trouble : ' . count($this->channelInTroubleMessages), 'v');
 
-        if (count($this->channelsInTrouble)) {
+        if (count($this->channelInTroubleMessages)) {
             /**
              * Send myself an email with channels in trouble
              */
-            Mail::to(config('mail.warningRecipient'))->queue(
-                new LastMediaNotGrabbedMail($this->channelsInTrouble)
-            );
+            Mail::to(config('mail.warningRecipient'))->queue(new ChannelIsInTroubleWarningMail($this->channelInTroubleMessages));
         }
         $this->comment("It's all folks.", 'v');
-    }
-
-    protected function addChannelInTrouble(Channel $channel)
-    {
-        $this->channelsInTrouble[] = $channel;
     }
 
     /**

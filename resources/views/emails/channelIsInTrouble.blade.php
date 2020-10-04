@@ -8,14 +8,12 @@
     {{ __('emails.common_hello', ['name' => 'You']) }}
 </p>
 
-<p>
-    {{$mailTitle}}
-</p>
+<h1> {{$mailTitle}} </h1>
 
 <ul>
-    @foreach($channelsInTrouble as $channel)
+    @foreach($channelInTroubleMessages as $channelInTroubleMessage)
     <li>
-        {{$channel->channel_name}} ({{$channel->channel_id}}) is in trouble.
+        {{ $channelInTroubleMessage }}
     </li>
     @endforeach
 </ul>
