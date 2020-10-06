@@ -211,7 +211,6 @@ class Channel extends Model
     {
         /** no filter set all medias accepted */
         if (!$this->hasFilter()) {
-
             return true;
         }
 
@@ -287,6 +286,13 @@ class Channel extends Model
             ->get();
     }
 
+    /**
+     * get one channel by its id.
+     *
+     * @param string $channelId the channel_id you are looking for
+     *
+     * @return \App\Channel
+     */
     public static function byChannelId(string $channelId)
     {
         return self::where('channel_id', '=', $channelId)->first();
