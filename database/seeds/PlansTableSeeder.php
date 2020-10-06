@@ -46,8 +46,7 @@ class PlansTableSeeder extends Seeder
                 'slug' => 'early_bird',
                 'price' => 0,
                 'billing_yearly' => false,
-                'nb_episodes_per_month' =>
-                self::max_episodes_by_plan['vip_premium'],
+                'nb_episodes_per_month' => self::max_episodes_by_plan['vip_premium'],
                 'created_at' => Carbon::createFromDate(2017, 1, 1),
                 'updated_at' => Carbon::now(),
             ],
@@ -60,8 +59,7 @@ class PlansTableSeeder extends Seeder
                 'slug' => 'monthly_6',
                 'price' => 6,
                 'billing_yearly' => false,
-                'nb_episodes_per_month' =>
-                self::max_episodes_by_plan['standard_premium'],
+                'nb_episodes_per_month' => self::max_episodes_by_plan['standard_premium'],
                 'created_at' => Carbon::createFromDate(2017, 1, 1),
                 'updated_at' => Carbon::now(),
             ],
@@ -74,8 +72,7 @@ class PlansTableSeeder extends Seeder
                 'slug' => 'yearly_66',
                 'price' => 66,
                 'billing_yearly' => true,
-                'nb_episodes_per_month' =>
-                self::max_episodes_by_plan['standard_premium'],
+                'nb_episodes_per_month' => self::max_episodes_by_plan['standard_premium'],
                 'created_at' => Carbon::createFromDate(2017, 1, 1),
                 'updated_at' => Carbon::now(),
             ],
@@ -88,8 +85,7 @@ class PlansTableSeeder extends Seeder
                 'slug' => 'weekly_youtuber',
                 'price' => 9,
                 'billing_yearly' => false,
-                'nb_episodes_per_month' =>
-                self::max_episodes_by_plan['standard_premium'],
+                'nb_episodes_per_month' => self::max_episodes_by_plan['standard_premium'],
                 'created_at' => Carbon::createFromDate(2018, 9, 1),
                 'updated_at' => Carbon::now(),
             ],

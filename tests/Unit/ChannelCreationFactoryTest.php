@@ -37,7 +37,11 @@ class ChannelCreationFactoryTest extends TestCase
     {
         Event::fake();
         $validYoutubeUrl = "https://www.youtube.com/channel/{$this->myChannelId}?view_as=subscriber";
-        $channelFactory = ChannelCreationFactory::create($this->user, $validYoutubeUrl);
+        $channelFactory = ChannelCreationFactory::create(
+            $this->user,
+            $validYoutubeUrl,
+            Plan::bySlug('forever_free')
+        );
 
         $this->assertInstanceOf(Channel::class, $channelFactory->channel());
         $this->assertEquals($this->myChannelId, $channelFactory->channel()->channel_id);
@@ -55,7 +59,11 @@ class ChannelCreationFactoryTest extends TestCase
 
         $validYoutubeUrl = "https://www.youtube.com/channel/{$this->myChannelId}?view_as=subscriber";
         $weeklyYoutuberPlan = Plan::bySlug('weekly_youtuber');
-        $channelFactory = ChannelCreationFactory::create($this->user, $validYoutubeUrl, $weeklyYoutuberPlan);
+        $channelFactory = ChannelCreationFactory::create(
+            $this->user,
+            $validYoutubeUrl,
+            $weeklyYoutuberPlan
+        );
 
         $this->assertInstanceOf(Channel::class, $channelFactory->channel());
         $this->assertEquals($this->myChannelId, $channelFactory->channel()->channel_id);
@@ -73,13 +81,21 @@ class ChannelCreationFactoryTest extends TestCase
     public function testCreationWithInvalidYoutubeChannelShouldThrowException()
     {
         $this->expectException(YoutubeChannelIdDoesNotExistException::class);
-        ChannelCreationFactory::create($this->user, 'https://www.youtube.com/channel/ThisChannelWillNeverExist?view_as=subscriber');
+        ChannelCreationFactory::create(
+            $this->user,
+            'https://www.youtube.com/channel/ThisChannelWillNeverExist?view_as=subscriber',
+            Plan::bySlug('forever_free')
+        );
     }
 
     public function testTryingToRegisterSameChannelShouldThrowException()
     {
         factory(Channel::class)->create(['channel_id' => $this->myChannelId]);
         $this->expectException(ChannelAlreadyRegisteredException::class);
-        ChannelCreationFactory::create($this->user, "https://www.youtube.com/channel/{$this->myChannelId}?view_as=subscriber");
+        ChannelCreationFactory::create(
+            $this->user,
+            "https://www.youtube.com/channel/{$this->myChannelId}?view_as=subscriber",
+            Plan::bySlug('forever_free')
+        );
     }
 }

@@ -12,13 +12,9 @@
 
 namespace App\Http\Controllers;
 
-use App\ApiKey;
 use App\Factories\ChannelCreationFactory;
 use App\Http\Requests\ChannelCreationRequest;
 use App\Plan;
-use App\Quota;
-use App\Youtube\YoutubeQuotas;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class ChannelCreateController extends Controller
@@ -31,7 +27,6 @@ class ChannelCreateController extends Controller
      *
      * @return void
      */
-
     public function create()
     {
         $plans = [
@@ -50,11 +45,9 @@ class ChannelCreateController extends Controller
     public function store(ChannelCreationRequest $request)
     {
         $validatedParams = $request->validated();
-        try {
-            $factory = ChannelCreationFactory::create(Auth::user(), $validatedParams['channel_url']);
-        } catch (\Exception $exception) {
-            return redirect()->back()->withErrors(['message' => $exception->getMessage()]);
-        }
+
+        $factory = ChannelCreationFactory::create(Auth::user(), $validatedParams['channel_url'], Plan::bySlug('forever_free'));
+
         return redirect()->route('home')->with('success', "Channel {$factory->channel()->channel_name} has been successfully registered.");
     }
 }
