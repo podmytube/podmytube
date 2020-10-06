@@ -24,17 +24,14 @@
 
             <div class="form-group">
                 <label for="channel_url">{{ __('messages.youtube_channel_url_label') }}</label>
-                <a href="#" title="{{ __('messages.create_youtube_channel_url_help') }}">
-                    <img src="/images/glyphicons-195-question-sign.png" class="float-right">
-                </a>
                 <input id="channel_url" type="text" class="form-control" name="channel_url" required>
             </div>
 
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="owner" value="1" required>
-                <div class="alert alert-warning">
+            <div class="form-check alert alert-info">
+                <input class="form-check-input ml-1" type="checkbox" id="owner" name="owner" value="1" required>
+                <label for="owner" class="form-check-label mx-4">
                     {{ __('messages.channel_owner_warning_checkbox_label') }}
-                </div>
+                </label>
             </div>
 
             <div class="form-group text-center">
