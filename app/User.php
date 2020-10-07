@@ -64,7 +64,7 @@ class User extends Authenticatable implements HasLocalePreference
         return $this->superadmin === 1;
     }
 
-    public static function byEmail(string $email): self
+    public static function byEmail(string $email): ?self
     {
         return self::where('email', '=', $email)->first();
     }

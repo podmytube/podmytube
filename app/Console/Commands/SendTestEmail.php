@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Channel;
 use App\Mail\ChannelIsRegistered;
 use App\Mail\MonthlyReportMail;
 use App\Mail\Newsletter;
@@ -16,10 +17,10 @@ use Illuminate\Support\Facades\Mail;
 
 class SendTestEmail extends Command
 {
-    protected const MY_USER_ID = 1;
+    protected const DEFAULT_EMAIL = 'frederick@podmytube.com';
 
     /** @var string $signature The name and signature of the console command. */
-    protected $signature = 'email:test';
+    protected $signature = 'email:test {email=frederick@podmytube.com : email address to send email to}';
 
     /** @var string $description The console command description. */
     protected $description = 'This command is allowing me to send test email to myself (by default) and check if everything is fine.';
@@ -27,10 +28,13 @@ class SendTestEmail extends Command
     /** @var int $emailIdToSend email id to be sent */
     protected $emailIdToSend;
 
-    /** @var App\User $user  */
+    /** @var \App\User $user */
     protected $user;
 
-    /** App\Subscription $subscription subscription model */
+    /** @var \App\Channel $channel */
+    protected $channel;
+
+    /** @var \App\Subscription $subscription subscription model */
     protected $subscription;
 
     /**
@@ -46,11 +50,8 @@ class SendTestEmail extends Command
             1 => ['label' => 'A new user has successfully registered.'],
             2 => ['label' => 'A new channel has been registered.'],
             3 => ['label' => 'Monthly report for free plan.'],
-            4 => [
-                'label' =>
-                    'Monthly report for paying user (no upgrade message) .',
-            ],
-            5 => ['label' => 'Newsletter.'],
+            4 => ['label' => 'Monthly report for paying user (no upgrade message) .'],
+            //5 => ['label' => 'Newsletter.'],
         ];
     }
 
@@ -65,35 +66,34 @@ class SendTestEmail extends Command
             return;
         }
 
-        $this->user = User::find(self::MY_USER_ID);
+        // handle user with email
+        $this->fakeUser();
+
+        // handle user channel
+        $this->fakeChannel();
 
         switch ($this->emailIdToSend) {
             case 1:
                 $mailable = new WelcomeToPodmytube($this->user);
                 break;
             case 2:
-                $mailable = new ChannelIsRegistered(
-                    $this->user->channels->first()
-                );
+                $mailable = new ChannelIsRegistered($this->channel);
                 break;
             case 3: // monthly report with upgrade message
-                $this->createFakeChannelWithVideos(Plan::FREE_PLAN_ID, 3);
+                $this->fakeSubscription(Plan::bySlug('forever_free'));
                 $mailable = new MonthlyReportMail($this->subscription->channel);
                 break;
-            case 4: // monthly with upgrade message
-                $this->createFakeChannelWithVideos(Plan::WEEKLY_PLAN_ID, 5);
+            case 4: // monthly report with upgrade message
+                $this->fakeSubscription(Plan::bySlug('weekly_youtuber'));
                 $mailable = new MonthlyReportMail($this->subscription->channel);
                 break;
-            case 5:
+            /* case 5:
                 $mailable = new Newsletter($this->user);
-                break;
+                break; */
         }
 
         // send it to me with the right locale
         Mail::to($this->user)->queue($mailable);
-
-        /** cleaning */
-        $this->cleaning();
 
         $this->comment(
             'Email "' .
@@ -102,22 +102,42 @@ class SendTestEmail extends Command
         );
     }
 
-    protected function cleaning()
+    protected function fakeUser()
     {
-        if ($this->subscription) {
-            $this->subscription->channel->user->delete();
+        // if no user exists
+        $this->user = User::byEmail($this->argument('email'));
+        if ($this->user === null) {
+            $this->user = factory(User::class)->create(['email' => $this->argument('email')]);
         }
     }
 
-    protected function createFakeChannelWithVideos(int $planId, int $nbVideos)
+    protected function fakeChannel()
     {
-        $this->subscription = factory(Subscription::class)->create([
-            'plan_id' => $planId,
-        ]);
-        factory(Media::class, $nbVideos)->create([
-            'channel_id' => $this->subscription->channel->channel_id,
-            'published_at' => Carbon::now()->subMonth(),
-        ]);
+        // if this user has no channel
+        if (!$this->user->channels->count()) {
+            $this->channel = factory(Channel::class)->create([
+                'user_id' => $this->user->user_id
+            ]);
+            return true;
+        }
+        $this->channel = $this->user->channels->first();
+    }
+
+    protected function fakeSubscription(Plan $plan)
+    {
+        if ($this->channel->subscription === null) {
+            $this->subscription = factory(Subscription::class)->create([
+                'plan_id' => $plan->id,
+                'channel_id' => $this->channel->channel_id,
+            ]);
+            $nbMediasToCreate = $plan->nb_episodes_per_month + 1;
+            factory(Media::class, $nbMediasToCreate)->create([
+                'channel_id' => $this->channel->channel_id,
+                'published_at' => Carbon::now()->subMonth(),
+            ]);
+            return true;
+        }
+        $this->subscription = $this->channel->subscription;
     }
 
     /**
