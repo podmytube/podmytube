@@ -30,6 +30,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        /** generating sitemap */
+        $schedule->command(GenerateSitemapCommand::class)->daily();
+
         /** cleaning free medias old episodes */
         $schedule->command(CleanFreeChannelMedias::class)->monthlyOn($day = 1, $time = '12:0');
 
@@ -37,7 +40,7 @@ class Kernel extends ConsoleKernel
         $schedule->command(ChannelUpdateCommand::class, ['all'])->hourlyAt('2');
 
         /** Check media */
-        $schedule->command(LastMediaPublishedChecker::class)->everySixHours('2');
+        $schedule->command(LastMediaPublishedChecker::class)->everySixHours();
 
         /** Check blog post */
         $schedule->command(RefreshBlogPosts::class)->everyFifteenMinutes();

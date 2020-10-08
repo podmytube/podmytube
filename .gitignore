@@ -28,3 +28,4 @@ storage/database.sqlite
 # ===============================================
 package-lock.json
 _ide_helper.php
+public/sitemap.xml
