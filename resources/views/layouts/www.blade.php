@@ -1,11 +1,13 @@
 <!--made with passion by fred-->
-<!doctype html>
-<html prefix="og: http://ogp.me/ns#" lang="{{ app()->getLocale() }}">
+<!DOCTYPE html>
+<html lang="en">
 
 @include ('partials.head')
 
-<body data-spy="scroll" data-target="#navscroll" data-offset="0">
+<body class="leading-normal tracking-normal text-white gradient" style="font-family: 'Source Sans Pro', sans-serif;">
     
+    @include ('partials.navbar')
+
     @yield('content')
 
     @include ('partials.footer')
