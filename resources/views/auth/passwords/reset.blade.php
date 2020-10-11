@@ -12,7 +12,7 @@
 	<input type="hidden" name="token" value="{{ $token }}">
 
 	<div class="form-label-group">
-		<input type="email" name="email" id="inputEmail" class="form-control" placeholder="{{ __('messages.email_label') }}" value="{{ $email }}" required autofocus>
+		<input type="email" name="email" id="inputEmail" class="form-control" placeholder="{{ __('messages.email_label') }}" value="{{ old('email') }}" required autofocus>
 		<label for="inputEmail">{{ __('messages.email_label') }}</label>
 	</div>
 
