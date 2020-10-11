@@ -4,14 +4,15 @@
 
 @include ('partials.head')
 
-<body class="leading-normal tracking-normal text-white gradient" style="font-family: 'Source Sans Pro', sans-serif;">
-    
-    @include ('partials.navbar')
+<body class="bg-gray-100 leading-normal tracking-normal" style="font-family: 'Source Sans Pro', sans-serif;">
+    <div class="max-w-5xl mx-auto px-6 md:px-8">
 
-    @yield('content')
+        @include ('partials.navbar')
 
-    @include ('partials.footer')
+        @yield('content')
 
+        @include ('partials.footer')
+    </div>
 </body>
 
 </html>

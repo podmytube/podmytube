@@ -4,33 +4,7 @@
 
 @section('content')
 
-<!--Hero-->
-<div class="pt-24">
-
-	<div class="container px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center">
-		<!--Left Col-->
-		<div class="flex flex-col w-full md:w-2/5 justify-center items-start text-center md:text-left">
-			<p class="uppercase tracking-loose w-full">Host your podcast right from your youtube channel</p>
-			<h1 class="my-4 text-5xl font-bold leading-tight">From youtube to iTunes in seconds</h1>
-			<p class="leading-normal text-2xl mb-8">Sub-hero message, not too long and not too short. Make it just right!</p>
-		
-			
-
-			<button class="mx-auto lg:mx-0 hover:underline bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg">Subscribe</button>
-			
-		</div>
-		<!--Right Col-->
-		<div class="w-full md:w-3/5 py-6 text-center">
-			<img class="w-full md:w-4/5 z-50" src="hero.png">
-		</div>		
-	</div>
-
-</div>
-
-
 <main role="main" class="container" id="main">
-
-    @include ('partials.navbar')
 
     <div class="container header-textpart" style="padding-top:120px">
         <div class="promise-text">
@@ -44,7 +18,8 @@
         </div>
 
         <div>
-            <a class="btn btn-lg btn-success mt-5 text-uppercase" href="{{ route('register') }}" role="button">Get started free</a>
+            <a class="btn btn-lg btn-success mt-5 text-uppercase" href="{{ route('register') }}" role="button">Get
+                started free</a>
             <p class="text-muted">no credit card, cancel anytime</p>
         </div>
     </div>
@@ -57,49 +32,68 @@
             <div class="col-xs-12 col-sm-6 col-lg-4 featbox">
                 <i class="fas fa-chart-line fa-3x text-main-color" aria-hidden="true"></i>
                 <h3>Grow on others platforms.</h3>
-                <p>Your business is well implanted on Youtube, use the same content without effort or delay on <b>iTunes</b>, <b>Spotify</b>, <b>Soundcloud</b>, <b>Google Podcasts</b>, <b>Stitcher</b>, <b>Deezer</b> and all the audio platforms you want!</p>
+                <p>Your business is well implanted on Youtube, use the same content without effort or delay on
+                    <b>iTunes</b>, <b>Spotify</b>, <b>Soundcloud</b>, <b>Google Podcasts</b>, <b>Stitcher</b>,
+                    <b>Deezer</b> and all the audio platforms you want!</p>
             </div>
             <div class="col-xs-12 col-sm-6 col-lg-4 featbox">
                 <i class="fas fa-dollar-sign fa-3x text-main-color" aria-hidden="true"></i>
                 <h3>Find new customers.</h3>
-                <p><b>Podcast</b> is the medium which is <b>gaining popularity</b> every year since its inception. By broadcasting your show as a podcast too you will <b>naturally</b> increase your <b>customer base every year</b>. Podcast is the medium to be on !</p>
+                <p><b>Podcast</b> is the medium which is <b>gaining popularity</b> every year since its inception. By
+                    broadcasting your show as a podcast too you will <b>naturally</b> increase your <b>customer base
+                        every year</b>. Podcast is the medium to be on !</p>
             </div>
             <div class="col-xs-12 col-sm-6 col-lg-4 featbox">
                 <i class="fas fa-heart fa-3x text-main-color" aria-hidden="true"></i>
                 <h3>Podcast listeners are loyal</h3>
                 <p>
-                    If you plan to sell something in your show or if you only think to get a sponsor it will be a good argument.
+                    If you plan to sell something in your show or if you only think to get a sponsor it will be a good
+                    argument.
                 </p>
             </div>
             <div class="col-xs-12 col-sm-6 col-lg-4 featbox">
                 <i class="fas fa-comment fa-3x text-main-color" aria-hidden="true"></i>
                 <h3>Enter the intimacy of your audience.</h3>
-                <p>With a podcast, your <b>voice comes without filter</b> directly <b>into the ears</b> of your listeners. All will tell you, listening to a podcast <b>without all the distractions of a screen</b>, <b>creates</b> a very <b>strong link</b> between the host and his audience. Podmytube will help you build this link!</p>
+                <p>With a podcast, your <b>voice comes without filter</b> directly <b>into the ears</b> of your
+                    listeners. All will tell you, listening to a podcast <b>without all the distractions of a
+                        screen</b>, <b>creates</b> a very <b>strong link</b> between the host and his audience.
+                    Podmytube will help you build this link!</p>
             </div>
             <div class="col-xs-12 col-sm-6 col-lg-4 featbox">
                 <i class="fas fa-cogs fa-3x text-main-color" aria-hidden="true"></i>
                 <h3>Focus on what you really like.</h3>
-                <p>You don't want to hear about technique and you are right ! With Podmytube your <b>podcast will be updated</b> as soon as <b>you upload a video on Youtube</b>, without you <b>doing anything</b> and the sound quality of your show will be respected.</p>
+                <p>You don't want to hear about technique and you are right ! With Podmytube your <b>podcast will be
+                        updated</b> as soon as <b>you upload a video on Youtube</b>, without you <b>doing anything</b>
+                    and the sound quality of your show will be respected.</p>
             </div>
             <div class="col-xs-12 col-sm-6 col-lg-4 featbox">
                 <i class="fas fa-gift fa-3x text-main-color" aria-hidden="true"></i>
                 <h3>Podcast is simple, modern and addictive.</h3>
-                <p>For your fans too, simplicity is also essential. Once subscribed to your podcast on the device of their choice, each of your episode will be downloaded, added to its playlist and he will only have to press Play to listen to you.</p>
+                <p>For your fans too, simplicity is also essential. Once subscribed to your podcast on the device of
+                    their choice, each of your episode will be downloaded, added to its playlist and he will only have
+                    to press Play to listen to you.</p>
             </div>
             <div class="col-xs-12 col-sm-6 col-lg-4 featbox">
                 <i class="fas fa-filter fa-3x text-main-color" aria-hidden="true"></i>
                 <h3>You decide which episode is getting in or not.</h3>
-                <p>Podmytube is <b>the only service</b> that allows you to fully control the content of your podcast. One unsuitable episode ? A <b>tag filtration</b> system (direct from Youtube) allows you to avoid including it in your podcast. You want to host your podcast on your .com, it's possible without any additional cost.</p>
+                <p>Podmytube is <b>the only service</b> that allows you to fully control the content of your podcast.
+                    One unsuitable episode ? A <b>tag filtration</b> system (direct from Youtube) allows you to avoid
+                    including it in your podcast. You want to host your podcast on your .com, it's possible without any
+                    additional cost.</p>
             </div>
             <div class="col-xs-12 col-sm-6 col-lg-4 featbox">
                 <i class="fab fa-youtube fa-3x text-main-color" aria-hidden="true"></i>
                 <h3>Distinguish yourself.</h3>
-                <p>Every minute <b>400 hours of videos are uploaded on Youtube</b>. This on <b>more than 50 million channels</b>. Meanwhile Apple confirmed to have <b>500,000 active podcasts</b> registered on iTunes. It's much, certainly, but much less !!! Take your place now !</p>
+                <p>Every minute <b>400 hours of videos are uploaded on Youtube</b>. This on <b>more than 50 million
+                        channels</b>. Meanwhile Apple confirmed to have <b>500,000 active podcasts</b> registered on
+                    iTunes. It's much, certainly, but much less !!! Take your place now !</p>
             </div>
             <div class="col-xs-12 col-sm-6 col-lg-4 featbox">
                 <i class="fas fa-hdd fa-3x text-main-color" aria-hidden="true"></i>
                 <h3>Hosted.</h3>
-                <p>You can <b>smile</b>, it's impossible to be more simple. Once created, your podcast will then be hosted on PodMyTube's servers. <b>No bandwidth cost</b> ! <b>No hosting service fee</b> ! Everything is included. </p>
+                <p>You can <b>smile</b>, it's impossible to be more simple. Once created, your podcast will then be
+                    hosted on PodMyTube's servers. <b>No bandwidth cost</b> ! <b>No hosting service fee</b> ! Everything
+                    is included. </p>
             </div>
         </div>
     </div>
@@ -143,11 +137,13 @@
         <div class="row">
             <div class="col-lg-4">
                 <div class="bubble">
-                    "Podmytube is part of the weapons of new web entrepreneurs, it avoids having to make additional manipulations because it is 100% automatic!"
+                    "Podmytube is part of the weapons of new web entrepreneurs, it avoids having to make additional
+                    manipulations because it is 100% automatic!"
                 </div>
                 <div class="comments-avatar">
                     <a href="" class="pull-left ">
-                        <img class="img-fluid img-profile rounded-circle mx-auto mb-2" src="/images/cyro-torres.jpg" alt="" />
+                        <img class="img-fluid img-profile rounded-circle mx-auto mb-2" src="/images/cyro-torres.jpg"
+                            alt="" />
                         <div>
                             <div class="comments-name">Cyro</div>
                             <div class="comments-channel">
@@ -158,11 +154,13 @@
             </div>
             <div class="col-lg-4">
                 <div class="bubble">
-                    "Podmytube is an excellent service and of an irreproachable quality. Fred provides a regular feedback on the positioning and evolution of the podcast. Go there with your eyes closed!"
+                    "Podmytube is an excellent service and of an irreproachable quality. Fred provides a regular
+                    feedback on the positioning and evolution of the podcast. Go there with your eyes closed!"
                 </div>
                 <div class="comments-avatar">
                     <a href="" class="pull-left">
-                        <img class="img-fluid img-profile rounded-circle mx-auto mb-2" src="/images/jean-viet.jpg" alt="" />
+                        <img class="img-fluid img-profile rounded-circle mx-auto mb-2" src="/images/jean-viet.jpg"
+                            alt="" />
                         <div>
                             <div class="comments-name">Jean Viet</div>
                             <div class="comments-channel">
@@ -173,11 +171,13 @@
             </div>
             <div class="col-lg-4">
                 <div class="bubble">
-                    "Frédérick offers an automatic, quality, innovative and cheap podcast creation service. I do not even have to deal with this thing, it works by itself with every new YouTube video published."
+                    "Frédérick offers an automatic, quality, innovative and cheap podcast creation service. I do not
+                    even have to deal with this thing, it works by itself with every new YouTube video published."
                 </div>
                 <div class="comments-avatar">
                     <a href="" class="pull-left">
-                        <img class="img-fluid img-profile rounded-circle mx-auto mb-2" src="/images/la-pause-tech.jpg" alt="" />
+                        <img class="img-fluid img-profile rounded-circle mx-auto mb-2" src="/images/la-pause-tech.jpg"
+                            alt="" />
                         <div>
                             <div class="comments-name">Vito</div>
                             <div class="comments-channel">
@@ -199,10 +199,13 @@
             <div class="col-md-8">
                 <h3 class="text-white">About Podmytube</h3>
                 <p>
-                    <strong>Podmytube was founded during christmas 2016 after I discovered that Youtube was hosting great shows that I would have loved to find in podcast format.</strong>
+                    <strong>Podmytube was founded during christmas 2016 after I discovered that Youtube was hosting
+                        great shows that I would have loved to find in podcast format.</strong>
                 </p>
                 <p>
-                    My goal is to give Youtube hosts the opportunity to create a podcast just from the videos of their youtube channel. The whole process has been designed to make podcast management as simple as possible. So that you can focus on what you do the best "produce content"
+                    My goal is to give Youtube hosts the opportunity to create a podcast just from the videos of their
+                    youtube channel. The whole process has been designed to make podcast management as simple as
+                    possible. So that you can focus on what you do the best "produce content"
                 </p>
                 <p>
                     Don't wait,
@@ -213,7 +216,8 @@
                 </p>
             </div>
             <div class="col-md-4 text-center">
-                <img class="img-fluid img-profile rounded-circle mx-auto mb-2" src="images/small-fred-2020.jpg" alt="Frederick Tyteca" />
+                <img class="img-fluid img-profile rounded-circle mx-auto mb-2" src="images/small-fred-2020.jpg"
+                    alt="Frederick Tyteca" />
                 <h4 class="text-white">Frédérick Tyteca</h4>
             </div>
         </div>
@@ -223,8 +227,10 @@
 <section class="post_footer">
     <div class="container text-center">
         <ul class="list-inline">
-            <li class="list-inline-item"><a href="https://twitter.com/podmytube" class="nav-link" target="tab"> <i class="fab fa-twitter fa-2x text-main-color"></i> </a></li>
-            <li class="list-inline-item"><a href="https://www.facebook.com/Podmytube" class="nav-link" target="tab"> <i class="fab fa-facebook fa-2x text-main-color"></i> </a></li>
+            <li class="list-inline-item"><a href="https://twitter.com/podmytube" class="nav-link" target="tab"> <i
+                        class="fab fa-twitter fa-2x text-main-color"></i> </a></li>
+            <li class="list-inline-item"><a href="https://www.facebook.com/Podmytube" class="nav-link" target="tab"> <i
+                        class="fab fa-facebook fa-2x text-main-color"></i> </a></li>
         </ul>
     </div>
 </section>
