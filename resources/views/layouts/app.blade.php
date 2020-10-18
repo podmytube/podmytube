@@ -1,20 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 
-@include ('partials.head')
+@include('partials.head')
 
-<body class="leading-normal tracking-normal text-white gradient" style="font-family: 'Source Sans Pro', sans-serif;">
+<body class="antialiased bg-gray-900 p-4" style="font-family: 'Roboto', sans-serif;">
 
-    @include ('partials.navbar')
+    @include('partials.navbar')
 
-    <div id="app" class="container" style="padding-top: 120px;">
-        @include ('partials.flash')
+    @include ('partials.flash')
 
-        @yield('content')
+    @yield('content')
 
-        @include ('partials.footer')
-    </div>
-    <!--/main container-->
+    @include ('partials.footer')
+
 </body>
 
 </html>

@@ -4,16 +4,20 @@
 
 @section('content')
 
-<div class="container mt-4">
-    <h3>Privacy Policy of Podmytube</h3>
+<div class="mx-auto">
+    <div class="container pb-6 md:pb-12 mx-auto text-white">
+        <div class="text-center mt-12 mb-8">
+            <h3 class="text-3xl md:text-5xl text-white font-semibold">Privacy Policy of Podmytube</h3>
+        </div>
 
-    This Application collects some Personal Data from its Users.
-    <h4>Owner and Data Controller</h4>
+    <strong>Podmytube does not collect Personal Data from its Users.</strong>
+    
+    <h4>Service owner </h4>
 
     <p>451 chemin de la prairie</p>
     <p>06790 Aspremont - France</p>
 
-    Owner contact email: <a href="mailto:contact@podmytube.com"><i class="fas fa-envelope-square"></i> Contact </a>
+    Owner contact email: <a href="mailto:frederick@podmytube.com"><i class="fas fa-envelope-square"></i> Contact </a>
 
     <h3>Types of Data collected</h3>
 
@@ -213,6 +217,6 @@
 
         This privacy policy relates solely to this Application, if not stated otherwise within this document.
 
-        Latest update: March 7, 2020
+        Latest update: October 19, 2020
 </div>
 @endsection

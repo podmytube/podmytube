@@ -13,9 +13,11 @@ use Illuminate\Support\Facades\Mail;
 class LastMediaPublishedChecker extends Command
 {
     public const NB_HOURS_AGO = 6;
-    /**
-     * @var array App\Channels[] $channelsInTrouble
-     */
+
+    /** @var \Illuminate\Support\Collection $channelsToCheck */
+    protected $channelsToCheck;
+
+    /** @var array App\Channels[] $channelsInTrouble */
     protected $channelsInTrouble = [];
     /**
      * The name and signature of the console command.
@@ -52,10 +54,11 @@ class LastMediaPublishedChecker extends Command
          */
         $this->channelsToCheck = Channel::payingChannels();
 
-        /**
-         * add now tech
-         */
+        /** add now tech */
         $this->addNowTech();
+
+        /** remove accropolis */
+        $this->removeChannel('UCq80IvL314jsE7PgYsTdw7Q');
 
         /**
          * get last episode
@@ -93,5 +96,19 @@ class LastMediaPublishedChecker extends Command
         if ($nowtech !== null) {
             $this->channelsToCheck->push($nowtech);
         }
+    }
+
+    /**
+     * remove channel
+     * typically, accropolis has a problem on his channel but he does not answer my emails.
+     */
+    protected function removeChannel(string $channelIdToRemove)
+    {
+        $this->channelsToCheck->filter(function ($channel) use ($channelIdToRemove) {
+            if ($channel->channel_id == $channelIdToRemove) {
+                return false;
+            }
+            return true;
+        });
     }
 }

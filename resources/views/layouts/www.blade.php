@@ -5,7 +5,7 @@
 @include ('partials.head')
 
 <body class="bg-gray-100 leading-normal tracking-normal" style="font-family: 'Source Sans Pro', sans-serif;">
-    <div class="max-w-5xl mx-auto px-6 md:px-8">
+    <div class="max-w-5xl mx-auto">
 
         @include ('partials.navbar')
 

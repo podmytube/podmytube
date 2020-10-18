@@ -6,9 +6,13 @@ module.exports = {
   purge: [],
   theme: {
     extend: {},
+    width: {
+      custom: '31%'
+    }
   },
   variants: {
-    backgroundColor: ['responsive', 'hover', 'focus', 'active']
+    backgroundColor: ['responsive', 'hover', 'focus', 'active'],
+    borderColor: ['responsive', 'hover', 'focus']
   },
   plugins: [],
 }
