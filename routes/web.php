@@ -20,6 +20,9 @@ Route::domain('www.' . config('app.domain'))->group(function () {
 
     Route::resource('post', 'PostController')
         ->only(['index', 'show']);
+
+    Route::get('pricing', function () { return view('pricing'); })
+        ->name('pricing');
 });
 
 Route::domain('dashboard.' . config('app.domain'))->group(function () {
@@ -38,43 +41,26 @@ Route::domain('dashboard.' . config('app.domain'))->group(function () {
     Route::middleware(['auth'])->group(function () {
         Route::get('/home', 'HomeController@index')->name('home');
 
-        Route::get('setlocale/{locale}', function ($locale) {
-            if (in_array($locale, \Config::get('app.locales'))) {
-                Session::put('locale', $locale);
-            }
-            return redirect()->back();
-        });
+        Route::post('/channel/', 'ChannelCreateController@store')
+            ->name('channel.store');
 
-        Route::post('/channel/', 'ChannelCreateController@store')->name(
-            'channel.store'
-        );
-        Route::get('/channel/create', 'ChannelCreateController@create')->name(
-            'channel.create'
-        );
+        Route::get('/channel/create', 'ChannelCreateController@create')
+            ->name('channel.create');
 
-        Route::resource('channel', 'ChannelsController')->only([
-            'index',
-            'show',
-            'edit',
-            'update',
-        ]);
+        Route::resource('channel', 'ChannelsController')
+            ->only(['index', 'show', 'edit', 'update', ]);
 
-        Route::get(
-            '/change-password',
-            'Auth\UpdatePasswordController@index'
-        )->name('password.form');
+        Route::get('/change-password', 'Auth\UpdatePasswordController@index')
+            ->name('password.form');
 
-        Route::post(
-            '/change-password',
-            'Auth\UpdatePasswordController@update'
-        )->name('password.update');
+        Route::post('/change-password', 'Auth\UpdatePasswordController@update')
+            ->name('password.update');
 
         /**
          * Plans
          */
-        Route::get('/plans/{channel}', 'PlansController@index')->name(
-            'plans.index'
-        );
+        Route::get('/plans/{channel}', 'PlansController@index')
+            ->name('plans.index');
         Route::get('/success', 'SubscriptionResultController@success');
         Route::get('/canceled', 'SubscriptionResultController@failure');
 
@@ -91,29 +77,22 @@ Route::domain('dashboard.' . config('app.domain'))->group(function () {
         /**
          * Thumb
          */
-        Route::get('/channel/{channel}/thumbs', 'ThumbsController@index')->name(
-            'channel.thumbs.index'
-        );
-        Route::get(
-            '/channel/{channel}/thumbs/edit',
-            'ThumbsController@edit'
-        )->name('channel.thumbs.edit');
-        Route::post(
-            '/channel/{channel}/thumbs',
-            'ThumbsController@store'
-        )->name('channel.thumbs.store');
-        Route::patch(
-            '/channel/{channel}/thumbs',
-            'ThumbsController@update'
-        )->name('channel.thumbs.update');
+        Route::get('/channel/{channel}/thumbs', 'ThumbsController@index')
+            ->name('channel.thumbs.index');
+
+        Route::get('/channel/{channel}/thumbs/edit', 'ThumbsController@edit')
+            ->name('channel.thumbs.edit');
+
+        Route::post('/channel/{channel}/thumbs', 'ThumbsController@store')
+            ->name('channel.thumbs.store');
+
+        Route::patch('/channel/{channel}/thumbs', 'ThumbsController@update')
+            ->name('channel.thumbs.update');
 
         /**
          * User profile
          */
-        Route::resource('user', 'UsersController')->only([
-            'show',
-            'edit',
-            'update',
-        ]);
+        Route::resource('user', 'UsersController')
+            ->only(['show', 'edit', 'update', ]);
     });
 });
