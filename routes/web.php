@@ -23,6 +23,9 @@ Route::domain('www.' . config('app.domain'))->group(function () {
 
     Route::get('pricing', function () { return view('pricing'); })
         ->name('pricing');
+
+    Route::get('about', function () { return view('about'); })
+        ->name('about');
 });
 
 Route::domain('dashboard.' . config('app.domain'))->group(function () {

@@ -5,7 +5,7 @@
 
 @section('content')
 
-<div class="container">
+<div class="container mx-auto">
 	@include ('partials.channels')
 </div>
 <!--/home main container-->

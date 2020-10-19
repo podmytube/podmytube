@@ -14,7 +14,7 @@
         </div>
         <div id="mobile-nav" class="hidden text-center w-full flex-grow md:text-left md:pt-1 md:flex md:items-center md:w-auto">
             <div class="text-sm md:flex-grow">
-                <a href="/pricing"
+                <a href="{{ route('pricing') }}"
                     class="block mt-4 md:inline-block md:mt-0 text-white md:border-b-2 md:border-transparent md:hover:border-white md:hover:border-b-2 mr-0 md:mr-4">
                     Pricing
                 </a>
@@ -22,9 +22,13 @@
                     class="block mt-4 md:inline-block md:mt-0 text-white md:border-b-2 md:border-transparent md:hover:border-white md:hover:border-b-2 mr-0 md:mr-4">
                     Blog
                 </a>
+                <a href="{{ route('about') }}"
+                    class="block mt-4 md:inline-block md:mt-0 text-white md:border-b-2 md:border-transparent md:hover:border-white md:hover:border-b-2 mr-0 md:mr-4">
+                    About
+                </a>
             </div>
             @guest
-            <div id="login-signup" class="">
+            <div id="login-signup">
                 <a href="{{ route('login') }}"
                     class="block mt-4 md:inline-block md:mt-0 text-sm text-white md:border-b-2 md:border-transparent md:hover:border-white md:hover:border-b-2 mr-0 md:mr-4">
                     Log In
@@ -35,8 +39,19 @@
             </div>
             @else
             <div id="signed-in">
-                <a href="{{ route('root') }}"
-                    class="block mt-4 md:inline-block md:mt-0 text-sm font-semibold text-white md:border-b-2 md:border-transparent md:hover:border-white md:hover:border-b-2 mr-4">
+                <a href="{{ route('channel.create') }}"
+                    class="block mt-4 border border-white rounded-lg md:inline-block md:mt-0 text-sm font-semibold text-white p-2 hover:bg-white hover:text-gray-900 md:mr-4">
+                    Add your podcast
+                </a>
+                <a href="{{ route('logout') }}" 
+                class="block mt-4 md:inline-block md:mt-0 text-sm font-semibold text-white md:border-b-2 md:border-transparent md:hover:border-white md:hover:border-b-2 md:mr-4"
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    Logout</a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        {{ csrf_field() }}
+                    </form>
+                <a href="{{ route('home') }}"
+                    class="block mt-4 md:inline-block md:mt-0 text-sm font-semibold text-white md:border-b-2 md:border-transparent md:hover:border-white md:hover:border-b-2">
                     Your Dashboard →
                 </a>
             </div>
@@ -52,7 +67,7 @@
                 } else {
                     menuLinks.style.display = "none";
                 }
-            });        
+            });
         });
     </script>
 </header>

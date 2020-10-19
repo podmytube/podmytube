@@ -5,6 +5,7 @@ namespace App\Console;
 use App\Console\Commands\BatchPodcasts;
 use App\Console\Commands\ChannelUpdateCommand;
 use App\Console\Commands\CleanFreeChannelMedias;
+use App\Console\Commands\GenerateSitemapCommand;
 use App\Console\Commands\LastMediaPublishedChecker;
 use App\Console\Commands\RefreshBlogPosts;
 use Illuminate\Console\Scheduling\Schedule;
@@ -31,7 +32,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         /** generating sitemap */
-        $schedule->command(GenerateSitemapCommand::class)->daily();
+        $schedule->command(GenerateSitemapCommand::class)->hourly();
 
         /** cleaning free medias old episodes */
         $schedule->command(CleanFreeChannelMedias::class)->monthlyOn($day = 1, $time = '12:0');

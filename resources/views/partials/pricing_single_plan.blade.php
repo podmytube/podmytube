@@ -29,7 +29,7 @@
         <!-- call to action -->
         <div class="text-center mt-12">
             <a class="w-full text-lg sm:text-xl block rounded-lg text-white focus:outline-none bg-gray-900 focus:bg-gray-700 hover:bg-gray-700 font-semibold px-6 py-3 sm:py-4"
-                href="https://gum.co/LsTNA/launchday">
+                href="{{ route('register') }}">
                 Register now
             </a>
         </div>
