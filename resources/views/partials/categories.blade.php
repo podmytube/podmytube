@@ -1,6 +1,4 @@
-<option value="">
-    {{ __('categories.select_your_category') }}
-</option>
+<option value="">Choose a category</option>
 @if ( count ($categories) > 0 )
     @foreach ($categories as $category)
         <option value="{{ $category->id }}"{{  $channelSelectedCategory === $category->id ? " selected" : "" }}>

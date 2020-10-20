@@ -1,6 +1,6 @@
 @include ('partials.tchat')
 
-<div class="bg-red-300 mt-12 text-gray-900">
+<div class="bg-red-300 mt-24 text-gray-900">
     <div class="container mx-auto p-6 md:pt-10 md:pb-10">
         <div class="border-gray-900 border-b">
             <div class="-mx-3 pb-5">
