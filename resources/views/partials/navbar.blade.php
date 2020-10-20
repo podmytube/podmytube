@@ -1,7 +1,7 @@
 <header class="container mx-auto sticky top-0 z-20 bg-gray-900" style="opacity:0.95;">
     <nav id="nav" class="flex items-center justify-between flex-wrap sm:pt-6 sm:pb-6 md:pt-6 md:pb-6 lg:pt-10 lg:pb-10">
         <div class="flex items-center flex-shrink-0 text-white mr-8">
-            <a href="/"><img src="/images/podmytube-logo-2020-150x53.png"></a>
+            <a href="{{ route('www.index') }}"><img src="/images/podmytube-logo-2020-150x53.png"></a>
         </div>
         <div class="block md:hidden">
             <button id="mobile-nav-trigger"

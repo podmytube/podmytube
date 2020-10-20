@@ -297,4 +297,9 @@ class Channel extends Model
     {
         return self::where('channel_id', '=', $channelId)->first();
     }
+
+    public function isFree()
+    {
+        return $this->subscription->plan_id == Plan::FREE_PLAN_ID;
+    }
 }

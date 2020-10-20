@@ -3,15 +3,14 @@
 @section('pageTitle', __('messages.page_title_channel_thumbs_index') )
 
 @section ('content')
+<div class="container mx-auto text-white">
+    <h2 class="text-3xl md:text-5xl text-white font-semibold">
+        Update cover for {{ $channel->title() }}
+    </h2>
 
-<div class="container" style="margin:0 auto;width:80%">
-    <h2>
-		Update cover for {{ $channel->title() }}
-	</h2>
-
-    <form method="POST" action="{{ route('channel.thumbs.store', $channel) }}" enctype="multipart/form-data">
+    <form class="max-w-5xl" id="edit-cover-form" method="POST" action="{{ route('channel.thumbs.store', $channel) }}" enctype="multipart/form-data">
         {{ csrf_field() }}
-        <div class="form-group">
+        <div class="">
             <p>
                 <b>Image should meet iTunes requirements !</b> 
                 <ul>
@@ -21,14 +20,17 @@
                     <li>File size must be less than 5Mb (using jpg format will help)</li>
                 </ul>
             </p>
+
             <label for="new_thumb_file">{{__('messages.thumbs_edit_new_thumb_form_label')}}</label><br />
-            <input type="file" name="new_thumb_file" id="new_thumb_file" />
+            <input type="file" name="new_thumb_file" id="new_thumb_file" class="" />
         </div>
 
-        <div class="mx-auto" style="width:200px">
-            <button type="submit" id="btnSubmit" class="btn btn-primary">{{ __('messages.button_update_label') }}</button>
-            <a href="{{ route('channel.thumbs.index', $channel->channel_id) }}" class="btn btn-secondary">
-                {{ __('messages.button_cancel_label') }}
+        <div class="p-6 max-w-lg flex content-center">
+            <a href="#" onclick="event.preventDefault(); document.getElementById('edit-cover-form').submit();">
+                <button type="button" id="btnSubmit" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-900 font-bold py-2 px-4 rounded-l-lg">Update</button>
+            </a>
+            <a href="{{ route('home') }}">
+                <button type="button" class="flex-1 bg-gray-800 hover:bg-gray-700 text-gray-100 font-bold py-2 px-4 rounded-r-lg">Cancel</button>
             </a>
         </div>
     </form>
