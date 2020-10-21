@@ -1,34 +1,36 @@
+
 @if(!empty($errors) && (session('success') || session('info') || session('warning') || $errors->any()))
-<div class="mt-2 mb-0">
+<div class="container items-center mx-auto">
 	@if(session('success'))
-	<div class="alert alert-success alert-block">
-		<button type="button" class="close" data-dismiss="alert">×</button>
-		{{ session("success") }}
+	<div class="bg-gray-100 border rounded-lg border-gray-500 text-gray-900 px-4 py-3" role="alert">
+		<p class="font-semibold">Success !</p>
+		<p class="font-bold">{{ session("success") }}</p>
 	</div>
 	@endif
 
 	@if ($errors->any())
-	<div class="alert alert-danger">
-		<button type="button" class="close" data-dismiss="alert">×</button>
-		<ul>
-			@foreach ($errors->all() as $error)
-			<li>{{ $error }}</li>
-			@endforeach
-		</ul>
+	<div class="bg-gray-100 border rounded-lg border-gray-500 text-gray-900 px-4 py-3" role="alert">
+		<p class="font-semibold">Errors !</p>
+		<p class="font-bold">
+			<ul>
+				@foreach ($errors->all() as $error)
+				<li>{{ $error }}</li>
+				@endforeach
+			</ul>
+		</p>
 	</div>
 	@endif
 
 	@if(session('warning'))
-	<div class="alert alert-warning alert-block">
-		<button type="button" class="close" data-dismiss="alert">×</button>
-		{{ session("warning") }}
+	<div class="bg-gray-100 border rounded-lg border-gray-500 text-gray-900 px-4 py-3" role="alert">
+		<p class="font-semibold">Warning !</p>
+		<p class="font-bold">{{ session("warning") }}</p>
 	</div>
 	@endif
 
 	@if(session('info'))
-	<div class="alert alert-info alert-block">
-		<button type="button" class="close" data-dismiss="alert">×</button>
-		{{ session("info") }}
+	<div class="bg-gray-100 border rounded-lg border-gray-500 text-gray-900 px-4 py-3" role="alert">
+		<p class="font-bold">{{ session("info") }}</p>
 	</div>
 	@endif
 </div>
