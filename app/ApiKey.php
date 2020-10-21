@@ -28,6 +28,7 @@ class ApiKey extends Model
      */
     public function selectOne()
     {
+        dump(__CLASS__ . '::' . __FUNCTION__);
         if (!$this->usableKeysForToday()->count()) {
             throw new YoutubeNoApiKeyAvailableException(
                 'There is no youtube api key available.'
@@ -46,6 +47,7 @@ class ApiKey extends Model
      */
     public function get(): string
     {
+        dump(__CLASS__ . '::' . __FUNCTION__);
         if ($this->selectedOne === null) {
             $this->selectOne();
         }

@@ -27,6 +27,8 @@ class YoutubeChannelVideos implements QuotasConsumer
      */
     private function __construct(string $channelId, $limit = 0)
     {
+        dump(__CLASS__ . '::' . __FUNCTION__);
+
         $this->channelId = $channelId;
         $this->limit = $limit;
         $this->obtainUploadPlaylistIdBeingSmart();
@@ -71,6 +73,7 @@ class YoutubeChannelVideos implements QuotasConsumer
 
     protected function obtainVideos(): void
     {
+        dump(__CLASS__ . '::' . __FUNCTION__);
         /**
          * get all the uploaded videos for that playlist
          */

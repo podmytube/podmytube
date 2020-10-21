@@ -57,9 +57,12 @@ abstract class YoutubeCore implements QuotasConsumer
      */
     protected function getApiKey(): string
     {
+        dump(__CLASS__ . '::' . __FUNCTION__);
         if (Config::has('apikey')) {
+            dump('using apikey from config : ' . Config::get('apikey'));
             return Config::get('apikey');
         }
+        dump('getting another apikey');
         return (new ApiKey())->get();
     }
 
