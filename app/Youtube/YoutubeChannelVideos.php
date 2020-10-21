@@ -30,6 +30,7 @@ class YoutubeChannelVideos implements QuotasConsumer
         $this->channelId = $channelId;
         $this->limit = $limit;
         $this->obtainUploadPlaylistIdBeingSmart();
+        dump('Channel id ' . $this->channelId . ' - limit : ' . $this->limit . ' - playlist to process ' . $this->uploadsPlaylistId);
         //$this->obtainUploadsPlaylistIdFromYoutube();
         $this->obtainVideos();
     }

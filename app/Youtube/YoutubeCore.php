@@ -101,6 +101,7 @@ abstract class YoutubeCore implements QuotasConsumer
      */
     public function run(): self
     {
+        dump(__CLASS__ . '::' . __FUNCTION__);
         do {
             $rawResults = $this->getRawResults();
 
@@ -110,19 +111,14 @@ abstract class YoutubeCore implements QuotasConsumer
             $this->jsonDecoded = json_decode($rawResults, true);
 
             if (!isset($this->jsonDecoded['items'])) {
-                throw new YoutubeNoResultsException(
-                    'No results for ' . $this->url()
-                );
+                throw new YoutubeNoResultsException('No results for ' . $this->url());
             }
 
             /**
              * if response has items, adding them to previous results
              */
             if (isset($this->jsonDecoded['items'])) {
-                $this->items = array_merge(
-                    $this->items,
-                    $this->jsonDecoded['items']
-                );
+                $this->items = array_merge($this->items, $this->jsonDecoded['items']);
             }
 
             /**
@@ -176,10 +172,13 @@ abstract class YoutubeCore implements QuotasConsumer
      */
     protected function getRawResults(): string
     {
+        dump(__CLASS__ . '::' . __FUNCTION__);
         // get it from cache (if any)
         if (Cache::has($this->cacheKey())) {
+            dump('using cache ' . $this->cacheKey());
             return Cache::get($this->cacheKey());
         }
+        dump("using {$this->url()}");
         // querying api
         $rawResults = Query::create($this->url())
             ->run()
@@ -228,6 +227,7 @@ abstract class YoutubeCore implements QuotasConsumer
                 })
             )
         );
+        dump('partParams', $this->partParams);
         return $this;
     }
 
