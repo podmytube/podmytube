@@ -34,15 +34,8 @@ class UpdateChannelCommand extends Command
     /** @var string[] $errors list of errors that occured */
     protected $errors = [];
 
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
+    /** @var \Symfony\Component\Console\Helper\ProgressBar $bar */
+    protected $bar;
 
     /**
      * Execute the console command.
@@ -60,6 +53,15 @@ class UpdateChannelCommand extends Command
         }
 
         $factory = YoutubeChannelVideos::forChannel($channelToUpdate->channel_id, 50);
+
+        $nbVideos = count($factory->videos());
+        if ($nbVideos <= 0) {
+            $this->error("This channel ({$this->argument('channel_id')}) seems to have no videos.");
+            return;
+        }
+
+        $this->prologue($nbVideos);
+
         /** for each channel video */
         array_map(function ($video) use ($channelToUpdate) {
             /** check if the video already exist in database */
@@ -79,9 +81,34 @@ class UpdateChannelCommand extends Command
 
             /** save it */
             $media->save();
+
+            $this->makeProgressBarProgress();
         }, $factory->videos());
 
         $apikeysAndQuotas = YoutubeQuotas::forUrls($factory->queriesUsed())->quotaConsumed();
         Quota::saveScriptConsumption(pathinfo(__FILE__, PATHINFO_BASENAME), $apikeysAndQuotas);
+    }
+
+    protected function prologue(int $nbItems)
+    {
+        $this->info("nb items to process : {$nbItems}", 'v');
+        if ($this->getOutput()->isVerbose()) {
+            $this->bar = $this->output->createProgressBar($nbItems);
+            $this->bar->start();
+        }
+    }
+
+    protected function epilogue()
+    {
+        if ($this->getOutput()->isVerbose()) {
+            $this->bar->finish();
+        }
+    }
+
+    protected function makeProgressBarProgress()
+    {
+        if ($this->getOutput()->isVerbose()) {
+            $this->bar->advance();
+        }
     }
 }

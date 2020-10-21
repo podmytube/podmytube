@@ -3,10 +3,10 @@
 namespace App\Console;
 
 use App\Console\Commands\BatchPodcasts;
-use App\Console\Commands\ChannelUpdateCommand;
 use App\Console\Commands\CleanFreeChannelMedias;
 use App\Console\Commands\LastMediaPublishedChecker;
 use App\Console\Commands\RefreshBlogPosts;
+use App\Console\Commands\UpdateChannelsCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -37,7 +37,7 @@ class Kernel extends ConsoleKernel
         $schedule->command(CleanFreeChannelMedias::class)->monthlyOn($day = 1, $time = '12:0');
 
         /** updating channels */
-        $schedule->command(ChannelUpdateCommand::class, ['all'])->hourlyAt('2');
+        $schedule->command(UpdateChannelsCommand::class, ['all'])->hourlyAt('2');
 
         /** Check media */
         $schedule->command(LastMediaPublishedChecker::class)->everySixHours();
