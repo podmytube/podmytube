@@ -9,7 +9,6 @@ use App\Interfaces\QuotasConsumer;
 use App\Modules\Query;
 use App\Traits\YoutubeEndpoints;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Config;
 
 abstract class YoutubeCore implements QuotasConsumer
 {
@@ -40,30 +39,13 @@ abstract class YoutubeCore implements QuotasConsumer
 
     public function __construct()
     {
-        $this->apikey = $this->getApiKey();
+        $this->apikey = ApiKey::getOne();
         $this->params['part'] = [];
     }
 
     public static function init(...$params)
     {
         return new static(...$params);
-    }
-
-    /**
-     * Will get a youtube api key from DB or from Config.
-     * If one is obtained, same one is used for next queries.
-     *
-     * @return string $apikey to use
-     */
-    protected function getApiKey(): string
-    {
-        dump(__CLASS__ . '::' . __FUNCTION__);
-        if (Config::has('apikey')) {
-            dump('using apikey from config : ' . Config::get('apikey'));
-            return Config::get('apikey');
-        }
-        dump('getting another apikey');
-        return (new ApiKey())->get();
     }
 
     public function apikey()
@@ -104,7 +86,6 @@ abstract class YoutubeCore implements QuotasConsumer
      */
     public function run(): self
     {
-        dump(__CLASS__ . '::' . __FUNCTION__);
         do {
             $rawResults = $this->getRawResults();
 
@@ -175,13 +156,10 @@ abstract class YoutubeCore implements QuotasConsumer
      */
     protected function getRawResults(): string
     {
-        dump(__CLASS__ . '::' . __FUNCTION__);
         // get it from cache (if any)
         if (Cache::has($this->cacheKey())) {
-            dump('using cache ' . $this->cacheKey());
             return Cache::get($this->cacheKey());
         }
-        dump("using {$this->url()}");
         // querying api
         $rawResults = Query::create($this->url())
             ->run()
@@ -230,7 +208,6 @@ abstract class YoutubeCore implements QuotasConsumer
                 })
             )
         );
-        dump('partParams', $this->partParams);
         return $this;
     }
 

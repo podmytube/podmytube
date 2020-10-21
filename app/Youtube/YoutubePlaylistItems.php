@@ -15,6 +15,7 @@ class YoutubePlaylistItems extends YoutubeCore
     public function forPlaylist(string $playlistId): self
     {
         $this->playlistId = $playlistId;
+
         /**
          * get all the uploaded videos for that playlist
          */
