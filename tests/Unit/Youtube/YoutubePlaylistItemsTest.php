@@ -37,12 +37,4 @@ class YoutubePlaylistItemsTest extends TestCase
             YoutubeQuotas::forUrls($videos->queriesUsed())->quotaConsumed()
         );
     }
-
-    public function testingStrangeCase()
-    {
-        $videos = (new YoutubePlaylistItems())
-                ->forPlaylist('UUpUYA50vUrHvdTyKe6zCZGQ')
-                ->videos();
-        dd($videos);
-    }
 }
