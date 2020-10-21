@@ -17,29 +17,29 @@
 		{{ csrf_field() }}
 
 		<div class="pb-4">
-			<label class="block text-sm text-gray-100" for="podcast_title">Podcast name ({{ $channel->title() }})</label>
-			<input type="text" id="podcast_title" name="podcast_title" value="{{ old('podcast_title') }}" required
+			<label class="block text-sm text-gray-100" for="podcast_title">Podcast name</label>
+			<input type="text" id="podcast_title" name="podcast_title" value="{{ old('podcast_title') ?? $channel->title()}}"
 				placeholder="Do your podcast or do not. There is no try." aria-label="Podcast name"
 				class="w-full px-5 py-1 text-gray-900 bg-gray-100 rounded placeholder-black">
 		</div>
 
 		<div class="pb-4">
 			<label class="block text-sm text-gray-100" for="authors">Author(s)</label>
-			<input type="text" id="authors" name="authors" value="{{ old('authors') }}" required
+			<input type="text" id="authors" name="authors" value="{{ old('authors') ?? $channel->authors }}"
 				placeholder="Master yoda" aria-label="Podcast authors"
 				class="w-full px-5 py-1 text-gray-900 bg-gray-100 rounded placeholder-black">
 		</div>
 
 		<div class="pb-4">
 			<label class="block text-sm text-gray-100" for="authors">Email</label>
-			<input type="email" id="email" name="email" value="{{ old('email') }}" required
+			<input type="email" id="email" name="email" value="{{ old('email') ?? $channel->email}}"
 				placeholder="yoda@usetheforce.com" aria-label="Podcast authors email"
 				class="w-full px-5 py-1 text-gray-900 bg-gray-100 rounded placeholder-black">
 		</div>
 
 		<div class="pb-4">
 			<label class="block text-sm text-gray-100" for="link">Website</label>
-			<input type="url" id="link" name="link" value="{{ old('link') }}" required
+			<input type="url" id="link" name="link" value="{{ old('link') ?? $channel->link}}"
 				placeholder="https://usetheforce.com" aria-label="Podcast website"
 				class="w-full px-5 py-1 text-gray-900 bg-gray-100 rounded placeholder-black">
 		</div>

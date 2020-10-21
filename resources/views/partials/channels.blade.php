@@ -68,7 +68,7 @@
     @endforeach
 @else
 <div class="bg-gray-100 border rounded-lg border-gray-500 text-gray-900 px-4 py-3" role="alert">
-    <p class="font-bold">You have no channel at this time.</p>
-    <p class="text-base">Add a new podcast.</p>
+    <p class="font-bold">You have no podcast at this time.</p>
+    <p class="text-base">It's time to <a href="{{ route('channel.create') }}" class="border-b-2 border-gray-900">transform your channel into a podcast</a>.</p>
 </div>
 @endif

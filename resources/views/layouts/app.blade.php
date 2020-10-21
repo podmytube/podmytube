@@ -3,7 +3,7 @@
 
 @include('partials.head')
 
-<body class="antialiased bg-gray-900 p-4" style="font-family: 'Roboto', sans-serif;">
+<body class="antialiased bg-gray-900" style="font-family: 'Roboto', sans-serif;">
 
     @include('partials.navbar')
 

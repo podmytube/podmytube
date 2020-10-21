@@ -46,7 +46,6 @@ class ChannelsController extends Controller
      *
      * @return Response*
      */
-
     public function show(Channel $channel)
     {
         $this->authorize($channel);
@@ -88,7 +87,7 @@ class ChannelsController extends Controller
 
         event(new ChannelUpdated($channel));
 
-        return redirect(route('channel.show', $channel))->with(
+        return redirect(route('home', $channel))->with(
             'success',
             'Channel successfully updated !'
         );

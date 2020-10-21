@@ -1,4 +1,4 @@
-@extends('layouts.blog')
+@extends('layouts.app')
 
 @section('pageTitle', $post->title() )
 

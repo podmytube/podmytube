@@ -49,9 +49,7 @@ class ThumbsController extends Controller
 
         event(ThumbUpdated::shouldUpdateChannel($thumb->channel));
 
-        return redirect()->route('channel.thumbs.index', [
-            'channel' => $channel,
-        ]);
+        return redirect()->route('home');
     }
 
     /**
