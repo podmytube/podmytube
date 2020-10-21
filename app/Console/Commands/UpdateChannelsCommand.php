@@ -2,24 +2,22 @@
 
 namespace App\Console\Commands;
 
-use App\ApiKey;
 use App\Channel;
 use App\Exceptions\YoutubeNoResultsException;
 use App\Media;
 use App\Quota;
 use App\Youtube\YoutubeChannelVideos;
 use App\Youtube\YoutubeQuotas;
-use Carbon\Carbon;
 use Illuminate\Console\Command;
 
-class ChannelUpdateCommand extends Command
+class UpdateChannelsCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'channel:update 
+    protected $signature = 'update:channels
                             {channelTypeToUpdate=all : options are free/paying/all} ';
 
     /**

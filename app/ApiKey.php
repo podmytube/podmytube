@@ -5,7 +5,7 @@ namespace App;
 use App\Exceptions\YoutubeNoApiKeyAvailableException;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 
 class ApiKey extends Model
 {
@@ -24,57 +24,49 @@ class ApiKey extends Model
     }
 
     /**
-     * Select first apikey usable today.
-     */
-    public function selectOne()
-    {
-        if (!$this->usableKeysForToday()->count()) {
-            throw new YoutubeNoApiKeyAvailableException(
-                'There is no youtube api key available.'
-            );
-        }
-        $this->selectedOne = $this->usableKeysForToday()->first();
-        return $this;
-    }
-
-    /**
-     * Get selected api key.
-     * will set an api key in config to avoid querying
-     * api_keys table every 2sec.
+     * return one api key.
      *
-     * @return string apikey string version
+     * @return string $apikey the api key to use
      */
-    public function get(): string
+    public static function getOne():string
     {
-        if ($this->selectedOne === null) {
-            $this->selectOne();
-        }
-        Config::set('apikey', $this->selectedOne->apikey);
-        return $this->selectedOne->apikey;
-    }
+        /**
+         * get all api keys
+         */
+        $apiKeys = ApiKey::all();
 
-    protected static function usableKeysForToday()
-    {
-        return self::all()
-            // calc sum of quota used for this key on today
-            ->map(function (ApiKey $apikey) {
-                $apikey->quotaUsed = 0;
-                if ($apikey->quotas->count()) {
-                    $apikey->quotaUsed = $apikey->quotas
-                        ->whereBetween('created_at', [
-                            Carbon::today(),
-                            Carbon::now(),
-                        ])
-                        ->sum('quota_used');
-                }
-                return $apikey;
-            })
-            // removing the one that have already passed the limit
-            ->filter(function ($apikey) {
-                return $apikey->quotaUsed < Quota::LIMIT_PER_DAY;
-            })
-            // ordering by quota used asc
-            ->sortBy('quotaUsed');
+        /**
+         * consumed keys for today
+         */
+        $consumedKeys = ApiKey::select('quotas.apikey_id', 'api_keys.apikey', DB::raw('SUM(quotas.quota_used) as sum_quota_used'))
+            ->join('quotas', 'api_keys.id', '=', 'quotas.apikey_id')
+            ->whereBetween('quotas.created_at', [Carbon::today(), Carbon::now()])
+            ->groupBy('quotas.apikey_id')
+            ->having('sum_quota_used', '>', Quota::LIMIT_PER_DAY)
+            ->get();
+
+        /**
+         * no consumed keys ? return first apikey
+         */
+        if (!$consumedKeys->count()) {
+            return $apiKeys->first()->apikey;
+        }
+
+        /**
+         * we have consumed keys ? keeping keys that are not consumed
+         */
+        $consumedKeyIds = $consumedKeys->pluck('apikey_id')->toArray();
+        $availableKeys = $apiKeys->filter(function ($apiKeyModel) use ($consumedKeyIds) {
+            if (in_array($apiKeyModel->id, $consumedKeyIds)) {
+                return false;
+            }
+            return true;
+        });
+
+        if (!$availableKeys->count()) {
+            throw new YoutubeNoApiKeyAvailableException('No remaining apikey available for today.');
+        }
+        return $availableKeys->first()->apikey;
     }
 
     public static function byApikey(string $apikey): self

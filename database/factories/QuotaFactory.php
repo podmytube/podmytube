@@ -3,8 +3,8 @@
 use App\ApiKey;
 use App\Quota;
 use Carbon\Carbon;
-use Illuminate\Support\Str;
 use Faker\Generator as Faker;
+
 /*
 |--------------------------------------------------------------------------
 | Model Factories
@@ -18,13 +18,12 @@ use Faker\Generator as Faker;
 
 $factory->define(Quota::class, function (Faker $faker, array $attributes = []) {
     return [
-        'apikey_id' =>
-        $attributes['apikey_id'] ??
+        'apikey_id' => $attributes['apikey_id'] ??
             function () {
                 return factory(ApiKey::class)->create()->id;
             },
         'script' => $attributes['script'] ?? $faker->regexify('[a-z]{8}') . '.php',
-        'quota_used' => $faker->numberBetween(10, 20),
+        'quota_used' => $attributes['quota_used'] ?? $faker->numberBetween(100, 200),
         'created_at' => Carbon::now(),
     ];
 });
