@@ -51,10 +51,10 @@ class UpdateChannelCommand extends Command
             $this->error("There is no channel with this channel_id ({$this->argument('channel_id')})");
             return;
         }
-
+        $this->info('channel to update ' . $channelToUpdate->channel_id, 'v');
         $factory = YoutubeChannelVideos::forChannel($channelToUpdate->channel_id, 50);
-
         $nbVideos = count($factory->videos());
+        $this->info('nb videos : ' . $nbVideos, 'v');
         if ($nbVideos <= 0) {
             $this->error("This channel ({$this->argument('channel_id')}) seems to have no videos.");
             return;
