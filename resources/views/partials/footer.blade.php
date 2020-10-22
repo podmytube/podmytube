@@ -1,5 +1,3 @@
-@include ('partials.tchat')
-
 <div class="bg-gray-800 mt-24 text-white">
     <div class="container mx-auto p-6 md:pt-10 md:pb-10">
         <div class="border-b border-white">
