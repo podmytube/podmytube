@@ -1,8 +1,8 @@
 <div id="floating-chat"></div>
 
 <script type="text/javascript">
-  $(function () {
-    $('#floating-chat').floatingWhatsApp({
+document.addEventListener("DOMContentLoaded", function(event) {
+  document.getElementById('floating-chat').floatingWhatsApp({
       phone: '33615837006',
       popupMessage: 'Hello, how can I help you ?',
       showPopup: true,
@@ -10,5 +10,5 @@
       headerColor: '#ce1701',
       position: 'right',
     });
-  });
+});
 </script>
