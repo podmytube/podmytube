@@ -6,9 +6,7 @@ module.exports = {
   purge: [],
   theme: {
     extend: {},
-    width: {
-      custom: '31%'
-    }
+    width: {}
   },
   variants: {
     backgroundColor: ['responsive', 'hover', 'focus', 'active'],
