@@ -1,7 +1,14 @@
-/**
- * We'll load jQuery and the Bootstrap jQuery plugin which provides support
- * for JavaScript based Bootstrap features such as modals and tabs. This
- * code may be modified to fit the specific needs of your application.
- */
+function hasClass(element, className) {
+    return !!element.className.match(new RegExp('(\\s|^)' + className + '(\\s|$)'));
+}
 
-//require('./whatsapp');
+function addClass(element, className) {
+    if (!hasClass(element, className)) element.className += " " + className;
+}
+
+function removeClass(element, className) {
+    if (hasClass(element, className)) {
+        var reg = new RegExp('(\\s|^)' + className + '(\\s|$)');
+        element.className = element.className.replace(reg, ' ');
+    }
+}
