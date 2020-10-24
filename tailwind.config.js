@@ -1,16 +1,13 @@
 module.exports = {
-  future: {
-    // removeDeprecatedGapUtilities: true,
-    // purgeLayersByDefault: true,
-  },
-  purge: [],
   theme: {
-    extend: {},
-    width: {}
+    extend: {
+      spacing: {
+        7: '1.75rem',
+      },
+    },
   },
   variants: {
-    backgroundColor: ['responsive', 'hover', 'focus', 'active'],
-    borderColor: ['responsive', 'hover', 'focus']
+    backgroundColor: ['responsive', 'hover', 'focus', 'active']
   },
   plugins: [],
 }

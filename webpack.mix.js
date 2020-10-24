@@ -11,10 +11,19 @@ let mix = require('laravel-mix');
  |
  */
 
+const tailwindcss = require('tailwindcss');
+
 mix.js('resources/js/app.js', 'public/js')
-   .postCss('resources/css/app.css', 'public/css', [
-      require('tailwindcss'),
-   ]).disableSuccessNotifications()
+   .sass('resources/sass/app.scss', 'public/css')
+   .options({
+      processCssUrls: false,
+      postCss: [tailwindcss('./tailwind.config.js')],
+   });
+
+
+/* mix.postCss('resources/css/app.css', 'public/css', [
+   require('tailwindcss'),
+]).disableSuccessNotifications(); */
 
 
 /* mix.js('resources/js/app.js', 'public/js')

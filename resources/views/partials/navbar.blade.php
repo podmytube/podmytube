@@ -1,4 +1,4 @@
-<header class="text-gray-100 sm:flex sm:justify-between sm:py-2 sm:px-4">
+<header class="text-gray-100 sm:flex sm:justify-between sm:py-2 sm:px-4 max-w-screen-xl mx-auto">
     <div class="flex items-center justify-between py-2 sm:p-0">
         <div>
             <a href="{{ route('www.index') }}"><img class="h-12" src="/images/podmytube-logo-2020-150x53.png"></a>
