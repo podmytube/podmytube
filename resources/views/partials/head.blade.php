@@ -26,5 +26,4 @@
     @if (App::environment('production'))
     <script async defer data-domain="podmytube.com" src="https://stats.podmytube.com/js/index.js"></script>
     @endif
-
 </head>

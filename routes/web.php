@@ -7,7 +7,9 @@
  *
  * @author Frederick Tyteca <fred@podmytube.com>
  */
-
+Route::get('test', function () {
+    return view('test');
+})->name('terms');
 Route::get('terms', function () {
     return view('terms');
 })->name('terms');
