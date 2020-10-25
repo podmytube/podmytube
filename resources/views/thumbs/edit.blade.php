@@ -1,31 +1,31 @@
 @extends('layouts.app')
 
-@section('pageTitle', __('messages.page_title_channel_thumbs_index') )
+@section('pageTitle', "Your podcast deserve a great cover !" )
 
 @section ('content')
-<div class="container mx-auto text-white">
+<div class="max-w-screen-xl mx-auto py-6 md:py-12 px-4 text-gray-100">
     <h2 class="text-3xl md:text-5xl text-white font-semibold">
         Update cover for {{ $channel->title() }}
     </h2>
 
     <form class="max-w-5xl" id="edit-cover-form" method="POST" action="{{ route('channel.thumbs.store', $channel) }}" enctype="multipart/form-data">
         {{ csrf_field() }}
-        <div class="">
-            <p>
-                <b>Image should meet iTunes requirements !</b> 
-                <ul>
-                    <li>Minimum dimensions : 1400x1400</li>
-                    <li>Maximum dimensions : 3000x3000</li>
-                    <li>Squared : width = height</li>
-                    <li>File size must be less than 5Mb (using jpg format will help)</li>
-                </ul>
-            </p>
-
+        <p>
+            <b>Image should meet iTunes requirements !</b> 
+            <ul class="list-disc py-4">
+                <li class="ml-4">Minimum dimensions : 1400x1400</li>
+                <li class="ml-4">Maximum dimensions : 3000x3000</li>
+                <li class="ml-4">Squared : width = height</li>
+                <li class="ml-4">File size must be less than 5Mb (using jpg format will help)</li>
+            </ul>
+        </p>
+        
+        <div class="text-center">
             <label for="new_thumb_file">{{__('messages.thumbs_edit_new_thumb_form_label')}}</label><br />
             <input type="file" name="new_thumb_file" id="new_thumb_file" class="" />
         </div>
 
-        <div class="p-6 max-w-lg flex content-center">
+        <div class="p-6 flex justify-center items-center">
             <a href="#" onclick="event.preventDefault(); document.getElementById('edit-cover-form').submit();">
                 <button type="button" id="btnSubmit" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-900 font-bold py-2 px-4 rounded-l-lg">Update</button>
             </a>

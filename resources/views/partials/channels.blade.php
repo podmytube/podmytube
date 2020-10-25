@@ -3,7 +3,13 @@
 
 
 @if (count($channels))
-    <h2 class="text-3xl md:text-5xl text-white font-semibold">Your podcast</h2>
+    <h2 class="text-3xl md:text-5xl text-white font-semibold">
+        @if($channels->count()>1)
+        Your podcasts
+        @else
+        Your podcast
+        @endif
+    </h2>
     
     @foreach ($channels as $channel)
 
@@ -49,7 +55,7 @@
         </div>
 
         <div class="px-4">
-            <div class="flex content-center">
+            <div class="flex justify-center items-center">
                 <!--a href="{{ route('channel.show', $channel) }}">
                     <button class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l-lg"> View </button>
                 </a-->

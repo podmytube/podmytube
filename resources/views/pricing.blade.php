@@ -1,9 +1,10 @@
 @extends('layouts.app')
 
+@section('pageTitle', "What's the price of your time ?")
 
 @section('content')
 
-<div class="markdown max-w-screen-lg mx-auto px-8 text-xl py-16">
+<div class="max-w-screen-lg mx-auto px-8 text-xl py-6 md:py-16">
     
     @include('partials.pricing_header')
     
@@ -49,6 +50,21 @@
         var yearlyButton=document.getElementById("yearly-button");
         monthlyButton.addEventListener("click", monthlyPricing);
         yearlyButton.addEventListener("click", yearlyPricing);
+
+        function hasClass(element, className) {
+            return !!element.className.match(new RegExp('(\\s|^)' + className + '(\\s|$)'));
+        }
+
+        function addClass(element, className) {
+            if (!hasClass(element, className)) element.className += " " + className;
+        }
+
+        function removeClass(element, className) {
+            if (hasClass(element, className)) {
+                var reg = new RegExp('(\\s|^)' + className + '(\\s|$)');
+                element.className = element.className.replace(reg, ' ');
+            }
+        }
 
         function monthlyPricing(){
             activate(monthlyButton);

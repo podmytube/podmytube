@@ -14,5 +14,5 @@
     <span class="mr-4 mt-1">
         @include('svg.check_mark',['cssClass'=>'h-5 w-5 block'])
     </span>
-    <span>I respect <strong>your privacy</strong>. No tracking.</span>
+    <span>I respect your privacy and the privacy of your listeners. <strong>No tracking</strong>.</span>
 </li>

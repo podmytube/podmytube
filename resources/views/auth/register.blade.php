@@ -10,7 +10,7 @@
 
 @section('content')
 
-<div class="max-w-sm mx-auto pt-12">
+<div class="max-w-sm mx-auto py-12 px-4">
     <form class="form-signin" method="POST" action="{{ route('register') }}">
         @csrf
         <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col">
@@ -71,32 +71,5 @@
         </div>
     </form>
 </div>
-
-    
-    <div class="form-label-group">
-        <input type="password" name="password" id="inputPassword" class="form-control" placeholder="{{ __('messages.password_label') }}" required />
-        <label for="inputPassword">{{ __('messages.password_label') }}</label>
-    </div>
-
-    <div class="form-label-group">
-        <input type="password" name="password_confirmation" id="inputPasswordConfirmation" class="form-control" placeholder="{{ __('messages.confirm_password_label') }}" required />
-        <label for="inputPasswordConfirmation">{{ __('messages.confirm_password_label') }}</label>
-    </div>
-
-    <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" id="termsaccepted" name="termsaccepted" value="1" required>
-        <label class="form-check-label" for="termsaccepted">I accept the <a href="{{route('terms')}}">terms of service</a></label>
-    </div>
-
-    @if (env('APP_ENV') == 'production')
-    {!! NoCaptcha::display() !!}
-    @endif
-
-    <button class="btn btn-lg btn-primary btn-block" type="submit">
-        {{ __('messages.button_register_label') }}
-    </button>
-
-    <div class="mt-2">
-        already customer ? <a href="{{ route('login') }}"> {{ __('messages.button_login_label') }} </a>
-    </div>
+   
 @endsection
