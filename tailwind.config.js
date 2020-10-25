@@ -1,4 +1,8 @@
 module.exports = {
+  purge: [
+    './resources/views/*.blade.php',
+    './resources/views/**/*.blade.php'
+  ],
   theme: {
     extend: {
       spacing: {
