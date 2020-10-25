@@ -6,6 +6,6 @@
 
 @include('partials.hero')
 
-@include('partials.shrinkTest')
+@include('partials.promise')
 
 @endsection
