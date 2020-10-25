@@ -1,4 +1,4 @@
-<div class="flex items-center max-w-screen-xl mx-auto px-4 xl:pt-8">
+<div class="flex items-center max-w-screen-xl mx-auto px-4 xl:py-20">
     <div class="flex md:p-4 mx-auto">
         <div class="text-center pt-8 md:flex-shrink-0 md:flex-grow-0 md:w-1/2 md:text-left md:pt-8">
             <h1 class="text-5xl text-white tracking-normal font-extrabold leading-none lg:font-extrabold lg:tracking-tighter xl:tracking-wide xl:pt-12">
