@@ -1,16 +1,17 @@
-version: '3.3'
+version: "3.3"
 services:
     node:
-        image: 'node:12'
+        image: "node:12"
         container_name: dashnode
-        restart: 'no'
+        restart: "no"
         working_dir: /home/node/app
         volumes:
             - ./:/home/node/app
         command: bash -c "npm install && npm run production"
     composer:
-        image: 'composer:latest'
-        restart: 'no'
+        image: "composer:latest"
+        container_name: dashcomposer
+        restart: "no"
         volumes:
             - .:/app
         command: install
@@ -29,8 +30,8 @@ services:
         image: dash.pmt
         restart: always
         expose:
-            - '80'
-            - '443'
+            - "80"
+            - "443"
         # VIRTUAL_HOST should be only the domain (without http://)
         # by example : www.example.com or sub.domain.fr
         environment:
