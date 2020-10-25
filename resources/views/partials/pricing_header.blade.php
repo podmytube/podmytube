@@ -1,6 +1,6 @@
 <div class="text-center">
-    <h1 class="pt-8 text-2xl text-white tracking-tight font-extrabold lg:text-5xl">
-        Podcast hosting pricing
+    <h1 class="py-4 text-3xl text-white tracking-normal font-extrabold lg:text-5xl">
+        Pricing
     </h1>
     <p class="mt-2 text-gray-600 md:text-2xl lg:text-3xl">Try us free for one month.</p>
     <div class="my-6 text-center">

@@ -4,32 +4,19 @@
 
 @section ('content')
 
-<header class="masthead" style="background-image: url({{$post->featured_image}})">
-    <div class="overlay"></div>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-md-10 mx-auto">
-                <div class="site-heading text-white">
-                    <h1>{{ $post->title() }}</h1>
-                    <span class="subheading">last updated on {{ $post->updated_at->format("l jS \of F Y") }} by {{ $post->author }}</span>
-                </div>
-            </div>
-        </div>
+<div class="max-w-screen-xl mx-auto text-gray-100 py-12 px-6">
+
+    <h1 class="text-center text-white text-3xl md:text-5xl font-semibold pb-6">{{ $post->title() }}</h1>
+
+    <div class="text-gray-500 text-sm">
+        updated on {{ $post->updated_at->format("l jS \of F Y") }} by {{ $post->author }}
     </div>
-</header>
 
-<article>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-md-10 mx-auto">
-                {!! $post->content !!}
-            </div>
-        </div>
+    <div class="leading-normal py-6 post-content">
+        {!! $post->content !!}
     </div>
-</article>
 
-<hr>
-
-@include('partials.share', ['url' => url()->full(), 'title' => $post->title() ])
+    @include('partials.share', ['url' => url()->full(), 'title' => $post->title() ])
+</div>
 
 @endsection

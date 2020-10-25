@@ -4,7 +4,7 @@
 
 @section('content')
 
-<div class="max-w-xs mx-auto pt-12">
+<div class="max-w-xs mx-auto py-12">
   <form class="form-signin" method="POST" action="{{ route('login') }}">
     @csrf
     <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col">

@@ -3,3 +3,32 @@
 @import "tailwindcss/components";
 
 @import "tailwindcss/utilities";
+
+@layer base {
+    .post-content {
+        h2 {
+            @apply text-center text-white text-3xl font-semibold py-4;
+        }
+
+        h3 {
+            @apply text-white text-2xl font-bold py-4;
+        }
+
+        p,
+        figure {
+            @apply py-2;
+        }
+
+        img {
+            @apply mx-auto rounded-lg py-4;
+        }
+
+        a {
+            @apply underline;
+        }
+
+        blockquote {
+            @apply text-gray-300 pl-4 py-2 border-gray-200 border-l;
+        }
+    }
+}

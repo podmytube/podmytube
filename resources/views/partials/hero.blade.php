@@ -10,7 +10,7 @@
                 <strong>Apple Podcasts, Spotify and Google Podcasts.</strong>
             </p>
             <div class="pt-8 mx-auto text-center lg:mx-0">
-                <a href="#"
+                <a href="{{ route('register') }}"
                     class="text-white font-semibold rounded-full border-white border-2 pt-2 pb-3 px-4 sm:w-auto hover:text-gray-900 hover:bg-white focus:outline-none focus:bg-white focus:shadow-outline focus:border-gray-300">
                     Sign up
                 </a>
