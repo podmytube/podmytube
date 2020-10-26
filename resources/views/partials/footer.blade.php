@@ -23,7 +23,7 @@
                 <div class="text-xs sm:text-sm uppercase font-bold">About us</div>
                 <p class="mt-3 md:mt-6 text-base sm:text-lg">
                     Podmytube provides podcast hosting for dozens of organizations, brands, and creatives around the world.<br>
-                    <a href="/how-to-start-a-podcast" class="underline">Learn how to start a podcast →</a>.
+                    <!--a href="/how-to-start-a-podcast" class="underline">Learn how to start a podcast →.</a-->
                 </p>
             </div>
             <div class="sm:flex lg:w-1/2 px-6">
