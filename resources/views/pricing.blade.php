@@ -46,6 +46,7 @@
         const YEARLY=1;
         const PER_YEAR_LABEL='/yr';
         const PER_MONTH_LABEL='/mo';
+        var currentPeriod=MONTHLY;
         var monthlyButton=document.getElementById("monthly-button");
         var yearlyButton=document.getElementById("yearly-button");
         monthlyButton.addEventListener("click", monthlyPricing);
@@ -70,14 +71,20 @@
             activate(monthlyButton);
             deactivate(yearlyButton);
             changeLabels(MONTHLY);
-            changePrices(MONTHLY);
+            if(currentPeriod != MONTHLY){
+                changePrices(MONTHLY);
+                currentPeriod=MONTHLY;
+            }
         }
 
         function yearlyPricing(){
             activate(yearlyButton);
             deactivate(monthlyButton);
             changeLabels(YEARLY);
-            changePrices(YEARLY);
+            if(currentPeriod != YEARLY){
+                changePrices(YEARLY);
+                currentPeriod=YEARLY;
+            }
         }
 
         function activate(element){
