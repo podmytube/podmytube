@@ -23,7 +23,7 @@ class PodcastUrl
 
     public function get()
     {
-        return getenv('PODCASTS_URL') .
+        return config('app.PODCASTS_URL') .
             DIRECTORY_SEPARATOR .
             $this->channel->channelId() .
             DIRECTORY_SEPARATOR .

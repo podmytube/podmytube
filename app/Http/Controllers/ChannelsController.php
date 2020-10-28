@@ -27,7 +27,7 @@ class ChannelsController extends Controller
      *
      * @return Response
      */
-    public function index()
+    /* public function index()
     {
         try {
             $channels = ChannelService::getAuthenticatedUserChannels(
@@ -37,7 +37,7 @@ class ChannelsController extends Controller
             $channels = [];
         }
         return view('channel.index', compact('channels'));
-    }
+    } */
 
     /**
      * display all informations about one channel

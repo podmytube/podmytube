@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\User;
 use App\Channel;
-use App\Subscription;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -27,7 +26,7 @@ class ChannelAccessTest extends TestCase
 
     public function testChannelIndexIsAllowedToOwnerAndHasAllItsChannel()
     {
-        $this->markTestIncomplete("You should take a look on the HomeController");
+        $this->markTestIncomplete('You should take a look on the HomeController');
         $channels = factory(Channel::class, 3)->create([
             'user_id' => $this->user->id(),
         ]);
