@@ -18,7 +18,7 @@ class MediasController extends Controller
             $medias = $channel
                 ->medias()
                 ->orderBy('published_at', 'desc')
-                ->simplePaginate(25);
+                ->simplePaginate(10);
         } catch (\Exception $exception) {
             Session::flash('message', $exception->getMessage());
             Session::flash('alert-class', 'alert-danger');
