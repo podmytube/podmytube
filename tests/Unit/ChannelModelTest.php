@@ -32,7 +32,7 @@ class ChannelModelTest extends TestCase
     public function testingPodcastUrl()
     {
         $this->assertEquals(
-            getenv('PODCASTS_URL') .
+            config('app.PODCASTS_URL') .
                 DIRECTORY_SEPARATOR .
                 $this->channel->channelId() .
                 DIRECTORY_SEPARATOR .
@@ -63,27 +63,18 @@ class ChannelModelTest extends TestCase
     public function testByChannelIdIsRunningFine()
     {
         $this->assertNull(Channel::byChannelId('this_will_never_exists'));
-        $channel = factory(Channel::class)->create();
-        $this->assertEquals($channel->channel_id, Channel::byChannelId($channel->channel_id)->channel_id);
+        $this->assertEquals($this->channel->channel_id, Channel::byChannelId($this->channel->channel_id)->channel_id);
     }
 
     public function testingIsFreeShouldBeTrue()
     {
-        $channel = factory(Channel::class)->create();
-        factory(Subscription::class)->create([
-            'channel_id' => $channel->channel_id,
-            'plan_id' => Plan::FREE_PLAN_ID
-        ]);
-        $this->assertTrue($channel->isFree());
+        factory(Subscription::class)->create(['channel_id' => $this->channel->channel_id, 'plan_id' => Plan::FREE_PLAN_ID]);
+        $this->assertTrue($this->channel->isFree());
     }
 
     public function testingIsFreeShouldBeFalse()
     {
-        $channel = factory(Channel::class)->create();
-        factory(Subscription::class)->create([
-            'channel_id' => $channel->channel_id,
-            'plan_id' => Plan::WEEKLY_PLAN_ID
-        ]);
-        $this->assertFalse($channel->isFree());
+        factory(Subscription::class)->create(['channel_id' => $this->channel->channel_id, 'plan_id' => Plan::WEEKLY_PLAN_ID]);
+        $this->assertFalse($this->channel->isFree());
     }
 }

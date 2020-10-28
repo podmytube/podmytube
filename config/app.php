@@ -56,7 +56,8 @@ return [
     */
 
     'url' => env('APP_URL', 'https://dashboard.podmytube.com'),
-
+    'PODCASTS_URL' => env('PODCASTS_URL', 'https://podcasts.podmytube.com'),
+    
     /*
     |--------------------------------------------------------------------------
     | Application Timezone
