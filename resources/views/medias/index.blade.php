@@ -5,11 +5,11 @@
 @section ('content')
 
 @if ($medias->count()>0)
-<div class="px-2 pt-4 pb-6 sm:px-6 text-gray-900">
+<div class="container px-2 pt-4 pb-6 sm:px-6 text-gray-900 mx-auto">
 
     <h2 class="text-3xl md:text-5xl text-white font-semibold">Podcast episodes</h2>
     
-    <div class="bg-gray-100 mt-6 px-4 py-4 rounded-lg">
+    <div class="bg-gray-100 mt-6 px-4 py-4 rounded-lg max-w-screen-lg md:mx-auto">
         <table class="w-full">
             <thead">
                 <tr class="bg-gray-900 text-white">
