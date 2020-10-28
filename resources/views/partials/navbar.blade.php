@@ -1,7 +1,13 @@
 <header class="text-gray-100 sm:flex sm:justify-between sm:py-2 sm:px-4 max-w-screen-xl mx-auto">
     <div class="flex items-center justify-between py-2 sm:p-0">
         <div>
-            <a href="{{ route('www.index') }}"><img class="h-12" src="/images/podmytube-logo-2020-150x53.png"></a>
+            @guest
+            <a href="{{ route('www.index') }}">
+            @else
+            <a href="{{ route('home') }}">
+            @endguest
+                <img class="h-12" src="/images/podmytube-logo-2020-150x53.png">
+            </a>
         </div>
         <div class="pr-2 sm:hidden">
             <button id="mobile-nav-trigger" class="block text-gray-400 hover:text-white focus:text-white focus:outline-none">
@@ -13,16 +19,17 @@
         </div>
     </div>
     <div class="hidden pt-2 pb-4 text-center sm:flex sm:items-center sm:p-0" id="mobile-nav">
+    @guest
         <a class="     block px-2 py-1 text-gray-100 rounded hover:bg-gray-800" href="{{ route('pricing') }}"> Pricing </a>
         <a class="mt-1 block px-2 py-1 text-gray-100 rounded hover:bg-gray-800 sm:mt-0 sm:mr-2" href="{{ route('post.index') }}"> Blog </a>
         <a class="mt-1 block px-2 py-1 text-gray-100 rounded hover:bg-gray-800 sm:mt-0 sm:mr-2" href="{{ route('about') }}"> About </a>
-        @guest
         <a class="mt-1 block px-2 py-1 text-gray-100 rounded hover:bg-gray-800 sm:mt-0 sm:mr-2" href="{{ route('login') }}"> Log In </a>
         <a class="mt-1 block px-2 py-1 text-gray-100 rounded hover:bg-gray-800 sm:mt-0 sm:mr-2 sm:hover:bg-white sm:border sm:rounded sm:border-white hover:border-transparent hover:text-gray-900" href="{{ route('register') }}"> Sign Up </a>
-        @else
-        <a class="mt-1 block px-2 py-1 text-gray-100 rounded hover:bg-gray-800 sm:mt-0 sm:mr-2" href="{{ route('channel.create') }}"> Add you podcast </a>
+    @else
+        <a class="     block px-2 py-1 text-gray-100 rounded hover:bg-gray-800" href="{{ route('home') }}"> Dashboard </a>
+        <a class="mt-1 block px-2 py-1 text-gray-100 rounded hover:bg-gray-800 sm:mt-0 sm:mr-2" href="{{ route('channel.create') }}"> Add your podcast </a>
         <a class="mt-1 block px-2 py-1 text-gray-100 rounded hover:bg-gray-800 sm:mt-0 sm:mr-2" href="#" id="logout-link"> Logout </a>
-        @endguest
+    @endguest
     </div>
 </header>
 

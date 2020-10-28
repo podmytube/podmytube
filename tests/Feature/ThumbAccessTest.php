@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use App\Channel;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class ThumbAccessTest extends TestCase
@@ -14,12 +13,6 @@ class ThumbAccessTest extends TestCase
 
     /** @var \App\Channel $channel */
     protected $channel;
-    protected $routes = [
-        'channel.thumbs.index',
-        'channel.thumbs.edit',
-        'channel.thumbs.store',
-        'channel.thumbs.update',
-    ];
 
     public function setUp(): void
     {
@@ -33,7 +26,12 @@ class ThumbAccessTest extends TestCase
             $this->get(route($routeToCheck, $this->channel))->assertRedirect(
                 route('login')
             );
-        }, $this->routes);
+        }, [
+            'channel.thumbs.index',
+            'channel.thumbs.edit',
+            'channel.thumbs.store',
+            'channel.thumbs.update',
+        ]);
     }
 
     public function testEditThumbIsRefusedToAnotherUser()

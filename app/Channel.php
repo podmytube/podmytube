@@ -66,16 +66,6 @@ class Channel extends Model
     }
 
     /**
-     * Provides the channel global podcast url
-     *
-     * @return string the podcast url
-     */
-    public function getFeedUrlAttribute()
-    {
-        return env('PODCAST_URL') . '/' . $this->channel_id . '/podcast.xml';
-    }
-
-    /**
      * Getter : channel_id
      */
     public function channelId()
@@ -110,11 +100,7 @@ class Channel extends Model
 
     public function podcastUrl()
     {
-        return getenv('PODCASTS_URL') .
-        DIRECTORY_SEPARATOR .
-        $this->channelId() .
-        DIRECTORY_SEPARATOR .
-        PodcastBuilder::FEED_FILENAME;
+        return config('app.PODCASTS_URL') . '/' . $this->channelId() . '/' . PodcastBuilder::FEED_FILENAME;
     }
 
     /**
