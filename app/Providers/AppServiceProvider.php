@@ -22,7 +22,7 @@ class AppServiceProvider extends ServiceProvider
         Paginator::useTailwind();
 
         if (App::environment('production')) {
-            URL::forceSchema('https');
+            URL::forceScheme('https');
         }
 
         Collection::macro('recursive', function () {
