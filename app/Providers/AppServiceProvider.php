@@ -5,6 +5,9 @@ namespace App\Providers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -18,7 +21,11 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useTailwind();
 
-        \Illuminate\Support\Collection::macro('recursive', function () {
+        if (App::environment('production')) {
+            URL::forceSchema('https');
+        }
+
+        Collection::macro('recursive', function () {
             return $this->map(function ($value) {
                 if (is_array($value) || is_object($value)) {
                     return collect($value)->recursive();
