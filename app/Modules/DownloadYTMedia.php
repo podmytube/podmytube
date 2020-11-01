@@ -9,24 +9,18 @@ use App\Exceptions\DownloadMediaFailureException;
  */
 class DownloadYTMedia
 {
-    /**
-     * the mediaId of the video
-     */
+    public const AUDIO_FORMAT = 'mp3';
+
+    /** the mediaId of the video */
     protected $mediaId;
 
-    /**
-     * where to store the downloaded file
-     */
+    /** where to store the downloaded file */
     protected $destinationFolder;
 
-    /**
-     * Will contain the path to the youtube-dl app
-     */
+    /** Will contain the path to the youtube-dl app */
     protected const YOUTUBE_DL_BINARY = '/usr/local/bin/youtube-dl';
 
-    /**
-     * Parameters for youtube-dl
-     */
+    /** Parameters for youtube-dl */
     protected $youtubeDlparameters;
 
     /**
@@ -86,6 +80,11 @@ class DownloadYTMedia
         $this->destinationFolder = $destinationFolder;
     }
 
+    public function downloadedFilePath(): string
+    {
+        return $this->destinationFolder . '/' . $this->mediaId . '.' . self::AUDIO_FORMAT;
+    }
+
     /**
      * This function will get the media id
      */
@@ -104,15 +103,14 @@ class DownloadYTMedia
 
     /**
      * This function will run youtube-dl command with wanted parameters in order to get the mp3 file.
-     *
-     * @return boolean
      */
-    public function download()
+    public function download(): self
     {
         passthru($this->commandLine, $err);
         if ($err != 0) {
             throw new DownloadMediaFailureException('We failed to obtain media {' . $this->mediaId . "} with this command line : \n" . $this->commandLine);
         }
+        return $this;
     }
 
     public function getYoutubeDlParameters()
@@ -128,7 +126,7 @@ class DownloadYTMedia
         $this->youtubeDlparameters = [
             '--no-warnings', // Ignore warnings
             '--extract-audio', // Convert video files to audio-only files (requires ffmpeg)
-            '--audio-format mp3', // post processing option to convert file obtained to mp3
+            '--audio-format ' . self::AUDIO_FORMAT, // post processing option to convert file obtained to mp3
             "--format 'bestaudio[ext=mp3]/best[ext=webm]/best'", // Download best (else dl is slow)
             "--output '" . $this->destinationFolder . "/%(id)s.%(ext)s'",
         ];

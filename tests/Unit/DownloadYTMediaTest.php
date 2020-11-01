@@ -62,10 +62,19 @@ class DownloadYTMediaTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->expectedVideoFile = self::mediaDestinationFolder . DIRECTORY_SEPARATOR . self::mediaToObtain . self::mediaExt;
+        $this->expectedVideoFile = self::mediaDestinationFolder . '/' . self::mediaToObtain . self::mediaExt;
         if (file_exists($this->expectedVideoFile)) {
             unlink($this->expectedVideoFile);
         }
+    }
+
+    public function testDownloadedFilePathShouldBeGood()
+    {
+        $this->assertEquals(
+            $this->expectedVideoFile,
+            DownloadYTMedia::init(self::mediaToObtain, self::mediaDestinationFolder, false)->downloadedFilePath(),
+            'expected file {' . $this->expectedVideoFile . '} should be there'
+        );
     }
 
     /**

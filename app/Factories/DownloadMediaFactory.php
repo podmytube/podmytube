@@ -4,6 +4,7 @@ namespace App\Factories;
 
 use App\Exceptions\ChannelHasReachedItsQuotaException;
 use App\Exceptions\DownloadMediaTagException;
+use App\Exceptions\YoutubeMediaIsNotAvailableException;
 use App\Media;
 use App\Modules\DownloadYTMedia;
 use App\Youtube\YoutubeVideo;
@@ -31,6 +32,16 @@ class DownloadMediaFactory
             $youtubeVideo = YoutubeVideo::forMedia($this->media->media_id);
 
             /**
+             * is video downladable (not upcoming and processed)
+             */
+            if (!$youtubeVideo->isAvailable()) {
+                throw new YoutubeMediaIsNotAvailableException(
+                    "This video {$this->media->media_id} is not available yet. \
+                    'upcoming' live or not yet 'processed'."
+                );
+            }
+
+            /**
              * if media has a tag, is it downladable
              */
             if ($youtubeVideo->isTagged() && !$this->media->channel->areTagsAccepted($youtubeVideo->tags())) {
@@ -54,7 +65,11 @@ class DownloadMediaFactory
             /**
              * download and convert it
              */
-            DownloadYTMedia::init($this->media->media_id, '/tmp', $this->verbose)->download();
+            $downloadedFilePath = DownloadYTMedia::init($this->media->media_id, '/tmp', $this->verbose)->download()->downloadedFilePath();
+
+            /**
+             * check duration of result
+             */
 
             /**
              * upload it

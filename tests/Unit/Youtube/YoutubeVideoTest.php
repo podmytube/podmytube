@@ -12,7 +12,7 @@ class YoutubeVideoTest extends TestCase
     /**
      * this video exists and has 2 tags ['dev','podmytube'];
      */
-    public const PROCESSED_VIDEO = 'EePwbhMqEh0';
+    public const BEACH_VOLLEY_VIDEO_1 = 'EePwbhMqEh0';
 
     public function setUp(): void
     {
@@ -29,20 +29,20 @@ class YoutubeVideoTest extends TestCase
     public function testVideoIsAvailable()
     {
         $this->assertTrue(
-            YoutubeVideo::forMedia(self::PROCESSED_VIDEO)->isAvailable()
+            YoutubeVideo::forMedia(self::BEACH_VOLLEY_VIDEO_1)->isAvailable()
         );
     }
 
     public function testVideoTagsShouldWork()
     {
         $expectedTags = ['dev', 'podmytube'];
-        $this->assertEqualsCanonicalizing($expectedTags, YoutubeVideo::forMedia(self::PROCESSED_VIDEO)->tags());
+        $this->assertEqualsCanonicalizing($expectedTags, YoutubeVideo::forMedia(self::BEACH_VOLLEY_VIDEO_1)->tags());
     }
 
     public function testingIsTaggedShouldWork()
     {
         $this->assertFalse(YoutubeVideo::forMedia('ZD_5_dKzsoc')->isTagged());
-        $this->assertTrue(YoutubeVideo::forMedia(self::PROCESSED_VIDEO)->isTagged());
+        $this->assertTrue(YoutubeVideo::forMedia(self::BEACH_VOLLEY_VIDEO_1)->isTagged());
     }
 
     /**
@@ -50,10 +50,8 @@ class YoutubeVideoTest extends TestCase
      * that is "upcoming". I should have 1000 subscribers on my youtube
      * personnal channel and an upcoming live upcoming forever
      */
-    /*
-    public function testUpcomingVideo()
+    public function testIsAvailableShouldBeGood()
     {
-        $this->assertFalse((new YoutubeVideo('ZkCJ5KZyyOA'))->isAvailable());
+        $this->assertTrue(YoutubeVideo::forMedia(self::BEACH_VOLLEY_VIDEO_1)->isAvailable());
     }
-    */
 }
