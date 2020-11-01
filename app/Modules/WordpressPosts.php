@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Log;
 /**
  * This class is updating posts from worpress api.
  * It is :
- * - querying one wordpress api 
+ * - querying one wordpress api
  * - parsing the results
  * - calling PostFactory that is creating the Post and the PostCategory (if needed)
  */
@@ -59,7 +59,7 @@ class WordpressPosts
 
     /**
      * will obtain posts from one file (mainly for tests).
-     * 
+     *
      * @param string $filename
      */
     public function getPostsFromFile(string $filename): self
@@ -82,11 +82,11 @@ class WordpressPosts
     public function update(): self
     {
         if (!count($this->posts())) {
-            throw new NoPostsObtainedException("No post has been obtained yet. You should use getPostsFromRemote/getPostsFromFile before.");
+            throw new NoPostsObtainedException('No post has been obtained yet. You should use getPostsFromRemote/getPostsFromFile before.');
         }
 
         array_map(
-            function ($postData) use (&$imported) {
+            function ($postData) {
                 try {
                     PostFactory::create($postData);
                     $this->importedPosts++;

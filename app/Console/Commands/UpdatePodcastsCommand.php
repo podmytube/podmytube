@@ -8,7 +8,7 @@ use App\Podcast\PodcastBuilder;
 use App\Podcast\PodcastUrl;
 use Illuminate\Console\Command;
 
-class BatchPodcasts extends Command
+class UpdatePodcastsCommand extends Command
 {
     public const FAILURE = 0;
     public const SUCCESS = 1;
@@ -23,7 +23,7 @@ class BatchPodcasts extends Command
      *
      * @var string
      */
-    protected $signature = 'podcast:batch {batchToProcess=all : options are all/free/paying/early}';
+    protected $signature = 'update:podcasts {batchToProcess=all : options are all/free/paying/early}';
 
     /**
      * The console command description.

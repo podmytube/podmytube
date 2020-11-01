@@ -7,14 +7,14 @@ use App\Jobs\SendFeedBySFTP;
 use App\Podcast\PodcastBuilder;
 use Illuminate\Console\Command;
 
-class BuildPodcast extends Command
+class UpdatePodcastCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'podcast:build {channelId}';
+    protected $signature = 'update:podcast {channelId}';
 
     /**
      * The console command description.
@@ -34,15 +34,14 @@ class BuildPodcast extends Command
          * getting channel to build podcast for
          */
         $channel = Channel::findOrFail($this->argument('channelId'));
+        $this->info("Updating podcast for channel {$channel->channel_name} ({$channel->channel_id})", 'v');
 
         if (PodcastBuilder::prepare($channel)->save()) {
             /** uploading feed */
             SendFeedBySFTP::dispatchNow($channel);
         }
 
-        $this->info(
-            "Podcast {{$channel->title()}} has been successfully created."
-        );
-        $this->info("You can check it here : {$channel->podcastUrl()}");
+        $this->comment("Podcast {{$channel->title()}} has been successfully created.", 'v');
+        $this->info("You can check it here : {$channel->podcastUrl()}", 'v');
     }
 }
