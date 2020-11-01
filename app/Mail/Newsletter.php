@@ -2,7 +2,7 @@
 
 namespace App\Mail;
 
-use App\user;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;

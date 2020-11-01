@@ -32,18 +32,18 @@ class YoutubeVideo extends YoutubeCore
         return new static(...$params);
     }
 
-    public function isAvailable():bool
+    public function isAvailable(): bool
     {
         return $this->item['status']['uploadStatus'] === 'processed' &&
             $this->item['snippet']['liveBroadcastContent'] === 'none';
     }
 
-    public function isTagged():bool
+    public function isTagged(): bool
     {
         return count($this->tags());
     }
 
-    public function tags():?array
+    public function tags(): ?array
     {
         return $this->item['snippet']['tags'] ?? [];
     }

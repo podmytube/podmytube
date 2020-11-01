@@ -15,9 +15,9 @@ use App\Subscription;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Spatie\WebhookClient\Models\WebhookCall;
 
@@ -47,7 +47,7 @@ class HandleCheckoutSessionCompleted implements ShouldQueue
 
     public function handle()
     {
-        Log::info("checkout session completed");
+        Log::info('checkout session completed');
         Log::debug(print_r($this->webhookCall->payload, true));
 
         /**
@@ -55,7 +55,7 @@ class HandleCheckoutSessionCompleted implements ShouldQueue
          */
         $userFound = $this->checkStripeUser();
         if ($userFound === false) {
-            throw new CannotIdentifyUserFromStripeException("User not found. customer id : " . $this->customerId() . "--- email : " . $this->customerEmail());
+            throw new CannotIdentifyUserFromStripeException('User not found. customer id : ' . $this->customerId() . '--- email : ' . $this->customerEmail());
         }
 
         /**
@@ -82,7 +82,7 @@ class HandleCheckoutSessionCompleted implements ShouldQueue
         }
 
         $customerEmail = $this->customerEmail();
-        if ($customerEmail !== null &&  $this->obtainUserFromEmail()) {
+        if ($customerEmail !== null && $this->obtainUserFromEmail()) {
             return true;
         }
 
@@ -149,7 +149,7 @@ class HandleCheckoutSessionCompleted implements ShouldQueue
          */
         $channelId = $this->webhookCall->payload['data']['object']['metadata']['channel_id'] ?? null;
         if ($channelId === null) {
-            throw new EmptyChannelIdReceivedFromStripeException("Channel id received from stripe is empty.");
+            throw new EmptyChannelIdReceivedFromStripeException('Channel id received from stripe is empty.');
         }
 
         /**
@@ -172,7 +172,7 @@ class HandleCheckoutSessionCompleted implements ShouldQueue
     {
         $subscriptionId = $this->webhookCall->payload['data']['object']['subscription'] ?? null;
         if ($subscriptionId === null) {
-            throw new EmptySubscriptionReceivedFromStripeException("Subscription id received from stripe is empty.");
+            throw new EmptySubscriptionReceivedFromStripeException('Subscription id received from stripe is empty.');
         }
 
         $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));
@@ -187,12 +187,12 @@ class HandleCheckoutSessionCompleted implements ShouldQueue
 
         $stripePlanId = $subscription['items']['data'][0]['plan']['id'] ?? null;
         if ($stripePlanId === null) {
-            throw new EmptyPlanReceivedFromStripeException("Plan id received from stripe is empty.");
+            throw new EmptyPlanReceivedFromStripeException('Plan id received from stripe is empty.');
         }
 
         $this->stripePlan = StripePlan::where('stripe_id', '=', $stripePlanId)->first();
         if ($this->stripePlan === null) {
-            throw new UnknownStripePlanReceivedFromStripeException("Stripe plan id received from stripe is unknown.");
+            throw new UnknownStripePlanReceivedFromStripeException('Stripe plan id received from stripe is unknown.');
         }
 
         return true;

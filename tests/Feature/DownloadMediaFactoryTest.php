@@ -3,10 +3,15 @@
 namespace Tests\Feature;
 
 use App\Channel;
+use App\Exceptions\ChannelHasReachedItsQuotaException;
+use App\Exceptions\DownloadMediaTagException;
 use App\Exceptions\YoutubeMediaDoesNotExistException;
 use App\Factories\DownloadMediaFactory;
 use App\Media;
+use App\Plan;
+use App\Subscription;
 use Artisan;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -15,7 +20,8 @@ class DownloadMediaFactoryTest extends TestCase
     use RefreshDatabase;
 
     /** this video does exist and has two tags ['dev', 'podmytube'] */
-    protected const BEACH_VOLLEY_VIDEO = 'EePwbhMqEh0';
+    protected const BEACH_VOLLEY_VIDEO_1 = 'EePwbhMqEh0';
+    protected const BEACH_VOLLEY_VIDEO_2 = '9pTBAkkTRbw';
     protected const MARIO_COIN_VIDEO = 'qfx6yf8pux4';
 
     public function setUp():void
@@ -31,25 +37,57 @@ class DownloadMediaFactoryTest extends TestCase
         DownloadMediaFactory::media($media)->run();
     }
 
-    public function testVideoDoesNotHaveTheGoodTags()
+    public function testVideoHasATagProblem()
     {
         $channel = factory(Channel::class)->create(['accept_video_by_tag' => 'window,house']);
         $media = factory(Media::class)->create(
             [
                 'channel_id' => $channel->channel_id,
-                'media_id' => self::BEACH_VOLLEY_VIDEO
+                'media_id' => self::BEACH_VOLLEY_VIDEO_1
             ]
         );
-        $this->assertFalse(
-            DownloadMediaFactory::media($media)->run(),
-            'channel only want window and house videos, dev/podmytube are not accepted'
+        $this->expectException(DownloadMediaTagException::class);
+        DownloadMediaFactory::media($media)->run();
+    }
+
+    public function testFreeChannelHasReachedItsQuota()
+    {
+        $channel = factory(Channel::class)->create();
+        factory(Subscription::class)->create(
+            [
+                'channel_id' => $channel->channel_id,
+                'plan_id' => Plan::bySlug('forever_free')->id
+            ]
         );
+        factory(Media::class)->create(
+            [
+                'channel_id' => $channel->channel_id,
+                'media_id' => self::BEACH_VOLLEY_VIDEO_1,
+                'grabbed_at' => Carbon::now(),
+            ]
+        );
+
+        $media = factory(Media::class)->create(
+            [
+                'channel_id' => $channel->channel_id,
+                'media_id' => self::BEACH_VOLLEY_VIDEO_2,
+            ]
+        );
+
+        $this->expectException(ChannelHasReachedItsQuotaException::class);
+        DownloadMediaFactory::media($media)->run();
     }
 
     public function testVideoIsBeingDownloaded()
     {
+        $subscription = factory(Subscription::class)->create(
+            [
+                'plan_id' => Plan::bySlug('forever_free')->id
+            ]
+        );
         $media = factory(Media::class)->create(
             [
+                'channel_id' => $subscription->channel_id,
                 'media_id' => self::MARIO_COIN_VIDEO
             ]
         );

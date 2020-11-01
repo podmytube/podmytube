@@ -2,6 +2,7 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
+use App\Category;
 use App\Channel;
 use Faker\Generator as Faker;
 
@@ -19,8 +20,8 @@ $factory->define(Channel::class, function (Faker $faker, $attributes) {
         'email' => $faker->safeEmail,
         'description' => $faker->text(300),
         'link' => 'https://loremipsum.com',
-        'category_id' => function () {
-            return App\Category::all()->random()->id;
+        'category_id' => $attributes['category_id'] ?? function () {
+            return factory(Category::class)->create()->id;
         },
         'lang' => $attributes['lang'] ?? $faker->randomElement(['FR', 'EN']),
         'explicit' => $faker->boolean(),

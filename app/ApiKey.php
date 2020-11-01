@@ -28,7 +28,7 @@ class ApiKey extends Model
      *
      * @return string $apikey the api key to use
      */
-    public static function getOne():string
+    public static function getOne(): string
     {
         /**
          * get all api keys

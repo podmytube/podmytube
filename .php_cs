@@ -63,7 +63,7 @@ return PhpCsFixer\Config::create()
         // 'normalize_index_brace' => true,
         'object_operator_without_whitespace' => true,
         // 'php_unit_fqcn_annotation' => true,
-        // 'phpdoc_align' => true,
+        'phpdoc_align' => true,
         // 'phpdoc_annotation_without_dot' => true,
         // 'phpdoc_indent' => true,
         // 'phpdoc_inline_tag' => true,
