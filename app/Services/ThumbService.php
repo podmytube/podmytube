@@ -23,7 +23,7 @@ class ThumbService
      * This function will store the uploaded file at its new location.
      *
      * @param UploadedFile $uploadedFile the file that has just been uploaded.
-     * @param Channel $channel the channel that owns this thumb.
+     * @param Channel      $channel      the channel that owns this thumb.
      *
      * @return String filePath
      */
@@ -40,7 +40,7 @@ class ThumbService
      * This function will do the operations required when a new thumb is uploaded.
      *
      * @param UploadedFile $uploadedFile the file that has just been uploaded.
-     * @param Channel $channel the channel that owns this thumb.
+     * @param Channel      $channel      the channel that owns this thumb.
      */
     public function addUploadedThumb(
         UploadedFile $uploadedFile,
@@ -211,8 +211,7 @@ class ThumbService
         return $this->channel_id .
             DIRECTORY_SEPARATOR .
             $fileInfos['filename'] .
-            '_vig' .
-            '.' .
+            '_vig.' .
             $fileInfos['extension'];
     }
 

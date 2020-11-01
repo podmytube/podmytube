@@ -14,8 +14,6 @@ use App\Category;
 use App\Channel;
 use App\Events\ChannelUpdated;
 use App\Http\Requests\ChannelRequest;
-use App\Services\ChannelService;
-use Illuminate\Support\Facades\Auth;
 
 /**
  * the channel controller class.
@@ -42,7 +40,7 @@ class ChannelsController extends Controller
     /**
      * display all informations about one channel
      *
-     * @param  ChannelRequest $request
+     * @param ChannelRequest $request
      *
      * @return Response*
      */
@@ -56,7 +54,7 @@ class ChannelsController extends Controller
      * display the channel form in order to edit channel data
      *
      * @param ChannelRequest $request
-     * @param Channel $channel
+     * @param Channel        $channel
      *
      * @return Response
      */
@@ -70,8 +68,8 @@ class ChannelsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  ChannelRequest $request the form request
-     * @param  Channel $channel channel concerned
+     * @param ChannelRequest $request the form request
+     * @param Channel        $channel channel concerned
      *
      * @return Response
      */

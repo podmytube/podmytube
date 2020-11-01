@@ -7,6 +7,7 @@ use App\Media;
 use App\Modules\PeriodsHelper;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class ConvertVideosCommand extends Command
 {
@@ -40,20 +41,24 @@ class ConvertVideosCommand extends Command
         $period = PeriodsHelper::create($periodArgument->month, $periodArgument->year);
 
         /**
-        * getting all non grabbed episodes published during this period order by (with channel and subscription)
-        */
+         * getting all non grabbed episodes published during this period order by (with channel and subscription)
+         */
         $medias = Media::with('channel')->publishedBetween($period->startDate(), $period->endDate())->whereNotNull('grabbed_at')->get();
 
         if (!$medias->count()) {
             $this->comment('There is no ungrabbed medias and you should have a look.', 'v');
-            return ;
+            return;
         }
 
         /**
          * for every medias in db
          */
         foreach ($medias as $media) {
-            DownloadMediaFactory::media($media, $this->getOutput()->isVerbose());
+            try {
+                DownloadMediaFactory::media($media, $this->getOutput()->isVerbose());
+            } catch (\Exception $exception) {
+                Log::error($exception->getMessage());
+            }
         }
     }
 

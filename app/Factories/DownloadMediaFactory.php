@@ -2,6 +2,8 @@
 
 namespace App\Factories;
 
+use App\Exceptions\ChannelHasReachedItsQuotaException;
+use App\Exceptions\DownloadMediaTagException;
 use App\Media;
 use App\Modules\DownloadYTMedia;
 use App\Youtube\YoutubeVideo;
@@ -32,12 +34,22 @@ class DownloadMediaFactory
              * if media has a tag, is it downladable
              */
             if ($youtubeVideo->isTagged() && !$this->media->channel->areTagsAccepted($youtubeVideo->tags())) {
-                return false;
+                throw new DownloadMediaTagException(
+                    'Media tags ' . implode(',', $youtubeVideo->tags()) .
+                    " are not in allowed tags {$this->media->channel->accept_video_by_tag}."
+                );
             }
 
             /**
              * did channel reach its quota
              */
+            if ($this->media->channel->hasReachedItslimit()) {
+                throw new ChannelHasReachedItsQuotaException(
+                    "Channel $this->media->channel->channel_name ($this->media->channel->channel_id) \
+                    has reached its quota."
+                );
+                return false;
+            }
 
             /**
              * download and convert it

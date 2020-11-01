@@ -35,7 +35,8 @@ class DownloadYTMedia
     protected $commandLine;
 
     /**
-     * Constructor, will check if youtube-dl is installed
+     * Constructor, will check if youtube-dl is installed.
+     *
      * @param string mediaToObtain the id of the video to download
      * @param string $audioFile where to store (locally) the audioFile
      */
@@ -74,6 +75,7 @@ class DownloadYTMedia
 
     /**
      * This function will set the destination folder (where to save it)
+     *
      * @param string destinationFolder
      */
     protected function setDestinationFolder(string $destinationFolder)
@@ -141,4 +143,4 @@ class DownloadYTMedia
             $this->youtubeDlparameters[] = '>/dev/null 2>&1';
         }
     }
-};
+}
