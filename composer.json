@@ -27,7 +27,8 @@
         "spatie/laravel-sitemap": "^5.8",
         "spatie/laravel-stripe-webhooks": "^2.3",
         "stripe/stripe-php": "^7.39",
-        "symfony/console": "^5.1"
+        "symfony/console": "^5.1",
+        "wapmorgan/mp3info": "^0.0.5"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.1",

@@ -6,6 +6,9 @@ use App\Exceptions\YoutubeMediaDoesNotExistException;
 
 class YoutubeVideo extends YoutubeCore
 {
+    protected const _PROCESSED_VIDEO_STATUS = 'processed';
+    protected const _UPCOMING_VIDEO_STATUS = 'upcoming';
+
     /** @var string $videoId */
     protected $videoId;
 
