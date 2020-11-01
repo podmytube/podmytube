@@ -104,9 +104,8 @@ class Media extends Model
      *
      * @param Illuminate\Database\Eloquent\Builder query is the query object
      */
-    public function scopeGrabbedAt(
-        Builder $query
-    ) {
+    public function scopeGrabbedAt(Builder $query)
+    {
         return $query->whereNotNull('grabbed_at');
     }
 
@@ -155,7 +154,7 @@ class Media extends Model
 
     /**
      * check if media file is really there.
-     * 
+     *
      * @return bool true if file really exists
      */
     public function fileExists(): bool

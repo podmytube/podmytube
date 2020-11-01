@@ -4,7 +4,7 @@
 
 @section ('content')
 
-<div class="max-w-screen-xl mx-auto">
+<div class="max-w-screen-xl mx-auto mt-4 mb-16">
 
     <h1 class="text-center text-3xl pt-12 pb-6 md:text-5xl text-white font-semibold">Blog</h1>
 

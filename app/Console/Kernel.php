@@ -2,12 +2,12 @@
 
 namespace App\Console;
 
-use App\Console\Commands\BatchPodcasts;
 use App\Console\Commands\CleanFreeChannelMedias;
-use App\Console\Commands\GenerateSitemapCommand;
 use App\Console\Commands\LastMediaPublishedChecker;
-use App\Console\Commands\RefreshBlogPosts;
+use App\Console\Commands\UpdateBlogPostsCommand;
 use App\Console\Commands\UpdateChannelsCommand;
+use App\Console\Commands\UpdatePodcastsCommand;
+use App\Console\Commands\UpdateSitemapCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -32,7 +32,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         /** generating sitemap */
-        $schedule->command(GenerateSitemapCommand::class)->hourly();
+        $schedule->command(UpdateSitemapCommand::class)->hourly();
 
         /** cleaning free medias old episodes */
         $schedule->command(CleanFreeChannelMedias::class)->monthlyOn($day = 1, $time = '12:0');
@@ -44,10 +44,10 @@ class Kernel extends ConsoleKernel
         $schedule->command(LastMediaPublishedChecker::class)->everySixHours();
 
         /** Check blog post */
-        $schedule->command(RefreshBlogPosts::class)->everyFifteenMinutes();
+        $schedule->command(UpdateBlogPostsCommand::class)->everyFifteenMinutes();
 
         /** Building podcasts */
-        $schedule->command(BatchPodcasts::class, ['all'])->hourlyAt('50');
+        $schedule->command(UpdatePodcastsCommand::class, ['all'])->hourlyAt('50');
 
         /** monthly report on first monday */
         $schedule->command(SendMonthlyReports::class)->monthly()->days([1])->at('11:00');

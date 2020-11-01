@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use App\Modules\WordpressPosts;
 use Illuminate\Console\Command;
 
-class RefreshBlogPosts extends Command
+class UpdateBlogPostsCommand extends Command
 {
     /**
      * The name and signature of the console command.
@@ -38,10 +38,8 @@ class RefreshBlogPosts extends Command
      */
     public function handle()
     {
+        $this->info('Updating blog posts', 'v');
         $wpPosts = WordpressPosts::init()->getPostsFromRemote()->update();
-        $this->comment(
-            "Nb posts imported : {$wpPosts->importedPosts()}",
-            'v'
-        );
+        $this->comment("Blog posts updated - nb posts added : {$wpPosts->importedPosts()}", 'v');
     }
 }

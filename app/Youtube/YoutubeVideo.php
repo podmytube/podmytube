@@ -2,11 +2,8 @@
 
 namespace App\Youtube;
 
-/**
- * This class intends to get channels's playlist oredered by name.
- * 'uploads' => xliqsjfdumsldodsikpqs
- * 'favorites' => msldodsikpqsxliqsjfdu
- */
+use App\Exceptions\YoutubeMediaDoesNotExistException;
+
 class YoutubeVideo extends YoutubeCore
 {
     /** @var string $videoId */
@@ -16,11 +13,18 @@ class YoutubeVideo extends YoutubeCore
     {
         parent::__construct();
         $this->videoId = $videoId;
-        $this->item = $this->defineEndpoint('/youtube/v3/videos')
+
+        $result = $this->defineEndpoint('/youtube/v3/videos')
             ->addParams(['id' => $this->videoId])
             ->addParts(['id', 'snippet', 'status'])
             ->run()
             ->items();
+
+        if (!count($result)) {
+            throw new YoutubeMediaDoesNotExistException("This media {$this->videoId} does not exist on youtube.");
+        }
+
+        $this->item = $result[0];
     }
 
     public static function forMedia(...$params)
@@ -28,14 +32,19 @@ class YoutubeVideo extends YoutubeCore
         return new static(...$params);
     }
 
-    public function isAvailable()
+    public function isAvailable():bool
     {
-        return $this->item[0]['status']['uploadStatus'] === 'processed' &&
-            $this->item[0]['snippet']['liveBroadcastContent'] === 'none';
+        return $this->item['status']['uploadStatus'] === 'processed' &&
+            $this->item['snippet']['liveBroadcastContent'] === 'none';
     }
 
-    public function tags()
+    public function isTagged():bool
     {
-        return $this->item[0]['snippet']['tags'] ?? null;
+        return count($this->tags());
+    }
+
+    public function tags():?array
+    {
+        return $this->item['snippet']['tags'] ?? [];
     }
 }
