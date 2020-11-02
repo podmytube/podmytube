@@ -2,50 +2,62 @@
 
 namespace App\Modules;
 
-use InvalidArgumentException;
-use Podmytube\Exceptions\AudioAndYoutubeDurationAreDifferent;
+use App\Exceptions\YoutubeAndLocalDurationException;
 
 /**
  * This class goal is to get audio file information.
  */
 class CheckAudioDuration
 {
-    protected const _MINIMAL_SPREAD_BETWEEN_DURATION = 5;
+    protected const MINIMAL_SPREAD_BETWEEN_DURATION = 5;
+    protected const ACCEPTABLE_SPREAD_RATIO = 0.004;
 
-    /**
-     * Check if duration are almost the same between YT and audio generated.
-     *
-     * @param YTVideoDetails video object details
-     * @param string media id
-     */
-    public static function verify(YTVideoDetails $YTMediaProperties, string $mediaFile)
+    protected $youtubeMediaDuration;
+    protected $localMediaDuration;
+
+    private function __construct(int $youtubeMediaDuration, string $mediaFile)
     {
-        if (!file_exists($mediaFile)) {
-            throw new InvalidArgumentException("Media file {$mediaFile} does not exists", 1);
-        }
-
         /**
          * obtaining local video duration
          */
-        $localAudioFileDuration = MediaProperties::analyzeFile($mediaFile)->getDuration();
+        $this->localMediaDuration = MediaProperties::analyzeFile($mediaFile)->duration();
+        $this->youtubeMediaDuration = $youtubeMediaDuration;
+    }
 
-        /**
-         * obtaining yt media duration
-         */
-        $YTMediaDuration = $YTMediaProperties->duration();
+    public static function init(...$params)
+    {
+        return new static(...$params);
+    }
 
-        $acceptableSpread = ($acceptableSpread < self::_MINIMAL_SPREAD_BETWEEN_DURATION) ? self::_MINIMAL_SPREAD_BETWEEN_DURATION : $acceptableSpread;
+    public function check()
+    {
+        $acceptableSpread = $this->minimalSpreadAccepted();
 
         /**
          * if difference between youtube duration and mp3 dration is more than 5 sec => exception
          * yt duration is one integer, duration returned by mp3 is seconds.microseconds.
-         * They cannot barely be equals so I'm checking if the difference between the two duration are >2 sec (1sec was not enough)
          */
-        if (abs($localAudioFileDuration - $YTMediaDuration) > $acceptableSpread) {
-            throw new AudioAndYoutubeDurationAreDifferent(
-                "Spread between Youtube duration {{$YTMediaDuration}} and audio file generated {{$localAudioFileDuration}} is more than {{$acceptableSpread}} seconds !"
+        if (abs($this->localMediaDuration - $this->youtubeMediaDuration) > $acceptableSpread) {
+            throw new YoutubeAndLocalDurationException(
+                "Spread between Youtube duration {$this->youtubeMediaDuration} and audio file generated {$this->localMediaDuration} is more than {{$acceptableSpread}} seconds !"
             );
         }
         return true;
+    }
+
+    /**
+     * I'm accepting differences between youtube file api duration and local media duration.
+     * Both duration are not measured the same way.
+     * - For longest audio files I'm accepting a ratio between duration.
+     * - for smallest audio files I keep 5 secs minimal spread
+     * This function is doing this.
+     */
+    public function minimalSpreadAccepted()
+    {
+        $acceptableSpread = round($this->youtubeMediaDuration * self::ACCEPTABLE_SPREAD_RATIO);
+        if ($acceptableSpread < self::MINIMAL_SPREAD_BETWEEN_DURATION) {
+            return self::MINIMAL_SPREAD_BETWEEN_DURATION;
+        }
+        return $acceptableSpread;
     }
 };

@@ -6,6 +6,7 @@ use App\Exceptions\ChannelHasReachedItsQuotaException;
 use App\Exceptions\DownloadMediaTagException;
 use App\Exceptions\YoutubeMediaIsNotAvailableException;
 use App\Media;
+use App\Modules\CheckAudioDuration;
 use App\Modules\DownloadYTMedia;
 use App\Youtube\YoutubeVideo;
 use Illuminate\Support\Facades\DB;
@@ -70,10 +71,12 @@ class DownloadMediaFactory
             /**
              * check duration of result
              */
+            CheckAudioDuration::init($youtubeVideo->duration(), $downloadedFilePath)->check();
 
             /**
              * upload it
              */
+            
 
             /**
              * update infos

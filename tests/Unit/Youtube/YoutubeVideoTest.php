@@ -54,4 +54,10 @@ class YoutubeVideoTest extends TestCase
     {
         $this->assertTrue(YoutubeVideo::forMedia(self::BEACH_VOLLEY_VIDEO_1)->isAvailable());
     }
+
+    public function testDurationIsWorkingFine()
+    {
+        $expectedDuration = 285;
+        $this->assertEquals($expectedDuration, YoutubeVideo::forMedia(self::BEACH_VOLLEY_VIDEO_1)->duration());
+    }
 }

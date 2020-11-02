@@ -19,7 +19,7 @@ class YoutubeVideo extends YoutubeCore
 
         $result = $this->defineEndpoint('/youtube/v3/videos')
             ->addParams(['id' => $this->videoId])
-            ->addParts(['id', 'snippet', 'status'])
+            ->addParts(['id', 'snippet', 'status', 'contentDetails'])
             ->run()
             ->items();
 
@@ -49,5 +49,11 @@ class YoutubeVideo extends YoutubeCore
     public function tags(): ?array
     {
         return $this->item['snippet']['tags'] ?? [];
+    }
+
+    public function duration()
+    {
+        $interval = new \DateInterval($this->item['contentDetails']['duration']);
+        return ($interval->d * 24 * 60 * 60) + ($interval->h * 60 * 60) + ($interval->i * 60) + $interval->s;
     }
 }
