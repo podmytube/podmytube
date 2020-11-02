@@ -10,7 +10,7 @@ namespace App\Modules;
  * @link     Podmytube website, http://www.podmytube.com
  */
 
-use \wapmorgan\Mp3Info\Mp3Info;
+use wapmorgan\Mp3Info\Mp3Info;
 
 /**
  * This class goal is to get audio file information.
@@ -57,7 +57,7 @@ class MediaProperties
      *
      * @return string
      */
-    public function getDuration()
+    public function duration()
     {
         if (!isset($this->mediaObj->duration)) {
             return 0;
@@ -70,7 +70,7 @@ class MediaProperties
      *
      * @return string
      */
-    public function getFilesize()
+    public function filesize()
     {
         if (!isset($this->mediaObj->_fileSize)) {
             return 0;

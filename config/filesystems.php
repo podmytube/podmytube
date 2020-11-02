@@ -83,6 +83,21 @@ return [
             'username' => $sshCredentials['user'],
             'privateKey' => $sshCredentials['path'],
             // 'port' => 22,
+            'root' => env('SFTP_MP3_PATH'),
+            'timeout' => 20,
+            'visibility' => 'public',
+            'permPublic' => 0755,
+        ],
+
+        /**
+         * Thumbs real url for podcast listeners
+         */
+        'sftpmp3' => [
+            'driver' => 'sftp',
+            'host' => $sshCredentials['host'],
+            'username' => $sshCredentials['user'],
+            'privateKey' => $sshCredentials['path'],
+            // 'port' => 22,
             'root' => env('SFTP_PODCASTS_PATH'),
             'timeout' => 20,
             'visibility' => 'public',
