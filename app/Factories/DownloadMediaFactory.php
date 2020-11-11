@@ -6,13 +6,21 @@ use App\Exceptions\ChannelHasReachedItsQuotaException;
 use App\Exceptions\DownloadMediaTagException;
 use App\Exceptions\YoutubeMediaIsNotAvailableException;
 use App\Media;
-use App\Modules\CheckAudioDuration;
+use App\Modules\CheckingGrabbedFile;
 use App\Modules\DownloadYTMedia;
+use App\Modules\MediaProperties;
 use App\Youtube\YoutubeVideo;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class DownloadMediaFactory
 {
+    /** @var \App\Media $media */
+    protected $media;
+
+    /** @var bool $verbose */
+    protected $verbose;
+
     private function __construct(Media $media, bool $verbose = false)
     {
         $this->media = $media;
@@ -69,18 +77,30 @@ class DownloadMediaFactory
             $downloadedFilePath = DownloadYTMedia::init($this->media->media_id, '/tmp', $this->verbose)->download()->downloadedFilePath();
 
             /**
-             * check duration of result
+             * if empty will throw exception
              */
-            CheckAudioDuration::init($youtubeVideo->duration(), $downloadedFilePath)->check();
+            $mediaProperties = MediaProperties::analyzeFile($downloadedFilePath);
+
+            /**
+             * checking obtained file duration of result
+             */
+            CheckingGrabbedFile::init($mediaProperties, $youtubeVideo->duration())->check();
 
             /**
              * upload it
              */
-            
+            $this->media->uploadFromFile($downloadedFilePath);
 
             /**
              * update infos
              */
+
+            $this->media->title = $youtubeVideo->title();
+            $this->media->description = $youtubeVideo->description();
+            $this->media->grabbed_at = Carbon::now();
+            $this->media->length = $mediaProperties->filesize();
+            $this->media->duration = $mediaProperties->duration();
+            $this->media->save();
 
             return true;
         });

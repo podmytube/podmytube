@@ -15,7 +15,7 @@ class Media extends Model
 {
     use BelongsToChannel, SoftDeletes;
 
-    public const DISK = 'medias';
+    public const REMOTE_DISK = 'medias';
     public const FILE_EXTENSION = '.mp3';
 
     /** @var string $table medias table name - without it fails */
@@ -157,9 +157,19 @@ class Media extends Model
      *
      * @return bool true if file really exists
      */
-    public function fileExists(): bool
+    public function remoteFileExists(): bool
     {
-        return Storage::disk(self::DISK)->exists($this->relativePath());
+        return Storage::disk(self::REMOTE_DISK)->exists($this->relativePath());
+    }
+
+    public function uploadFromFile(string $localFilePath)
+    {
+        Storage::disk(self::REMOTE_DISK)
+        ->put(
+            $this->relativePath(),
+            file_get_contents($localFilePath)
+            //file_get_contents(base_path('tests/fixtures/Audio/l8i4O7_btaA.mp3'))
+        );
     }
 
     public function scopeGrabbedBefore(Builder $query, Carbon $date)
@@ -167,7 +177,7 @@ class Media extends Model
         return $query->whereDate('grabbed_at', '<', $date);
     }
 
-    public static function byMediaId(string $mediaId)
+    public static function byMediaId(string $mediaId):?self
     {
         return self::where('media_id', '=', $mediaId)->first();
     }

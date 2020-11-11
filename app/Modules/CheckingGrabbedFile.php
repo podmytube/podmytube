@@ -7,20 +7,19 @@ use App\Exceptions\YoutubeAndLocalDurationException;
 /**
  * This class goal is to get audio file information.
  */
-class CheckAudioDuration
+class CheckingGrabbedFile
 {
     protected const MINIMAL_SPREAD_BETWEEN_DURATION = 5;
     protected const ACCEPTABLE_SPREAD_RATIO = 0.004;
 
-    protected $youtubeMediaDuration;
-    protected $localMediaDuration;
+    /** @var \App\Modules\MediaProperties */
+    protected $mediaProperties;
 
-    private function __construct(int $youtubeMediaDuration, string $mediaFile)
+    protected $youtubeMediaDuration;
+
+    private function __construct(MediaProperties $mediaProperties, int $youtubeMediaDuration = null)
     {
-        /**
-         * obtaining local video duration
-         */
-        $this->localMediaDuration = MediaProperties::analyzeFile($mediaFile)->duration();
+        $this->mediaProperties = $mediaProperties;
         $this->youtubeMediaDuration = $youtubeMediaDuration;
     }
 
@@ -37,11 +36,12 @@ class CheckAudioDuration
          * if difference between youtube duration and mp3 dration is more than 5 sec => exception
          * yt duration is one integer, duration returned by mp3 is seconds.microseconds.
          */
-        if (abs($this->localMediaDuration - $this->youtubeMediaDuration) > $acceptableSpread) {
+        if (abs($this->mediaProperties->duration() - $this->youtubeMediaDuration) > $acceptableSpread) {
             throw new YoutubeAndLocalDurationException(
-                "Spread between Youtube duration {$this->youtubeMediaDuration} and audio file generated {$this->localMediaDuration} is more than {{$acceptableSpread}} seconds !"
+                "Spread between Youtube duration {$this->youtubeMediaDuration} and audio file generated {$this->mediaProperties->duration()} is more than {{$acceptableSpread}} seconds !"
             );
         }
+
         return true;
     }
 

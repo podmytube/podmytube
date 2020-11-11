@@ -10,7 +10,8 @@ namespace App\Modules;
  * @link     Podmytube website, http://www.podmytube.com
  */
 
-use wapmorgan\Mp3Info\Mp3Info;
+use InvalidArgumentException;
+use getID3;
 
 /**
  * This class goal is to get audio file information.
@@ -40,10 +41,11 @@ class MediaProperties
          * Processing audio file with mediaObj
          * mediaObj fill an error if it gets into trouble with file.
          */
-        try {
-            $this->mediaObj = new Mp3Info($mediaFile, true);
-        } catch (\Exception $e) {
-            throw new \InvalidArgumentException("Media file {$mediaFile} seem to be invalid", 1);
+        $this->mediaObj = new getID3();
+        $this->mediaObj->analyze($mediaFile);
+        if (isset($this->mediaObj->info['error'])) {
+            $errors = implode("\n", $this->mediaObj->info['error']);
+            throw new InvalidArgumentException("Error analyzing media file {$mediaFile}. $errors", 1);
         }
     }
 
@@ -59,10 +61,7 @@ class MediaProperties
      */
     public function duration()
     {
-        if (!isset($this->mediaObj->duration)) {
-            return 0;
-        }
-        return (int)$this->mediaObj->duration;
+        return (int) round($this->mediaObj->info['playtime_seconds']);
     }
 
     /**
@@ -72,9 +71,6 @@ class MediaProperties
      */
     public function filesize()
     {
-        if (!isset($this->mediaObj->_fileSize)) {
-            return 0;
-        }
-        return $this->mediaObj->_fileSize;
+        return (int) $this->mediaObj->info['filesize'];
     }
 };
