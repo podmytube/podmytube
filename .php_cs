@@ -32,6 +32,7 @@ return PhpCsFixer\Config::create()
         'hash_to_slash_comment' => true,
         'include' => true,
         'lowercase_cast' => true,
+        'method_chaining_indentation' => true,
         // 'native_function_casing' => true,
         // 'new_with_braces' => true,
         // 'no_blank_lines_after_class_opening' => true,

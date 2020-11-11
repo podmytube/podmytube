@@ -12,25 +12,30 @@ $factory->define(App\Media::class, function (Faker $faker, $attributes) {
         $attributes['published_at'] ??
         $faker->dateTimeBetween(Carbon::now()->startOfMonth(), Carbon::now());
 
-    $grabbedAt =
-        $attributes['grabbed_at'] ??
-        $faker->dateTimeBetween($publishedAt, Carbon::now());
+    $hasBeenGrabbed = $faker->boolean();
+    $grabbedAt = null;
+    $length = 0;
+    $duration = 0;
+    if ($hasBeenGrabbed) {
+        $length = $faker->numberBetween(100, 400);
+        $duration = $faker->numberBetween(100, 400);
+        $grabbedAt = $attributes['grabbed_at'] ?? $faker->dateTimeBetween($publishedAt, Carbon::now());
+    }
 
     /** returning our nice new media */
     return [
         'media_id' => $faker->regexify('[a-zA-Z0-9-_]{8}'),
-        'channel_id' =>
-        $attributes['channel_id'] ??
+        'channel_id' => $attributes['channel_id'] ??
             function () {
                 return factory(Channel::class)->create()->channel_id;
             },
-        'title' => 'Lorem ipsum dolor sit amet',
+        'title' => $faker->sentence(),
         'description' => <<<EOT
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
 Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
 EOT,
-        'length' => $faker->numberBetween(100, 400),
-        'duration' => $faker->numberBetween(300, 600),
+        'length' => $length,
+        'duration' => $duration,
         'published_at' => $publishedAt,
         'grabbed_at' => $grabbedAt,
         'active' => true,
