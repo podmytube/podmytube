@@ -56,4 +56,14 @@ class YoutubeVideo extends YoutubeCore
         $interval = new \DateInterval($this->item['contentDetails']['duration']);
         return ($interval->d * 24 * 60 * 60) + ($interval->h * 60 * 60) + ($interval->i * 60) + $interval->s;
     }
+
+    public function title()
+    {
+        return $this->item['snippet']['title'];
+    }
+
+    public function description()
+    {
+        return $this->item['snippet']['description'];
+    }
 }

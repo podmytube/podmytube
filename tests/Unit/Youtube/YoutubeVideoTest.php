@@ -60,4 +60,16 @@ class YoutubeVideoTest extends TestCase
         $expectedDuration = 285;
         $this->assertEquals($expectedDuration, YoutubeVideo::forMedia(self::BEACH_VOLLEY_VIDEO_1)->duration());
     }
+
+    public function testTitleIsWorkingFine()
+    {
+        $expectedTitle = '2015 10 20 Natacha Christian versus Nolwen Fred 01';
+        $this->assertEquals($expectedTitle, YoutubeVideo::forMedia(self::BEACH_VOLLEY_VIDEO_1)->title());
+    }
+
+    public function testDescriptionIsWorkingFine()
+    {
+        $expectedDescription = "20 octobre 2015 - Stade des 3 moulins. 2 duos mixtes s'affrontent dans un match de beach volley. Sans doute pas le plus violent de la saison :)";
+        $this->assertEquals($expectedDescription, YoutubeVideo::forMedia(self::BEACH_VOLLEY_VIDEO_1)->description());
+    }
 }
