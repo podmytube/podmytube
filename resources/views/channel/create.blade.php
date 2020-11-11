@@ -16,7 +16,7 @@
                 <label class="block tracking-tight text-md font-bold mt-2 mb-4" for="channel_url">
                     Please type the url of the channel you want to transform into a beautiful podcast.
                 </label>
-                <input type="text" id="channel_url" placeholder="https://www.youtube.com/channel/UCVeMw72tepFl1Zt5fvf9QKQ" required
+                <input type="text" id="channel_url" name="channel_url" placeholder="https://www.youtube.com/channel/UCVeMw72tepFl1Zt5fvf9QKQ" required
                     class="block bg-gray-300 w-full border border-gray-200 rounded py-3 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                     value="{{ old('channel_url') ?? '' }}">
                 <p class="text-gray-100 text-xs italic">Enter the full address of your youtube channel</p>
