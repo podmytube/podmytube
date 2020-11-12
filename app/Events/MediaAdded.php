@@ -12,7 +12,7 @@ class MediaAdded extends OccursOnChannel
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /** \App\Media */
-    protected $media;
+    public $media;
 
     public function __construct(Media $media)
     {

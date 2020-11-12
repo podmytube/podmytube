@@ -9,7 +9,6 @@ use App\Media;
 use App\Modules\MediaProperties;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Str;
 
 class MediasController extends Controller
 {
@@ -49,16 +48,16 @@ class MediasController extends Controller
         /** analyze the audio file */
         $mediaProperties = MediaProperties::analyzeFile($request->file('media_file'));
 
-        dd(md5(uniqid(, true)))
-        /** moving file where we can find it  */
-        $originalFileName = $request->file('media_file')->getClientOriginalName();
-        $path = $request->file('media_file')->storeAs('uploadedMedias', Str::slug($originalFileName));
+        /** getting media_id */
+        $mediaId = $channel->nextMediaId();
 
-        dd($path);
+        /** moving file where we can find it  */
+        $request->file('media_file')->storeAs('uploadedMedias', $mediaId . '.mp3');
 
         /** save the information */
         $media = Media::create([
             'channel_id' => $channel->channel_id,
+            'media_id' => $mediaId,
             'title' => $validatedParams['title'],
             'description' => $validatedParams['description'],
             'duration' => $mediaProperties->duration(),

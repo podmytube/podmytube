@@ -2,9 +2,8 @@
 
 namespace App\Jobs;
 
-use App\Exceptions\ThumbDoesNotExistsException;
 use App\Exceptions\ThumbUploadHasFailedException;
-use App\Thumb;
+use App\Media;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -15,15 +14,17 @@ class UploadMediaJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $thumbToSend;
+    /** \App\Media $media */
+    protected $media;
+
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Thumb $thumb)
+    public function __construct(Media $media)
     {
-        $this->thumbToSend = $thumb;
+        $this->media = $media;
     }
 
     /**
@@ -33,17 +34,12 @@ class UploadMediaJob implements ShouldQueue
      */
     public function handle()
     {
-        if (!$this->thumbToSend->exists()) {
-            throw new ThumbDoesNotExistsException(
-                "Thumb {{$this->thumbToSend->id}} file does not exists. hard to send over sftp."
-            );
-        }
-
         try {
-            $this->thumbToSend->upload();
+            info('Job -- ' . __CLASS__ . '::' . __FUNCTION__);
+            //$this->media->uploadFromFile($foo);
         } catch (\Exception $exception) {
             throw new ThumbUploadHasFailedException(
-                "The upload of thumb {{$this->thumbToSend}} for channel {{$this->thumbToSend->channel_id}} has failed with message :" .
+                "Uploading media {$this->media->title} for channel {$this->media->channel_name} ({$this->media->channel_id}) has failed with message :" .
                     $exception->getMessage()
             );
         }

@@ -2,10 +2,10 @@
 
 namespace App\Listeners;
 
-use App\Events\OccursOnChannel;
+use App\Events\MediaAdded;
 use App\Jobs\UploadMediaJob;
 
-class UploadThumb
+class UploadMedia
 {
     /**
      * Create the event listener.
@@ -24,8 +24,9 @@ class UploadThumb
      *
      * @return void
      */
-    public function handle(OccursOnChannel $event)
+    public function handle(MediaAdded $event)
     {
-        UploadMediaJob::dispatchNow($event->channel->thumb);
+        info('Listener -- ' . __CLASS__ . '::' . __FUNCTION__);
+        UploadMediaJob::dispatchNow($event->media);
     }
 }
