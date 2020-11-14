@@ -63,9 +63,9 @@ return PhpCsFixer\Config::create()
         // 'normalize_index_brace' => true,
         'object_operator_without_whitespace' => true,
         // 'php_unit_fqcn_annotation' => true,
-        // 'phpdoc_align' => true,
+        'phpdoc_align' => true,
         // 'phpdoc_annotation_without_dot' => true,
-        // 'phpdoc_indent' => true,
+        'phpdoc_indent' => true,
         // 'phpdoc_inline_tag' => true,
         // 'phpdoc_no_access' => true,
         // 'phpdoc_no_alias_tag' => true,
@@ -94,6 +94,7 @@ return PhpCsFixer\Config::create()
         'trim_array_spaces' => true,
         'unary_operator_spaces' => true,
         'whitespace_after_comma_in_array' => true,
+        'method_chaining_indentation' => true,
     ])
     //->setIndent("\t")
     ->setLineEnding("\n");

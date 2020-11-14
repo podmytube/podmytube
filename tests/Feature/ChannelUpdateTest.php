@@ -3,9 +3,7 @@
 namespace Tests\Feature;
 
 use App\Channel;
-use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class ChannelUpdateTest extends TestCase
@@ -21,34 +19,53 @@ class ChannelUpdateTest extends TestCase
         $this->channel = factory(Channel::class)->create(['lang' => 'FR']);
     }
 
-    public function testChangingOnlyLanguageShouldWork()
+    /**
+     * @dataProvider provideValidData
+     */
+    public function testValidData(string $message, array $data)
     {
-        $languageExpected = 'PT';
         $this->followingRedirects()
             ->actingAs($this->channel->user)
-            //->from(route('channel.edit', $this->channel))
-            ->patch(route('channel.update', $this->channel), [
-                'lang' => $languageExpected,
-            ])
+            ->patch(route('channel.update', $this->channel), $data)
             ->assertSuccessful();
-        $this->channel->refresh();
-        $this->assertEquals($languageExpected, $this->channel->lang);
     }
 
-    public function testUpdateShouldRun()
+    /**
+     * @dataProvider provideInvalidData
+     */
+    public function testInvalidData(string $message, array $data, $error)
     {
-        $languageExpected = 'EN';
-        $this->followingRedirects()
-            ->actingAs($this->channel->user)
-            //->from(route('channel.edit', $this->channel))
-            ->patch(route('channel.update', $this->channel), [
-                'podcast_title' => 'Another title',
-                'authors' => 'John Doe',
-                'email' => 'john.doe@gmail.com',
-                'lang' => $languageExpected,
-            ])
-            ->assertSuccessful();
-        $this->channel->refresh();
-        $this->assertEquals($languageExpected, $this->channel->lang);
+        $this->actingAs($this->channel->user)
+            ->from(route('channel.edit', $this->channel))
+            ->patch(route('channel.update', $this->channel), $data)
+            ->assertSessionHasErrors($error)
+            ->assertRedirect(route('channel.edit', $this->channel));
+    }
+
+    public function provideValidData()
+    {
+        return [
+            ['title only should be valid', ['podcast_title' => 'Great podcast means great responsibilities']],
+            ['only explicit', ['explicit' => 0]],
+            ['only lang', ['lang' => 'FR']],
+            ['title and explicit', ['podcast_title' => 'Great podcast means great responsibilities', 'explicit' => 1]],
+            ['Category should be valid', ['category_id' => 1]],
+        ];
+    }
+
+    public function provideInvalidData()
+    {
+        /**
+         * format is message, data to PATCH, field in error
+         */
+        return [
+            ['invalid link', ['link' => 'invalid url'], 'link'],
+            ['link without http', ['link' => 'google.com'], 'link'],
+            ['link without domain', ['link' => 'https://'], 'link'],
+            ['invalid email', ['email' => 'invalid email'], 'email'],
+            ['invalid lang', ['lang' => 'JP'], 'lang'],
+            ['invalid category', ['category_id' => 'not a category'], 'category_id'],
+            ['invalid explicit', ['explicit' => 'not a boolean'], 'explicit'],
+        ];
     }
 }
