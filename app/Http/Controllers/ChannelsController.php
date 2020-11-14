@@ -87,7 +87,8 @@ class ChannelsController extends Controller
 
         event(new ChannelUpdated($channel));
 
-        return redirect(route('home', $channel))->with(
+        return redirect(route('home', $channel))
+        ->with(
             'success',
             'Channel successfully updated !'
         );
