@@ -14,5 +14,7 @@
     @include ('partials.footer')
 
 </body>
-
 </html>
+@if (App::environment('testing'))
+@include ('partials.testing')
+@endif
