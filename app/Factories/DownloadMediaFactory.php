@@ -12,6 +12,7 @@ use App\Modules\MediaProperties;
 use App\Youtube\YoutubeVideo;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class DownloadMediaFactory
@@ -22,10 +23,9 @@ class DownloadMediaFactory
     /** @var bool $verbose */
     protected $verbose;
 
-    private function __construct(Media $media, bool $verbose = false)
+    private function __construct(Media $media)
     {
         $this->media = $media;
-        $this->verbose = $verbose;
     }
 
     public static function media(...$params)
@@ -39,47 +39,50 @@ class DownloadMediaFactory
             /**
              * getting media infos
              */
+            Log::notice("Getting informations for media {$this->media->media_id}");
             $youtubeVideo = YoutubeVideo::forMedia($this->media->media_id);
 
             /**
              * is video downladable (not upcoming and processed)
              */
             if (!$youtubeVideo->isAvailable()) {
-                throw new YoutubeMediaIsNotAvailableException(
-                    "This video {$this->media->media_id} is not available yet. \
-                    'upcoming' live or not yet 'processed'."
-                );
+                $message = "This video {$this->media->media_id} is not available yet. \
+                'upcoming' live or not yet 'processed'.";
+                Log::error($message);
+                throw new YoutubeMediaIsNotAvailableException($message);
             }
 
             /**
              * if media has a tag, is it downladable
              */
             if ($youtubeVideo->isTagged() && !$this->media->channel->areTagsAccepted($youtubeVideo->tags())) {
-                throw new DownloadMediaTagException(
-                    'Media tags ' . implode(',', $youtubeVideo->tags()) .
-                    " are not in allowed tags {$this->media->channel->accept_video_by_tag}."
-                );
+                $message = 'Media tags ' . implode(',', $youtubeVideo->tags()) .
+                    " are not in allowed tags {$this->media->channel->accept_video_by_tag}.";
+                Log::error($message);
+                throw new DownloadMediaTagException($message);
             }
 
             /**
              * did channel reach its quota
              */
             if ($this->media->channel->hasReachedItslimit()) {
-                throw new ChannelHasReachedItsQuotaException(
-                    "Channel $this->media->channel->channel_name ($this->media->channel->channel_id) \
-                    has reached its quota."
-                );
+                $message = "Channel $this->media->channel->channel_name ($this->media->channel->channel_id) \
+                has reached its quota.";
+                Log::error($message);
+                throw new ChannelHasReachedItsQuotaException($message);
                 return false;
             }
 
             /** download, convert and get its path */
-            $downloadedFilePath = DownloadYTMedia::init($this->media->media_id, Storage::disk('tmp')->path(''), $this->verbose)
+            Log::notice("Downloading media {$this->media->media_id} from youtube.");
+            $downloadedFilePath = DownloadYTMedia::init($this->media->media_id, Storage::disk('tmp')->path(''), false)
                 ->download()
                 ->downloadedFilePath();
 
             /**
              * if empty will throw exception
              */
+            Log::notice("Media {$this->media->media_id} has been download successfully from youtube. Analyzing.");
             $mediaProperties = MediaProperties::analyzeFile($downloadedFilePath);
 
             /**
@@ -91,19 +94,20 @@ class DownloadMediaFactory
             /**
              * upload it
              */
+            Log::notice("Uploading Media from {$downloadedFilePath} to {$this->media->url()} ");
             $this->media->uploadFromFile($downloadedFilePath);
 
             /**
              * update infos
              */
-
+            Log::notice('Persisting media infos into DB.');
             $this->media->title = $youtubeVideo->title();
             $this->media->description = $youtubeVideo->description();
             $this->media->grabbed_at = Carbon::now();
             $this->media->length = $mediaProperties->filesize();
             $this->media->duration = $mediaProperties->duration();
             $this->media->save();
-
+            Log::notice("Downloading media {$this->media->media_id} is successfully finished.");
             return true;
         });
     }
