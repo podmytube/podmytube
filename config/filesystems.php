@@ -109,6 +109,7 @@ return [
             'privateKey' => $sshCredentials['path'],
             // 'port' => 22,
             'root' => env('SFTP_MP3_PATH'),
+            'url' => env('MP3_URL'),
             'timeout' => 20,
             'visibility' => 'public',
             'permPublic' => 0755,

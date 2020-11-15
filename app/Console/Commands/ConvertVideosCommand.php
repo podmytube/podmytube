@@ -11,19 +11,13 @@ use Illuminate\Support\Facades\Log;
 
 class ConvertVideosCommand extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
+    /** @var string $signature */
     protected $signature = 'convert:videos {period?}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
+    /** @var string $description */
     protected $description = 'This command will convert videos to audio files.';
+
+    protected $progressBar;
 
     /**
      * Execute the console command.
@@ -40,14 +34,21 @@ class ConvertVideosCommand extends Command
 
         $period = PeriodsHelper::create($periodArgument->month, $periodArgument->year);
 
+        Log::notice("Processing medias during period {$period->startDate()} and {$period->endDate()}");
         /**
          * getting all non grabbed episodes published during this period order by (with channel and subscription)
          */
-        $medias = Media::with('channel')->publishedBetween($period->startDate(), $period->endDate())->whereNotNull('grabbed_at')->get();
+        $medias = Media::with('channel')->publishedBetween($period->startDate(), $period->endDate())->whereNull('grabbed_at')->get();
 
-        if (!$medias->count()) {
+        $nbMedias = $medias->count();
+        if ($nbMedias <= 0) {
             $this->comment('There is no ungrabbed medias and you should have a look.', 'v');
             return;
+        }
+
+        if ($this->getOutput()->isVerbose()) {
+            $this->progressBar = $this->output->createProgressBar($nbMedias);
+            $this->progressBar->start();
         }
 
         /**
@@ -55,10 +56,17 @@ class ConvertVideosCommand extends Command
          */
         foreach ($medias as $media) {
             try {
-                DownloadMediaFactory::media($media, $this->getOutput()->isVerbose());
+                DownloadMediaFactory::media($media, $this->getOutput()->isVerbose())->run();
             } catch (\Exception $exception) {
                 Log::error($exception->getMessage());
             }
+            if ($this->getOutput()->isVerbose()) {
+                $this->progressBar->advance();
+            }
+        }
+        if ($this->getOutput()->isVerbose()) {
+            $this->progressBar->finish();
+            $this->line('');
         }
     }
 
