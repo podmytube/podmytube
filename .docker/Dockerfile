@@ -1,19 +1,4 @@
 #
-# Youtube-dl
-#
-FROM python:3 as youtube-dl
-
-LABEL maintainer="Frederick Tyteca"
-
-RUN mkdir -p /app
-
-RUN apt-get update -y && \
-        apt-get install -y --no-install-recommends zip pandoc
-
-# git clone && make 
-RUN git clone https://github.com/l1ving/youtube-dl.git && cd youtube-dl && make
-
-#
 # composer
 #
 FROM composer:2.0 as composer
@@ -28,6 +13,24 @@ RUN composer install \
         --no-plugins \
         --no-scripts \
         --prefer-dist
+
+#
+# node
+#
+FROM node:14.15-buster as node
+
+RUN mkdir -p /app/public
+
+COPY package.json webpack.mix.js package-lock.json tailwind.config.js postcss.config.js /app/
+COPY resources/css/ /app/resources/css/
+COPY resources/images/ /app/resources/images/
+COPY resources/js/ /app/resources/js/
+COPY resources/sass/ /app/resources/sass/
+
+WORKDIR /app
+
+RUN npm install && npm run production
+
 
 #
 # App
@@ -59,6 +62,10 @@ RUN apt-get update -y && \
         python && \
         rm -rf /var/lib/apt/lists/*;
 
+# youtube-dl
+RUN curl -L https://github.com/l1ving/youtube-dl/releases/latest/download/youtube-dl -o /usr/local/bin/youtube-dl && \
+        chmod a+rx /usr/local/bin/youtube-dl
+
 # Set the locale
 RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen
 ENV LANG en_US.UTF-8
@@ -85,8 +92,10 @@ COPY    .docker/timezone.ini /usr/local/etc/php/conf.d/
 # this script will launch supervisor then apache on the foreground
 COPY    .docker/run-on-start.sh /etc/init.d/run-on-start.sh
 
-COPY --from=youtube-dl youtube-dl /usr/local/bin/
 COPY --from=composer /app/vendor/ /app/vendor/
+COPY --from=node /app/public/js/ /app/public/js/
+COPY --from=node /app/public/css/ /app/public/css/
+COPY --from=node /app/mix-manifest.json /app/mix-manifest.json
 COPY . /app
 WORKDIR /app
 
