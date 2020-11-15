@@ -23,10 +23,14 @@ Route::domain('www.' . config('app.domain'))->group(function () {
     Route::resource('post', 'PostController')
         ->only(['index', 'show']);
 
-    Route::get('pricing', function () { return view('pricing'); })
+    Route::get('pricing', function () {
+        return view('pricing');
+    })
         ->name('pricing');
 
-    Route::get('about', function () { return view('about'); })
+    Route::get('about', function () {
+        return view('about');
+    })
         ->name('about');
 });
 
@@ -53,7 +57,7 @@ Route::domain('dashboard.' . config('app.domain'))->group(function () {
             ->name('channel.create');
 
         Route::resource('channel', 'ChannelsController')
-            ->only(['index', 'show', 'edit', 'update', ]);
+            ->only(['index', 'show', 'edit', 'update']);
 
         Route::get('/change-password', 'Auth\UpdatePasswordController@index')
             ->name('password.form');
@@ -98,6 +102,6 @@ Route::domain('dashboard.' . config('app.domain'))->group(function () {
          * User profile
          */
         Route::resource('user', 'UsersController')
-            ->only(['show', 'edit', 'update', ]);
+            ->only(['show', 'edit', 'update']);
     });
 });

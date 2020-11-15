@@ -4,16 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRequest;
 use App\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 
 class UsersController extends Controller
 {
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      *
      * @return \Illuminate\Http\Response
      */
@@ -26,7 +23,7 @@ class UsersController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      *
      * @return \Illuminate\Http\Response
      */
@@ -49,7 +46,7 @@ class UsersController extends Controller
         if (!array_key_exists('newsletter', $validatedParams)) {
             $validatedParams['newsletter'] = false;
         }
-        
+
         $user->update($validatedParams);
 
         return redirect(route('user.show', $user))->with(

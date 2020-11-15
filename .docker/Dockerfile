@@ -1,10 +1,41 @@
+#
+# composer
+#
+FROM composer:2.0 as composer
+
+COPY database database
+COPY composer.json composer.json
+COPY composer.lock composer.lock
+
+RUN composer install \
+        --ignore-platform-reqs \
+        --no-interaction \
+        --no-plugins \
+        --no-scripts \
+        --prefer-dist
+
+#
+# node
+#
+FROM node:14.15-buster as node
+
+RUN mkdir -p /app/public
+
+COPY package.json webpack.mix.js package-lock.json tailwind.config.js postcss.config.js /app/
+COPY resources/css/ /app/resources/css/
+COPY resources/images/ /app/resources/images/
+COPY resources/js/ /app/resources/js/
+COPY resources/sass/ /app/resources/sass/
+
+WORKDIR /app
+
+RUN npm install && npm run production
+
+
+#
+# App
+#
 FROM    php:7.4-apache-buster
-
-LABEL   maintainer="Frederick Tyteca"
-
-# used to create specific user with same uid/gid
-ARG         USER_ID
-ARG         GROUP_ID
 
 # enabling mod rewrite
 RUN     a2enmod rewrite
@@ -16,30 +47,37 @@ RUN     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezo
 # stuff to install
 # libpng-dev --- used with laravel lib to resize/work with images
 # libjpeg-dev --- used with laravel lib to resize/work with images
-# libzip-dev --- used by composer
-# zip --- used by composer
-# git -- used by composer
-# curl is used to download npm
-RUN     apt-get update -y && \
+# locales is used with youtube-dl to avoid naming problem
+# ffmpeg is used to convert video to audio by youtube-dl
+# supervisor is used to manage backgroud processes and queues
+# sqlite is for tests
+# python is useful to run youtube-dl
+RUN apt-get update -y && \
         apt-get install -y -qq libpng-dev \
         libjpeg-dev \
+        locales \
+        ffmpeg \
         supervisor \
         sqlite \
-        libzip-dev \
-        zip \
-        git
+        python && \
+        rm -rf /var/lib/apt/lists/*;
 
-RUN     rm -rf /var/lib/apt/lists/*;
+# youtube-dl
+RUN curl -L https://github.com/l1ving/youtube-dl/releases/latest/download/youtube-dl -o /usr/local/bin/youtube-dl && \
+        chmod a+rx /usr/local/bin/youtube-dl
 
-RUN     docker-php-ext-install zip
-RUN     docker-php-ext-configure gd --with-jpeg
+# Set the locale
+RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
+ENV TZ="Europe/Paris"
 
 # installing required php modules
 # pdo & pdo_mysql for db connection
 # gd ----- NOT SURE -----
-RUN     docker-php-ext-install pdo \
-        pdo_mysql \
-        gd
+RUN     docker-php-ext-configure gd --with-jpeg && \
+        docker-php-ext-install pdo_mysql gd
 
 # default vhost replaced by custom one                                                                                                                                                                                          
 # mainly documentRoot /app/public       
@@ -51,26 +89,17 @@ COPY    .docker/laravel-worker.conf /etc/supervisor/conf.d/
 COPY    .docker/disablingShortTags.ini /usr/local/etc/php/conf.d/
 COPY    .docker/timezone.ini /usr/local/etc/php/conf.d/
 
-# creating appropriate user
-RUN     addgroup --gid $GROUP_ID dockeruser && \
-# not sure this one is still useful
-        adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID dockeruser && \
-# adding user to www-data
-        usermod -a -G www-data dockeruser
+# this script will launch supervisor then apache on the foreground
+COPY    .docker/run-on-start.sh /etc/init.d/run-on-start.sh
 
-# copying all files (but .dockerignore(d)) in /app
-COPY    . /app
+COPY --from=composer /app/vendor/ /app/vendor/
+COPY --from=node /app/public/js/ /app/public/js/
+COPY --from=node /app/public/css/ /app/public/css/
+COPY --from=node /app/mix-manifest.json /app/mix-manifest.json
+COPY . /app
 WORKDIR /app
-RUN 	mkdir -p bootstrap/cache && \
-        chown -R www-data:www-data storage bootstrap public && \
-        chmod -R ug+rw storage bootstrap public && \
-        chmod g+s storage/logs
-# Adding phpunit to Path
-ENV     PATH="/app/vendor/bin:${PATH}"
 
 # symlink for storage (the same that is created with "artisan storage:link")
 RUN     if [ ! -L public/storage ]; then ln -s /app/storage/app/public public/storage; fi
 
-# this script will launch supervisor then apache on the foreground
-COPY    .docker/run-on-start.sh /etc/init.d/run-on-start.sh
 CMD     ["/etc/init.d/run-on-start.sh"]

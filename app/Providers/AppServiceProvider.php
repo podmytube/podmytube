@@ -2,9 +2,9 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -18,7 +18,12 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useTailwind();
 
-        \Illuminate\Support\Collection::macro('recursive', function () {
+        if (App::environment('production')) {
+            URL::forceScheme('https');
+        }
+
+        /*
+        Collection::macro('recursive', function () {
             return $this->map(function ($value) {
                 if (is_array($value) || is_object($value)) {
                     return collect($value)->recursive();
@@ -28,7 +33,7 @@ class AppServiceProvider extends ServiceProvider
             });
         });
 
-        /* if (env('APP_DEBUG')) {
+        if (env('APP_DEBUG')) {
             DB::listen(function ($query) {
                 File::append(
                     storage_path('/logs/query.log'),
@@ -49,7 +54,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        if ($this->app->environment() !== 'production') {
+        if (!App::environment('production')) {
             $this->app->register(
                 \Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class
             );

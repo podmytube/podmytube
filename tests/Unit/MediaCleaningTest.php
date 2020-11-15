@@ -17,7 +17,7 @@ class MediaCleaningTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Storage::fake(Media::DISK);
+        Storage::fake(Media::REMOTE_DISK);
         Event::fake();
     }
 
