@@ -1,32 +1,10 @@
 version: "3.3"
 services:
-    node:
-        image: "node:12"
-        container_name: dashnode
-        restart: "no"
-        working_dir: /home/node/app
-        volumes:
-            - ./:/home/node/app
-        command: bash -c "npm install && npm run production"
-    composer:
-        image: "composer:latest"
-        container_name: dashcomposer
-        restart: "no"
-        volumes:
-            - .:/app
-        command: install
-    # ==============================================================
-    # here we are building image from the .docker/Dockerfile
-    # this image is starting from a official php-apache docker
-    # and creating host dashboard-pmt
     dashboard-pmt:
         container_name: dashboard.podmytube.com
         build:
             context: .
             dockerfile: .docker/Dockerfile
-            args:
-                USER_ID: ${USER_ID}
-                GROUP_ID: ${GROUP_ID}
         image: dash.pmt
         restart: always
         expose:
@@ -57,9 +35,6 @@ services:
         # that s all
         networks:
             - nginx-proxy
-        depends_on:
-            - composer
-            - node
 
 networks:
     nginx-proxy:

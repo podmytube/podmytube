@@ -22,6 +22,7 @@ class ChannelsTableSeeder extends Seeder
 
         $channelModel = factory(Channel::class)->create([
             'channel_id' => self::PERSONAL_CHANNEL_ID,
+            'category_id' => 4, //education
             'user_id' => User::byEmail('frederick@podmytube.com')->user_id,
         ]);
 

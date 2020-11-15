@@ -43,7 +43,7 @@ class ChannelLimitsTest extends TestCase
         );
         $this->assertFalse(
             $this->channel->hasReachedItslimit(),
-            'Channel (with no grabbed eipsodes) was not expected to have reached its limits.'
+            'Channel (with no grabbed episodes) was not expected to have reached its limits.'
         );
     }
 

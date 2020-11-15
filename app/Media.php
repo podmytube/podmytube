@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class Media extends Model
 {
@@ -48,10 +47,7 @@ class Media extends Model
 
     public function relativePath()
     {
-        return $this->channel_id .
-            DIRECTORY_SEPARATOR .
-            $this->media_id .
-            self::FILE_EXTENSION;
+        return $this->channel_id . DIRECTORY_SEPARATOR . $this->media_id . self::FILE_EXTENSION;
     }
 
     /**
@@ -163,13 +159,20 @@ class Media extends Model
         return Storage::disk(self::REMOTE_DISK)->exists($this->relativePath());
     }
 
+    public function remoteFilePath()
+    {
+        return Storage::disk(self::REMOTE_DISK)->path($this->relativePath());
+    }
+
+    public function url()
+    {
+        return config('app.MP3_URL') . '/' . $this->remoteFilePath();
+    }
+
     public function uploadFromFile(string $localFilePath)
     {
         Storage::disk(self::REMOTE_DISK)
-            ->put(
-                $this->relativePath(),
-                file_get_contents($localFilePath)
-            );
+            ->put($this->relativePath(), file_get_contents($localFilePath));
     }
 
     public function scopeGrabbedBefore(Builder $query, Carbon $date)

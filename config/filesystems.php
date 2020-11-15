@@ -65,7 +65,7 @@ return [
         ],
 
         /**
-         * Podcast feeds
+         * Local podcast feeds
          */
         'feeds' => [
             'driver' => 'local',
@@ -75,7 +75,7 @@ return [
         ],
 
         /**
-         * Thumbs real url for podcast listeners
+         * Remote feeds
          */
         'sftpfeeds' => [
             'driver' => 'sftp',
@@ -109,6 +109,7 @@ return [
             'privateKey' => $sshCredentials['path'],
             // 'port' => 22,
             'root' => env('SFTP_MP3_PATH'),
+            'url' => env('MP3_URL'),
             'timeout' => 20,
             'visibility' => 'public',
             'permPublic' => 0755,
@@ -139,7 +140,7 @@ return [
             'permPublic' => 0755,
         ],
 
-        'appTmp' => [
+        'tmp' => [
             'driver' => 'local',
             'root' => base_path('tmp'),
         ],

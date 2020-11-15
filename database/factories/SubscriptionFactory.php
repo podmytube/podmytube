@@ -2,6 +2,7 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
+use App\Channel;
 use App\Subscription;
 use Faker\Generator as Faker;
 
@@ -10,7 +11,9 @@ $factory->define(Subscription::class, function (
     $attributes = []
 ) {
     return [
-        'channel_id' => $attributes['channel_id'] ?? $faker->regexify('[a-zA-Z0-9-_]{24}'),
+        'channel_id' => $attributes['channel_id'] ?? function () {
+            return factory(Channel::class)->create()->channel_id;
+        },
         'plan_id' => $attributes['plan_id'] ?? $faker->numberBetween(1, 7),
     ];
 });
