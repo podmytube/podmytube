@@ -3,12 +3,14 @@
 namespace App\Jobs;
 
 use App\Channel;
+use App\Events\OccursOnChannel;
 use App\Podcast\PodcastUpload;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class SendFeedBySFTP implements ShouldQueue
 {
@@ -31,8 +33,11 @@ class SendFeedBySFTP implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(OccursOnChannel $event)
     {
+        Log::notice(__CLASS__ . '::' . __FUNCTION__);
+        Log::notice("{$event->channel->channel_name} is about to be uploaded.");
         PodcastUpload::prepare($this->channel)->upload();
+        Log::notice("{$event->channel->channel_name} has been uploaded.");
     }
 }

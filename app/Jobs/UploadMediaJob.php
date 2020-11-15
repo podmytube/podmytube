@@ -2,13 +2,17 @@
 
 namespace App\Jobs;
 
-use App\Exceptions\ThumbUploadHasFailedException;
+use App\Events\ChannelUpdated;
+use App\Exceptions\MediaToUploadDoesNotExistsException;
 use App\Media;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class UploadMediaJob implements ShouldQueue
 {
@@ -34,14 +38,16 @@ class UploadMediaJob implements ShouldQueue
      */
     public function handle()
     {
-        try {
-            info('Job -- ' . __CLASS__ . '::' . __FUNCTION__);
-            //$this->media->uploadFromFile($foo);
-        } catch (\Exception $exception) {
-            throw new ThumbUploadHasFailedException(
-                "Uploading media {$this->media->title} for channel {$this->media->channel_name} ({$this->media->channel_id}) has failed with message :" .
-                    $exception->getMessage()
-            );
+        $filenameToUpload = $this->media->media_id . Media::FILE_EXTENSION;
+        if (!Storage::disk('uploadedMedias')->exists($filenameToUpload)) {
+            throw new MediaToUploadDoesNotExistsException('The media that should be here ' . Storage::disk('uploadedMedias')->path($filenameToUpload) . ' is not here.');
         }
+        Log::notice('Uploading Media from ' . Storage::disk('uploadedMedias')->path($filenameToUpload) . '.');
+        $this->media->uploadFromFile(Storage::disk('uploadedMedias')->path($filenameToUpload));
+        $this->media->grabbed_at = Carbon::now();
+        $this->media->save();
+        Log::notice("Media should be available there {$this->media->url()}. Firing event ChannelUpdated.");
+
+        ChannelUpdated::dispatch($this->media->channel);
     }
 }
