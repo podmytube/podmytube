@@ -82,7 +82,7 @@ class DownloadYTMedia
 
     public function downloadedFilePath(): string
     {
-        return $this->destinationFolder . '/' . $this->mediaId . '.' . self::AUDIO_FORMAT;
+        return $this->destinationFolder . $this->mediaId . '.' . self::AUDIO_FORMAT;
     }
 
     /**
@@ -128,7 +128,7 @@ class DownloadYTMedia
             '--extract-audio', // Convert video files to audio-only files (requires ffmpeg)
             '--audio-format ' . self::AUDIO_FORMAT, // post processing option to convert file obtained to mp3
             "--format 'bestaudio[ext=mp3]/best[ext=webm]/best'", // Download best (else dl is slow)
-            "--output '" . $this->destinationFolder . "/%(id)s.%(ext)s'",
+            "--output '" . $this->destinationFolder . "%(id)s.%(ext)s'",
         ];
 
         if (!$this->verbose) {

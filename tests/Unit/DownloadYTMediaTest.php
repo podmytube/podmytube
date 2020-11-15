@@ -16,25 +16,9 @@ use Tests\TestCase;
 
 class DownloadYTMediaTest extends TestCase
 {
-    /**
-     * Youtube media id for mario coin sound effect.
-     */
-    const mediaToObtain = 'qfx6yf8pux4';
-
-    /**
-     * default video extension
-     */
-    const mediaExt = '.mp3';
-
-    /**
-     * Where the video should be stored
-     */
-    const mediaDestinationFolder = '/tmp';
-
-    /**
-     * Mario sound effect is 0:06 seconds long
-     */
-    const mediaDuration = 6;
+    const MARIO_COIN_MEDIA_ID = 'qfx6yf8pux4';
+    const AUDIO_FILE_EXTENSION = '.mp3';
+    const MARIO_COIN_DURATION = 6;
 
     /**
      * Full path of the downloaded video
@@ -56,23 +40,36 @@ class DownloadYTMediaTest extends TestCase
      */
     protected $downloadVideo;
 
+    /** @var string $destinationFolder */
+    protected $destinationFolder;
+
     /**
      * first things to do before launching tests
      * @return void
      */
     protected function setUp(): void
     {
-        $this->expectedVideoFile = self::mediaDestinationFolder . '/' . self::mediaToObtain . self::mediaExt;
+        parent::setUp();
+        $this->expectedVideoFile = Storage::disk('tmp')->path(self::MARIO_COIN_MEDIA_ID . self::AUDIO_FILE_EXTENSION);
+        $this->destinationFolder = Storage::disk('tmp')->path('');
         if (file_exists($this->expectedVideoFile)) {
             unlink($this->expectedVideoFile);
         }
+    }
+
+    protected function tearDown(): void
+    {
+        if (file_exists($this->expectedVideoFile)) {
+            unlink($this->expectedVideoFile);
+        }
+        parent::tearDown();
     }
 
     public function testDownloadedFilePathShouldBeGood()
     {
         $this->assertEquals(
             $this->expectedVideoFile,
-            DownloadYTMedia::init(self::mediaToObtain, self::mediaDestinationFolder, false)->downloadedFilePath(),
+            DownloadYTMedia::init(self::MARIO_COIN_MEDIA_ID, $this->destinationFolder, false)->downloadedFilePath(),
             'expected file {' . $this->expectedVideoFile . '} should be there'
         );
     }
@@ -83,7 +80,7 @@ class DownloadYTMediaTest extends TestCase
      */
     public function testDownloadShouldBeGood()
     {
-        DownloadYTMedia::init(self::mediaToObtain, self::mediaDestinationFolder, false)->download();
+        DownloadYTMedia::init(self::MARIO_COIN_MEDIA_ID, $this->destinationFolder, false)->download();
         $this->assertFileExists(
             $this->expectedVideoFile,
             'expected file {' . $this->expectedVideoFile . '} should be there'
@@ -96,7 +93,7 @@ class DownloadYTMediaTest extends TestCase
     public function testThatWeFailIfDestinationPathIsInvalid()
     {
         $this->expectException(InvalidArgumentException::class);
-        DownloadYTMedia::init(self::mediaToObtain, '/path/that/does/not/exists');
+        DownloadYTMedia::init(self::MARIO_COIN_MEDIA_ID, '/path/that/does/not/exists');
     }
 
     /**
@@ -105,6 +102,6 @@ class DownloadYTMediaTest extends TestCase
     public function testThatWeFailIfMediaIsInvalid()
     {
         $this->expectException(DownloadMediaFailureException::class);
-        DownloadYTMedia::init('invalid-media-forever', '/tmp')->download();
+        DownloadYTMedia::init('invalid-media-forever', $this->destinationFolder)->download();
     }
 }
