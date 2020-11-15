@@ -12,6 +12,7 @@ use App\Modules\MediaProperties;
 use App\Youtube\YoutubeVideo;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class DownloadMediaFactory
 {
@@ -71,10 +72,10 @@ class DownloadMediaFactory
                 return false;
             }
 
-            /**
-             * download and convert it
-             */
-            $downloadedFilePath = DownloadYTMedia::init($this->media->media_id, '/tmp', $this->verbose)->download()->downloadedFilePath();
+            /** download, convert and get its path */
+            $downloadedFilePath = DownloadYTMedia::init($this->media->media_id, Storage::disk('tmp')->path(''), $this->verbose)
+                ->download()
+                ->downloadedFilePath();
 
             /**
              * if empty will throw exception
@@ -84,7 +85,8 @@ class DownloadMediaFactory
             /**
              * checking obtained file duration of result
              */
-            CheckingGrabbedFile::init($mediaProperties, $youtubeVideo->duration())->check();
+            CheckingGrabbedFile::init($mediaProperties, $youtubeVideo->duration())
+                ->check();
 
             /**
              * upload it

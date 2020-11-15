@@ -35,7 +35,7 @@ class YoutubeLastVideoFactoryTest extends TestCase
 
         /** checking quota consumption has been persisted */
         $quotaModel = Quota::first();
-        $this->assertEquals(10, $quotaModel->quota_used);
+        $this->assertEquals(12, $quotaModel->quota_used);
         $this->assertEquals(YoutubeLastVideoFactory::SCRIPT_NAME, $quotaModel->script);
     }
 
