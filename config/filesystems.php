@@ -120,7 +120,7 @@ return [
          */
         'uploadedMedias' => [
             'driver' => 'local',
-            'root' => storage_path('app/public/uploaded'),
+            'root' => storage_path('app/uploadedMedias'),
             'visibility' => 'private',
         ],
 

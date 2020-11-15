@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Channel;
 use App\Events\MediaAdded;
+use App\Exceptions\NotImplementedException;
 use App\Http\Requests\MediaRequest;
 use App\Media;
 use App\Modules\MediaProperties;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 
 class MediasController extends Controller
@@ -26,6 +28,11 @@ class MediasController extends Controller
             ->simplePaginate($nbItemsPerPage);
 
         return view('medias.index', compact('channel', 'medias', 'nbItemsPerPage'));
+    }
+
+    public function show(Channel $channel, Media $media)
+    {
+        throw new NotImplementedException(__CLASS__ . '::' . __FUNCTION__ . ' is not implemented yet');
     }
 
     public function create(Channel $channel)
@@ -52,7 +59,7 @@ class MediasController extends Controller
         $mediaId = $channel->nextMediaId();
 
         /** moving file where we can find it  */
-        $request->file('media_file')->storeAs('uploadedMedias', $mediaId . '.mp3');
+        Storage::putFileAs('uploadedMedias', $request->file('media_file'), $mediaId . '.mp3');
 
         /** save the information */
         $media = Media::create([
@@ -68,7 +75,7 @@ class MediasController extends Controller
         MediaAdded::dispatch($media);
 
         return redirect()
-            ->with('success', 'A brand new episode has been added to your podcast. It should be available soon.')
-            ->route('channel.medias.index');
+            ->route('channel.medias.index', $channel)
+            ->with('success', 'A brand new episode has been added to your podcast. It should be available soon.');
     }
 }

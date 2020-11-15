@@ -37,11 +37,11 @@
             </div>
             
             <div class="flex justify-center items-center">
-				<a href="{{ route('home') }}">
-					<button type="submit" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-900 font-bold py-2 px-4 rounded-l-lg">Cancel</button>
-				</a>
 				<a href="#" onclick="event.preventDefault(); document.getElementById('add-or-edit-media').submit();">
-					<button type="button" class="flex-1 bg-gray-800 text-gray-100 hover:bg-gray-700 font-bold py-2 px-4 rounded-r-lg">Submit</button>
+					<button type="button" class="flex-1 bg-gray-800 text-gray-100 hover:bg-gray-700 font-bold py-2 px-4 rounded-l-lg">Submit</button>
+				</a>
+				<a href="{{ route('home') }}">
+					<button type="submit" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-900 font-bold py-2 px-4 rounded-r-lg">Cancel</button>
 				</a>
 			</div>
         </form>
