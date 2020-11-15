@@ -65,7 +65,7 @@ return [
         ],
 
         /**
-         * Podcast feeds
+         * Local podcast feeds
          */
         'feeds' => [
             'driver' => 'local',
@@ -75,7 +75,7 @@ return [
         ],
 
         /**
-         * Thumbs real url for podcast listeners
+         * Remote feeds
          */
         'sftpfeeds' => [
             'driver' => 'sftp',
@@ -130,7 +130,7 @@ return [
             'permPublic' => 0755,
         ],
 
-        'appTmp' => [
+        'tmp' => [
             'driver' => 'local',
             'root' => base_path('tmp'),
         ],

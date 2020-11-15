@@ -83,12 +83,12 @@ class MediaModelTest extends TestCase
         $this->assertTrue($media->hasBeenGrabbed());
     }
 
-    public function testMediaFileExistsShouldBeFalse()
+    public function testRemoteFileExistsShouldBeFalse()
     {
         $media = factory(Media::class)->create([
             'channel_id' => $this->channel->channel_id,
         ]);
-        $this->assertFalse($media->fileExists());
+        $this->assertFalse($media->remoteFileExists());
     }
 
     public function testGrabbedAtShouldBeFine()
