@@ -7,7 +7,7 @@
 @layer base {
     .post-content {
         h2 {
-            @apply text-center text-white text-3xl font-semibold py-4;
+            @apply text-white text-3xl font-semibold py-4;
         }
 
         h3 {
@@ -29,6 +29,10 @@
 
         blockquote {
             @apply text-gray-300 pl-4 py-2 border-gray-200 border-l;
+        }
+
+        pre {
+            @apply text-gray-300 px-4 py-2 border-gray-200 border-2 text-sm;
         }
     }
 }
