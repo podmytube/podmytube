@@ -15,7 +15,7 @@ class Media extends Model
 {
     use BelongsToChannel, SoftDeletes;
 
-    public const DISK = 'medias';
+    public const REMOTE_DISK = 'medias';
     public const FILE_EXTENSION = '.mp3';
 
     /** @var string $table medias table name - without it fails */
@@ -47,10 +47,7 @@ class Media extends Model
 
     public function relativePath()
     {
-        return $this->channel_id .
-            DIRECTORY_SEPARATOR .
-            $this->media_id .
-            self::FILE_EXTENSION;
+        return $this->channel_id . DIRECTORY_SEPARATOR . $this->media_id . self::FILE_EXTENSION;
     }
 
     /**
@@ -104,9 +101,8 @@ class Media extends Model
      *
      * @param Illuminate\Database\Eloquent\Builder query is the query object
      */
-    public function scopeGrabbedAt(
-        Builder $query
-    ) {
+    public function scopeGrabbedAt(Builder $query)
+    {
         return $query->whereNotNull('grabbed_at');
     }
 
@@ -155,12 +151,28 @@ class Media extends Model
 
     /**
      * check if media file is really there.
-     * 
+     *
      * @return bool true if file really exists
      */
-    public function fileExists(): bool
+    public function remoteFileExists(): bool
     {
-        return Storage::disk(self::DISK)->exists($this->relativePath());
+        return Storage::disk(self::REMOTE_DISK)->exists($this->relativePath());
+    }
+
+    public function remoteFilePath()
+    {
+        return Storage::disk(self::REMOTE_DISK)->path($this->relativePath());
+    }
+
+    public function url()
+    {
+        return config('app.MP3_URL') . '/' . $this->remoteFilePath();
+    }
+
+    public function uploadFromFile(string $localFilePath)
+    {
+        Storage::disk(self::REMOTE_DISK)
+            ->put($this->relativePath(), file_get_contents($localFilePath));
     }
 
     public function scopeGrabbedBefore(Builder $query, Carbon $date)
@@ -168,7 +180,7 @@ class Media extends Model
         return $query->whereDate('grabbed_at', '<', $date);
     }
 
-    public static function byMediaId(string $mediaId)
+    public static function byMediaId(string $mediaId):?self
     {
         return self::where('media_id', '=', $mediaId)->first();
     }

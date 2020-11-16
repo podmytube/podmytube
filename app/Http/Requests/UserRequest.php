@@ -31,7 +31,7 @@ class UserRequest extends FormRequest
 
             'email.email' => 'Email address is not valid.',
             'language.in' => "Languages allowed : 'fr' and 'en' only.",
-            'newsletter.boolean' => 'Newsletter value not valid.'
+            'newsletter.boolean' => 'Newsletter value not valid.',
         ];
     }
 }

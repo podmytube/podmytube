@@ -11,6 +11,8 @@ class Category extends Model
         'parent_id' => 'integer',
     ];
 
+    public $timestamps = false;
+
     /**
      * One category by ask for its parent category.
      */

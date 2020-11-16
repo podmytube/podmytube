@@ -32,16 +32,8 @@ class PeriodsHelper
         NumberChecker::isBetween($month, self::MONTH_MIN, self::MONTH_MAX);
         NumberChecker::isBetween($year, self::YEAR_MIN, self::YEAR_MAX);
 
-        $this->startDate = Carbon::createMidnightDate(
-            $year,
-            $month,
-            1
-        )->subDay();
-        $this->endDate = Carbon::createMidnightDate(
-            $year,
-            $month,
-            1
-        )->endOfMonth();
+        $this->startDate = Carbon::createMidnightDate($year, $month, 1)->subDay();
+        $this->endDate = Carbon::createMidnightDate($year, $month, 1)->endOfMonth();
         if ($this->endDate->greaterThan(Carbon::today()->endOfDay())) {
             $this->endDate = Carbon::today()->endOfDay();
         }
