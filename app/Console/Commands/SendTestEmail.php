@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use App\Channel;
 use App\Mail\ChannelIsRegistered;
 use App\Mail\MonthlyReportMail;
-use App\Mail\Newsletter;
 use App\Mail\WelcomeToPodmytube;
 use App\Media;
 use App\Plan;
@@ -116,7 +115,7 @@ class SendTestEmail extends Command
         // if this user has no channel
         if (!$this->user->channels->count()) {
             $this->channel = factory(Channel::class)->create([
-                'user_id' => $this->user->user_id
+                'user_id' => $this->user->user_id,
             ]);
             return true;
         }

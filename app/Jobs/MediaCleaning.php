@@ -29,7 +29,7 @@ class MediaCleaning implements ShouldQueue
 
     public function delete()
     {
-        Storage::disk(Media::DISK);
+        Storage::disk(Media::REMOTE_DISK);
 
         /**
          * delete file

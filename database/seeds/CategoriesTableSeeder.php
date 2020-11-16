@@ -38,6 +38,16 @@ class CategoriesTableSeeder extends Seeder
             ['parent_id' => 0, 'name' => 'trueCrime'],
             ['parent_id' => 0, 'name' => 'tvFilm'],
         ];
+
+        $index = 1;
+        $data = array_map(
+            function ($item) use (&$index) {
+                return array_merge($item, [
+                    'id' => $index++,
+                ]);
+            },
+            $data
+        );
         Category::insert($data);
 
         /**

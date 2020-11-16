@@ -2,13 +2,13 @@
 
 namespace App\Youtube;
 
-/**
- * This class intends to get channels's playlist oredered by name.
- * 'uploads' => xliqsjfdumsldodsikpqs
- * 'favorites' => msldodsikpqsxliqsjfdu
- */
+use App\Exceptions\YoutubeMediaDoesNotExistException;
+
 class YoutubeVideo extends YoutubeCore
 {
+    protected const _PROCESSED_VIDEO_STATUS = 'processed';
+    protected const _UPCOMING_VIDEO_STATUS = 'upcoming';
+
     /** @var string $videoId */
     protected $videoId;
 
@@ -16,11 +16,18 @@ class YoutubeVideo extends YoutubeCore
     {
         parent::__construct();
         $this->videoId = $videoId;
-        $this->item = $this->defineEndpoint('/youtube/v3/videos')
+
+        $result = $this->defineEndpoint('/youtube/v3/videos')
             ->addParams(['id' => $this->videoId])
-            ->addParts(['id', 'snippet', 'status'])
+            ->addParts(['id', 'snippet', 'status', 'contentDetails'])
             ->run()
             ->items();
+
+        if (!count($result)) {
+            throw new YoutubeMediaDoesNotExistException("This media {$this->videoId} does not exist on youtube.");
+        }
+
+        $this->item = $result[0];
     }
 
     public static function forMedia(...$params)
@@ -28,14 +35,35 @@ class YoutubeVideo extends YoutubeCore
         return new static(...$params);
     }
 
-    public function isAvailable()
+    public function isAvailable(): bool
     {
-        return $this->item[0]['status']['uploadStatus'] === 'processed' &&
-            $this->item[0]['snippet']['liveBroadcastContent'] === 'none';
+        return $this->item['status']['uploadStatus'] === 'processed' &&
+            $this->item['snippet']['liveBroadcastContent'] === 'none';
     }
 
-    public function tags()
+    public function isTagged(): bool
     {
-        return $this->item[0]['snippet']['tags'] ?? null;
+        return count($this->tags());
+    }
+
+    public function tags(): ?array
+    {
+        return $this->item['snippet']['tags'] ?? [];
+    }
+
+    public function duration()
+    {
+        $interval = new \DateInterval($this->item['contentDetails']['duration']);
+        return ($interval->d * 24 * 60 * 60) + ($interval->h * 60 * 60) + ($interval->i * 60) + $interval->s;
+    }
+
+    public function title()
+    {
+        return $this->item['snippet']['title'];
+    }
+
+    public function description()
+    {
+        return $this->item['snippet']['description'];
     }
 }

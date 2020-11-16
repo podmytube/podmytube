@@ -17,7 +17,7 @@ class CleanFreeChannelMedias extends Command
     protected $signature = 'medias:clean';
 
     /** @var string $description The console command description. */
-    protected $description = "This command is cleaning free channel medias that are older than " . self::RETENTION_PERIOD_IN_MONTH . " monthes";
+    protected $description = 'This command is cleaning free channel medias that are older than ' . self::RETENTION_PERIOD_IN_MONTH . ' monthes';
 
     /**
      * Execute the console command.
@@ -31,10 +31,9 @@ class CleanFreeChannelMedias extends Command
          */
         $removeBeforeThisDate = Carbon::now()->startOfDay()->subMonths(self::RETENTION_PERIOD_IN_MONTH);
 
-
         /**
          * get free channel medias older than RETENTION_PERIOD_IN_MONTH
-         * SELECT * FROM `channels` inner join subscriptions using(channel_id) WHERE subscriptions.plan_id=1 
+         * SELECT * FROM `channels` inner join subscriptions using(channel_id) WHERE subscriptions.plan_id=1
          */
         $mediasToDelete = Media::grabbedBefore($removeBeforeThisDate)
             ->whereHas('channel', function (Builder $query) {

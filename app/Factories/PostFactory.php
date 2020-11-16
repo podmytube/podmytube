@@ -30,8 +30,8 @@ class PostFactory
     {
         $this->postData = $postData;
 
-        if (!$this->HasItTheGoodCategory()) {
-            throw new PostCategoryNotWantedHereException("This post category should not appear on this app.");
+        if (!$this->hasItTheGoodCategory()) {
+            throw new PostCategoryNotWantedHereException('This post category should not appear on this app.');
         }
 
         $this->postModel = Post::byWordpressId($this->postId());
@@ -65,8 +65,8 @@ class PostFactory
         $this->postModel->content = $this->postData['content']['rendered'];
         $this->postModel->format = $this->postData['format'];
         $this->postModel->status = true;
-        $this->postModel->published_at = Carbon::parse($this->postData['date'], "Europe/Paris");
-        $this->postModel->created_at = Carbon::parse($this->postData['date'], "Europe/Paris");
+        $this->postModel->published_at = Carbon::parse($this->postData['date'], 'Europe/Paris');
+        $this->postModel->created_at = Carbon::parse($this->postData['date'], 'Europe/Paris');
         $this->postModel->updated_at = $this->postLastUpdate();
         $this->postModel->post_category_id = $this->postCategoryModel->id;
         $this->postModel->save();
@@ -86,7 +86,7 @@ class PostFactory
      * extract the category from post.
      * filtering non-category before gettiong the first one.
      */
-    public function HasItTheGoodCategory(): bool
+    public function hasItTheGoodCategory(): bool
     {
         $postCategories = array_values(
             array_filter($this->postData['_embedded']['wp:term'][0], function ($item) {
@@ -141,6 +141,6 @@ class PostFactory
 
     protected function postLastUpdate()
     {
-        return Carbon::parse($this->postData['modified'], "Europe/Paris");
+        return Carbon::parse($this->postData['modified'], 'Europe/Paris');
     }
 }
