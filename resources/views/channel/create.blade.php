@@ -3,8 +3,7 @@
 @section('pageTitle', __('messages.page_title_channel_create'))
 
 @section ('content')
-
-<div class="px-2 pt-4 pb-6 sm:px-6 text-gray-900">
+<div class="max-w-screen-xl mx-auto px-2 pt-4 pb-6 sm:px-6 text-gray-900">
     <h2 class="text-3xl md:text-5xl text-white font-semibold">Add a podcast</h2>
     
     <div class="bg-gray-100 mt-6 px-4 py-4 rounded-lg">
