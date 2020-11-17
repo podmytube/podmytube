@@ -1,4 +1,4 @@
-<div class="bg-gray-800 text-white">
+<div class="bg-gray-800 text-white mt-32">
     <div class="container mx-auto p-6 md:pt-10 md:pb-10">
         <div class="border-b border-white">
             <div class="-mx-3 pb-5">
