@@ -9,6 +9,7 @@ use App\Quota;
 use App\Youtube\YoutubeChannelVideos;
 use App\Youtube\YoutubeQuotas;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class UpdateChannelsCommand extends Command
 {
@@ -70,17 +71,22 @@ class UpdateChannelsCommand extends Command
         /** for each channel */
         $this->channels->map(function ($channel) {
             try {
+                Log::info("Processing channel ($channel->channel_name) ({$channel->channel_id})");
                 $factory = YoutubeChannelVideos::forChannel($channel->channel_id, 50);
+                if (!count($factory->videos())) {
+                    Log::info("Channel {$channel->channel_name} ({$channel->channel_id}) has no video.");
+                    return false;
+                }
+
                 /** for each channel video */
                 array_map(function ($video) use ($channel) {
                     /** check if the video already exist in database */
-                    if (!($media = Media::withTrashed()->find($video['media_id']))) {
+                    $media = Media::withTrashed()->find($video['media_id']);
+                    if ($media === null) {
                         $media = new Media();
                         $media->media_id = $video['media_id'];
                         $media->channel_id = $channel->channel_id;
-                        info(
-                            "Media {{$video['title']}} has been registered for channel {{$channel->channel_name}}."
-                        );
+                        Log::info("Media {$video['title']} has been registered for channel {$channel->channel_name}.");
                         $this->mediasAdded++;
                     }
                     // update it
@@ -92,9 +98,8 @@ class UpdateChannelsCommand extends Command
                     $media->save();
                 }, $factory->videos());
 
-                $apikeysAndQuotas = YoutubeQuotas::forUrls(
-                    $factory->queriesUsed()
-                )->quotaConsumed();
+                $apikeysAndQuotas = YoutubeQuotas::forUrls($factory->queriesUsed())
+                    ->quotaConsumed();
 
                 Quota::saveScriptConsumption(pathinfo(__FILE__, PATHINFO_BASENAME), $apikeysAndQuotas);
             } catch (YoutubeNoResultsException $exception) {
@@ -138,7 +143,7 @@ class UpdateChannelsCommand extends Command
         }
 
         $this->displayErrors();
-        info("There were {$this->mediasAdded} media(s) added during process.");
+        Log::info("There were {$this->mediasAdded} media(s) added during process.");
     }
 
     protected function displayErrors()

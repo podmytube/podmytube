@@ -23,7 +23,7 @@ class YoutubeChannelVideos implements QuotasConsumer
      * retrieve videos for one specified channel.
      *
      * @param string $channelId channel id wanted
-     * @param int $limit max number of items wanted (0 = unlimited)
+     * @param int    $limit     max number of items wanted (0 = unlimited)
      */
     private function __construct(string $channelId, $limit = 0)
     {
@@ -77,10 +77,7 @@ class YoutubeChannelVideos implements QuotasConsumer
             ->setLimit($this->limit)
             ->forPlaylist($this->uploadsPlaylistId)
             ->videos();
-        $this->queries = array_merge(
-            $this->queries,
-            $playlistItems->queriesUsed()
-        );
+        $this->queries = array_merge($this->queries, $playlistItems->queriesUsed());
     }
 
     public function videos(): array

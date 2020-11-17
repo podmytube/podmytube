@@ -3,6 +3,7 @@
 namespace App\Youtube;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class YoutubePlaylistItems extends YoutubeCore
 {
@@ -28,15 +29,29 @@ class YoutubePlaylistItems extends YoutubeCore
             ->run()
             ->items();
 
+        /**
+         * filtering invalid publishedAt video
+         */
+        $this->videos = array_filter($videos, function ($item) {
+            if (!isset($item['contentDetails']['videoPublishedAt']) || !strlen($item['contentDetails']['videoPublishedAt'])) {
+                return false;
+            }
+            try {
+                Carbon::parse($item['contentDetails']['videoPublishedAt']);
+            } catch (\Exception $exception) {
+                Log::error("Media id : {$item['contentDetails']['videoId']} publication date {$item['contentDetails']['videoPublishedAt']} is invalid ");
+                return false;
+            }
+            return true;
+        });
+
         $this->videos = array_map(function ($videoItem) {
             return [
                 'media_id' => $videoItem['contentDetails']['videoId'],
                 'playlist_id' => $videoItem['snippet']['playlistId'],
                 'title' => $videoItem['snippet']['title'],
                 'description' => $videoItem['snippet']['description'],
-                'published_at' => (new Carbon(
-                    $videoItem['contentDetails']['videoPublishedAt']
-                ))->setTimezone('UTC'),
+                'published_at' => Carbon::parse($videoItem['contentDetails']['videoPublishedAt'])->setTimezone('UTC'),
             ];
         }, $videos);
         return $this;
