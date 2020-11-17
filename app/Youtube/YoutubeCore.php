@@ -5,6 +5,7 @@ namespace App\Youtube;
 use App\ApiKey;
 use App\Exceptions\YoutubeInvalidEndpointException;
 use App\Exceptions\YoutubeNoResultsException;
+use App\Exceptions\YoutubeQueryFailureException;
 use App\Interfaces\QuotasConsumer;
 use App\Modules\Query;
 use App\Traits\YoutubeEndpoints;
@@ -94,16 +95,18 @@ abstract class YoutubeCore implements QuotasConsumer
              */
             $this->jsonDecoded = json_decode($rawResults, true);
 
+            if (isset($this->jsonDecoded['error'])) {
+                throw new YoutubeQueryFailureException($this->jsonDecoded['error']['message'], $this->jsonDecoded['error']['code']);
+            }
+
             if (!isset($this->jsonDecoded['items'])) {
                 throw new YoutubeNoResultsException('No results for ' . $this->url());
             }
 
             /**
-             * if response has items, adding them to previous results
+             * adding them to previous results
              */
-            if (isset($this->jsonDecoded['items'])) {
-                $this->items = array_merge($this->items, $this->jsonDecoded['items']);
-            }
+            $this->items = array_merge($this->items, $this->jsonDecoded['items']);
 
             /**
              * if response is multi page, prepare next youtube query.
