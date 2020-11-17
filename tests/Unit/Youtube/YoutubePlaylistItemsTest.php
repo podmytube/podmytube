@@ -2,8 +2,10 @@
 
 namespace Tests\Unit\Youtube;
 
+use App\Exceptions\YoutubeQueryFailureException;
 use App\Youtube\YoutubePlaylistItems;
 use App\Youtube\YoutubeQuotas;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 
@@ -36,5 +38,23 @@ class YoutubePlaylistItemsTest extends TestCase
             [$videos->apikey() => 5],
             YoutubeQuotas::forUrls($videos->queriesUsed())->quotaConsumed()
         );
+    }
+
+    public function testPublishedAt()
+    {
+        $this->assertInstanceOf(Carbon::class, (new Carbon(''))->setTimezone('UTC'));
+        $this->assertInstanceOf(Carbon::class, Carbon::parse('2012-06-24T21:42:04Z'));
+
+        $this->assertInstanceOf(Carbon::class, Carbon::parse());
+
+        $this->assertInstanceOf(Carbon::class, Carbon::parse('2012-06-24T21:42:04Z'));
+
+        //$this->assertInstanceOf(Carbon::class, Carbon::parse('2012-06-24T21:42:04Z'));
+    }
+
+    public function testGettingPlaylistThatDoesNotExistShouldThrowException()
+    {
+        $this->expectException(YoutubeQueryFailureException::class);
+        (new YoutubePlaylistItems())->forPlaylist('UUEmWzBUF53cVPhHTnUnsNMw');
     }
 }
