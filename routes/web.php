@@ -32,6 +32,10 @@ Route::domain('www.' . config('app.domain'))->group(function () {
         return view('about');
     })
         ->name('about');
+
+    Route::get('thumb', function () {
+        return view('thumb');
+    });
 });
 
 Route::domain('dashboard.' . config('app.domain'))->group(function () {
