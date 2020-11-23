@@ -7,7 +7,7 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class MediaAdded extends OccursOnChannel
+class MediaAdded
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 

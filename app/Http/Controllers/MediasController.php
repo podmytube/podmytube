@@ -8,6 +8,7 @@ use App\Exceptions\NotImplementedException;
 use App\Http\Requests\MediaRequest;
 use App\Media;
 use App\Modules\MediaProperties;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
@@ -69,11 +70,14 @@ class MediasController extends Controller
             'description' => $validatedParams['description'],
             'duration' => $mediaProperties->duration(),
             'length' => $mediaProperties->filesize(),
+            'published_at' => Carbon::now(),
+            'grabbed_at' => Carbon::now(),
         ]);
 
         /** dispatching event */
         MediaAdded::dispatch($media);
 
+        dd("medias {$mediaId} has been uploaded ");
         return redirect()
             ->route('channel.medias.index', $channel)
             ->with('success', 'A brand new episode has been added to your podcast. It should be available soon.');

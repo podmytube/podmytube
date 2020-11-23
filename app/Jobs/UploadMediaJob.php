@@ -38,16 +38,29 @@ class UploadMediaJob implements ShouldQueue
      */
     public function handle()
     {
+        /**
+         * checking file to upload is do exists
+         */
         $filenameToUpload = $this->media->media_id . Media::FILE_EXTENSION;
         if (!Storage::disk('uploadedMedias')->exists($filenameToUpload)) {
             throw new MediaToUploadDoesNotExistsException('The media that should be here ' . Storage::disk('uploadedMedias')->path($filenameToUpload) . ' is not here.');
         }
+
         Log::notice('Uploading Media from ' . Storage::disk('uploadedMedias')->path($filenameToUpload) . '.');
+        Storage::put(
+            // remote uploaded
+            Storage::disk('medias')->path($this->media->relativePath()),
+            // local uploaded file
+            Storage::disk('uploadedMedias')->get($filenameToUpload)
+        );
+
+        
         $this->media->uploadFromFile(Storage::disk('uploadedMedias')->path($filenameToUpload));
         $this->media->grabbed_at = Carbon::now();
         $this->media->save();
         Log::notice("Media should be available there {$this->media->url()}. Firing event ChannelUpdated.");
 
+        Log::notice("channel {$this->media->channel->channel_name} ({$this->media->channel->channel_id}) should be updated");
         ChannelUpdated::dispatch($this->media->channel);
     }
 }
