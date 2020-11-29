@@ -36,13 +36,13 @@ class Kernel extends ConsoleKernel
         $schedule->command(UpdateSitemapCommand::class)->hourly();
 
         /** grabbing videos */
-        $schedule->command(DownloadVideosByPeriodCommand::class)->hourly();
+        $schedule->command(DownloadVideosByPeriodCommand::class)->hourlyAt(32);
 
         /** cleaning free medias old episodes */
         $schedule->command(CleanFreeChannelMedias::class)->monthlyOn($day = 1, $time = '12:0');
 
         /** updating channels */
-        $schedule->command(UpdateChannelsCommand::class, ['all'])->hourlyAt('2');
+        $schedule->command(UpdateChannelsCommand::class, ['all'])->hourlyAt(2);
 
         /** Check media */
         $schedule->command(LastMediaPublishedChecker::class)->everySixHours();
@@ -51,7 +51,7 @@ class Kernel extends ConsoleKernel
         $schedule->command(UpdateBlogPostsCommand::class)->everyFifteenMinutes();
 
         /** Building podcasts */
-        $schedule->command(UpdatePodcastsCommand::class, ['all'])->hourlyAt('50');
+        $schedule->command(UpdatePodcastsCommand::class, ['all'])->hourlyAt(50);
 
         /** monthly report on first monday */
         $schedule->command(SendMonthlyReports::class)->monthly()->days([1])->at('11:00');
