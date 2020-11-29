@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\CleanFreeChannelMedias;
+use App\Console\Commands\DownloadVideosByPeriodCommand;
 use App\Console\Commands\LastMediaPublishedChecker;
 use App\Console\Commands\UpdateBlogPostsCommand;
 use App\Console\Commands\UpdateChannelsCommand;
@@ -25,7 +26,7 @@ class Kernel extends ConsoleKernel
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
+     * @param \Illuminate\Console\Scheduling\Schedule $schedule
      *
      * @return void
      */
@@ -34,11 +35,14 @@ class Kernel extends ConsoleKernel
         /** generating sitemap */
         $schedule->command(UpdateSitemapCommand::class)->hourly();
 
+        /** grabbing videos */
+        $schedule->command(DownloadVideosByPeriodCommand::class)->hourlyAt(32);
+
         /** cleaning free medias old episodes */
         $schedule->command(CleanFreeChannelMedias::class)->monthlyOn($day = 1, $time = '12:0');
 
         /** updating channels */
-        $schedule->command(UpdateChannelsCommand::class, ['all'])->hourlyAt('2');
+        $schedule->command(UpdateChannelsCommand::class, ['all'])->hourlyAt(2);
 
         /** Check media */
         $schedule->command(LastMediaPublishedChecker::class)->everySixHours();
@@ -47,7 +51,7 @@ class Kernel extends ConsoleKernel
         $schedule->command(UpdateBlogPostsCommand::class)->everyFifteenMinutes();
 
         /** Building podcasts */
-        $schedule->command(UpdatePodcastsCommand::class, ['all'])->hourlyAt('50');
+        $schedule->command(UpdatePodcastsCommand::class, ['all'])->hourlyAt(50);
 
         /** monthly report on first monday */
         $schedule->command(SendMonthlyReports::class)->monthly()->days([1])->at('11:00');

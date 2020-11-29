@@ -9,13 +9,13 @@ use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
-class ConvertVideosCommand extends Command
+class DownloadVideosByPeriodCommand extends Command
 {
     /** @var string $signature */
-    protected $signature = 'convert:videos {period?}';
+    protected $signature = 'download:channels {period?}';
 
     /** @var string $description */
-    protected $description = 'This command will convert videos to audio files.';
+    protected $description = 'This command will get all ungrabbed videos from all channels on specified period. Current period by default.';
 
     protected $progressBar;
 
@@ -34,15 +34,19 @@ class ConvertVideosCommand extends Command
 
         $period = PeriodsHelper::create($periodArgument->month, $periodArgument->year);
 
-        Log::notice("Processing medias during period {$period->startDate()} and {$period->endDate()}");
+        Log::notice("Downloading ungrabbed medias for period {$period->startDate()} and {$period->endDate()}");
         /**
          * getting all non grabbed episodes published during this period order by (with channel and subscription)
          */
-        $medias = Media::with('channel')->publishedBetween($period->startDate(), $period->endDate())->whereNull('grabbed_at')->get();
+        $medias = Media::with('channel')
+            ->publishedBetween($period->startDate(), $period->endDate())
+            ->whereNull('grabbed_at')->get();
 
         $nbMedias = $medias->count();
         if ($nbMedias <= 0) {
-            $this->comment('There is no ungrabbed medias and you should have a look.', 'v');
+            $message = "There is no ungrabbed medias for this period {$period->startDate()} and {$period->endDate()}.";
+            $this->comment($message, 'v');
+            Log::notice($message);
             return;
         }
 

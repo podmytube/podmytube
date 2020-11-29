@@ -3,7 +3,7 @@
 namespace Tests\Unit\Youtube;
 
 use App\Exceptions\YoutubeChannelHasNoVideoException;
-use App\Exceptions\YoutubeNoResultsException;
+use App\Exceptions\YoutubeQueryFailureException;
 use App\Factories\YoutubeLastVideoFactory;
 use App\Quota;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -47,7 +47,7 @@ class YoutubeLastVideoFactoryTest extends TestCase
 
     public function testGettingInvalidMediaShouldFail()
     {
-        $this->expectException(YoutubeNoResultsException::class);
+        $this->expectException(YoutubeQueryFailureException::class);
         YoutubeLastVideoFactory::forChannel('ChannelWhichWillNeverExists');
     }
 }
