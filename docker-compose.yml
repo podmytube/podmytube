@@ -5,34 +5,23 @@ services:
         build:
             context: .
             dockerfile: .docker/Dockerfile
-        image: dash.pmt
+        image: podmytube:$PODMYTUBE_VERSION
         restart: always
         expose:
             - "80"
             - "443"
-        # VIRTUAL_HOST should be only the domain (without http://)
-        # by example : www.example.com or sub.domain.fr
         environment:
             - VIRTUAL_HOST=${VIRTUAL_HOST:?set it in .env}
             - APACHE_RUN_USER=www-data
             - APACHE_RUN_GROUP=www-data
             - LETSENCRYPT_HOST=${VIRTUAL_HOST:?set it in .env}
             - LETSENCRYPT_EMAIL=frederick@podmytube.com
-        # we are copying files into /app (into Dockerfile)
         volumes:
             - .:/app
-        # health : checking if vendor/autoload exists
         healthcheck:
             test: bash -c "[ -f /app/vendor/autoload.php ]"
             timeout: 10s
             retries: 30
-        # VERY IMPORTANT
-        # to work with mysql docker on service(revdb)
-        # both have to be on the same network
-        # the only thing that change if that in the .env
-        # file we are changing
-        # DB_HOST=127.0.0.1 to DB_HOST=revdb
-        # that s all
         networks:
             - nginx-proxy
 
