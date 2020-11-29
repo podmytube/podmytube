@@ -21,7 +21,7 @@ FROM node:14.15-buster as node
 
 RUN mkdir -p /app/public
 
-COPY package.json webpack.mix.js package-lock.json tailwind.config.js postcss.config.js /app/
+COPY package.json webpack.mix.js tailwind.config.js postcss.config.js /app/
 COPY resources/css/ /app/resources/css/
 COPY resources/images/ /app/resources/images/
 COPY resources/js/ /app/resources/js/
