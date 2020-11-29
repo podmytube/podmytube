@@ -45,9 +45,19 @@ class Media extends Model
         return $this->enclosureUrl();
     }
 
+    public function mediaFileName()
+    {
+        return $this->media_id . self::FILE_EXTENSION;
+    }
+
     public function relativePath()
     {
-        return $this->channel_id . DIRECTORY_SEPARATOR . $this->media_id . self::FILE_EXTENSION;
+        return $this->mediaFolder() . DIRECTORY_SEPARATOR . $this->mediaFileName();
+    }
+
+    public function mediaFolder()
+    {
+        return $this->channel_id;
     }
 
     /**
@@ -169,10 +179,16 @@ class Media extends Model
         return config('app.MP3_URL') . '/' . $this->remoteFilePath();
     }
 
-    public function uploadFromFile(string $localFilePath)
+    public function uploadFromFile(string $filePath)
     {
+        Storage::disk(self::REMOTE_DISK)->putFileAs(
+            $this->mediaFolder(),
+            $filePath,
+            $this->mediaFileName()
+        );
+        /* was
         Storage::disk(self::REMOTE_DISK)
-            ->put($this->relativePath(), file_get_contents($localFilePath));
+            ->put($this->relativePath(), file_get_contents($localFilePath)); */
     }
 
     public function scopeGrabbedBefore(Builder $query, Carbon $date)
