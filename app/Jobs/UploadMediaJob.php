@@ -54,8 +54,7 @@ class UploadMediaJob implements ShouldQueue
             Storage::disk('uploadedMedias')->get($filenameToUpload)
         );
 
-        
-        $this->media->uploadFromFile(Storage::disk('uploadedMedias')->path($filenameToUpload));
+        $this->media->uploadFromPath(Storage::disk('uploadedMedias')->path($filenameToUpload));
         $this->media->grabbed_at = Carbon::now();
         $this->media->save();
         Log::notice("Media should be available there {$this->media->url()}. Firing event ChannelUpdated.");
