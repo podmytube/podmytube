@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\CleanFreeChannelMedias;
+use App\Console\Commands\DownloadVideosByPeriodCommand;
 use App\Console\Commands\LastMediaPublishedChecker;
 use App\Console\Commands\UpdateBlogPostsCommand;
 use App\Console\Commands\UpdateChannelsCommand;
@@ -25,7 +26,7 @@ class Kernel extends ConsoleKernel
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
+     * @param \Illuminate\Console\Scheduling\Schedule $schedule
      *
      * @return void
      */
@@ -33,6 +34,9 @@ class Kernel extends ConsoleKernel
     {
         /** generating sitemap */
         $schedule->command(UpdateSitemapCommand::class)->hourly();
+
+        /** grabbing videos */
+        $schedule->command(DownloadVideosByPeriodCommand::class)->hourly();
 
         /** cleaning free medias old episodes */
         $schedule->command(CleanFreeChannelMedias::class)->monthlyOn($day = 1, $time = '12:0');
