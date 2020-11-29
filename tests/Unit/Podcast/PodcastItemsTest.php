@@ -5,13 +5,15 @@ namespace Tests\Unit\Podcast;
 use App\Channel;
 use App\Media;
 use App\Podcast\PodcastItems;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 
 class PodcastItemsTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, WithFaker;
 
     protected $channel;
 
@@ -26,6 +28,7 @@ class PodcastItemsTest extends TestCase
     {
         $medias = factory(Media::class, 5)->create([
             'channel_id' => $this->channel->channel_id,
+            'grabbed_at' => $this->faker->dateTimeBetween(Carbon::parse('1 year ago'), Carbon::now())
         ]);
         $renderedItems = PodcastItems::prepare($this->channel)->render();
 
@@ -39,11 +42,11 @@ class PodcastItemsTest extends TestCase
                 $renderedItems
             );
             $this->assertStringContainsString(
-                "<enclosure url=\"" .
+                '<enclosure url="' .
                     $media->enclosureUrl() .
-                    "\" length=\"" .
+                    '" length="' .
                     $media->length .
-                    "\" type=\"audio/mpeg\" />",
+                    '" type="audio/mpeg" />',
                 $renderedItems
             );
             $this->assertStringContainsString(
@@ -68,6 +71,7 @@ class PodcastItemsTest extends TestCase
     {
         $media = factory(Media::class)->create([
             'channel_id' => $this->channel->channel_id,
+            'grabbed_at' => $this->faker->dateTimeBetween(Carbon::parse('1 year ago'), Carbon::now())
         ]);
         $renderedItems = PodcastItems::prepare($this->channel)->render();
         $this->assertStringContainsString(
@@ -79,11 +83,11 @@ class PodcastItemsTest extends TestCase
             $renderedItems
         );
         $this->assertStringContainsString(
-            "<enclosure url=\"" .
+            '<enclosure url="' .
                 $media->enclosureUrl() .
-                "\" length=\"" .
+                '" length="' .
                 $media->length .
-                "\" type=\"audio/mpeg\" />",
+                '" type="audio/mpeg" />',
             $renderedItems
         );
         $this->assertStringContainsString(
