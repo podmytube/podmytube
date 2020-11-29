@@ -32,7 +32,7 @@ class UploadMediaJobTest extends TestCase
         $uploadMediaJob = new UploadMediaJob($this->media);
         $uploadMediaJob->handle();
 
-        $this->assertTrue(Storage::disk(Media::REMOTE_DISK)->exists($this->media->relativePath()));
+        $this->assertTrue($this->media->remoteFileExists());
     }
 
     protected function prepare()

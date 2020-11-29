@@ -133,25 +133,24 @@ class MediaModelTest extends TestCase
         );
     }
 
-    public function testUploadFromFile()
+    public function testUploadFromPath()
     {
         /** \App\Media $media */
         $media = factory(Media::class)->create();
+
         /**
          * creating fake media to be uploaded
          */
-        $fileUpload = Storage::disk('uploadedMedias')->path($media->media_id . Media::FILE_EXTENSION);
-        touch($fileUpload);
-        $this->assertFileExists($fileUpload);
+        $filePath = Storage::disk('uploadedMedias')->path($media->mediaFileName());
+        touch($filePath);
+        $this->assertFileExists($filePath);
 
-        $media->uploadFromFile($fileUpload);
+        $media->uploadFromPath($filePath);
         $this->assertTrue($media->remoteFileExists());
 
         /** cleaning */
+        Storage::disk('uploadedMedias')->delete($media->mediaFileName());
 
-        $cleanResult = Storage::disk('uploadedMedias')->delete($fileUpload);
-        dump($cleanResult);
-
-        $this->assertFileDoesNotExist($fileUpload);
+        $this->assertFileDoesNotExist($filePath);
     }
 }

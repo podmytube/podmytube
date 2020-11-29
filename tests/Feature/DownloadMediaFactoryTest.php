@@ -24,25 +24,41 @@ class DownloadMediaFactoryTest extends TestCase
     protected const BEACH_VOLLEY_VIDEO_2 = '9pTBAkkTRbw';
     protected const MARIO_COIN_VIDEO = 'qfx6yf8pux4';
 
+    /** \App\Channel $channel */
+    protected $channel;
+
     public function setUp():void
     {
         parent::setUp();
         Artisan::call('db:seed');
+        $this->channel = factory(Channel::class)->create(['channel_id' => 'test']);
+        $this->subscription = factory(Subscription::class)->create(
+            [
+                'channel_id' => $this->channel->channel_id,
+                'plan_id' => Plan::bySlug('forever_free')->id
+            ]
+        );
     }
 
     public function testInvalidMediaShouldBeRejected()
     {
-        $media = factory(Media::class)->create(['media_id' => 'absolutely-not-valid']);
+        $media = factory(Media::class)->create([
+            'channel_id' => $this->channel->channel_id,
+            'media_id' => 'absolutely-not-valid'
+        ]);
         $this->expectException(YoutubeMediaDoesNotExistException::class);
         DownloadMediaFactory::media($media)->run();
     }
 
     public function testVideoHasATagProblem()
     {
-        $channel = factory(Channel::class)->create(['accept_video_by_tag' => 'window,house']);
+        //$channel = factory(Channel::class)->create(['accept_video_by_tag' => 'window,house']);
+        $this->channel->accept_video_by_tag = 'window,house';
+        $this->channel->save();
+
         $media = factory(Media::class)->create(
             [
-                'channel_id' => $channel->channel_id,
+                'channel_id' => $this->channel->channel_id,
                 'media_id' => self::BEACH_VOLLEY_VIDEO_1
             ]
         );
@@ -52,24 +68,19 @@ class DownloadMediaFactoryTest extends TestCase
 
     public function testFreeChannelHasReachedItsQuota()
     {
-        $channel = factory(Channel::class)->create();
-        factory(Subscription::class)->create(
-            [
-                'channel_id' => $channel->channel_id,
-                'plan_id' => Plan::bySlug('forever_free')->id
-            ]
-        );
+        /** one is grabbed */
         factory(Media::class)->create(
             [
-                'channel_id' => $channel->channel_id,
+                'channel_id' => $this->channel->channel_id,
                 'media_id' => self::BEACH_VOLLEY_VIDEO_1,
                 'grabbed_at' => Carbon::now(),
             ]
         );
 
+        /** the second is not grabbed yet and shouldn't */
         $media = factory(Media::class)->create(
             [
-                'channel_id' => $channel->channel_id,
+                'channel_id' => $this->channel->channel_id,
                 'media_id' => self::BEACH_VOLLEY_VIDEO_2,
             ]
         );
@@ -80,14 +91,9 @@ class DownloadMediaFactoryTest extends TestCase
 
     public function testVideoIsBeingDownloaded()
     {
-        $subscription = factory(Subscription::class)->create(
-            [
-                'plan_id' => Plan::bySlug('forever_free')->id
-            ]
-        );
         $media = factory(Media::class)->create(
             [
-                'channel_id' => $subscription->channel_id,
+                'channel_id' => $this->channel->channel_id,
                 'media_id' => self::MARIO_COIN_VIDEO
             ]
         );

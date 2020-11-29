@@ -37,6 +37,16 @@ class DownloadMediaFactory
     {
         return DB::transaction(function () {
             /**
+             * did channel reach its quota
+             */
+            if ($this->media->channel->hasReachedItslimit()) {
+                $message = "Channel {$this->media->channel->channel_name} ({$this->media->channel->channel_id}) \
+                has reached its quota.";
+                Log::error($message);
+                throw new ChannelHasReachedItsQuotaException($message);
+            }
+
+            /**
              * getting media infos
              */
             Log::notice("Getting informations for media {$this->media->media_id}");
@@ -62,17 +72,6 @@ class DownloadMediaFactory
                 throw new DownloadMediaTagException($message);
             }
 
-            /**
-             * did channel reach its quota
-             */
-            if ($this->media->channel->hasReachedItslimit()) {
-                $message = "Channel {$this->media->channel->channel_name} ({$this->media->channel->channel_id}) \
-                has reached its quota.";
-                Log::error($message);
-                throw new ChannelHasReachedItsQuotaException($message);
-                return false;
-            }
-
             /** download, convert and get its path */
             Log::notice("Downloading media {$this->media->media_id} from youtube.");
             $downloadedFilePath = DownloadYTMedia::init($this->media->media_id, Storage::disk('tmp')->path(''), false)
@@ -95,7 +94,7 @@ class DownloadMediaFactory
              * upload it
              */
             Log::notice("Uploading Media from {$downloadedFilePath} to {$this->media->url()} ");
-            $this->media->uploadFromFile($downloadedFilePath);
+            $this->media->uploadFromPath($downloadedFilePath);
 
             /**
              * update infos
