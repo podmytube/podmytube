@@ -40,9 +40,8 @@ class DownloadMediaFactory
              * did channel reach its quota
              */
             if ($this->media->channel->hasReachedItslimit()) {
-                $message = "Channel {$this->media->channel->channel_name} ({$this->media->channel->channel_id}) \
-                has reached its quota.";
-                Log::error($message);
+                $message = "Channel {$this->media->channel->channel_name} ({$this->media->channel->channel_id}) has reached its quota.";
+                Log::warning($message);
                 throw new ChannelHasReachedItsQuotaException($message);
             }
 
@@ -56,9 +55,8 @@ class DownloadMediaFactory
              * is video downladable (not upcoming and processed)
              */
             if (!$youtubeVideo->isAvailable()) {
-                $message = "This video {$this->media->media_id} is not available yet. \
-                'upcoming' live or not yet 'processed'.";
-                Log::error($message);
+                $message = "This video {$this->media->media_id} is not available yet. 'upcoming' live or not yet 'processed'.";
+                Log::notice($message);
                 throw new YoutubeMediaIsNotAvailableException($message);
             }
 
@@ -68,7 +66,7 @@ class DownloadMediaFactory
             if ($youtubeVideo->isTagged() && !$this->media->channel->areTagsAccepted($youtubeVideo->tags())) {
                 $message = 'Media tags ' . implode(',', $youtubeVideo->tags()) .
                     " are not in allowed tags {$this->media->channel->accept_video_by_tag}.";
-                Log::error($message);
+                Log::notice($message);
                 throw new DownloadMediaTagException($message);
             }
 
