@@ -6,6 +6,7 @@ use App\Channel;
 use App\Media;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Storage;
 use Tests\TestCase;
 
 class MediaModelTest extends TestCase
@@ -76,6 +77,7 @@ class MediaModelTest extends TestCase
     {
         $media = factory(Media::class)->create([
             'channel_id' => $this->channel->channel_id,
+            'grabbed_at' => Carbon::now(),
             'published_at' => Carbon::now()
                 ->startOfDay()
                 ->subMonth(),
@@ -118,5 +120,37 @@ class MediaModelTest extends TestCase
         /** checking results */
         $this->assertEquals($media->title, Media::byMediaId($media->media_id)->title);
         $this->assertNull(Media::byMediaId('ThisIsNotAMediaId'));
+    }
+
+    public function testMediaFileName()
+    {
+        $media = factory(Media::class)->create();
+        $expectedMediaFileName = $media->media_id . Media::FILE_EXTENSION;
+        $this->assertEquals(
+            $expectedMediaFileName,
+            $result = $media->mediaFileName(),
+            "Expected media filename was {$expectedMediaFileName}, obtained {$result}"
+        );
+    }
+
+    public function testUploadFromPath()
+    {
+        /** \App\Media $media */
+        $media = factory(Media::class)->create();
+
+        /**
+         * creating fake media to be uploaded
+         */
+        $filePath = Storage::disk('uploadedMedias')->path($media->mediaFileName());
+        touch($filePath);
+        $this->assertFileExists($filePath);
+
+        $media->uploadFromPath($filePath);
+        $this->assertTrue($media->remoteFileExists());
+
+        /** cleaning */
+        Storage::disk('uploadedMedias')->delete($media->mediaFileName());
+
+        $this->assertFileDoesNotExist($filePath);
     }
 }

@@ -2,7 +2,10 @@
 
 namespace App;
 
+use App\Exceptions\CreatingChannelFolderException;
 use App\Exceptions\InvalidStartDateException;
+use App\Exceptions\PermissionException;
+use App\Exceptions\UploadingMediaException;
 use App\Modules\EnclosureUrl;
 use App\Traits\BelongsToChannel;
 use Carbon\Carbon;
@@ -45,9 +48,19 @@ class Media extends Model
         return $this->enclosureUrl();
     }
 
+    public function mediaFileName()
+    {
+        return $this->media_id . self::FILE_EXTENSION;
+    }
+
     public function relativePath()
     {
-        return $this->channel_id . DIRECTORY_SEPARATOR . $this->media_id . self::FILE_EXTENSION;
+        return $this->mediaFolder() . DIRECTORY_SEPARATOR . $this->mediaFileName();
+    }
+
+    public function mediaFolder()
+    {
+        return $this->channel_id;
     }
 
     /**
@@ -169,10 +182,57 @@ class Media extends Model
         return config('app.MP3_URL') . '/' . $this->remoteFilePath();
     }
 
-    public function uploadFromFile(string $localFilePath)
+    public function checkRemotePerms()
     {
-        Storage::disk(self::REMOTE_DISK)
-            ->put($this->relativePath(), file_get_contents($localFilePath));
+        $folderExists = Storage::disk(self::REMOTE_DISK)->exists($this->mediaFolder());
+
+        if ($folderExists) {
+            // channel folder exists and has right permissions
+            $folderVisibility = Storage::disk(self::REMOTE_DISK)->getVisibility($this->mediaFolder());
+            if ($folderVisibility == 'public') {
+                return true;
+            }
+            return $this->setRemoteMediaFolderPublic();
+        }
+
+        $this->createRemoteMediaFolder();
+
+        $this->setRemoteMediaFolderPublic();
+
+        return true;
+    }
+
+    public function createRemoteMediaFolder()
+    {
+        $createDirResult = Storage::disk(self::REMOTE_DISK)->makeDirectory($this->mediaFolder());
+        if ($createDirResult === false) {
+            throw new CreatingChannelFolderException("Creating {$this->mediaFolder()} on remote has failed.");
+        }
+        return true;
+    }
+
+    public function setRemoteMediaFolderPublic()
+    {
+        $permissionsResult = Storage::disk(self::REMOTE_DISK)->setVisibility($this->mediaFolder(), 'public');
+        if ($permissionsResult === false) {
+            throw new PermissionException("Setting visibility for {$this->mediaFolder()} on remote has failed.");
+        }
+        return true;
+    }
+
+    public function uploadFromPath(string $filePath)
+    {
+        $this->checkRemotePerms();
+        $result = Storage::disk(self::REMOTE_DISK)->putFileAs(
+            $this->mediaFolder(),
+            $filePath,
+            $this->mediaFileName(),
+            'public'
+        );
+        if ($result === false) {
+            throw new UploadingMediaException("Uploading file $filePath to {$this->mediaFolder()} on remote has failed.");
+        }
+        return true;
     }
 
     public function scopeGrabbedBefore(Builder $query, Carbon $date)

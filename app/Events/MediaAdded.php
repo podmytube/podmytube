@@ -2,20 +2,20 @@
 
 namespace App\Events;
 
-use App\Channel;
+use App\Media;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class ChannelUpdated
+class MediaAdded
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    /** @var \App\Channel $channel */
-    protected $channel;
+    /** \App\Media */
+    public $media;
 
-    public function __construct(Channel $channel)
+    public function __construct(Media $media)
     {
-        $this->channel = $channel;
+        $this->media = $media;
     }
 }

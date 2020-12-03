@@ -105,9 +105,7 @@ class Thumb extends Model
      */
     public static function defaultUrl()
     {
-        return getenv('THUMBS_URL') .
-            DIRECTORY_SEPARATOR .
-            self::DEFAULT_THUMB_FILE;
+        return getenv('THUMBS_URL') . DIRECTORY_SEPARATOR . self::DEFAULT_THUMB_FILE;
     }
 
     /**
@@ -139,7 +137,7 @@ class Thumb extends Model
      * set/update a new thumb for the specified channel.
      *
      * @param UploadedFile $uploadedFile the uploaded file
-     * @param Channel $channel to be associated with thumb
+     * @param Channel      $channel      to be associated with thumb
      *
      * @return Thumb object
      */

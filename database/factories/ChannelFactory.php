@@ -8,7 +8,7 @@ use Faker\Generator as Faker;
 
 $factory->define(Channel::class, function (Faker $faker, $attributes) {
     return [
-        'channel_id' => $faker->regexify('[a-zA-Z0-9-_]{24}'),
+        'channel_id' => $attributes['channel_id'] ?? $faker->regexify('[a-zA-Z0-9-_]{24}'),
         'user_id' => $attributes['user_id'] ??
             function () {
                 return factory(App\User::class)->create()->user_id;
@@ -18,7 +18,12 @@ $factory->define(Channel::class, function (Faker $faker, $attributes) {
         'podcast_copyright' => $faker->sentence('10', true),
         'authors' => $faker->name,
         'email' => $faker->safeEmail,
-        'description' => $faker->text(300),
+        'description' => <<<EOD
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vestibulum fermentum ex luctus posuere. 
+Pellentesque eget tristique orci. Proin convallis malesuada mauris. 
+Donec ultricies magna odio, eget vulputate ligula molestie vitae. 
+Duis quis velit dictum mauris lobortis porta et sollicitudin ante.
+EOD,
         'link' => 'https://loremipsum.com',
         'category_id' => $attributes['category_id'] ?? function () {
             return factory(Category::class)->create()->id;
