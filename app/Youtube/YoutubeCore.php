@@ -96,7 +96,10 @@ abstract class YoutubeCore implements QuotasConsumer
             $this->jsonDecoded = json_decode($rawResults, true);
 
             if (isset($this->jsonDecoded['error'])) {
-                throw new YoutubeQueryFailureException($this->jsonDecoded['error']['message'], $this->jsonDecoded['error']['code']);
+                throw new YoutubeQueryFailureException(
+                    $this->jsonDecoded['error']['message'] . ". Api key used : {$this->apikey}",
+                    $this->jsonDecoded['error']['code']
+                );
             }
 
             if (!isset($this->jsonDecoded['items'])) {

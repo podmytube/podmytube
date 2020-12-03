@@ -105,6 +105,15 @@ class DownloadMediaFactory
             $this->media->duration = $mediaProperties->duration();
             $this->media->save();
             Log::notice("Downloading media {$this->media->media_id} is successfully finished.");
+
+            /**
+             * cleaning
+             */
+            $result = unlink($downloadedFilePath);
+            if ($result === false) {
+                Log::error("Removing file {$downloadedFilePath} has failed. You should do it manually.");
+            }
+
             return true;
         });
     }
