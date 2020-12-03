@@ -13,6 +13,7 @@ use App\Subscription;
 use Artisan;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Storage;
 use Tests\TestCase;
 
 class DownloadMediaFactoryTest extends TestCase
@@ -27,6 +28,9 @@ class DownloadMediaFactoryTest extends TestCase
     /** \App\Channel $channel */
     protected $channel;
 
+    /** \App\Subscription $subscription */
+    protected $subscription;
+
     public function setUp():void
     {
         parent::setUp();
@@ -38,6 +42,11 @@ class DownloadMediaFactoryTest extends TestCase
                 'plan_id' => Plan::bySlug('forever_free')->id
             ]
         );
+
+        $marioCoinDownloadedFilePath = Storage::disk('tmp')->path(self::MARIO_COIN_VIDEO . '.mp3');
+        if (file_exists($marioCoinDownloadedFilePath)) {
+            unlink($marioCoinDownloadedFilePath);
+        }
     }
 
     public function testInvalidMediaShouldBeRejected()
@@ -69,10 +78,10 @@ class DownloadMediaFactoryTest extends TestCase
     public function testFreeChannelHasReachedItsQuota()
     {
         /** one is grabbed */
-        factory(Media::class)->create(
+        $nbDownloadedEpisodes = $this->channel->numberOfEpisodesAllowed();
+        factory(Media::class, $nbDownloadedEpisodes)->create(
             [
                 'channel_id' => $this->channel->channel_id,
-                'media_id' => self::BEACH_VOLLEY_VIDEO_1,
                 'grabbed_at' => Carbon::now(),
             ]
         );
@@ -81,7 +90,7 @@ class DownloadMediaFactoryTest extends TestCase
         $media = factory(Media::class)->create(
             [
                 'channel_id' => $this->channel->channel_id,
-                'media_id' => self::BEACH_VOLLEY_VIDEO_2,
+                'media_id' => self::MARIO_COIN_VIDEO,
             ]
         );
 

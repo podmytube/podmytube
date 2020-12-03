@@ -12,19 +12,18 @@ $factory->define(App\Media::class, function (Faker $faker, $attributes) {
         $attributes['published_at'] ??
         $faker->dateTimeBetween(Carbon::now()->startOfMonth(), Carbon::now());
 
-    $hasBeenGrabbed = $faker->boolean();
     $grabbedAt = null;
     $length = 0;
     $duration = 0;
-    if ($hasBeenGrabbed) {
-        $length = $faker->numberBetween(100, 400);
-        $duration = $faker->numberBetween(100, 400);
-        $grabbedAt = $attributes['grabbed_at'] ?? $faker->dateTimeBetween($publishedAt, Carbon::now());
+    if (isset($attributes['grabbed_at'])) {
+        $length = 355;
+        $duration = 2500;
+        $grabbedAt = $attributes['grabbed_at'];
     }
 
     /** returning our nice new media */
     return [
-        'media_id' => $faker->regexify('[a-zA-Z0-9-_]{8}'),
+        'media_id' => $attributes['media_id'] ?? $faker->regexify('[a-zA-Z0-9-_]{8}'),
         'channel_id' => $attributes['channel_id'] ??
             function () {
                 return factory(Channel::class)->create()->channel_id;
