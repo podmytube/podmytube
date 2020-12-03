@@ -6,6 +6,7 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -14,7 +15,7 @@ use Illuminate\Notifications\Notifiable;
  */
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, SoftDeletes;
 
     /**
      * the way to specify users.user_id is the key (and not users.id)
