@@ -62,10 +62,6 @@ RUN apt-get update -y && \
         python && \
         rm -rf /var/lib/apt/lists/*;
 
-# youtube-dl
-RUN curl -L https://github.com/l1ving/youtube-dl/releases/latest/download/youtube-dl -o /usr/local/bin/youtube-dl && \
-        chmod a+rx /usr/local/bin/youtube-dl
-
 # Set the locale
 RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen
 ENV LANG en_US.UTF-8
