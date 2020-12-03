@@ -3,36 +3,28 @@
 namespace Tests\Feature;
 
 use App\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class AuthenticationAndLoginTest extends TestCase
 {
-    protected static $db_inited = false;
-    protected static $rightPassword = "'i-love-laravel'";
+    use RefreshDatabase;
 
-    protected static $user;
+    protected $rightPassword = "'i-love-laravel'";
 
-    protected static function initUser()
-    {
-        self::$user = factory(User::class)->create([
-            'password' => bcrypt(self::$rightPassword),
-        ]);
-    }
+    /** @var \App\User $user */
+    protected $user;
 
     public function setUp(): void
     {
         parent::setUp();
-
-        if (!self::$db_inited) {
-            static::$db_inited = true;
-            static::initUser();
-        }
+        $this->user = factory(User::class)->create(['password' => bcrypt($this->rightPassword), ]);
     }
 
     public function testUserStayGuestWithInvalidPassword()
     {
         $response = $this->from(route('login'))->post(route('login'), [
-            'email' => self::$user->email,
+            'email' => $this->user->email,
             'password' => 'invalid-password',
         ]);
 
@@ -46,18 +38,18 @@ class AuthenticationAndLoginTest extends TestCase
     public function testUserIsConnectedWithRightPassword()
     {
         $response = $this->from(route('login'))->post(route('login'), [
-            'email' => self::$user->email,
-            'password' => self::$rightPassword,
+            'email' => $this->user->email,
+            'password' => $this->rightPassword,
         ]);
 
         $response->assertRedirect(route('home'));
         $this->assertAuthenticated($guard = null);
-        $this->assertAuthenticatedAs(self::$user); // <===== this one is failing
+        $this->assertAuthenticatedAs($this->user); // <===== this one is failing
     }
 
     public function testingLoginForm()
     {
-        $response = $this->followingRedirects()
+        $this->followingRedirects()
             ->get(route('login'))
             ->assertSuccessful()
             ->assertViewIs('auth.login');
@@ -65,7 +57,7 @@ class AuthenticationAndLoginTest extends TestCase
 
     public function testAuthUserIsRedirectFromLoginForm()
     {
-        $response = $this->actingAs(self::$user)->get(route('login'));
+        $response = $this->actingAs($this->user)->get(route('login'));
         $response->assertRedirect(route('home'));
     }
 
@@ -78,25 +70,25 @@ class AuthenticationAndLoginTest extends TestCase
 
     public function testAuthUserIsRedirectFromRegisterForm()
     {
-        $response = $this->actingAs(self::$user)->get(route('register'));
+        $response = $this->actingAs($this->user)->get(route('register'));
         $response->assertRedirect(route('home'));
     }
 
     public function testUserWithCorrectCredentialsWillAuthenticate()
     {
         $response = $this->post(route('login'), [
-            'email' => self::$user->email,
-            'password' => self::$rightPassword,
+            'email' => $this->user->email,
+            'password' => $this->rightPassword,
         ]);
         $response->assertRedirect(route('home'));
         $this->assertAuthenticated($guard = null);
-        $this->assertAuthenticatedAs(self::$user);
+        $this->assertAuthenticatedAs($this->user);
     }
 
     public function testInvalidPasswordShouldNotAuthenticate()
     {
         $response = $this->from(route('login'))->post(route('login'), [
-            'email' => self::$user->email,
+            'email' => $this->user->email,
             'password' => 'invalid-password',
         ]);
 

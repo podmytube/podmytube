@@ -14,10 +14,9 @@ class UserRequest extends FormRequest
     public function rules()
     {
         return [
-            // prettier-ignore
-            'name' => 'required',
+            'firstname' => 'required',
+            'lastname' => 'required',
             'email' => 'required|email',
-            'language' => 'required|in:fr,en',
             'newsletter' => 'nullable|boolean',
         ];
     }
@@ -25,13 +24,12 @@ class UserRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.required' => 'Name is required.',
-            'email.required' => 'Email is required.',
-            'language.required' => 'Language is required.',
+            'firstname.required' => "I'm sorry but I would like to know your firstname.",
+            'lastname.required' => "I'm sorry but I would like to know your lastname.",
+            'email.required' => "I swear I won't use it to spam you but I need your email.",
 
-            'email.email' => 'Email address is not valid.',
-            'language.in' => "Languages allowed : 'fr' and 'en' only.",
-            'newsletter.boolean' => 'Newsletter value not valid.',
+            'email.email' => 'It seems the email address you wrote is not valid.',
+            'newsletter.boolean' => 'Do not play with my newsletter. Please :).',
         ];
     }
 }

@@ -18,12 +18,12 @@ class UsersTableSeeder extends Seeder
 
         $data = [
             [
-                'name' => 'Fred',
+                'firstname' => 'Fred',
                 'email' => 'frederick@podmytube.com',
                 'password' => '$2y$10$c5.Md.ZOCYFv70pPv/3nAeNSsXzV3ttFguIu.GzEFYhaijHh988se',
             ],
             [
-                'name' => 'another fred',
+                'firstname' => 'another fred',
                 'email' => 'frederick@tyteca.net',
                 'password' => '$2y$10$/6YHjNFwNuvXqq7023c3NedYMIi1vcjMj8r1UzIYmrBl5y.zVI.m2',
             ],

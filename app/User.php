@@ -6,14 +6,13 @@
 
 namespace App;
 
-use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 /**
  * User Model Class
  */
-class User extends Authenticatable implements HasLocalePreference
+class User extends Authenticatable
 {
     use Notifiable;
 
@@ -22,12 +21,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     protected $primaryKey = 'user_id';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = ['name', 'email', 'password', 'language', 'newsletter'];
+    protected $guarded = [];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -42,11 +36,6 @@ class User extends Authenticatable implements HasLocalePreference
     public function channels()
     {
         return $this->HasMany(Channel::class, 'user_id');
-    }
-
-    public function preferredLocale()
-    {
-        return $this->language;
     }
 
     public function userId()

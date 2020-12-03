@@ -18,7 +18,11 @@
         {{ csrf_field() }}
         <div class="form-group">
             <label for="inputName">{{ __('account.name') }}</label>
-            <input type="text" class="form-control" id="inputName" name="name" value="{{ $user->name }}" required>
+            <input type="text" class="form-control" id="firstname" name="firstname" value="{{ old('firstname', $user->firstname) }}" required>
+        </div>
+        <div class="form-group">
+            <label for="inputName">{{ __('account.name') }}</label>
+            <input type="text" class="form-control" id="lastname" name="lastname" value="{{ old('lastname', $user->lastname) }}" required>
         </div>
         <div class="form-group">
             <label for="inputEmail">{{ __('account.email') }}</label>
