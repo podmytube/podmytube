@@ -116,6 +116,15 @@ return [
         ],
 
         /**
+         * Uploaded medias
+         */
+        'uploadedMedias' => [
+            'driver' => 'local',
+            'root' => storage_path('app/uploadedMedias'),
+            'visibility' => 'private',
+        ],
+
+        /**
          * Thumbs real url for podcast listeners
          */
         'sftpthumbs' => [

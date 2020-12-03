@@ -6,35 +6,35 @@ use App\Media;
 use App\Thumb;
 use App\Channel;
 use App\Podcast\PodcastBuilder;
-
+use Carbon\Carbon;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Storage;
 
 class PodcastBuilderTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, WithFaker;
 
-    protected static $channel;
-    protected static $medias;
-    protected static $fileDestination;
+    protected $channel;
+    protected $medias;
 
     public function setUp(): void
     {
         parent::setUp();
-        self::$channel = factory(Channel::class)->create();
-        self::$medias = factory(Media::class, 150)->create([
-            'channel_id' => self::$channel->channel_id,
+        $this->channel = factory(Channel::class)->create();
+        $this->medias = factory(Media::class, 50)->create([
+            'channel_id' => $this->channel->channel_id,
+            'grabbed_at' => $this->faker->dateTimeBetween(Carbon::parse('1 year ago'), Carbon::now())
         ]);
         factory(Thumb::class)->create([
-            'channel_id' => self::$channel->channel_id,
+            'channel_id' => $this->channel->channel_id,
         ]);
     }
 
     public function testingFromStorageRelativePath()
     {
-        $podcastBuilderObj = PodcastBuilder::prepare(self::$channel);
+        $podcastBuilderObj = PodcastBuilder::prepare($this->channel);
         $this->assertEquals(
             storage_path('app/public/feeds') .
                 DIRECTORY_SEPARATOR .
@@ -56,43 +56,43 @@ class PodcastBuilderTest extends TestCase
     public function testRenderingWholePodcast()
     {
         $renderedPodcast = ($podcastBuilder = PodcastBuilder::prepare(
-            self::$channel
+            $this->channel
         ))->render();
 
         $this->assertStringContainsString(
-            '<link>' . self::$channel->link . '</link>',
+            '<link>' . $this->channel->link . '</link>',
             $renderedPodcast
         );
         $this->assertStringContainsString(
-            '<title>' . self::$channel->title() . '</title>',
+            '<title>' . $this->channel->title() . '</title>',
             $renderedPodcast
         );
         $this->assertStringContainsString(
             '<description><![CDATA[' .
-                self::$channel->description .
+                $this->channel->description .
                 ']]></description>',
             $renderedPodcast
         );
         $this->assertStringContainsString(
-            '<copyright>' . self::$channel->podcast_copyright . '</copyright>',
+            '<copyright>' . $this->channel->podcast_copyright . '</copyright>',
             $renderedPodcast
         );
         $this->assertStringContainsString(
-            '<language>' . self::$channel->lang . '</language>',
+            '<language>' . $this->channel->lang . '</language>',
             $renderedPodcast
         );
 
         $this->assertStringContainsString('<image>', $renderedPodcast);
         $this->assertStringContainsString(
-            '<url>' . self::$channel->thumb->podcastUrl() . '</url>',
+            '<url>' . $this->channel->thumb->podcastUrl() . '</url>',
             $renderedPodcast
         );
         $this->assertStringContainsString(
-            '<title>' . self::$channel->title() . '</title>',
+            '<title>' . $this->channel->title() . '</title>',
             $renderedPodcast
         );
         $this->assertStringContainsString(
-            '<link>' . self::$channel->link . '</link>',
+            '<link>' . $this->channel->link . '</link>',
             $renderedPodcast
         );
         $this->assertStringContainsString('</image>', $renderedPodcast);
@@ -103,23 +103,23 @@ class PodcastBuilderTest extends TestCase
 
         $this->assertStringContainsString(
             '<itunes:author>' .
-                $this->stringEncodingLikeLaravel(self::$channel->authors) .
+                $this->stringEncodingLikeLaravel($this->channel->authors) .
                 '</itunes:author>',
             $renderedPodcast
         );
         $this->assertStringContainsString(
-            '<itunes:title>' . self::$channel->title() . '</itunes:title>',
+            '<itunes:title>' . $this->channel->title() . '</itunes:title>',
             $renderedPodcast
         );
         $this->assertStringContainsString('<itunes:owner>', $renderedPodcast);
         $this->assertStringContainsString(
             '<itunes:name>' .
-                $this->stringEncodingLikeLaravel(self::$channel->authors) .
+                $this->stringEncodingLikeLaravel($this->channel->authors) .
                 '</itunes:name>',
             $renderedPodcast
         );
         $this->assertStringContainsString(
-            '<itunes:email>' . self::$channel->email . '</itunes:email>',
+            '<itunes:email>' . $this->channel->email . '</itunes:email>',
             $renderedPodcast
         );
         $this->assertStringContainsString('</itunes:owner>', $renderedPodcast);
@@ -128,14 +128,14 @@ class PodcastBuilderTest extends TestCase
             $renderedPodcast
         );
         $this->assertStringContainsString(
-            "<itunes:category text=\"" .
-                self::$channel->category->categoryFeedValue() .
-                "\" />",
+            '<itunes:category text="' .
+                $this->channel->category->categoryFeedValue() .
+                '" />',
             $renderedPodcast
         );
         $this->assertStringContainsString(
             '<itunes:image href="' .
-                self::$channel->thumb->podcastUrl() .
+                $this->channel->thumb->podcastUrl() .
                 '" />',
             $renderedPodcast
         );
@@ -144,7 +144,7 @@ class PodcastBuilderTest extends TestCase
          * there should have some items too
          */
         $this->assertStringContainsString('<item>', $renderedPodcast);
-        foreach (self::$medias as $media) {
+        foreach ($this->medias as $media) {
             $this->assertStringContainsString(
                 '<guid>' . $media->media_id . '</guid>',
                 $renderedPodcast
@@ -154,11 +154,11 @@ class PodcastBuilderTest extends TestCase
                 $renderedPodcast
             );
             $this->assertStringContainsString(
-                "<enclosure url=\"" .
+                '<enclosure url="' .
                     $media->enclosureUrl() .
-                    "\" length=\"" .
+                    '" length="' .
                     $media->length .
-                    "\" type=\"audio/mpeg\" />",
+                    '" type="audio/mpeg" />',
                 $renderedPodcast
             );
             $this->assertStringContainsString(
@@ -209,44 +209,44 @@ class PodcastBuilderTest extends TestCase
 
     public function testProducingPodcastIsFine()
     {
-        ($podcastBuilder = PodcastBuilder::prepare(self::$channel))->save();
+        ($podcastBuilder = PodcastBuilder::prepare($this->channel))->save();
 
         $savedPodcastContent = file_get_contents($podcastBuilder->path());
 
         $this->assertStringContainsString(
-            '<link>' . self::$channel->link . '</link>',
+            '<link>' . $this->channel->link . '</link>',
             $savedPodcastContent
         );
         $this->assertStringContainsString(
-            '<title>' . self::$channel->title() . '</title>',
+            '<title>' . $this->channel->title() . '</title>',
             $savedPodcastContent
         );
         $this->assertStringContainsString(
             '<description><![CDATA[' .
-                self::$channel->description .
+                $this->channel->description .
                 ']]></description>',
             $savedPodcastContent
         );
         $this->assertStringContainsString(
-            '<copyright>' . self::$channel->podcast_copyright . '</copyright>',
+            '<copyright>' . $this->channel->podcast_copyright . '</copyright>',
             $savedPodcastContent
         );
         $this->assertStringContainsString(
-            '<language>' . self::$channel->lang . '</language>',
+            '<language>' . $this->channel->lang . '</language>',
             $savedPodcastContent
         );
 
         $this->assertStringContainsString('<image>', $savedPodcastContent);
         $this->assertStringContainsString(
-            '<url>' . self::$channel->thumb->podcastUrl() . '</url>',
+            '<url>' . $this->channel->thumb->podcastUrl() . '</url>',
             $savedPodcastContent
         );
         $this->assertStringContainsString(
-            '<title>' . self::$channel->title() . '</title>',
+            '<title>' . $this->channel->title() . '</title>',
             $savedPodcastContent
         );
         $this->assertStringContainsString(
-            '<link>' . self::$channel->link . '</link>',
+            '<link>' . $this->channel->link . '</link>',
             $savedPodcastContent
         );
         $this->assertStringContainsString('</image>', $savedPodcastContent);
@@ -256,12 +256,12 @@ class PodcastBuilderTest extends TestCase
          */
         $this->assertStringContainsString(
             '<itunes:author>' .
-                $this->stringEncodingLikeLaravel(self::$channel->authors) .
+                $this->stringEncodingLikeLaravel($this->channel->authors) .
                 '</itunes:author>',
             $savedPodcastContent
         );
         $this->assertStringContainsString(
-            '<itunes:title>' . self::$channel->title() . '</itunes:title>',
+            '<itunes:title>' . $this->channel->title() . '</itunes:title>',
             $savedPodcastContent
         );
         $this->assertStringContainsString(
@@ -270,12 +270,12 @@ class PodcastBuilderTest extends TestCase
         );
         $this->assertStringContainsString(
             '<itunes:name>' .
-                $this->stringEncodingLikeLaravel(self::$channel->authors) .
+                $this->stringEncodingLikeLaravel($this->channel->authors) .
                 '</itunes:name>',
             $savedPodcastContent
         );
         $this->assertStringContainsString(
-            '<itunes:email>' . self::$channel->email . '</itunes:email>',
+            '<itunes:email>' . $this->channel->email . '</itunes:email>',
             $savedPodcastContent
         );
         $this->assertStringContainsString(
@@ -287,14 +287,14 @@ class PodcastBuilderTest extends TestCase
             $savedPodcastContent
         );
         $this->assertStringContainsString(
-            "<itunes:category text=\"" .
-                self::$channel->category->categoryFeedValue() .
-                "\" />",
+            '<itunes:category text="' .
+                $this->channel->category->categoryFeedValue() .
+                '" />',
             $savedPodcastContent
         );
         $this->assertStringContainsString(
             '<itunes:image href="' .
-                self::$channel->thumb->podcastUrl() .
+                $this->channel->thumb->podcastUrl() .
                 '" />',
             $savedPodcastContent
         );
@@ -303,7 +303,7 @@ class PodcastBuilderTest extends TestCase
          * there should have some items too
          */
         $this->assertStringContainsString('<item>', $savedPodcastContent);
-        foreach (self::$medias as $media) {
+        foreach ($this->medias as $media) {
             $this->assertStringContainsString(
                 '<guid>' . $media->media_id . '</guid>',
                 $savedPodcastContent
@@ -313,11 +313,11 @@ class PodcastBuilderTest extends TestCase
                 $savedPodcastContent
             );
             $this->assertStringContainsString(
-                "<enclosure url=\"" .
+                '<enclosure url="' .
                     $media->enclosureUrl() .
-                    "\" length=\"" .
+                    '" length="' .
                     $media->length .
-                    "\" type=\"audio/mpeg\" />",
+                    '" type="audio/mpeg" />',
                 $savedPodcastContent
             );
             $this->assertStringContainsString(

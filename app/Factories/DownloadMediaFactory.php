@@ -37,6 +37,15 @@ class DownloadMediaFactory
     {
         return DB::transaction(function () {
             /**
+             * did channel reach its quota
+             */
+            if ($this->media->channel->hasReachedItslimit()) {
+                $message = "Channel {$this->media->channel->channel_name} ({$this->media->channel->channel_id}) has reached its quota.";
+                Log::warning($message);
+                throw new ChannelHasReachedItsQuotaException($message);
+            }
+
+            /**
              * getting media infos
              */
             Log::notice("Getting informations for media {$this->media->media_id}");
@@ -46,9 +55,8 @@ class DownloadMediaFactory
              * is video downladable (not upcoming and processed)
              */
             if (!$youtubeVideo->isAvailable()) {
-                $message = "This video {$this->media->media_id} is not available yet. \
-                'upcoming' live or not yet 'processed'.";
-                Log::error($message);
+                $message = "This video {$this->media->media_id} is not available yet. 'upcoming' live or not yet 'processed'.";
+                Log::notice($message);
                 throw new YoutubeMediaIsNotAvailableException($message);
             }
 
@@ -58,19 +66,8 @@ class DownloadMediaFactory
             if ($youtubeVideo->isTagged() && !$this->media->channel->areTagsAccepted($youtubeVideo->tags())) {
                 $message = 'Media tags ' . implode(',', $youtubeVideo->tags()) .
                     " are not in allowed tags {$this->media->channel->accept_video_by_tag}.";
-                Log::error($message);
+                Log::notice($message);
                 throw new DownloadMediaTagException($message);
-            }
-
-            /**
-             * did channel reach its quota
-             */
-            if ($this->media->channel->hasReachedItslimit()) {
-                $message = "Channel {$this->media->channel->channel_name} ({$this->media->channel->channel_id}) \
-                has reached its quota.";
-                Log::error($message);
-                throw new ChannelHasReachedItsQuotaException($message);
-                return false;
             }
 
             /** download, convert and get its path */
@@ -95,7 +92,7 @@ class DownloadMediaFactory
              * upload it
              */
             Log::notice("Uploading Media from {$downloadedFilePath} to {$this->media->url()} ");
-            $this->media->uploadFromFile($downloadedFilePath);
+            $this->media->uploadFromPath($downloadedFilePath);
 
             /**
              * update infos
@@ -108,6 +105,15 @@ class DownloadMediaFactory
             $this->media->duration = $mediaProperties->duration();
             $this->media->save();
             Log::notice("Downloading media {$this->media->media_id} is successfully finished.");
+
+            /**
+             * cleaning
+             */
+            $result = unlink($downloadedFilePath);
+            if ($result === false) {
+                Log::error("Removing file {$downloadedFilePath} has failed. You should do it manually.");
+            }
+
             return true;
         });
     }

@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Str;
 
 /**
  * the channel model and its functions
@@ -287,5 +288,10 @@ class Channel extends Model
     public function isFree()
     {
         return $this->subscription->plan_id == Plan::FREE_PLAN_ID;
+    }
+
+    public function nextMediaId()
+    {
+        return substr(Str::slug($this->channel_name), 0, 20) . '-' . ($this->medias->count() + 1);
     }
 }

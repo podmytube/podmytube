@@ -3,12 +3,14 @@
 namespace Tests\Unit;
 
 use App\Channel;
+use App\Media;
 use App\Plan;
 use Carbon\Carbon;
 use Tests\TestCase;
 use App\Podcast\PodcastBuilder;
 use App\Subscription;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
 
 class ChannelModelTest extends TestCase
 {
@@ -76,5 +78,12 @@ class ChannelModelTest extends TestCase
     {
         factory(Subscription::class)->create(['channel_id' => $this->channel->channel_id, 'plan_id' => Plan::WEEKLY_PLAN_ID]);
         $this->assertFalse($this->channel->isFree());
+    }
+
+    public function testingNextMediaIdShouldBeOk()
+    {
+        $media = factory(Media::class, 10)->create(['channel_id' => $this->channel->channel_id]);
+        $expectedResult = substr(Str::slug($this->channel->channel_name), 0, 20) . '-11';
+        $this->assertEquals($expectedResult, $this->channel->nextMediaId());
     }
 }
