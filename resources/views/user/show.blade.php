@@ -13,16 +13,16 @@
 
 	<div class="container">
 		<div class="row">
-			<div class="col"> {{ __('account.name') }} </div>
-			<div class="col"> {{ $user->name }} </div>
+			<div class="col"> Your nice firstname </div>
+			<div class="col"> {{ $user->firstname }} </div>
 		</div>
 		<div class="row">
-			<div class="col"> {{ __('account.email') }} </div>
+			<div class="col"> What a wonderful lastname </div>
+			<div class="col"> {{ $user->lastname }} </div>
+		</div>
+		<div class="row">
+			<div class="col"> Unforgettable email address </div>
 			<div class="col"> {{ $user->email }} </div>
-		</div>
-		<div class="row">
-			<div class="col"> {{ __('account.language') }} </div>
-			<div class="col"> {{ $user->language }} </div>
 		</div>
 		<div class="row">
 			<div class="col">Newsletter</div>

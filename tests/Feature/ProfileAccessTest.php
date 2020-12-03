@@ -59,17 +59,20 @@ class ProfileAccessTest extends TestCase
 
     public function testUserShouldAccessProfileUpdate()
     {
+        $expectedFirstname = 'Obiwan';
+        $expectedLastname = 'Kenobi';
+
         $this->followingRedirects()
             ->actingAs($this->user)
             ->patch(route('user.update', $this->user), [
-                'name' => 'Another name',
+                'firstname' => $expectedFirstname,
+                'lastname' => $expectedLastname,
                 'email' => 'valid@example.com',
-                'language' => 'fr',
                 'newsletter' => '1',
             ])
             ->assertSuccessful()
             ->assertViewIs('user.show')
-            ->assertSeeText('Another name');
+            ->assertSeeTextInOrder([$expectedFirstname, $expectedLastname]);
     }
 
     public function testUserShouldDeniedOtherProfileUpdate()
@@ -78,9 +81,9 @@ class ProfileAccessTest extends TestCase
         $this->followingRedirects()
             ->actingAs($anotherUser)
             ->patch(route('user.update', $this->user), [
-                'name' => 'Another name',
+                'firstname' => 'Another',
+                'lastname' => 'Person',
                 'email' => 'valid@example.com',
-                'language' => 'fr',
                 'newsletter' => '1',
             ])
             ->assertForbidden();

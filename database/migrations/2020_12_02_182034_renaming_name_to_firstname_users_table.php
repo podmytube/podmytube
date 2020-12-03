@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class ImprovingUsersTable extends Migration
+class RenamingNameToFirstnameUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,10 +14,7 @@ class ImprovingUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->renameColumn('name', 'firstname');
-        });
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('lastname')->after('firstname');
+            $table->string('lastname')->after('name')->nullable();
         });
     }
 

@@ -23,13 +23,18 @@
                 </svg>
             </div>
             <div class="mb-4">
-                <label class="block text-grey-darker text-sm font-bold mb-2" for="username"> Name </label>
-                <input type="text" name="name" id="name" value="{{ old('name') }}" placeholder="John Connor" required
+                <label class="block text-grey-darker text-sm font-bold mb-2" for="username"> First name </label>
+                <input type="text" name="firstname" id="firstname" value="{{ old('firstname') }}" placeholder="Obi" required
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker">
+            </div>
+            <div class="mb-4">
+                <label class="block text-grey-darker text-sm font-bold mb-2" for="username"> Last name </label>
+                <input type="text" name="lastname" id="lastname" value="{{ old('lastname') }}" placeholder="Wan" required
                     class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker">
             </div>
             <div class="mb-4">
                 <label class="block text-grey-darker text-sm font-bold mb-2" for="username"> Email </label>
-                <input type="email" name="email" id="email" value="{{ old('email') }}" placeholder="john.connor@skynet.net" required
+                <input type="email" name="email" id="email" value="{{ old('email') }}" placeholder="obi.wan@kenobi.net" required
                     class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker">
             </div>
 
