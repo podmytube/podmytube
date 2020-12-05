@@ -4,7 +4,7 @@ namespace App\Exceptions;
 
 use Exception;
 
-class FeedDoesNotExist extends Exception
+class FeedDoesNotExistException extends Exception
 {
     //
 }

@@ -4,7 +4,6 @@ namespace App\Events;
 
 use App\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -12,18 +11,11 @@ class ThumbUpdated extends OccursOnChannel
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
-    public function broadcastOn()
-    {
-        return new PrivateChannel('channel-name');
-    }
+    /** @var \App\Channel $channel */
+    public $channel;
 
-    public static function shouldUpdateChannel(Channel $channel)
+    public function __construct(Channel $channel)
     {
-        return new static($channel);
+        $this->channel = $channel;
     }
 }

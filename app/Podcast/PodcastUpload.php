@@ -3,7 +3,8 @@
 namespace App\Podcast;
 
 use App\Channel;
-use App\Exceptions\FeedDoesNotExist;
+use App\Exceptions\FeedDoesNotExistException;
+use App\Exceptions\PodcastUpdateFailureException;
 use Illuminate\Support\Facades\Storage;
 
 class PodcastUpload
@@ -19,7 +20,7 @@ class PodcastUpload
     {
         $this->channel = $channel;
         if (!$this->feedExists()) {
-            throw new FeedDoesNotExist('Feed for channel does not exist.');
+            throw new FeedDoesNotExistException('Feed for channel does not exist.');
         }
     }
 
@@ -30,9 +31,7 @@ class PodcastUpload
 
     public function feedExists()
     {
-        return Storage::disk(self::LOCAL_FEED_DISK)->exists(
-            $this->relativePath()
-        );
+        return Storage::disk(self::LOCAL_FEED_DISK)->exists($this->relativePath());
     }
 
     /**
@@ -42,24 +41,31 @@ class PodcastUpload
      */
     public function relativePath()
     {
-        return $this->channel->channelId() .
-            DIRECTORY_SEPARATOR .
-            self::FEED_FILENAME;
+        return $this->channel->channelId() . '/' . self::FEED_FILENAME;
     }
 
     public function upload()
     {
         /** uploading channelId/podcast.xml */
-        Storage::disk(self::REMOTE_FEED_DISK)->put(
+        $feedUploadResult = Storage::disk(self::REMOTE_FEED_DISK)->put(
             $this->relativePath(),
             Storage::disk(self::LOCAL_FEED_DISK)->get($this->relativePath())
         );
+        if ($feedUploadResult === false) {
+            throw new PodcastUpdateFailureException();
+        }
 
         /** granting +x perms to channelId/ */
         Storage::disk(self::REMOTE_FEED_DISK)->setVisibility(
             $this->channel->channelId(),
             'public'
         );
+
         return true;
+    }
+
+    public function remoteFeedExists(): bool
+    {
+        return Storage::disk(self::REMOTE_FEED_DISK)->exists($this->relativePath());
     }
 }

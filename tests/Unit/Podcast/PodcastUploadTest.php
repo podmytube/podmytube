@@ -5,7 +5,7 @@ namespace Tests\Unit\Podcast;
 use App\Media;
 use App\Thumb;
 use App\Channel;
-use App\Exceptions\FeedDoesNotExist;
+use App\Exceptions\FeedDoesNotExistException;
 use App\Podcast\PodcastUpload;
 use App\Podcast\PodcastBuilder;
 use Tests\TestCase;
@@ -31,7 +31,7 @@ class PodcastUploadTest extends TestCase
 
     public function testThrowExceptionWhenFeedDoesNotExists()
     {
-        $this->expectException(FeedDoesNotExist::class);
+        $this->expectException(FeedDoesNotExistException::class);
         PodcastUpload::prepare($this->channel);
     }
 }
