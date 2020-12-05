@@ -12,7 +12,6 @@
 
 use App\Media;
 use App\Modules\EnclosureUrl;
-
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -48,7 +47,7 @@ class EnclosureUrlTest extends TestCase
     public function testingEnclosureUrlIsValid()
     {
         $this->assertEquals(
-            getenv('MP3_URL') . '/'.self::$media->channel_id.'/'.self::$media->media_id.'.mp3',
+            config('app.mp3_url') . '/' . self::$media->channel_id . '/' . self::$media->media_id . '.mp3',
             EnclosureUrl::create(self::$media)->get()
         );
     }

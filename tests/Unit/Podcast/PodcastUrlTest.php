@@ -17,7 +17,7 @@ class PodcastUrlTest extends TestCase
     {
         $channel = factory(Channel::class)->create();
         $this->assertEquals(
-            config('app.PODCASTS_URL') . '/' . $channel->channelId() . '/' . PodcastUrl::FEED_FILENAME,
+            config('app.podcasts_url') . '/' . $channel->channelId() . '/' . PodcastUrl::FEED_FILENAME,
             PodcastUrl::prepare($channel)->get()
         );
     }

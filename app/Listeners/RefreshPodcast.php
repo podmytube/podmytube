@@ -2,7 +2,8 @@
 
 namespace App\Listeners;
 
-use App\Events\OccursOnChannel;
+use App\Events\ChannelUpdated;
+use App\Exceptions\PodcastUpdateFailureException;
 use App\Jobs\SendFeedBySFTP;
 use App\Podcast\PodcastBuilder;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -20,15 +21,17 @@ class RefreshPodcast implements ShouldQueue
      *
      * @return void
      */
-    public function handle(OccursOnChannel $event)
+    public function handle(ChannelUpdated $event)
     {
-        Log::notice(__CLASS__ . '::' . __FUNCTION__);
-        Log::notice("{$event->channel->channel_name} podcast is about to be refreshed.");
-        /** rendering feed */
-        if (PodcastBuilder::prepare($event->channel)->save()) {
-            /** uploading feed */
-            SendFeedBySFTP::dispatchNow($event->channel);
+        Log::notice("Refreshing podcast for channel {$event->channel->channel_id}.");
+
+        $result = PodcastBuilder::forChannel($this->channel)->build()->save();
+        if ($result === false) {
+            $message = "Updating podcast for channel {$this->channel->name()} ({$this->channel->id()}) has failed.";
+            Log::error($message);
+            throw new PodcastUpdateFailureException($message);
         }
-        Log::notice("{$event->channel->channel_name} podcast has been refreshed.");
+
+        SendFeedBySFTP::dispatchNow($this->channel);
     }
 }

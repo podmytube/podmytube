@@ -12,26 +12,26 @@ use Tests\TestCase;
 
 class PodcastUploadTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
+    /** @var \App\Channel $channel */
+    protected $channel;
+
+    public function setUp():void
+    {
+        parent::setUp();
+        $this->channel = factory(Channel::class)->create();
+    }
+
     public function testUploadIsWorkingFine()
     {
-        $channel = factory(Channel::class)->create();
-        factory(Media::class, 3)->create(['channel_id' => $channel->channelId()]);
-        factory(Thumb::class)->create(['channel_id' => $channel->channelId()]);
-        PodcastBuilder::prepare($channel)->save();
-
-        $this->assertTrue(PodcastUpload::prepare($channel)->upload());
+        factory(Media::class, 3)->create(['channel_id' => $this->channel->channelId()]);
+        factory(Thumb::class)->create(['channel_id' => $this->channel->channelId()]);
+        PodcastBuilder::forChannel($this->channel)->build()->save();
+        $this->assertTrue(PodcastUpload::prepare($this->channel)->upload());
     }
 
     public function testThrowExceptionWhenFeedDoesNotExists()
     {
-        $channel = factory(Channel::class)->create();
         $this->expectException(FeedDoesNotExist::class);
-        PodcastUpload::prepare($channel);
+        PodcastUpload::prepare($this->channel);
     }
-
 }

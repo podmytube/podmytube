@@ -34,11 +34,14 @@ class PodcastBuilderTest extends TestCase
 
     public function testingFromStorageRelativePath()
     {
-        $podcastBuilderObj = PodcastBuilder::prepare($this->channel);
+        $expectedFeedPath = storage_path('app/public/feeds') .
+            '/' .
+            $this->channel->id() .
+            '/' .
+            PodcastBuilder::FEED_FILENAME;
+        $podcastBuilderObj = PodcastBuilder::forChannel($this->channel);
         $this->assertEquals(
-            storage_path('app/public/feeds') .
-                DIRECTORY_SEPARATOR .
-                $podcastBuilderObj->relativePath(),
+            $expectedFeedPath,
             $podcastBuilderObj->path()
         );
     }
@@ -55,9 +58,8 @@ class PodcastBuilderTest extends TestCase
 
     public function testRenderingWholePodcast()
     {
-        $renderedPodcast = ($podcastBuilder = PodcastBuilder::prepare(
-            $this->channel
-        ))->render();
+        $podcastBuilder = PodcastBuilder::forChannel($this->channel)->build();
+        $renderedPodcast = $podcastBuilder->render();
 
         $this->assertStringContainsString(
             '<link>' . $this->channel->link . '</link>',
@@ -209,7 +211,8 @@ class PodcastBuilderTest extends TestCase
 
     public function testProducingPodcastIsFine()
     {
-        ($podcastBuilder = PodcastBuilder::prepare($this->channel))->save();
+        $podcastBuilder = PodcastBuilder::forChannel($this->channel)->build();
+        $podcastBuilder->save();
 
         $savedPodcastContent = file_get_contents($podcastBuilder->path());
 

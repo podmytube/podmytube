@@ -16,7 +16,7 @@ return [
 
     'domain' => env('DOMAIN', 'podmytube.com'),
 
-    'wpbackend' => env('WPBACKEND_URL'),
+    'wpbackend' => env('WPBACKEND_URL', 'https://wpbackend.tyteca.net'),
 
     /*
     |--------------------------------------------------------------------------
@@ -56,8 +56,8 @@ return [
     */
 
     'url' => env('APP_URL', 'https://dashboard.podmytube.com'),
-    'PODCASTS_URL' => env('PODCASTS_URL', 'https://podcasts.podmytube.com'),
-    'MP3_URL' => env('MP3_URL', 'https://mp3.podmytube.com'),
+    'podcasts_url' => env('PODCASTS_URL', 'https://podcasts.podmytube.com'),
+    'mp3_url' => env('MP3_URL', 'https://mp3.podmytube.com'),
 
     /*
     |--------------------------------------------------------------------------
@@ -127,7 +127,7 @@ return [
     |
     */
 
-    'log' => env('APP_LOG', 'single'),
+    'log' => env('APP_LOG', 'daily'),
 
     'log_level' => env('APP_LOG_LEVEL', 'debug'),
 
