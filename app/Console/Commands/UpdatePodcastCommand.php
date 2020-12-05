@@ -36,7 +36,7 @@ class UpdatePodcastCommand extends Command
         $channel = Channel::findOrFail($this->argument('channelId'));
         $this->info("Updating podcast for channel {$channel->channel_name} ({$channel->channel_id})", 'v');
 
-        if (PodcastBuilder::prepare($channel)->save()) {
+        if (PodcastBuilder::forChannel($channel)->build()->save()) {
             /** uploading feed */
             SendFeedBySFTP::dispatchNow($channel);
         }

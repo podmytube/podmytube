@@ -179,7 +179,7 @@ class Media extends Model
 
     public function url()
     {
-        return config('app.MP3_URL') . '/' . $this->remoteFilePath();
+        return config('app.mp3_url') . '/' . $this->remoteFilePath();
     }
 
     public function checkRemotePerms()

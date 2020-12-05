@@ -71,7 +71,7 @@ class UpdatePodcastsCommand extends Command
 
         $channels->map(function ($channel) {
             try {
-                if (PodcastBuilder::prepare($channel)->save()) {
+                if (PodcastBuilder::forChannel($channel)->build()->save()) {
                     // uploading feed
                     SendFeedBySFTP::dispatchNow($channel);
                     $this->recordSuccess($channel);

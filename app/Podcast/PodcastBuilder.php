@@ -21,19 +21,24 @@ class PodcastBuilder
     private function __construct(Channel $channel)
     {
         $this->channel = $channel;
-        $this->podcastHeader = PodcastHeader::generateFor($channel);
-        $this->podcastItems = PodcastItems::prepare($channel);
     }
 
-    public static function prepare(...$params)
+    public function build()
     {
-        return new static(...$params);
+        $this->podcastHeader = PodcastHeader::generateFor($this->channel);
+        $this->podcastItems = PodcastItems::prepare($this->channel);
+        return $this;
+    }
+
+    public static function forChannel(Channel $channel)
+    {
+        return new static($channel);
     }
 
     public function exists()
     {
         return Storage::disk(self::LOCAL_FEED_DISK)->exists(
-            $this->relativePath()
+            $this->feedRelativePath()
         );
     }
 
@@ -54,11 +59,11 @@ class PodcastBuilder
      *
      * @return true
      */
-    public function save()
+    public function save():bool
     {
         if (
             !Storage::disk(self::LOCAL_FEED_DISK)->put(
-                $this->relativePath(),
+                $this->feedRelativePath(),
                 $this->render()
             )
         ) {
@@ -69,28 +74,32 @@ class PodcastBuilder
         return true;
     }
 
-    public function path()
+    /**
+     * Should return the absolute path of the feed.
+     *
+     * @return string absolute path of the podcast file
+     */
+    public function path():string
     {
         return Storage::disk(self::LOCAL_FEED_DISK)->path(
-            $this->relativePath()
+            $this->feedRelativePath()
         );
     }
 
     public function url()
     {
-        return Storage::disk(self::LOCAL_FEED_DISK)->url($this->relativePath());
+        return Storage::disk(self::LOCAL_FEED_DISK)->url($this->feedRelativePath());
     }
 
     /**
-     * This function will give the relative path where to save podcast file.
+     * Return relative path for saves podcast file.
+     * Should return something like channel_id/podcast.xml
      *
      * @return string relative path
      */
-    public function relativePath()
+    public function feedRelativePath()
     {
-        return $this->channel->channelId() .
-            DIRECTORY_SEPARATOR .
-            self::FEED_FILENAME;
+        return $this->channel->channelId() . '/' . self::FEED_FILENAME;
     }
 
     /**
@@ -118,7 +127,7 @@ class PodcastBuilder
     /**
      * This function will return the current channel built.
      */
-    public function channel()
+    public function channel() :\App\Channel
     {
         return $this->channel;
     }

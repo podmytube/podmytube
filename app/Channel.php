@@ -101,7 +101,7 @@ class Channel extends Model
 
     public function podcastUrl()
     {
-        return config('app.PODCASTS_URL') . '/' . $this->channelId() . '/' . PodcastBuilder::FEED_FILENAME;
+        return config('app.podcasts_url') . '/' . $this->channelId() . '/' . PodcastBuilder::FEED_FILENAME;
     }
 
     /**
@@ -283,6 +283,22 @@ class Channel extends Model
     public static function byChannelId(string $channelId)
     {
         return self::where('channel_id', '=', $channelId)->first();
+    }
+
+    /**
+     * @return string channel_id of channel
+     */
+    public function id():string
+    {
+        return $this->channel_id;
+    }
+
+    /**
+     * @return string channel_name of channel
+     */
+    public function name() :string
+    {
+        return $this->channel_name;
     }
 
     public function isFree()

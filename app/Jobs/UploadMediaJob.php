@@ -47,12 +47,6 @@ class UploadMediaJob implements ShouldQueue
         }
 
         Log::notice('Uploading Media from ' . Storage::disk('uploadedMedias')->path($filenameToUpload) . '.');
-        Storage::put(
-            // remote uploaded
-            Storage::disk('medias')->path($this->media->relativePath()),
-            // local uploaded file
-            Storage::disk('uploadedMedias')->get($filenameToUpload)
-        );
 
         $this->media->uploadFromPath(Storage::disk('uploadedMedias')->path($filenameToUpload));
         $this->media->grabbed_at = Carbon::now();

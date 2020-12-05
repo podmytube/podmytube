@@ -4,8 +4,9 @@ namespace App\Listeners;
 
 use App\Events\MediaAdded;
 use App\Jobs\UploadMediaJob;
+use Illuminate\Support\Facades\Log;
 
-class UploadMedia
+class MediaIsAdded
 {
     /**
      * Create the event listener.
@@ -20,13 +21,16 @@ class UploadMedia
     /**
      * Handle the event.
      *
-     * @param  object  $event
+     * @param object $event
      *
      * @return void
      */
     public function handle(MediaAdded $event)
     {
-        info('Listener -- ' . __CLASS__ . '::' . __FUNCTION__);
+        /**
+         * when a media is added we shoulkd upload it
+         */
+        Log::notice("One media has been added ({$event->media->media_id}).");
         UploadMediaJob::dispatchNow($event->media);
     }
 }
