@@ -3,6 +3,7 @@
 namespace App\Podcast;
 
 use App\Channel;
+use App\Events\PodcastUpdated;
 use App\Exceptions\SavingPodcastHasFailed;
 use Illuminate\Support\Facades\Storage;
 
@@ -71,6 +72,7 @@ class PodcastBuilder
                 "An error occured while saving podcast to {{$this->destinationFile}}."
             );
         }
+        PodcastUpdated::dispatch($this->channel);
         return true;
     }
 

@@ -23,7 +23,10 @@ class EmailPaypalMediasAreAvailablesTest extends TestCase
     {
         foreach ($this->emailAndPaypalMedias as $mediaToCheck) {
             $fileToCheck = public_path('/medias/' . $mediaToCheck);
-            $this->assertTrue(file_exists($fileToCheck));
+            $this->assertTrue(
+                file_exists($fileToCheck),
+                "file $fileToCheck does not exist."
+            );
         }
     }
 }

@@ -2,22 +2,20 @@
 
 namespace App\Events;
 
+use App\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class ChannelRegistered extends OccursOnChannel
+class ChannelRegistered
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
-    public function broadcastOn()
+    /** @var \App\Channel $channel */
+    public $channel;
+
+    public function __construct(Channel $channel)
     {
-        return new PrivateChannel('channel-name');
+        $this->channel = $channel;
     }
 }

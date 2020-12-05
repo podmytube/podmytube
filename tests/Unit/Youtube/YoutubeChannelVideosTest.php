@@ -16,16 +16,6 @@ class YoutubeChannelVideosTest extends TestCase
         Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
     }
 
-    /**
-     * stragely this channel (accropolis replays has no videos)
-     * it displays some but when you click on the videos tab you get
-     * "This channel has no videos."
-     */
-    public function testChannelWithNoVideos()
-    {
-        $this->assertCount(0, YoutubeChannelVideos::forChannel('UCq80IvL314jsE7PgYsTdw7Q')->videos());
-    }
-
     public function testHavingTheRightNumberOfVideos()
     {
         $factory = YoutubeChannelVideos::forChannel(YoutubeCoreTest::PERSONAL_CHANNEL_ID, 50);

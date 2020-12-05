@@ -310,4 +310,12 @@ class Channel extends Model
     {
         return substr(Str::slug($this->channel_name), 0, 20) . '-' . ($this->medias->count() + 1);
     }
+
+    /**
+     * I'm using this kind of information everywhere.
+     */
+    public function nameWithId()
+    {
+        return "{$this->name()} ({$this->id()})";
+    }
 }

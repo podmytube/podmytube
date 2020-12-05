@@ -140,6 +140,17 @@ return [
             'permPublic' => 0755,
         ],
 
+        'kim1' => [
+            'driver' => 'sftp',
+            'host' => $sshCredentials['host'],
+            'username' => $sshCredentials['user'],
+            'privateKey' => $sshCredentials['path'],
+            'root' => '/home/www',
+            'timeout' => 20,
+            'visibility' => 'public',
+            'permPublic' => 0755,
+        ],
+
         'tmp' => [
             'driver' => 'local',
             'root' => base_path('tmp'),

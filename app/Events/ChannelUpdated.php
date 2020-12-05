@@ -12,7 +12,7 @@ class ChannelUpdated
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /** @var \App\Channel $channel */
-    protected $channel;
+    public $channel;
 
     public function __construct(Channel $channel)
     {
