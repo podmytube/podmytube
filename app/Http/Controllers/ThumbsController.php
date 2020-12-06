@@ -29,7 +29,7 @@ class ThumbsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request
      *
      * @return \Illuminate\Http\Response
      */
@@ -47,7 +47,7 @@ class ThumbsController extends Controller
             $channel
         );
 
-        event(ThumbUpdated::shouldUpdateChannel($thumb->channel));
+        ThumbUpdated::dispatch($thumb->channel);
 
         return redirect()->route('home');
     }
@@ -55,7 +55,7 @@ class ThumbsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Channel $channel
+     * @param \App\Channel $channel
      *
      * @return \Illuminate\Http\Response
      */

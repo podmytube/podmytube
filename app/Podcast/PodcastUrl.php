@@ -23,10 +23,6 @@ class PodcastUrl
 
     public function get()
     {
-        return config('app.podcasts_url') .
-            DIRECTORY_SEPARATOR .
-            $this->channel->channelId() .
-            DIRECTORY_SEPARATOR .
-            self::FEED_FILENAME;
+        return config('app.podcasts_url') . '/' . $this->channel->id() . '/' . self::FEED_FILENAME;
     }
 }

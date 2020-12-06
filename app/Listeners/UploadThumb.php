@@ -3,12 +3,30 @@
 namespace App\Listeners;
 
 use App\Events\ThumbUpdated;
-use App\Jobs\SendThumbBySFTP;
+use App\Jobs\SendFileBySFTP;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Log;
+use InvalidArgumentException;
 
-class UploadThumb
+class UploadThumb implements ShouldQueue
 {
+    use InteractsWithQueue;
+
     public function handle(ThumbUpdated $event)
     {
-        SendThumbBySFTP::dispatchNow($event->channel->thumb);
+        /** @var \App\Channel $channel */
+        $channel = $event->channel;
+
+        $localPath = $channel->thumb->localFilePath();
+        $remotePath = $channel->thumb->remoteFilePath();
+
+        if (!file_exists($localPath)) {
+            $message = "File on {$localPath} does not exists.";
+            Log::error($message);
+            throw new InvalidArgumentException($message);
+        }
+
+        SendFileBySFTP::dispatchNow($localPath, $remotePath);
     }
 }

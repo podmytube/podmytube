@@ -2,11 +2,11 @@
 
 namespace App\Listeners;
 
-use App\Events\MediaAdded;
+use App\Events\MediaUploadedByUser;
 use App\Jobs\UploadMediaJob;
 use Illuminate\Support\Facades\Log;
 
-class MediaIsAdded
+class UploadMedia
 {
     /**
      * Create the event listener.
@@ -25,12 +25,18 @@ class MediaIsAdded
      *
      * @return void
      */
-    public function handle(MediaAdded $event)
+    public function handle(MediaUploadedByUser $event)
     {
         /**
          * when a media is added we shoulkd upload it
          */
-        Log::notice("One media has been added ({$event->media->media_id}).");
+        Log::debug(
+            'Media has been uploaded by user',
+            [
+                'media_id', $event->media->media_id,
+                'channel_id', $event->media->channel->id(),
+            ]
+        );
         UploadMediaJob::dispatchNow($event->media);
     }
 }

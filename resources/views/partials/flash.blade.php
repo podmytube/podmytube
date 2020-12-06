@@ -3,8 +3,8 @@
 <div class="container items-center mx-auto">
 	@if(session('success'))
 	<div class="bg-gray-100 border rounded-lg border-gray-500 text-gray-900 px-4 py-3" role="alert">
-		<p class="font-semibold">Success !</p>
-		<p class="font-bold">{{ session("success") }}</p>
+		<p class="font-semibold">🎉 Success ! 🍾</p>
+		<p>{{ session("success") }}</p>
 	</div>
 	@endif
 

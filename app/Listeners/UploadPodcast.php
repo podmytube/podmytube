@@ -14,12 +14,22 @@ class UploadPodcast
 
     public function handle(PodcastUpdated $event)
     {
-        Log::notice("Uploading podcast for channel {$event->channel->nameWithId()}.");
+        $context = [
+            'channel_name' => $event->channel->name(),
+            'channel_id' => $event->channel->id(),
+        ];
+        Log::debug(
+            'Uploading podcast for channel',
+            $context
+        );
         try {
             PodcastUpload::prepare($event->channel)->upload();
-            Log::notice('Podcast was uploaded successfully.');
+            Log::debug('Podcast was uploaded successfully.', $context);
         } catch (Exception $exception) {
-            Log::error("Uploading podcast for channel {$event->channel->nameWithId()} has failed with" . $exception->getMessage() . '.');
+            Log::error(
+                "Uploading podcast for channel has failed with {$exception->getMessage()}",
+                $context
+            );
         }
     }
 }

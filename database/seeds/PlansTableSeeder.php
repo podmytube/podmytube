@@ -26,8 +26,8 @@ class PlansTableSeeder extends Seeder
 
         $data = [
             /**
-         * forever free
-         */
+             * forever free
+             */
             [
                 'name' => 'Forever free',
                 'slug' => 'forever_free',
@@ -39,8 +39,8 @@ class PlansTableSeeder extends Seeder
             ],
 
             /**
-         * 2017
-         */
+             * 2017
+             */
             [
                 'name' => 'Early bird',
                 'slug' => 'early_bird',
@@ -52,8 +52,8 @@ class PlansTableSeeder extends Seeder
             ],
 
             /**
-         * first premium subscribers --- monthly
-         */
+             * first premium subscribers --- monthly
+             */
             [
                 'name' => 'Promo 6 (monthly)',
                 'slug' => 'monthly_6',
@@ -65,8 +65,8 @@ class PlansTableSeeder extends Seeder
             ],
 
             /**
-         * first premium subscribers --- yearly
-         */
+             * first premium subscribers --- yearly
+             */
             [
                 'name' => 'Promo 66 (yearly)',
                 'slug' => 'yearly_66',
@@ -78,8 +78,8 @@ class PlansTableSeeder extends Seeder
             ],
 
             /**
-         * September 2018
-         */
+             * September 2018
+             */
             [
                 'name' => 'Weekly Youtuber',
                 'slug' => 'weekly_youtuber',
@@ -101,8 +101,8 @@ class PlansTableSeeder extends Seeder
             ],
 
             /**
-         * Accropolis wart
-         */
+             * Accropolis wart
+             */
             [
                 'name' => 'Spécial accropolis',
                 'slug' => 'accropolis_6_euros',

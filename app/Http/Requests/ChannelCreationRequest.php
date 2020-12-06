@@ -25,6 +25,15 @@ class ChannelCreationRequest extends FormRequest
     {
         return [
             'channel_url' => 'required|string|min:27',
+            'owner' => 'required|boolean',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'channel_url.required' => 'You should give us the youtube url of your channel. I feel useless without it. 😥',
+            'owner.required' => 'You forgot to swear you are the real owner of this channel. Are you ? 🤔',
         ];
     }
 }

@@ -151,7 +151,7 @@ class ThumbService
 
         if (
             !Storage::disk($thumb->file_disk)->exists(
-                $thumb->channel_id . DIRECTORY_SEPARATOR . $thumb->file_name
+                $thumb->channel_id . '/' . $thumb->file_name
             )
         ) {
             throw new \Exception(
@@ -193,7 +193,7 @@ class ThumbService
      */
     public function getThumbFilePath()
     {
-        return $this->channel_id . DIRECTORY_SEPARATOR . $this->file_name;
+        return $this->channel_id . '/' . $this->file_name;
     }
 
     /**
@@ -209,7 +209,7 @@ class ThumbService
     {
         $fileInfos = pathinfo($this->getThumbFilePath());
         return $this->channel_id .
-            DIRECTORY_SEPARATOR .
+            '/' .
             $fileInfos['filename'] .
             '_vig.' .
             $fileInfos['extension'];

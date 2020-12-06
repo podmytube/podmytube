@@ -14,7 +14,7 @@
     @foreach ($channels as $channel)
 
     <div class="mx-auto md:mx-0 max-w-md rounded-lg overflow-hidden shadow-lg bg-gray-100 mt-4 pt-4 md:pt-10 pb-4 ">
-        <img class="mx-auto shadow rounded-lg" src="{{$channel->vigUrl}}" alt="Cover for {{ $channel->title() }}">
+        <img class="mx-auto shadow-lg rounded-lg" src="{{$channel->vigUrl}}" alt="Cover for {{ $channel->title() }}">
         <div class="px-2 md:px-6 py-4 text-center">
             <div class="font-bold text-xl text-gray-900 leading-tight mb-2">{{ $channel->title() }}</div>
             <p class="text-gray-700 text-base">Your plan : {{ $channel->subscription->plan->name }}</p>

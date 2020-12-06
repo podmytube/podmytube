@@ -19,7 +19,7 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\ChannelUpdated::class => [
             \App\Listeners\RefreshPodcast::class,
         ],
-        \App\Events\MediaAdded::class => [
+        \App\Events\MediaUploadedByUser::class => [
             \App\Listeners\UploadMedia::class
         ],
         /** thumb has been updated */

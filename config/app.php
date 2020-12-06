@@ -59,6 +59,12 @@ return [
     'podcasts_url' => env('PODCASTS_URL', 'https://podcasts.podmytube.com'),
     'mp3_url' => env('MP3_URL', 'https://mp3.podmytube.com'),
 
+    'thumbs_domain' => env('THUMBS_DOMAIN', 'thumbs.podmytube.com'),
+    'thumbs_path' => env('THUMBS_PATH', 'thumbs.podmytube.com/www/'),
+
+    'mp3_domain' => env('MP3_DOMAIN', 'mp3.podmytube.com'),
+    'mp3_path' => env('MP3_PATH', 'mp3.podmytube.com/www/'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

@@ -24,6 +24,7 @@ class ChannelRequest extends FormRequest
         return [
             'podcast_title' => 'nullable|max:255',
             'authors' => 'nullable|max:255',
+            'description' => 'nullable|max:65535',
             'email' => 'nullable|email',
             'category_id' => 'nullable|exists:\App\Category,id',
             'link' => 'nullable|URL',

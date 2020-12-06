@@ -25,17 +25,6 @@ class DatabaseSeeder extends Seeder
             ApiKeysTableSeeder::class,
         ]);
 
-        /**
-         * this one should not be used in testing mode.
-         * In my tests I'm using my personal channel, 
-         * this seeder is doing same, 
-         */
-        if (!App::environment('testing')) {
-            $this->call([
-                ChannelsTableSeeder::class,
-            ]);
-        }
-
         Model::reguard();
     }
 }

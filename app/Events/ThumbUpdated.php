@@ -7,7 +7,7 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class ThumbUpdated extends OccursOnChannel
+class ThumbUpdated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 

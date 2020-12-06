@@ -202,7 +202,7 @@ class PodcastBuilderTest extends TestCase
         $this->assertEquals(
             Storage::disk(PodcastBuilder::LOCAL_FEED_DISK)->url(
                 $podcastBuilder->channel()->channelId() .
-                    DIRECTORY_SEPARATOR .
+                    '/' .
                     PodcastBuilder::FEED_FILENAME
             ),
             $podcastBuilder->url()

@@ -35,9 +35,9 @@ class ChannelModelTest extends TestCase
     {
         $this->assertEquals(
             config('app.podcasts_url') .
-                DIRECTORY_SEPARATOR .
+                '/' .
                 $this->channel->channelId() .
-                DIRECTORY_SEPARATOR .
+                '/' .
                 PodcastBuilder::FEED_FILENAME,
             $this->channel->podcastUrl()
         );

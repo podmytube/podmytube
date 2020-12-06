@@ -23,7 +23,7 @@
 
             <div class="md:flex md:items-center mb-6">
                 <label for="owner" class="md:w-2/3 block text-gray-800 font-bold">
-                    <input class="mr-2 leading-tight" type="checkbox" id="owner" name="owner" value="1">
+                    <input class="mr-2 leading-tight" type="checkbox" id="owner" name="owner" value="1" @if(old('owner')) checked @endif required>
                     <span class="text-sm">
                         I swear to be the owner of this channel before checking this box
                     </span>
