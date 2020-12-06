@@ -13,18 +13,22 @@ class MediaModelTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** \App\Channel $channel channel */
+    /** @var \App\Channel $channel */
     protected $channel;
+
+    /** @var \App\Media $media */
+    protected $media;
 
     public function setUp(): void
     {
         parent::setUp();
         $this->channel = factory(Channel::class)->create();
+        $this->media = factory(Media::class)->create(['channel_id' => $this->channel->channel_id]);
     }
 
     public function testPublishedBetweenShouldBeFine()
     {
-        $expectedNbMedias = 5;
+        $expectedNbMedias = 3;
         factory(Media::class, $expectedNbMedias)->create([
             'channel_id' => $this->channel->channel_id,
             'published_at' => Carbon::createFromDate(2019, 12, 15),
@@ -75,35 +79,15 @@ class MediaModelTest extends TestCase
 
     public function testHasBeenGrabbedShouldBeTrue()
     {
-        $media = factory(Media::class)->create([
-            'channel_id' => $this->channel->channel_id,
-            'grabbed_at' => Carbon::now(),
-            'published_at' => Carbon::now()
-                ->startOfDay()
-                ->subMonth(),
-        ]);
-        $this->assertTrue($media->hasBeenGrabbed());
-    }
-
-    public function testRemoteFileExistsShouldBeFalse()
-    {
-        $media = factory(Media::class)->create([
-            'channel_id' => $this->channel->channel_id,
-        ]);
-        $this->assertFalse($media->remoteFileExists());
+        $this->media->grabbed_at = Carbon::now();
+        $this->media->save();
+        $this->media->refresh();
+        $this->assertTrue($this->media->hasBeenGrabbed());
     }
 
     public function testGrabbedAtShouldBeFine()
     {
-        if (Media::grabbedAt()->count()) {
-            /**
-             * I don't know why, on this specific test,
-             * db may be not empty (as expected)
-             * so I truncated it to avoid false positive.
-             */
-            Media::truncate();
-        }
-        $expectedResult = 20;
+        $expectedResult = 3;
         factory(Media::class, $expectedResult)->create([
             'channel_id' => $this->channel->channel_id,
             'grabbed_at' => Carbon::now(),
@@ -114,43 +98,37 @@ class MediaModelTest extends TestCase
 
     public function testingByMediaIdShouldBeGood()
     {
-        /** preparation */
-        $media = factory(Media::class)->create();
-
-        /** checking results */
-        $this->assertEquals($media->title, Media::byMediaId($media->media_id)->title);
+        $this->assertEquals($this->media->title, Media::byMediaId($this->media->media_id)->title);
         $this->assertNull(Media::byMediaId('ThisIsNotAMediaId'));
     }
 
     public function testMediaFileName()
     {
-        $media = factory(Media::class)->create();
-        $expectedMediaFileName = $media->media_id . Media::FILE_EXTENSION;
+        $expectedMediaFileName = $this->media->media_id . Media::FILE_EXTENSION;
         $this->assertEquals(
             $expectedMediaFileName,
-            $result = $media->mediaFileName(),
+            $result = $this->media->mediaFileName(),
             "Expected media filename was {$expectedMediaFileName}, obtained {$result}"
         );
     }
 
-    public function testUploadFromPath()
+    public function testUploadedPath()
     {
-        /** \App\Media $media */
-        $media = factory(Media::class)->create();
+        $expectedFilePath = Storage::disk(Media::UPLOADED_BY_USER_DISK)
+            ->path($this->media->mediaFileName());
 
-        /**
-         * creating fake media to be uploaded
-         */
-        $filePath = Storage::disk('uploadedMedias')->path($media->mediaFileName());
-        touch($filePath);
-        $this->assertFileExists($filePath);
+        $this->assertEquals(
+            $expectedFilePath,
+            $this->media->uploadedFilePath()
+        );
+    }
 
-        $media->uploadFromPath($filePath);
-        $this->assertTrue($media->remoteFileExists());
-
-        /** cleaning */
-        Storage::disk('uploadedMedias')->delete($media->mediaFileName());
-
-        $this->assertFileDoesNotExist($filePath);
+    public function testRemotePath()
+    {
+        $expectedFilePath = config('app.mp3_path') . $this->media->relativePath();
+        $this->assertEquals(
+            $expectedFilePath,
+            $this->media->remoteFilePath()
+        );
     }
 }

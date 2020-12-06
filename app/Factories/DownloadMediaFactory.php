@@ -2,6 +2,7 @@
 
 namespace App\Factories;
 
+use App\Events\ChannelUpdated;
 use App\Exceptions\ChannelHasReachedItsQuotaException;
 use App\Exceptions\DownloadMediaTagException;
 use App\Exceptions\YoutubeMediaIsNotAvailableException;
@@ -93,6 +94,7 @@ class DownloadMediaFactory
              */
             Log::notice("Uploading Media from {$downloadedFilePath} to {$this->media->url()} ");
             $this->media->uploadFromPath($downloadedFilePath);
+            Log::notice("Downloading media {$this->media->media_id} is successfully finished.");
 
             /**
              * update infos
@@ -104,7 +106,6 @@ class DownloadMediaFactory
             $this->media->length = $mediaProperties->filesize();
             $this->media->duration = $mediaProperties->duration();
             $this->media->save();
-            Log::notice("Downloading media {$this->media->media_id} is successfully finished.");
 
             /**
              * cleaning
@@ -114,6 +115,7 @@ class DownloadMediaFactory
                 Log::error("Removing file {$downloadedFilePath} has failed. You should do it manually.");
             }
 
+            ChannelUpdated::dispatch($this->media->channel);
             return true;
         });
     }

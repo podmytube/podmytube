@@ -3,40 +3,30 @@
 namespace App\Listeners;
 
 use App\Events\MediaUploadedByUser;
-use App\Jobs\UploadMediaJob;
+use App\Jobs\SendFileBySFTP;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
+use InvalidArgumentException;
 
-class UploadMedia
+class UploadMedia implements ShouldQueue
 {
-    /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
+    use InteractsWithQueue;
 
-    /**
-     * Handle the event.
-     *
-     * @param object $event
-     *
-     * @return void
-     */
     public function handle(MediaUploadedByUser $event)
     {
-        /**
-         * when a media is added we shoulkd upload it
-         */
-        Log::debug(
-            'Media has been uploaded by user',
-            [
-                'media_id', $event->media->media_id,
-                'channel_id', $event->media->channel->id(),
-            ]
-        );
-        UploadMediaJob::dispatchNow($event->media);
+        /** @var \App\Channel $channel */
+        $media = $event->media;
+
+        $localPath = $media->uploadedFilePath();
+        $remotePath = $media->remoteFilePath();
+
+        if (!file_exists($localPath)) {
+            $message = "File on {$localPath} does not exists.";
+            Log::error($message);
+            throw new InvalidArgumentException($message);
+        }
+
+        SendFileBySFTP::dispatchNow($localPath, $remotePath, true);
     }
 }

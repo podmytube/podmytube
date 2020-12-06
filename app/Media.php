@@ -18,6 +18,7 @@ class Media extends Model
 {
     use BelongsToChannel, SoftDeletes;
 
+    public const UPLOADED_BY_USER_DISK = 'uploadedMedias';
     public const REMOTE_DISK = 'medias';
     public const FILE_EXTENSION = '.mp3';
 
@@ -172,11 +173,6 @@ class Media extends Model
         return Storage::disk(self::REMOTE_DISK)->exists($this->relativePath());
     }
 
-    public function remoteFilePath()
-    {
-        return Storage::disk(self::REMOTE_DISK)->path($this->relativePath());
-    }
-
     public function url()
     {
         return config('app.mp3_url') . '/' . $this->remoteFilePath();
@@ -243,5 +239,15 @@ class Media extends Model
     public static function byMediaId(string $mediaId):?self
     {
         return self::where('media_id', '=', $mediaId)->first();
+    }
+
+    public function uploadedFilePath()
+    {
+        return Storage::disk(self::UPLOADED_BY_USER_DISK)->path($this->mediaFileName());
+    }
+
+    public function remoteFilePath()
+    {
+        return config('app.mp3_path') . $this->relativePath();
     }
 }

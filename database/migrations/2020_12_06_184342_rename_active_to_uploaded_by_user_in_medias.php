@@ -4,17 +4,17 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddSuperuserFieldToUsers extends Migration
+class RenameActiveToUploadedByUserInMedias extends Migration
 {
     /**
-     * Run the migrations.²
+     * Run the migrations.
      *
      * @return void
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->boolean('superadmin')->default(false);
+        Schema::table('medias', function (Blueprint $table) {
+            $table->boolean('uploaded_by_user')->after('duration')->default(false);
         });
     }
 
@@ -25,8 +25,5 @@ class AddSuperuserFieldToUsers extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('superadmin');
-        });
     }
 }
