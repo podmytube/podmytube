@@ -3,20 +3,25 @@
 namespace App\Listeners;
 
 use App\Events\ChannelRegistered;
-use App\Jobs\MailChannelIsRegistered;
+use App\Mail\ChannelIsRegistered;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
-class SendChannelIsRegisteredEmail
+class SendChannelIsRegisteredEmail implements ShouldQueue
 {
-    /**
-     * Handle the event.
-     *
-     * @param \App\Events\ChannelRegistered $event
-     *
-     * @return void
-     */
+    use InteractsWithQueue;
+
     public function handle(ChannelRegistered $event): void
     {
         /** Sending the channel registered mail within the queue */
-        MailChannelIsRegistered::dispatchNow($event->channel);
+        Mail::to($event->channel->user)->send(
+            new ChannelIsRegistered($event->channel)
+        );
+        Log::debug(
+            'Newly registered channel email has been sent',
+            ['channel_id', $event->channel->id(), ]
+        );
     }
 }

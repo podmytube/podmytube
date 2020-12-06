@@ -85,7 +85,7 @@ class Thumb extends Model
      */
     public function podcastUrl()
     {
-        return getenv('THUMBS_URL') . DIRECTORY_SEPARATOR . $this->relativePath;
+        return getenv('THUMBS_URL') . '/' . $this->relativePath;
     }
 
     /**
@@ -105,7 +105,7 @@ class Thumb extends Model
      */
     public static function defaultUrl()
     {
-        return getenv('THUMBS_URL') . DIRECTORY_SEPARATOR . self::DEFAULT_THUMB_FILE;
+        return getenv('THUMBS_URL') . '/' . self::DEFAULT_THUMB_FILE;
     }
 
     /**
@@ -166,5 +166,15 @@ class Thumb extends Model
             );
         }
         return $thumb;
+    }
+
+    public function localFilePath()
+    {
+        return Storage::disk(self::LOCAL_STORAGE_DISK)->path($this->relativePath());
+    }
+
+    public function remoteFilePath()
+    {
+        return config('app.thumbs_path') . $this->relativePath();
     }
 }

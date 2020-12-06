@@ -55,7 +55,7 @@ class Media extends Model
 
     public function relativePath()
     {
-        return $this->mediaFolder() . DIRECTORY_SEPARATOR . $this->mediaFileName();
+        return $this->mediaFolder() . '/' . $this->mediaFileName();
     }
 
     public function mediaFolder()

@@ -21,23 +21,6 @@ use App\Http\Requests\ChannelRequest;
 class ChannelsController extends Controller
 {
     /**
-     * get list of user's channel
-     *
-     * @return Response
-     */
-    /* public function index()
-    {
-        try {
-            $channels = ChannelService::getAuthenticatedUserChannels(
-                Auth::user()
-            );
-        } catch (\Exception $exception) {
-            $channels = [];
-        }
-        return view('channel.index', compact('channels'));
-    } */
-
-    /**
      * display all informations about one channel
      *
      * @param ChannelRequest $request
@@ -83,12 +66,12 @@ class ChannelsController extends Controller
 
         $channel->update($validatedParams);
 
-        event(new ChannelUpdated($channel));
+        ChannelUpdated::dispatch($channel);
 
         return redirect(route('home', $channel))
-        ->with(
-            'success',
-            'Channel successfully updated !'
-        );
+            ->with(
+                'success',
+                'Channel successfully updated !'
+            );
     }
 }

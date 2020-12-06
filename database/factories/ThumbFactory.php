@@ -13,8 +13,8 @@ $factory->define(App\Thumb::class, function ($faker, $attributes) {
     );
 
     $fileName = $faker->regexify('[a-zA-Z0-9-_]{6}') . '.jpg';
-    $filePath = $channelId . DIRECTORY_SEPARATOR . $fileName;
-    
+    $filePath = $channelId . '/' . $fileName;
+
     /**
      * creating fake filename from sample one in fixtures path.
      * this is fast enough to be tested quickly.

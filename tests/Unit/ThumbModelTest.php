@@ -5,7 +5,6 @@ namespace Tests\Unit;
 use App\Thumb;
 use App\Channel;
 use Tests\TestCase;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ThumbModelTest extends TestCase
@@ -22,9 +21,11 @@ class ThumbModelTest extends TestCase
     {
         parent::setUp();
         $this->channel = factory(Channel::class)->create();
-        factory(Thumb::class)->create([
-            'channel_id' => $this->channel->channelId(),
-        ]);
+        factory(Thumb::class)->create(
+            [
+                'channel_id' => $this->channel->channelId(),
+            ]
+        );
     }
 
     public function testingDefaultUrl()
@@ -56,44 +57,18 @@ class ThumbModelTest extends TestCase
         $this->assertEquals($expectedUrl, $this->channel->thumb->podcastUrl());
     }
 
-    public function testingChannelReplaceItsThumb()
-    {
-        /** creating fake uploaded image */
-        $uploadedFile = UploadedFile::fake()->image(
-            '/tmp/fakeThumbThatShouldNeverExist.jpg',
-            '1400',
-            '1400'
-        );
-
-        /** attach it to channel */
-        $this->assertInstanceOf(
-            Thumb::class,
-            Thumb::make()->attachItToChannel($uploadedFile, $this->channel)
-        );
-    }
-
-    public function testingChannelGetItsFirstThumb()
-    {
-        /** creating fake uploaded image */
-        $uploadedFile = UploadedFile::fake()->image(
-            '/tmp/fakeThumbThatShouldNeverExist.jpg',
-            '1400',
-            '1400'
-        );
-
-        /** creating new channel */
-        $channel = factory(Channel::class)->create();
-
-        /** attach it to channel */
-        $this->assertInstanceOf(
-            Thumb::class,
-            Thumb::make()->attachItToChannel($uploadedFile, $channel)
-        );
-    }
-
     public function testingThumbDoesNotExist()
     {
         $thumb = new Thumb();
         $this->assertFalse($thumb->exists());
+    }
+
+    public function testRemotePath()
+    {
+        $expectedFilePath = config('app.thumbs_path') . $this->channel->channel_id . '/' . $this->channel->thumb->file_name;
+        $this->assertEquals(
+            $expectedFilePath,
+            $this->channel->thumb->remoteFilePath()
+        );
     }
 }
