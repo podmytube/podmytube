@@ -23,12 +23,16 @@ class SendFileBySFTP implements ShouldQueue
     /** @var string $remoteFilePath */
     public $remoteFilePath;
 
+    public $cleanAfter = false;
+
     public function __construct(
         string $localFilePath,
-        string $remoteFilePath
+        string $remoteFilePath,
+        bool $cleanAfter = false
     ) {
         $this->localFilePath = $localFilePath;
         $this->remoteFilePath = $remoteFilePath;
+        $this->cleanAfter = $cleanAfter;
     }
 
     /**
@@ -74,6 +78,10 @@ class SendFileBySFTP implements ShouldQueue
             throw new FileUploadFailureException(
                 "Setting visibility for {$destFolder} has failed"
             );
+        }
+
+        if ($this->cleanAfter === true) {
+            unlink($this->localFilePath);
         }
 
         return true;

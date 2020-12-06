@@ -6,6 +6,7 @@ use App\Exceptions\VignetteCreationFromMissingThumbException;
 use App\Exceptions\VignetteCreationFromThumbException;
 use App\Exceptions\VignetteUploadException;
 use App\Thumb;
+use Exception;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Image;
@@ -203,11 +204,11 @@ class Vignette
             Storage::disk(self::REMOTE_STORAGE_DISK)->delete(
                 $this->relativePath()
             );
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             Log::alert(
                 'Deleting vignette ' .
                     $this->relativePath() .
-                    " has failed with message {{$e->getMessage()}}."
+                    " has failed with message {{$exception->getMessage()}}."
             );
             throw $exception;
         }
@@ -222,5 +223,15 @@ class Vignette
     public static function defaultUrl()
     {
         return env('THUMBS_URL') . '/' . self::DEFAULT_VIGNETTE_FILE;
+    }
+
+    public function localFilePath()
+    {
+        return Storage::disk(Thumb::LOCAL_STORAGE_DISK)->path($this->relativePath());
+    }
+
+    public function remoteFilePath()
+    {
+        return config('app.thumbs_path') . $this->relativePath();
     }
 }

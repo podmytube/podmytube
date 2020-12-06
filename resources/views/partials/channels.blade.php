@@ -23,7 +23,7 @@
         @if ($channel->isFree())
         <p class="text-center pb-6">
             <a href="{{ route('plans.index', $channel) }}">
-                <button target="_blank" class="bg-green-800 hover:bg-purple-800 text-white font-bold py-2 px-4 rounded-lg">
+                <button target="_blank" class="bg-green-800 hover:bg-green-900 text-white font-bold py-2 px-4 rounded-lg">
                     <svg class="h-6 w-auto inline fill-current" 
                         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 382.7 382.7">
                         <path d="M375.9 0.1c-0.8-0.1-1.6-0.1-2.4 0 -74.3 14.8-142.6 50.9-196.6 104l-70.6 3.6c-2 0.1-3.9 0.9-5.3 2.3l-72.5 72.5c-3.1 3.1-3.2 8.2 0 11.3 1.5 1.5 3.6 2.4 5.7 2.4h0.6l81.7-5.6c-3.2 6.7-6.2 13.6-9 20.8 -1.2 3-0.5 6.3 1.8 8.6l53.8 53.8c2.3 2.2 5.6 2.9 8.6 1.8 7.4-2.9 14.5-6.1 21.4-9.4l-5.6 82.6c-0.3 4.4 3.1 8.2 7.5 8.4 2.3 0.1 4.5-0.7 6.1-2.3l72.5-72.5c1.4-1.4 2.2-3.3 2.3-5.3l3.7-72c52.6-53.9 88.5-121.9 103.1-195.8C383.2 4.9 380.2 0.8 375.9 0.1zM55.1 178.4l55.2-55.2 51.3-2.6c-14 16.4-26.2 34.2-36.6 53L55.1 178.4zM260 273l-55.2 55.2 4.8-70.9c18.9-10.4 36.7-22.7 53-36.7L260 273zM170.6 258.4l-46.3-46.3c58.3-142.5 199.1-184.5 240-193.8C355.1 59.3 313.3 200 170.6 258.4z"/>
@@ -56,9 +56,6 @@
 
         <div class="px-4">
             <div class="flex justify-center items-center">
-                <!--a href="{{ route('channel.show', $channel) }}">
-                    <button class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l-lg"> View </button>
-                </a-->
                 <a href="{{ route('channel.edit', $channel) }}">
                     <button class="flex-1 bg-gray-200 shadow hover:bg-gray-400 text-gray-800 font-bold py-2 px-2 rounded-l-lg">
                         <svg class="h-6 w-auto inline fill-current" 

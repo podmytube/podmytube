@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Channel;
-use App\Jobs\SendFeedBySFTP;
 use App\Podcast\PodcastBuilder;
 use Illuminate\Console\Command;
 
@@ -36,10 +35,7 @@ class UpdatePodcastCommand extends Command
         $channel = Channel::findOrFail($this->argument('channelId'));
         $this->info("Updating podcast for channel {$channel->channel_name} ({$channel->channel_id})", 'v');
 
-        if (PodcastBuilder::forChannel($channel)->build()->save()) {
-            /** uploading feed */
-            SendFeedBySFTP::dispatchNow($channel);
-        }
+        PodcastBuilder::forChannel($channel)->build()->save();
 
         $this->comment("Podcast {{$channel->title()}} has been successfully created.", 'v');
         $this->info("You can check it here : {$channel->podcastUrl()}", 'v');

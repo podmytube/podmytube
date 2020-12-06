@@ -71,7 +71,7 @@ class ChannelsController extends Controller
         return redirect(route('home', $channel))
             ->with(
                 'success',
-                'Channel successfully updated !'
+                'Your great podcast has been successfully updated !'
             );
     }
 }
