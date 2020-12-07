@@ -17,9 +17,10 @@ use App\Traits\HasManyMedias;
 use App\Traits\HasOneCategory;
 use App\Traits\HasOneThumb;
 use Carbon\Carbon;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Str;
 
@@ -107,7 +108,7 @@ class Channel extends Model
     /**
      * return all early birds channels.
      *
-     * @return Illuminate\Support\Collection
+     * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function earlyBirdsChannels(): Collection
     {
@@ -122,7 +123,7 @@ class Channel extends Model
     /**
      * return all free channels.
      *
-     * @return Illuminate\Support\Collection
+     * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function freeChannels(): Collection
     {
@@ -138,7 +139,7 @@ class Channel extends Model
      * return all paying customers channels.
      * Paying customers only.
      *
-     * @return Illuminate\Support\Collection
+     * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function payingChannels(): Collection
     {
@@ -283,6 +284,22 @@ class Channel extends Model
     public static function byChannelId(string $channelId)
     {
         return self::where('channel_id', '=', $channelId)->first();
+    }
+
+    /**
+     * get user channels
+     *
+     * @param User $user
+     *
+     * @return \App\Channel
+     */
+    public static function byUserId(Authenticatable $user) : ?Collection
+    {
+        $channelsCollection = self::where('user_id', '=', $user->user_id)->get();
+        if ($channelsCollection->count()) {
+            return $channelsCollection;
+        }
+        return null;
     }
 
     /**

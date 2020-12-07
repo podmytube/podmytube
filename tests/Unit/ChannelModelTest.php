@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Tests\TestCase;
 use App\Podcast\PodcastBuilder;
 use App\Subscription;
+use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 
@@ -85,5 +86,15 @@ class ChannelModelTest extends TestCase
         $media = factory(Media::class, 10)->create(['channel_id' => $this->channel->channel_id]);
         $expectedResult = substr(Str::slug($this->channel->channel_name), 0, 20) . '-11';
         $this->assertEquals($expectedResult, $this->channel->nextMediaId());
+    }
+
+    public function testingByUserIdIsWorkingFine()
+    {
+        $user = factory(User::class)->create();
+        $this->assertNull(Channel::byUserId($user));
+
+        $expectedChannels = 3;
+        factory(Channel::class, $expectedChannels)->create(['user_id' => $user->user_id]);
+        $this->assertCount($expectedChannels, Channel::byUserId($user));
     }
 }
