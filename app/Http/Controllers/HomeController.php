@@ -10,7 +10,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\ChannelService;
+use App\Channel;
+use App\Modules\Vignette;
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -28,11 +29,14 @@ class HomeController extends Controller
         /**
          * Get user's channel(s)
          */
-        try {
-            $channels = ChannelService::getAuthenticatedUserChannels(Auth::user());
-        } catch (\Exception $exception) {
-            $channels = collect([]);
-        }
+        $channels = Channel::with(['subscription', 'thumb'])->where('user_id', '=', Auth::id())->get();
+        $channels = $channels->map(function ($channel) {
+            $channel->vignetteUrl = Vignette::defaultUrl();
+            if ($channel->thumb) {
+                $channel->vignetteUrl = Vignette::fromThumb($channel->thumb)->url();
+            }
+            return $channel;
+        });
 
         return view('home', compact('channels'));
     }
