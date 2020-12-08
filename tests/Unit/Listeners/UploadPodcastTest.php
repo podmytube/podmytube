@@ -7,6 +7,7 @@ use App\Media;
 use App\Podcast\PodcastBuilder;
 use App\Podcast\PodcastUpload;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 class UploadPodcastTest extends TestCase
@@ -24,10 +25,10 @@ class UploadPodcastTest extends TestCase
         factory(Media::class, 2)->create(['channel_id' => $this->channel]);
     }
 
-    
-
     public function testRefreshPodcastJobIsWorkingFine()
     {
+        Event::fake();
+
         PodcastBuilder::forChannel($this->channel)->build()->save();
 
         $this->assertTrue(PodcastUpload::prepare($this->channel)->remoteFeedExists());

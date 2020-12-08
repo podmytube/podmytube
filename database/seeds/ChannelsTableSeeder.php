@@ -29,7 +29,7 @@ class ChannelsTableSeeder extends Seeder
         $subscriptionModel = factory(Subscription::class)->create(
             [
                 'channel_id' => $channelModel->channel_id,
-                'plan_id' => Plan::bySlug('weekly_youtuber'),
+                'plan_id' => Plan::bySlug('weekly_youtuber')->id,
             ]
         );
     }
