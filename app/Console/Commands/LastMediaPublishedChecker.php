@@ -82,7 +82,8 @@ class LastMediaPublishedChecker extends Command
             /**
              * Send myself an email with channels in trouble
              */
-            Mail::to(config('mail.warningRecipient'))->queue(new ChannelIsInTroubleWarningMail($this->channelInTroubleMessages));
+            Mail::to(config('mail.email_to_warn'))
+                ->queue(new ChannelIsInTroubleWarningMail($this->channelInTroubleMessages));
         }
         $this->comment("It's all folks.", 'v');
     }
