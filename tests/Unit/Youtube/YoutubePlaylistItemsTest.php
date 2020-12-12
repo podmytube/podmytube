@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Youtube;
 
-use App\Exceptions\YoutubeQueryFailureException;
+use App\Exceptions\YoutubeNoResultsException;
 use App\Youtube\YoutubePlaylistItems;
 use App\Youtube\YoutubeQuotas;
 use Carbon\Carbon;
@@ -21,11 +21,10 @@ class YoutubePlaylistItemsTest extends TestCase
 
     public function testHavingTheRightNumberOfItemsInPlaylist()
     {
+        $videos = new YoutubePlaylistItems();
         $this->assertCount(
             2,
-            ($videos = new YoutubePlaylistItems())
-                ->forPlaylist(self::MY_PERSONAL_UPLOADS_PLAYLIST_ID)
-                ->videos()
+            $videos->forPlaylist(self::MY_PERSONAL_UPLOADS_PLAYLIST_ID)->videos()
         );
         /**
          * base : 1
@@ -54,7 +53,7 @@ class YoutubePlaylistItemsTest extends TestCase
 
     public function testGettingPlaylistThatDoesNotExistShouldThrowException()
     {
-        $this->expectException(YoutubeQueryFailureException::class);
+        $this->expectException(YoutubeNoResultsException::class);
         (new YoutubePlaylistItems())->forPlaylist('UUEmWzBUF53cVPhHTnUnsNMw');
     }
 }

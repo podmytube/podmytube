@@ -5,11 +5,11 @@ namespace App\Youtube;
 use App\ApiKey;
 use App\Exceptions\YoutubeInvalidEndpointException;
 use App\Exceptions\YoutubeNoResultsException;
-use App\Exceptions\YoutubeQueryFailureException;
 use App\Interfaces\QuotasConsumer;
 use App\Modules\Query;
 use App\Traits\YoutubeEndpoints;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 abstract class YoutubeCore implements QuotasConsumer
 {
@@ -96,8 +96,21 @@ abstract class YoutubeCore implements QuotasConsumer
             $this->jsonDecoded = json_decode($rawResults, true);
 
             if (isset($this->jsonDecoded['error'])) {
-                throw new YoutubeQueryFailureException(
-                    $this->jsonDecoded['error']['message'] . ". Api key used : {$this->apikey}",
+                Log::debug('====================================================');
+                Log::debug('Youtube API ERROR 1 params used : ', $this->params());
+                Log::debug("Youtube API ERROR 2 (Api key used : {$this->apikey()}).");
+                Log::debug('Youtube API ERROR 3.', $this->jsonDecoded);
+                Log::debug("Youtube API ERROR 4 : {$this->url()}");
+
+                /**
+                 * I was throwing YoutubeQueryFailureException
+                 * But, sometimes, for the same query Youtube is returning a json with
+                 * an error and sometimes he is returning a json with no errors and empty
+                 * item array, so I cannot throw differrent Exception for these 2 kinds of
+                 * exceptions
+                 */
+                throw new YoutubeNoResultsException(
+                    $this->jsonDecoded['error']['message'] . ". URL used : {$this->url()}",
                     $this->jsonDecoded['error']['code']
                 );
             }

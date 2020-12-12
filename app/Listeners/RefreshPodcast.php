@@ -28,7 +28,7 @@ class RefreshPodcast implements ShouldQueue
 
         $result = PodcastBuilder::forChannel($event->channel)->build()->save();
         if ($result === false) {
-            $message = "Updating podcast for channel {$event->channel->name()} ({$event->channel->id()}) has failed.";
+            $message = "Updating podcast for channel {$event->channel->title()} ({$event->channel->id()}) has failed.";
             Log::error($message);
             throw new PodcastUpdateFailureException($message);
         }

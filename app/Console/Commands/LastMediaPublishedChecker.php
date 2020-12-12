@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Channel;
-use App\Exceptions\YoutubeChannelHasNoVideoException;
+use App\Exceptions\YoutubeNoResultsException;
 use App\Mail\ChannelIsInTroubleWarningMail;
 use App\Modules\LastMediaChecker;
 use Carbon\Carbon;
@@ -71,7 +71,7 @@ class LastMediaPublishedChecker extends Command
                 if ($factory->shouldMediaBeingGrabbed()) {
                     $this->channelInTroubleMessages[] = "Channel {$channelToCheck->channel_name} ({$channelToCheck->channel_id}) last video has not been grabbed.";
                 }
-            } catch (YoutubeChannelHasNoVideoException $exception) {
+            } catch (YoutubeNoResultsException $exception) {
                 $this->channelInTroubleMessages[] = "Channel {$channelToCheck->channel_name} ({$channelToCheck->channel_id}) has no video. It is strange.";
             }
         });

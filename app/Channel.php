@@ -310,14 +310,6 @@ class Channel extends Model
         return $this->channel_id;
     }
 
-    /**
-     * @return string channel_name of channel
-     */
-    public function name() :string
-    {
-        return $this->channel_name;
-    }
-
     public function isFree()
     {
         return $this->subscription->plan_id == Plan::FREE_PLAN_ID;
@@ -333,6 +325,6 @@ class Channel extends Model
      */
     public function nameWithId()
     {
-        return "{$this->name()} ({$this->id()})";
+        return "{$this->title()} ({$this->id()})";
     }
 }

@@ -48,4 +48,9 @@ class YoutubeChannel extends YoutubeCore
         }
         return $this->results['items'][0]['snippet']['title'];
     }
+
+    public function uploadsPlaylistId() : ?string
+    {
+        return $this->results['items'][0]['contentDetails']['relatedPlaylists']['uploads'] ?? false;
+    }
 }

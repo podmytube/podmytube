@@ -2,8 +2,7 @@
 
 namespace Tests\Unit\Youtube;
 
-use App\Exceptions\YoutubeChannelHasNoVideoException;
-use App\Exceptions\YoutubeQueryFailureException;
+use App\Exceptions\YoutubeNoResultsException;
 use App\Factories\YoutubeLastVideoFactory;
 use App\Quota;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -41,13 +40,13 @@ class YoutubeLastVideoFactoryTest extends TestCase
 
     public function testChannelWithNoVideosShouldThrowException()
     {
-        $this->expectException(YoutubeChannelHasNoVideoException::class);
+        $this->expectException(YoutubeNoResultsException::class);
         YoutubeLastVideoFactory::forChannel('UCq80IvL314jsE7PgYsTdw7Q'); // accropolis replays (strangely)
     }
 
     public function testGettingInvalidMediaShouldFail()
     {
-        $this->expectException(YoutubeQueryFailureException::class);
+        $this->expectException(YoutubeNoResultsException::class);
         YoutubeLastVideoFactory::forChannel('ChannelWhichWillNeverExists');
     }
 }

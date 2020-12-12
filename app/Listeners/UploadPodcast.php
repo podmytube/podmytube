@@ -15,7 +15,7 @@ class UploadPodcast
     public function handle(PodcastUpdated $event)
     {
         $context = [
-            'channel_name' => $event->channel->name(),
+            'channel_name' => $event->channel->title(),
             'channel_id' => $event->channel->id(),
         ];
         Log::debug(

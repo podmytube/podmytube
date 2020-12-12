@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Exceptions\YoutubeQueryFailureException;
 use Illuminate\Console\Command;
+use InvalidArgumentException;
 
 class ThrowTestExceptionCommand extends Command
 {
@@ -20,6 +20,6 @@ class ThrowTestExceptionCommand extends Command
      */
     public function handle()
     {
-        throw new YoutubeQueryFailureException("Don't panic !!! This is a test exception.");
+        throw new InvalidArgumentException("Don't panic !!! This is a test exception.");
     }
 }
