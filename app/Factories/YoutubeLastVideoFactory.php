@@ -2,7 +2,7 @@
 
 namespace App\Factories;
 
-use App\Exceptions\YoutubeChannelHasNoVideoException;
+use App\Exceptions\YoutubeNoResultsException;
 use App\Interfaces\QuotasConsumer;
 use App\Quota;
 use App\Youtube\YoutubeChannelVideos;
@@ -38,9 +38,8 @@ class YoutubeLastVideoFactory implements QuotasConsumer
     protected function obtainLastMedia()
     {
         $factory = YoutubeChannelVideos::forChannel($this->channel_id, 1);
-
         if (!count($factory->videos())) {
-            throw new YoutubeChannelHasNoVideoException("Channel {$this->channel_id} has no video. Strange you should contact them.");
+            throw new YoutubeNoResultsException("Channel {$this->channel_id} has no video. Strange you should contact them.");
         }
         $this->lastMedia = $factory->videos()[0];
         $this->queries = array_merge($this->queries, $factory->queriesUsed());

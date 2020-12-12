@@ -30,9 +30,10 @@ class ChannelIsRegistered extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.channelRegistered')->with([
-            'user' => $this->channel->user,
-            'channel' => $this->channel,
-        ]);
+        return $this->view('emails.channelRegistered')
+            ->with([
+                'user' => $this->channel->user,
+                'channel' => $this->channel,
+            ]);
     }
 }

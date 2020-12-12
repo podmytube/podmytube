@@ -40,8 +40,6 @@ class Handler extends ExceptionHandler
      */
     public function report(Throwable $exception)
     {
-        Log::debug(__CLASS__ . '::' . __FUNCTION__);
-
         if ($this->shouldReport($exception)) {
             /**
              * send email alert to me

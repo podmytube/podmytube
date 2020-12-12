@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Youtube;
 
-use App\Exceptions\YoutubeQueryFailureException;
+use App\Exceptions\YoutubeNoResultsException;
 use App\Youtube\YoutubeChannelVideos;
 use App\Youtube\YoutubeQuotas;
 use Illuminate\Support\Facades\Artisan;
@@ -59,7 +59,7 @@ class YoutubeChannelVideosTest extends TestCase
 
     public function testingInvalidChannelShouldThrowException()
     {
-        $this->expectException(YoutubeQueryFailureException::class);
+        $this->expectException(YoutubeNoResultsException::class);
         YoutubeChannelVideos::forChannel('ThisChannelWillNeverExists');
     }
 }
