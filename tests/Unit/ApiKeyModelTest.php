@@ -12,23 +12,27 @@ class ApiKeyModelTest extends TestCase
 {
     use RefreshDatabase;
 
+    /** @var \App\ApiKey $apikey */
+    protected $apikey;
+
+    public function setUp():void
+    {
+        parent::setUp();
+        $this->apikey = factory(ApiKey::class)->create(['apikey' => 'flower-power']);
+    }
+
     public function testingByApikeyShouldBeGood()
     {
         $expectedApikey = 'flower-power';
-        $apikeyCreated = factory(ApiKey::class)->create(
-            ['apikey' => $expectedApikey]
-        );
-
         $this->assertNotNull(ApiKey::byApikey($expectedApikey));
         $this->assertInstanceOf(ApiKey::class, ApiKey::byApikey($expectedApikey));
-        $this->assertEquals($apikeyCreated->id, ApiKey::byApikey($expectedApikey)->id);
+        $this->assertEquals($this->apikey->id, ApiKey::byApikey($expectedApikey)->id);
     }
 
     public function testingGetOneShouldThrowException()
     {
-        $apikey = factory(ApiKey::class)->create();
         factory(Quota::class)->create([
-            'apikey_id' => $apikey->id,
+            'apikey_id' => $this->apikey->id,
             'quota_used' => Quota::LIMIT_PER_DAY + 1,
         ]);
         $this->expectException(YoutubeNoApiKeyAvailableException::class);
@@ -37,30 +41,27 @@ class ApiKeyModelTest extends TestCase
 
     public function testingGetOneWithNoQuotasShouldReturnOne()
     {
-        $apikey = factory(ApiKey::class)->create();
-        $this->assertEquals($apikey->apikey, ApiKey::getOne());
+        $this->assertEquals($this->apikey->apikey, ApiKey::getOne());
     }
 
     public function testingGetOneWith0QuotaShouldReturnOne()
     {
-        $apikey = factory(ApiKey::class)->create();
         factory(Quota::class)->create([
-            'apikey_id' => $apikey->id,
+            'apikey_id' => $this->apikey->id,
             'quota_used' => 0,
         ]);
-        $this->assertEquals($apikey->apikey, ApiKey::getOne());
+        $this->assertEquals($this->apikey->apikey, ApiKey::getOne());
     }
 
     public function testingGetOneShouldReturnOneToo()
     {
-        $availableApiKey = factory(ApiKey::class)->create();
-        factory(Quota::class)->create(['apikey_id' => $availableApiKey->id, 'quota_used' => 0, ]);
+        factory(Quota::class)->create(['apikey_id' => $this->apikey->id, 'quota_used' => 0, ]);
 
         $notAvailableApiKeys = factory(ApiKey::class, 3)->create();
-        foreach ($notAvailableApiKeys as $apikey) {
-            factory(Quota::class)->create(['apikey_id' => $apikey->id, 'quota_used' => Quota::LIMIT_PER_DAY + 1]);
+        foreach ($notAvailableApiKeys as $notAvailableApiKey) {
+            factory(Quota::class)->create(['apikey_id' => $notAvailableApiKey->id, 'quota_used' => Quota::LIMIT_PER_DAY + 1]);
         }
 
-        $this->assertEquals($availableApiKey->apikey, ApiKey::getOne());
+        $this->assertEquals($this->apikey->apikey, ApiKey::getOne());
     }
 }
