@@ -59,7 +59,7 @@ return [
         'name' => env('MAIL_FROM_NAME', 'Fred@Podmytube'),
     ],
 
-    'warningRecipient' => env('EMAIL_TO_WARN', 'frederick@podmytube.com'),
+    'email_to_warn' => env('EMAIL_TO_WARN', 'frederick@podmytube.com'),
 
     /*
     |--------------------------------------------------------------------------

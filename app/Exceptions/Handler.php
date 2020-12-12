@@ -2,8 +2,14 @@
 
 namespace App\Exceptions;
 
+use App\Mail\ExceptionEmail;
+use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Throwable;
+use Symfony\Component\ErrorHandler\ErrorRenderer\HtmlErrorRenderer;
+use Symfony\Component\ErrorHandler\Exception\FlattenException;
 
 class Handler extends ExceptionHandler
 {
@@ -34,8 +40,20 @@ class Handler extends ExceptionHandler
      */
     public function report(Throwable $exception)
     {
-        if ($this->shouldReport($exception) && app()->bound('sentry')) {
-            app('sentry')->captureException($exception);
+        Log::debug(__CLASS__ . '::' . __FUNCTION__);
+
+        if ($this->shouldReport($exception)) {
+            /**
+             * send email alert to me
+             */
+            $this->sendExceptionEmail($exception);
+
+            if (app()->bound('sentry')) {
+                /**
+                 * if sentry send it to sentry
+                 */
+                app('sentry')->captureException($exception);
+            }
         }
         parent::report($exception);
     }
@@ -53,5 +71,25 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $exception)
     {
         return parent::render($request, $exception);
+    }
+
+    /**
+     * Sends an email to the developer about the exception.
+     *
+     * @return void
+     */
+    public function sendExceptionEmail(Throwable $exceptionReceived)
+    {
+        try {
+            $exception = FlattenException::create($exceptionReceived);
+            $handler = new HtmlErrorRenderer(true); // boolean, true raises debug flag...
+            $css = $handler->getStylesheet();
+            $content = $handler->getBody($exception);
+            Log::debug('Queueing mail for : ' . config('mail.email_to_warn'));
+            Mail::to(config('mail.email_to_warn'))
+                ->queue(new ExceptionEmail(compact('css', 'content')));
+        } catch (Throwable $exception) {
+            Log::error($exception);
+        }
     }
 }
