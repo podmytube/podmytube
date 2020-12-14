@@ -2,7 +2,7 @@
 
 $sshCredentials = [
     'user' => 'fred',
-    'host' => 'ns3309553.ip-5-135-160.eu',
+    'host' => 'ns3363684.ip-37-187-100.eu',
     'path' => base_path() . '/.ssh/kimUpload',
 ];
 
