@@ -32,6 +32,7 @@ class ChannelCreationRequest extends FormRequest
     public function messages()
     {
         return [
+            'channel_url.min' => 'Your channel url should look like this one https://www.youtube.com/channel/UCWfW8a2ejHzRM_acJcJSbtQ. 😥',
             'channel_url.required' => 'You should give us the youtube url of your channel. I feel useless without it. 😥',
             'owner.required' => 'You forgot to swear you are the real owner of this channel. Are you ? 🤔',
         ];

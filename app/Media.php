@@ -27,6 +27,7 @@ class Media extends Model
 
     /** @var string $primaryKey if only I had set id as prim key */
     protected $primaryKey = 'media_id';
+
     /** @var bool $incrementing come with my fucking legacy media_id */
     public $incrementing = false;
 
@@ -153,6 +154,11 @@ class Media extends Model
     public function duration()
     {
         return $this->duration;
+    }
+
+    public function id() :string
+    {
+        return $this->media_id;
     }
 
     /**

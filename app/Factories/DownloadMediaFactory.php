@@ -42,7 +42,7 @@ class DownloadMediaFactory
              */
             if ($this->media->channel->hasReachedItslimit()) {
                 $message = "Channel {$this->media->channel->channel_name} ({$this->media->channel->channel_id}) has reached its quota.";
-                Log::warning($message);
+                Log::notice($message);
                 throw new ChannelHasReachedItsQuotaException($message);
             }
 
@@ -73,7 +73,7 @@ class DownloadMediaFactory
 
             /** download, convert and get its path */
             Log::notice("Downloading media {$this->media->media_id} from youtube.");
-            $downloadedFilePath = DownloadYTMedia::init($this->media->media_id, Storage::disk('tmp')->path(''), false)
+            $downloadedFilePath = DownloadYTMedia::init($this->media, Storage::disk('tmp')->path(''), false)
                 ->download()
                 ->downloadedFilePath();
 

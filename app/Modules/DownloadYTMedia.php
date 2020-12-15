@@ -3,6 +3,8 @@
 namespace App\Modules;
 
 use App\Exceptions\DownloadMediaFailureException;
+use App\Media;
+use Illuminate\Support\Facades\Log;
 
 /**
  * This class goal is to download youtube video and to convert it into one audio file
@@ -11,10 +13,13 @@ class DownloadYTMedia
 {
     public const AUDIO_FORMAT = 'mp3';
 
-    /** the mediaId of the video */
-    protected $mediaId;
+    /** @var \App\Media $media */
+    protected $media;
 
-    /** where to store the downloaded file */
+    /** @var bool $verbose */
+    protected $verbose = false;
+
+    /** @var string $destinationFolder */
     protected $destinationFolder;
 
     /** Will contain the path to the youtube-dl app */
@@ -34,22 +39,16 @@ class DownloadYTMedia
      * @param string mediaToObtain the id of the video to download
      * @param string $audioFile where to store (locally) the audioFile
      */
-    public function __construct(string $mediaToObtain, string $destinationFolder, bool $verbose = false)
+    public function __construct(Media $mediaToObtain, string $destinationFolder, bool $verbose = false)
     {
-        /**
-         * throw an exception if youtube-dl not installed
-         */
-        if (!file_exists(self::YOUTUBE_DL_BINARY)) {
-            throw new \Exception('Youtube-dl is not installed on this server. You should install it first.');
-        }
-
-        $this->mediaId = $mediaToObtain;
+        $this->media = $mediaToObtain;
+        $this->destinationFolder = $destinationFolder;
         $this->verbose = $verbose;
 
         /**
          * Will set the path where to store the video file
          */
-        $this->setDestinationFolder($destinationFolder);
+        $this->checkDestinationFolder();
 
         /**
          * Initialize default parameters
@@ -72,25 +71,17 @@ class DownloadYTMedia
      *
      * @param string destinationFolder
      */
-    protected function setDestinationFolder(string $destinationFolder)
+    protected function checkDestinationFolder() :bool
     {
-        if (!is_dir($destinationFolder) || !is_writable($destinationFolder)) {
-            throw new \InvalidArgumentException("The folder {$destinationFolder} is either invalid or not writable");
+        if (!is_dir($this->destinationFolder) || !is_writable($this->destinationFolder)) {
+            throw new \InvalidArgumentException("The folder {$this->destinationFolder} is either invalid or not writable");
         }
-        $this->destinationFolder = $destinationFolder;
+        return true;
     }
 
     public function downloadedFilePath(): string
     {
-        return $this->destinationFolder . $this->mediaId . '.' . self::AUDIO_FORMAT;
-    }
-
-    /**
-     * This function will get the media id
-     */
-    protected function mediaId()
-    {
-        return $this->mediaId;
+        return $this->destinationFolder . $this->media->media_id . '.' . self::AUDIO_FORMAT;
     }
 
     /**
@@ -108,7 +99,9 @@ class DownloadYTMedia
     {
         passthru($this->commandLine, $err);
         if ($err != 0) {
-            throw new DownloadMediaFailureException('We failed to obtain media {' . $this->mediaId . "} with this command line : \n" . $this->commandLine);
+            $message = "Downloading media '{$this->media->id()}' for channel {$this->media->channel->nameWithId()} has failed.";
+            Log::error($message, ['err' => $err, 'cmd' => $this->commandLine]);
+            throw new DownloadMediaFailureException($message);
         }
         return $this;
     }
@@ -135,7 +128,7 @@ class DownloadYTMedia
             $this->youtubeDlparameters[] = '--quiet';
         }
 
-        $this->youtubeDlparameters[] = 'https://www.youtube.com/watch?v=' . $this->mediaId();
+        $this->youtubeDlparameters[] = 'https://www.youtube.com/watch?v=' . $this->media->id();
 
         if (!$this->verbose) {
             $this->youtubeDlparameters[] = '>/dev/null 2>&1';
