@@ -52,9 +52,9 @@ class DownloadYTMedia
         $this->checkDestinationFolder();
 
         /**
-         * Will set the path where to store the video file
+         * Clean the way before downloading video + audio
          */
-        $this->cleanPartiallyDownloaded();
+        $this->cleanPreviouslyDownloaded();
 
         /**
          * Initialize default parameters
@@ -146,7 +146,7 @@ class DownloadYTMedia
         }
     }
 
-    protected function cleanPartiallyDownloaded()
+    protected function cleanPreviouslyDownloaded()
     {
         if (file_exists($this->downloadedVideoFilePath())) {
             unlink($this->downloadedVideoFilePath());
