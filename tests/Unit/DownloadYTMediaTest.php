@@ -1,21 +1,18 @@
 <?php
 
-/**
- * This class is the class test for the GetAudioTrackFromYTVideo class
- *
- * @category Test
- * @package  PodMyTube\core
- * @author   Frederick Tyteca <fred@podmytube.com>
- * @license  http://www.podmytube.com closed
- * @link     Podmytube website, http://www.podmytube.com
- */
+namespace Tests\Unit;
 
 use App\Exceptions\DownloadMediaFailureException;
+use App\Media;
 use App\Modules\DownloadYTMedia;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
+use InvalidArgumentException;
 use Tests\TestCase;
 
 class DownloadYTMediaTest extends TestCase
 {
+    use RefreshDatabase;
     const MARIO_COIN_MEDIA_ID = 'qfx6yf8pux4';
     const AUDIO_FILE_EXTENSION = '.mp3';
     const MARIO_COIN_DURATION = 6;
@@ -43,6 +40,9 @@ class DownloadYTMediaTest extends TestCase
     /** @var string $destinationFolder */
     protected $destinationFolder;
 
+    /** @var \App\Media $media */
+    protected $media;
+
     /**
      * first things to do before launching tests
      * @return void
@@ -50,6 +50,7 @@ class DownloadYTMediaTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->media = factory(Media::class)->create(['media_id' => self::MARIO_COIN_MEDIA_ID]);
         $this->expectedVideoFile = Storage::disk('tmp')->path(self::MARIO_COIN_MEDIA_ID . self::AUDIO_FILE_EXTENSION);
         $this->destinationFolder = Storage::disk('tmp')->path('');
         if (file_exists($this->expectedVideoFile)) {
@@ -69,7 +70,7 @@ class DownloadYTMediaTest extends TestCase
     {
         $this->assertEquals(
             $this->expectedVideoFile,
-            DownloadYTMedia::init(self::MARIO_COIN_MEDIA_ID, $this->destinationFolder, false)->downloadedFilePath(),
+            DownloadYTMedia::init($this->media, $this->destinationFolder, false)->downloadedFilePath(),
             'expected file {' . $this->expectedVideoFile . '} should be there'
         );
     }
@@ -80,7 +81,7 @@ class DownloadYTMediaTest extends TestCase
      */
     public function testDownloadShouldBeGood()
     {
-        DownloadYTMedia::init(self::MARIO_COIN_MEDIA_ID, $this->destinationFolder, false)->download();
+        DownloadYTMedia::init($this->media, $this->destinationFolder, false)->download();
         $this->assertFileExists(
             $this->expectedVideoFile,
             'expected file {' . $this->expectedVideoFile . '} should be there'
@@ -93,7 +94,7 @@ class DownloadYTMediaTest extends TestCase
     public function testThatWeFailIfDestinationPathIsInvalid()
     {
         $this->expectException(InvalidArgumentException::class);
-        DownloadYTMedia::init(self::MARIO_COIN_MEDIA_ID, '/path/that/does/not/exists');
+        DownloadYTMedia::init($this->media, '/path/that/does/not/exists');
     }
 
     /**
@@ -101,7 +102,8 @@ class DownloadYTMediaTest extends TestCase
      */
     public function testThatWeFailIfMediaIsInvalid()
     {
+        $foolishMedia = factory(Media::class)->create(['media_id' => 'invalid-media-forever']);
         $this->expectException(DownloadMediaFailureException::class);
-        DownloadYTMedia::init('invalid-media-forever', $this->destinationFolder)->download();
+        DownloadYTMedia::init($foolishMedia, $this->destinationFolder)->download();
     }
 }
