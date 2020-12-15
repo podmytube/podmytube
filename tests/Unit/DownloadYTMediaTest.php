@@ -88,6 +88,19 @@ class DownloadYTMediaTest extends TestCase
         );
     }
 
+    public function testExistingFileShouldBeRemovedBeforeDownload()
+    {
+        $expectedFileToBeRemovedBefore = $this->destinationFolder . '/' . self::MARIO_COIN_MEDIA_ID . '.mp4';
+        /** creating fake file */
+        touch($expectedFileToBeRemovedBefore);
+        $this->assertFileExists($expectedFileToBeRemovedBefore);
+        DownloadYTMedia::init($this->media, $this->destinationFolder, false);
+        $this->assertFileDoesNotExist(
+            
+        )
+
+    }
+
     /**
      * This will test that we throw an exception destination folder is not valid (writable and exists)
      */
