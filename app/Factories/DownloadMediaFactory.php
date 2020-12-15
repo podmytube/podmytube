@@ -3,7 +3,6 @@
 namespace App\Factories;
 
 use App\Events\ChannelUpdated;
-use App\Exceptions\ChannelHasReachedItsQuotaException;
 use App\Exceptions\DownloadMediaTagException;
 use App\Exceptions\YoutubeMediaIsNotAvailableException;
 use App\Media;
@@ -37,15 +36,6 @@ class DownloadMediaFactory
     public function run()
     {
         return DB::transaction(function () {
-            /**
-             * did channel reach its quota
-             */
-            if ($this->media->channel->hasReachedItslimit()) {
-                $message = "Channel {$this->media->channel->channel_name} ({$this->media->channel->channel_id}) has reached its quota.";
-                Log::notice($message);
-                throw new ChannelHasReachedItsQuotaException($message);
-            }
-
             /**
              * getting media infos
              */

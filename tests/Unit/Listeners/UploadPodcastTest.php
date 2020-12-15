@@ -31,6 +31,9 @@ class UploadPodcastTest extends TestCase
 
         PodcastBuilder::forChannel($this->channel)->build()->save();
 
-        $this->assertTrue(PodcastUpload::prepare($this->channel)->remoteFeedExists());
+        $this->assertTrue(
+            PodcastUpload::prepare($this->channel)->remoteFeedExists(),
+            'It seems podcast feed does not exists on remote'
+        );
     }
 }
