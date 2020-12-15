@@ -2,6 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Channel;
+use App\Exceptions\ChannelHasReachedItsQuotaException;
+use App\Exceptions\NoActiveChannelException;
 use App\Factories\DownloadMediaFactory;
 use App\Media;
 use App\Modules\PeriodsHelper;
@@ -35,43 +38,74 @@ class DownloadVideosByPeriodCommand extends Command
         $period = PeriodsHelper::create($periodArgument->month, $periodArgument->year);
 
         Log::notice("Downloading ungrabbed medias for period {$period->startDate()} and {$period->endDate()}");
-        /**
-         * getting all non grabbed episodes published during this period order by (with channel and subscription)
-         */
-        $medias = Media::with('channel')
-            ->publishedBetween($period->startDate(), $period->endDate())
-            ->whereNull('grabbed_at')->get();
 
-        $nbMedias = $medias->count();
-        if ($nbMedias <= 0) {
-            $message = "There is no ungrabbed medias for this period {$period->startDate()} and {$period->endDate()}.";
-            $this->comment($message, 'v');
-            Log::notice($message);
-            return;
+        /**
+         * getting active channels
+         */
+        $channels = Channel::with('subscription')
+            ->where('active', '=', 1)
+            ->get();
+
+        $nbChannels = $channels->count();
+        if ($nbChannels <= 0) {
+            $message = "There is no active channel ! That's IMPOSSIBLE !!.";
+            $this->error($message, 'v');
+            Log::error($message);
+            throw new NoActiveChannelException($message);
         }
 
         if ($this->getOutput()->isVerbose()) {
-            $this->progressBar = $this->output->createProgressBar($nbMedias);
+            $this->progressBar = $this->output->createProgressBar($nbChannels);
             $this->progressBar->start();
         }
 
         /**
-         * for every medias in db
+         * looping on all channels
          */
-        foreach ($medias as $media) {
-            try {
-                DownloadMediaFactory::media($media, $this->getOutput()->isVerbose())->run();
-            } catch (\Exception $exception) {
-                Log::error($exception->getMessage());
+        $channels->map(function ($channel) use ($period) {
+            /**
+             * check if channnel has reached its quota
+             */
+            if ($channel->hasReachedItslimit()) {
+                $message = "Channel {$channel->nameWithId()} has reached its quota.";
+                Log::notice($message);
+                throw new ChannelHasReachedItsQuotaException($message);
             }
+
+            /**
+             * getting all non grabbed episodes published during this period order by (with channel and subscription)
+             */
+            $medias = Media::with('channel')
+                ->where('channel_id', '=', $channel->channel_id)
+                ->publishedBetween($period->startDate(), $period->endDate())
+                ->whereNull('grabbed_at')
+                ->orderBy('published_at', 'desc')
+                ->get();
+
+            $nbMedias = $medias->count();
+            if ($nbMedias <= 0) {
+                $message = "There is no ungrabbed medias for {$channel->nameWithId()} between {$period->startDate()} and {$period->endDate()}.";
+                $this->comment($message, 'v');
+                Log::notice($message);
+                return;
+            }
+
+            /**
+             * for every medias
+             */
+            $medias->map(function ($media) {
+                try {
+                    DownloadMediaFactory::media($media, $this->getOutput()->isVerbose())->run();
+                } catch (\Exception $exception) {
+                    Log::error($exception->getMessage());
+                }
+            });
+
             if ($this->getOutput()->isVerbose()) {
-                $this->progressBar->advance();
+                $this->progressBar->finish();
+                $this->line('');
             }
-        }
-        if ($this->getOutput()->isVerbose()) {
-            $this->progressBar->finish();
-            $this->line('');
-        }
+        });
     }
 
     public function defaultPeriod()
