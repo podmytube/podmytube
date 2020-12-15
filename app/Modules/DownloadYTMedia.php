@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Log;
 class DownloadYTMedia
 {
     public const AUDIO_FORMAT = 'mp3';
+    public const VIDEO_FORMAT = 'mp4';
 
     /** @var \App\Media $media */
     protected $media;
@@ -51,6 +52,11 @@ class DownloadYTMedia
         $this->checkDestinationFolder();
 
         /**
+         * Will set the path where to store the video file
+         */
+        $this->cleanPartiallyDownloaded();
+
+        /**
          * Initialize default parameters
          */
         $this->setYoutubeDlParameters();
@@ -82,6 +88,11 @@ class DownloadYTMedia
     public function downloadedFilePath(): string
     {
         return $this->destinationFolder . $this->media->media_id . '.' . self::AUDIO_FORMAT;
+    }
+
+    public function downloadedVideoFilePath()
+    {
+        return $this->destinationFolder . $this->media->media_id . '.' . self::VIDEO_FORMAT;
     }
 
     /**
@@ -133,5 +144,13 @@ class DownloadYTMedia
         if (!$this->verbose) {
             $this->youtubeDlparameters[] = '>/dev/null 2>&1';
         }
+    }
+
+    protected function cleanPartiallyDownloaded()
+    {
+        if (file_exists($this->downloadedVideoFilePath())) {
+            unlink($this->downloadedVideoFilePath());
+        }
+        return true;
     }
 }

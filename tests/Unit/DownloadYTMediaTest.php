@@ -13,6 +13,7 @@ use Tests\TestCase;
 class DownloadYTMediaTest extends TestCase
 {
     use RefreshDatabase;
+
     const MARIO_COIN_MEDIA_ID = 'qfx6yf8pux4';
     const AUDIO_FILE_EXTENSION = '.mp3';
     const MARIO_COIN_DURATION = 6;
@@ -96,9 +97,9 @@ class DownloadYTMediaTest extends TestCase
         $this->assertFileExists($expectedFileToBeRemovedBefore);
         DownloadYTMedia::init($this->media, $this->destinationFolder, false);
         $this->assertFileDoesNotExist(
-            
-        )
-
+            $expectedFileToBeRemovedBefore,
+            'Mp4 file should have been revoed first, before youtube-dl'
+        );
     }
 
     /**
