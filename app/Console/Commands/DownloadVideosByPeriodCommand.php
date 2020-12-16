@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Channel;
-use App\Exceptions\ChannelHasReachedItsQuotaException;
 use App\Exceptions\NoActiveChannelException;
 use App\Factories\DownloadMediaFactory;
 use App\Media;
@@ -69,7 +68,7 @@ class DownloadVideosByPeriodCommand extends Command
             if ($channel->hasReachedItslimit()) {
                 $message = "Channel {$channel->nameWithId()} has reached its quota.";
                 Log::notice($message);
-                throw new ChannelHasReachedItsQuotaException($message);
+                return;
             }
 
             /**
