@@ -8,6 +8,7 @@ use App\Factories\DownloadMediaFactory;
 use App\Media;
 use App\Modules\PeriodsHelper;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
@@ -18,8 +19,6 @@ class DownloadVideosByPeriodCommand extends Command
 
     /** @var string $description */
     protected $description = 'This command will get all ungrabbed videos from all channels on specified period. Current period by default.';
-
-    protected $progressBar;
 
     /**
      * Execute the console command.
@@ -41,7 +40,7 @@ class DownloadVideosByPeriodCommand extends Command
         /**
          * getting active channels
          */
-        $channels = Channel::with('subscription')
+        $channels = Channel::with(['subscription', 'subscription.plan'])
             ->where('active', '=', 1)
             ->get();
 
@@ -53,56 +52,46 @@ class DownloadVideosByPeriodCommand extends Command
             throw new NoActiveChannelException($message);
         }
 
-        if ($this->getOutput()->isVerbose()) {
-            $this->progressBar = $this->output->createProgressBar($nbChannels);
-            $this->progressBar->start();
-        }
-
         /**
          * looping on all channels
          */
         $channels->map(function ($channel) use ($period) {
-            /**
-             * check if channnel has reached its quota
-             */
-            if ($channel->hasReachedItslimit()) {
-                $message = "Channel {$channel->nameWithId()} has reached its quota.";
-                Log::notice($message);
-                return;
-            }
-
-            /**
-             * getting all non grabbed episodes published during this period order by (with channel and subscription)
-             */
-            $medias = Media::with('channel')
-                ->where('channel_id', '=', $channel->channel_id)
-                ->publishedBetween($period->startDate(), $period->endDate())
-                ->whereNull('grabbed_at')
-                ->orderBy('published_at', 'desc')
-                ->get();
-
-            $nbMedias = $medias->count();
-            if ($nbMedias <= 0) {
-                $message = "There is no ungrabbed medias for {$channel->nameWithId()} between {$period->startDate()} and {$period->endDate()}.";
-                $this->comment($message, 'v');
-                Log::notice($message);
-                return;
-            }
-
-            /**
-             * for every medias
-             */
-            $medias->map(function ($media) {
-                try {
-                    DownloadMediaFactory::media($media, $this->getOutput()->isVerbose())->run();
-                } catch (\Exception $exception) {
-                    Log::error($exception->getMessage());
+            try {
+                /**
+                 * check if channnel has reached its quota
+                 */
+                if ($channel->hasReachedItslimit()) {
+                    $message = "Channel {$channel->nameWithId()} has reached its quota.";
+                    Log::notice($message);
+                    return;
                 }
-            });
 
-            if ($this->getOutput()->isVerbose()) {
-                $this->progressBar->finish();
-                $this->line('');
+                /**
+                 * getting all non grabbed episodes published during this period order by (with channel and subscription)
+                 */
+                $medias = Media::with('channel')
+                    ->where('channel_id', '=', $channel->channel_id)
+                    ->publishedBetween($period->startDate(), $period->endDate())
+                    ->whereNull('grabbed_at')
+                    ->orderBy('published_at', 'desc')
+                    ->get();
+
+                $nbMedias = $medias->count();
+                if ($nbMedias <= 0) {
+                    $message = "There is no ungrabbed medias for {$channel->nameWithId()} between {$period->startDate()} and {$period->endDate()}.";
+                    $this->comment($message, 'v');
+                    Log::notice($message);
+                    return;
+                }
+
+                /**
+                 * for every medias
+                 */
+                $medias->map(function ($media) {
+                    DownloadMediaFactory::media($media, $this->getOutput()->isVerbose())->run();
+                });
+            } catch (Exception $exception) {
+                Log::error($exception->getMessage());
             }
         });
     }
