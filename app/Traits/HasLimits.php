@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Exceptions\ChannelHasNoSubscriptionException;
 use App\Modules\PeriodsHelper;
 
 /**
@@ -12,6 +13,9 @@ trait HasLimits
 {
     public function numberOfEpisodesAllowed(): int
     {
+        if ($this->subscription === null) {
+            throw new ChannelHasNoSubscriptionException("Channel {$this->nameWithId()} has no subscription.");
+        }
         return $this->subscription->plan->nb_episodes_per_month;
     }
 
