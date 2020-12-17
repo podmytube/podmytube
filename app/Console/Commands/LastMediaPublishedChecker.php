@@ -17,8 +17,8 @@ class LastMediaPublishedChecker extends Command
     /** @var \Illuminate\Support\Collection $channelsToCheck */
     protected $channelsToCheck;
 
-    /** @var array App\Channels[] $channelsInTrouble */
-    protected $channelsInTrouble = [];
+    /** @var array $channelInTroubleMessages */
+    protected $channelInTroubleMessages = [];
     /**
      * The name and signature of the console command.
      *
