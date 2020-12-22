@@ -47,47 +47,47 @@ class LanguagesTableSeeder extends Seeder
             ['iso_name' => 'Chamorro', 'native_name' => 'Chamoru', 'code' => 'ch'],
             ['iso_name' => 'Chechen', 'native_name' => 'нохчийн мотт', 'code' => 'ce'],
             ['iso_name' => 'Chichewa, Chewa, Nyanja', 'native_name' => 'chiCheŵa, chinyanja', 'code' => 'ny'],
-            /*Chinese 	                    中文 (Zhōngwén), 汉语, 漢語 	zh 	zho 	chi 	zho + 16 	macrolanguage
-            Chuvash 	                    чӑваш чӗлхи 	cv 	chv 	chv 	chv
-            Cornish 	                    Kernewek 	kw 	cor 	cor 	cor
-            Corsican 	                    corsu, lingua corsa 	co 	cos 	cos 	cos
-            Cree 	                        ᓀᐦᐃᔭᐍᐏᐣ 	cr 	cre 	cre 	cre + 6 	macrolanguage
-            Croatian 	                    hrvatski jezik 	hr 	hrv 	hrv 	hrv
-            Czech 	                        čeština, český jazyk 	cs 	ces 	cze 	ces
-            Danish 	                        dansk 	da 	dan 	dan 	dan
-            Divehi, Dhivehi, Maldivian      ދިވެހި dv 	div 	div 	div
-            Dutch, Flemish 	Nederlands, Vlaams 	nl 	nld 	dut 	nld 	Flemish is not to be confused with the closely related West Flemish which is referred to as Vlaams (Dutch for "Flemish") in ISO 639-3 and has the ISO 639-3 code vls
-            Dzongkha 	རྫོང་ཁ 	dz 	dzo 	dzo 	dzo
-            English 	English 	en 	eng 	eng 	eng
-            Esperanto 	Esperanto 	eo 	epo 	epo 	epo 	constructed, initiated from L.L. Zamenhof, 1887
-            Estonian 	eesti, eesti keel 	et 	est 	est 	est + 2 	macrolanguage
-            Ewe 	Eʋegbe 	ee 	ewe 	ewe 	ewe
-            /* Faroese 	føroyskt 	fo 	fao 	fao 	fao
-            Fijian 	vosa Vakaviti 	fj 	fij 	fij 	fij
-            Finnish 	suomi, suomen kieli 	fi 	fin 	fin 	fin
-            French 	français, langue française 	fr 	fra 	fre 	fra
-            Fulah 	Fulfulde, Pulaar, Pular 	ff 	ful 	ful 	ful + 9 	macrolanguage, also known as Fula
-            Galician 	Galego 	gl 	glg 	glg 	glg
-            Georgian 	ქართული 	ka 	kat 	geo 	kat
-            German 	Deutsch 	de 	deu 	ger 	deu
-            Greek, Modern (1453–) 	ελληνικά 	el 	ell 	gre 	ell
-            Guarani 	Avañe'ẽ 	gn 	grn 	grn 	grn + 5 	macrolanguage
-            Gujarati 	ગુજરાતી 	gu 	guj 	guj 	guj
-            Haitian, Haitian Creole 	Kreyòl ayisyen 	ht 	hat 	hat 	hat
-            Hausa (Hausa) هَوُسَ ha 	hau 	hau 	hau
-            Hebrew עברית he 	heb 	heb 	heb 	Modern Hebrew. Code changed in 1989 from original ISO 639:1988, iw.[1]
-            Herero 	Otjiherero 	hz 	her 	her 	her
-            Hindi 	हिन्दी, हिंदी 	hi 	hin 	hin 	hin
-            Hiri Motu 	Hiri Motu 	ho 	hmo 	hmo 	hmo
-            Hungarian 	magyar 	hu 	hun 	hun 	hun
-            Interlingua (International Auxiliary Language Association) 	Interlingua 	ia 	ina 	ina 	ina 	constructed by International Auxiliary Language Association
-            Indonesian 	Bahasa Indonesia 	id 	ind 	ind 	ind 	Covered by macrolanguage [ms/msa]. Changed in 1989 from original ISO 639:1988, in.[1]
-            Interlingue, Occidental 	(originally:) Occidental, (after WWII:) Interlingue 	ie 	ile 	ile 	ile 	constructed by Edgar de Wahl, first published in 1922
-            Irish 	Gaeilge 	ga 	gle 	gle 	gle
-            Igbo 	Asụsụ Igbo 	ig 	ibo 	ibo 	ibo
-            Inupiaq 	Iñupiaq, Iñupiatun 	ik 	ipk 	ipk 	ipk + 2 	macrolanguage
-            Ido 	Ido 	io 	ido 	ido 	ido 	constructed by De Beaufront, 1907, as variation of Esperanto
-            Icelandic 	Íslenska 	is 	isl 	ice 	isl
+            ['iso_name' => 'Chinese', 'native_name' => '中文 (Zhōngwén), 汉语, 漢語', 'code' => 'zh'],
+            ['iso_name' => 'Chuvash', 'native_name' => 'чӑваш чӗлхи', 'code' => 'cv'],
+            ['iso_name' => 'Cornish', 'native_name' => 'Kernewek', 'code' => 'kw'],
+            ['iso_name' => 'Corsican', 'native_name' => 'corsu, lingua corsa', 'code' => 'co'],
+            ['iso_name' => 'Cree', 'native_name' => 'ᓀᐦᐃᔭᐍᐏᐣ', 'code' => 'cr'],
+            ['iso_name' => 'Croatian', 'native_name' => 'hrvatski jezik', 'code' => 'hr'],
+            ['iso_name' => 'Czech', 'native_name' => 'čeština, český jazyk', 'code' => 'cs'],
+            ['iso_name' => 'Danish', 'native_name' => 'dansk', 'code' => 'da'],
+            ['iso_name' => 'Divehi, Dhivehi, Maldivian', 'native_name' => 'ދިވެހި', 'code' => 'dv'],
+            ['iso_name' => 'Dutch, Flemish', 'native_name' => 'Nederlands, Vlaams', 'code' => 'nl'],
+            ['iso_name' => 'Dzongkha', 'native_name' => 'རྫོང་ཁ', 'code' => 'dz'],
+            ['iso_name' => 'English', 'native_name' => 'English', 'code' => 'en'],
+            ['iso_name' => 'Esperanto', 'native_name' => 'Esperanto', 'code' => 'eo'],
+            ['iso_name' => 'Estonian', 'native_name' => 'eesti, eesti keel', 'code' => 'et'],
+            ['iso_name' => 'Ewe', 'native_name' => 'Eʋegbe', 'code' => 'ee'],
+            ['iso_name' => 'Faroese', 'native_name' => 'føroyskt', 'code' => 'fo'],
+            ['iso_name' => 'Fijian', 'native_name' => 'vosa Vakaviti', 'code' => 'fj'],
+            ['iso_name' => 'Finnish', 'native_name' => 'suomi, suomen kieli', 'code' => 'fi'],
+            ['iso_name' => 'French', 'native_name' => 'français, langue française', 'code' => 'fr'],
+            ['iso_name' => 'Fulah', 'native_name' => 'Fulfulde, Pulaar, Pular', 'code' => 'ff'],
+            ['iso_name' => 'Galician', 'native_name' => 'Galego', 'code' => 'gl'],
+            ['iso_name' => 'Georgian', 'native_name' => 'ქართული', 'code' => 'ka'],
+            ['iso_name' => 'German', 'native_name' => 'Deutsch', 'code' => 'de'],
+            ['iso_name' => 'Greek, Modern (1453–)', 'native_name' => 'ελληνικά', 'code' => 'el'],
+            ['iso_name' => 'Guarani', 'native_name' => "Avañe'ẽ", 'code' => 'gn'],
+            ['iso_name' => 'Gujarati', 'native_name' => 'ગુજરાતી', 'code' => 'gu'],
+            ['iso_name' => 'Haitian, Haitian Creole', 'native_name' => 'Kreyòl ayisyen', 'code' => 'ht'],
+            ['iso_name' => 'Hausa (Hausa)', 'native_name' => 'هَوُسَ', 'code' => 'ha'],
+            ['iso_name' => 'Hebrew', 'native_name' => 'עברית', 'code' => 'he'],
+            ['iso_name' => 'Herero', 'native_name' => 'Otjiherero', 'code' => 'hz'],
+            ['iso_name' => 'Hindi', 'native_name' => 'हिन्दी, हिंदी', 'code' => 'hi'],
+            ['iso_name' => 'Hiri Motu', 'native_name' => 'Hiri Motu', 'code' => 'ho'],
+            ['iso_name' => 'Hungarian', 'native_name' => 'magyar', 'code' => 'hu'],
+            ['iso_name' => 'Interlingua (International Auxiliary Language Association)', 'native_name' => 'Interlingua', 'code' => 'ia'],
+            ['iso_name' => 'Indonesian', 'native_name' => 'Bahasa Indonesia', 'code' => 'id'],
+            ['iso_name' => 'Interlingue, Occidental', 'native_name' => '(originally:) Occidental, (after WWII:) Interlingue', 'code' => 'ie'],
+            ['iso_name' => 'Irish', 'native_name' => 'Gaeilge', 'code' => 'ga'],
+            ['iso_name' => 'Igbo', 'native_name' => 'Asụsụ Igbo', 'code' => 'ig'],
+            ['iso_name' => 'Inupiaq', 'native_name' => 'Iñupiaq, Iñupiatun', 'code' => 'ik'],
+            ['iso_name' => 'Ido', 'native_name' => 'Ido', 'code' => 'io'],
+            /*Icelandic 	Íslenska 	is 	isl 	ice 	isl
             Italian 	Italiano 	it 	ita 	ita 	ita
             Inuktitut 	ᐃᓄᒃᑎᑐᑦ 	iu 	iku 	iku 	iku + 2 	macrolanguage
             Japanese 	日本語 (にほんご) 	ja 	jpn 	jpn 	jpn
