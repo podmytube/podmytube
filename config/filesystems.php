@@ -1,8 +1,8 @@
 <?php
 
 $sshCredentials = [
-    'user' => 'fred',
-    'host' => 'ns3363684.ip-37-187-100.eu',
+    'user' => env('SFTP_USER', 'fred'),
+    'host' => env('SFTP_HOST', 'ns3363684.ip-37-187-100.eu'),
     'path' => base_path() . '/.ssh/kimUpload',
 ];
 
@@ -95,7 +95,7 @@ return [
         'thumbs' => [
             'driver' => 'local',
             'root' => storage_path('app/public/thumbs'),
-            'url' => env('THUMBS_URL'),
+            'url' => env('THUMBS_URL', 'https://thumbs.podmytube.com'),
             'visibility' => 'public',
         ],
 
@@ -135,7 +135,6 @@ return [
             // 'port' => 22,
             'root' => env('SFTP_THUMBS_PATH'),
             'timeout' => 20,
-            'url' => env('THUMBS_URL'),
             'visibility' => 'public',
             'permPublic' => 0755,
         ],
