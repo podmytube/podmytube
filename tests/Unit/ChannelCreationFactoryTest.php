@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Category;
 use App\Channel;
 use App\Events\ChannelRegistered;
 use App\Exceptions\ChannelAlreadyRegisteredException;
@@ -25,11 +26,15 @@ class ChannelCreationFactoryTest extends TestCase
     /** @var string $myChannelId */
     protected $myChannelId = 'UCw6bU9JT_Lihb2pbtqAUGQw';
 
+    /** @var \App\Category $defaultCategory */
+    protected $defaultCategory;
+
     public function setUp(): void
     {
         parent::setUp();
         $this->user = factory(User::class)->create();
         Artisan::call('db:seed');
+        $this->defaultCategory = Category::bySlug(ChannelCreationFactory::DEFAULT_CATEGORY_SLUG);
     }
 
     /** @todo check for ChannelRegistered Event */
@@ -42,14 +47,18 @@ class ChannelCreationFactoryTest extends TestCase
             $validYoutubeUrl,
             Plan::bySlug('forever_free')
         );
-
-        $this->assertInstanceOf(Channel::class, $channelFactory->channel());
-        $this->assertEquals($this->myChannelId, $channelFactory->channel()->channel_id);
+        $channel = $channelFactory->channel();
+        $this->assertInstanceOf(Channel::class, $channel);
+        $this->assertEquals($this->myChannelId, $channel->channel_id);
 
         $this->assertEquals($this->user->id(), $channelFactory->user()->id());
 
-        $this->assertEquals(Plan::FREE_PLAN_ID, $channelFactory->channel()->subscription->plan_id);
-
+        $this->assertEquals(Plan::FREE_PLAN_ID, $channel->subscription->plan_id);
+        $this->assertEquals(
+            $this->defaultCategory->id,
+            $channel->category_id,
+            "Channel should have default category {$this->defaultCategory->name} and have {$channel->category->name}"
+        );
         Event::assertDispatched(ChannelRegistered::class);
     }
 

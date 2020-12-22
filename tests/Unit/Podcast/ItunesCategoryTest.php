@@ -21,7 +21,7 @@ class ItunesCategoryTest extends TestCase
     public function testDocumentaryWillDisplaySocietyAndCulture()
     {
         $renderedText = ItunesCategory::prepare(
-            Category::where('name', '=', 'documentary')->first()
+            Category::bySlug('documentary')
         )->render();
         $this->assertStringContainsString(
             '<itunes:category text="Society &amp; Culture">',
@@ -37,7 +37,7 @@ class ItunesCategoryTest extends TestCase
     public function testFantasySportsWillDisplaySports()
     {
         $renderedText = ItunesCategory::prepare(
-            Category::where('name', '=', 'fantasySports')->first()
+            Category::bySlug('fantasy-sports')
         )->render();
         $this->assertStringContainsString(
             '<itunes:category text="Sports">',
@@ -53,7 +53,7 @@ class ItunesCategoryTest extends TestCase
     public function testingSimpleCategory()
     {
         $renderedText = ItunesCategory::prepare(
-            Category::where('name', '=', 'leisure')->first()
+            Category::bySlug('leisure')
         )->render();
         $this->assertStringContainsString(
             '<itunes:category text="Leisure" />',

@@ -4,38 +4,44 @@ namespace Tests\Unit;
 
 use App\Category;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 
 class CategoryModelTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected const TOTAL_NUMBER_OF_CATEGORIES_APRIL_2020 = 110;
-    protected const TOTAL_NUMBER_OF_PARENT_ATEGORIES_APRIL_2020 = 19;
-
     public function setUp(): void
     {
         parent::setUp();
-        Artisan::call('db:seed', ['--class' => 'CategoriesTableSeeder']);
     }
 
-    public function testNumberOfCategoriesShouldBeGood()
+    public function testSimpleFeedValueIsCorrect()
     {
-        /**
-         * Checking we have the right number of categories and parent categories.
-         */
+        $categoryName = 'Fashion & Beauty';
+        $category = factory(Category::class)->create(['name' => $categoryName]);
         $this->assertEquals(
-            self::TOTAL_NUMBER_OF_CATEGORIES_APRIL_2020,
-            Category::all()->count()
+            htmlentities($categoryName),
+            $category->feedValue()
         );
     }
 
-    public function testNumberOfParentsCategoriesShouldBeGood()
+    public function testParentFeedValueIsCorrect()
     {
+        $parentCategoryName = 'Kids & Family';
+        $childCategoryName = 'Pets & Animals';
+        $parentCategory = factory(Category::class)->create(['name' => $parentCategoryName]);
+        $category = factory(Category::class)->create(
+            [
+                'parent_id' => $parentCategory->id,
+                'name' => $childCategoryName]
+        );
         $this->assertEquals(
-            self::TOTAL_NUMBER_OF_PARENT_ATEGORIES_APRIL_2020,
-            Category::where('parent_id', '=', 0)->count()
+            htmlentities($parentCategoryName),
+            $category->parentFeedValue()
+        );
+        $this->assertEquals(
+            htmlentities($childCategoryName),
+            $category->feedValue()
         );
     }
 }

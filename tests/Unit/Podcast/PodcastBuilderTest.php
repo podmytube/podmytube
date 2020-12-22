@@ -131,7 +131,7 @@ class PodcastBuilderTest extends TestCase
         );
         $this->assertStringContainsString(
             '<itunes:category text="' .
-                $this->channel->category->categoryFeedValue() .
+                $this->channel->category->feedValue() .
                 '" />',
             $renderedPodcast
         );
@@ -291,7 +291,7 @@ class PodcastBuilderTest extends TestCase
         );
         $this->assertStringContainsString(
             '<itunes:category text="' .
-                $this->channel->category->categoryFeedValue() .
+                $this->channel->category->feedValue() .
                 '" />',
             $savedPodcastContent
         );

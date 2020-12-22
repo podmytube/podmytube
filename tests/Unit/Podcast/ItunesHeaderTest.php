@@ -32,7 +32,7 @@ class ItunesHeaderTest extends TestCase
             'imageUrl' => Thumb::defaultUrl(),
             'itunesOwner' => ItunesOwner::prepare($authorName, $authorEmail),
             'itunesCategory' => ItunesCategory::prepare(
-                Category::where('name', '=', 'documentary')->first()
+                Category::bySlug('documentary')
             ),
             'explicit' => true,
         ])->render();
