@@ -101,13 +101,13 @@ class LanguagesTableSeeder extends Seeder
             ['iso_name' => 'Kikuyu, Gikuyu', 'native_name' => 'Gĩkũyũ', 'code' => 'ki'],
             ['iso_name' => 'Kinyarwanda', 'native_name' => 'Ikinyarwanda', 'code' => 'rw'],
             ['iso_name' => 'Kirghiz, Kyrgyz', 'native_name' => 'Кыргызча, Кыргыз тили',	'code' => 'ky'],
-            /*Komi 	коми кыв 	kv 	kom 	kom 	kom + 2 	macrolanguage
-            Kongo 	Kikongo 	kg 	kon 	kon 	kon + 3 	macrolanguage
-            Korean 	한국어 	ko 	kor 	kor 	kor
-            Kurdish 	Kurdî, کوردی‎ 	ku 	kur 	kur 	kur + 3 	macrolanguage
-            Kuanyama, Kwanyama 	Kuanyama 	kj 	kua 	kua 	kua
-            Latin 	latine, lingua latina 	la 	lat 	lat 	lat 	ancient
-            Luxembourgish, Letzeburgesch 	Lëtzebuergesch 	lb 	ltz 	ltz 	ltz
+            ['iso_name' => 'Komi', 'native_name' => 'коми кыв', 'code' => 'kv'],
+            ['iso_name' => 'Kongo', 'native_name' => 'Kikongo', 'code' => 'kg'],
+            ['iso_name' => 'Korean', 'native_name' => '한국어', 'code' => 'ko'],
+            ['iso_name' => 'Kurdish', 'native_name' => 'Kurdî, کوردی‎', 'code' => 'ku'],
+            ['iso_name' => 'Kuanyama, Kwanyama', 'native_name' => 'Kuanyama', 'code' => 'kj'],
+            ['iso_name' => 'Latin',  'native_name' => 'latine, lingua latina', 'code' => 'la'],
+            /*Luxembourgish, Letzeburgesch 	Lëtzebuergesch 	lb 	ltz 	ltz 	ltz
             Ganda 	Luganda 	lg 	lug 	lug 	lug
             Limburgan, Limburger, Limburgish 	Limburgs 	li 	lim 	lim 	lim
             Lingala 	Lingála 	ln 	lin 	lin 	lin
