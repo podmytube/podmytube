@@ -96,12 +96,12 @@ class LanguagesTableSeeder extends Seeder
             ['iso_name' => 'Kannada', 'native_name' => 'ಕನ್ನಡ', 'code' => 'kn'],
             ['iso_name' => 'Kanuri', 'native_name' => 'Kanuri', 'code' => 'kr'],
             ['iso_name' => 'Kashmiri', 'native_name' => 'कश्मीरी, كشميري‎', 'code' => 'ks'],
-            /*Kazakh 	                    қазақ тілі 	kk 	kaz 	kaz 	kaz
-            Central Khmer 	            ខ្មែរ, ខេមរភាសា, ភាសាខ្មែរ 	km 	khm 	khm 	khm 	also known as Khmer or Cambodian
-            Kikuyu, Gikuyu 	            Gĩkũyũ 	ki 	kik 	kik 	kik
-            Kinyarwanda 	            Ikinyarwanda 	rw 	kin 	kin 	kin
-            Kirghiz, Kyrgyz 	Кыргызча, Кыргыз тили 	ky 	kir 	kir 	kir
-            Komi 	коми кыв 	kv 	kom 	kom 	kom + 2 	macrolanguage
+            ['iso_name' => 'Kazakh', 'native_name' => 'қазақ тілі', 'code' => 'kk'],
+            ['iso_name' => 'Central Khmer', 'native_name' => 'ខ្មែរ, ខេមរភាសា, ភាសាខ្មែរ', 'code' => 'km'],
+            ['iso_name' => 'Kikuyu, Gikuyu', 'native_name' => 'Gĩkũyũ', 'code' => 'ki'],
+            ['iso_name' => 'Kinyarwanda', 'native_name' => 'Ikinyarwanda', 'code' => 'rw'],
+            ['iso_name' => 'Kirghiz, Kyrgyz', 'native_name' => 'Кыргызча, Кыргыз тили',	'code' => 'ky'],
+            /*Komi 	коми кыв 	kv 	kom 	kom 	kom + 2 	macrolanguage
             Kongo 	Kikongo 	kg 	kon 	kon 	kon + 3 	macrolanguage
             Korean 	한국어 	ko 	kor 	kor 	kor
             Kurdish 	Kurdî, کوردی‎ 	ku 	kur 	kur 	kur + 3 	macrolanguage
@@ -126,7 +126,7 @@ class LanguagesTableSeeder extends Seeder
             Marshallese 	Kajin M̧ajeļ 	mh 	mah 	mah 	mah
             Mongolian 	Монгол хэл 	mn 	mon 	mon 	mon + 2 	macrolanguage
             Nauru 	Dorerin Naoero 	na 	nau 	nau 	nau 	also known as Nauruan
-            n 	Navajo, Navaho 	Diné bizaad 	nv 	nav 	nav 	nav
+            Navajo, Navaho 	Diné bizaad 	nv 	nav 	nav 	nav
             North Ndebele 	isiNdebele 	nd 	nde 	nde 	nde 	also known as Northern Ndebele
             Nepali 	नेपाली 	ne 	nep 	nep 	nep + 2 	macrolanguage
             Ndonga 	Owambo 	ng 	ndo 	ndo 	ndo
