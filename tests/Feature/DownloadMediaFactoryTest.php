@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\Channel;
-use App\Exceptions\ChannelHasReachedItsQuotaException;
 use App\Exceptions\DownloadMediaTagException;
 use App\Exceptions\YoutubeMediaDoesNotExistException;
 use App\Factories\DownloadMediaFactory;
@@ -11,7 +10,6 @@ use App\Media;
 use App\Plan;
 use App\Subscription;
 use Artisan;
-use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Storage;
 use Tests\TestCase;
@@ -72,29 +70,6 @@ class DownloadMediaFactoryTest extends TestCase
             ]
         );
         $this->expectException(DownloadMediaTagException::class);
-        DownloadMediaFactory::media($media)->run();
-    }
-
-    public function testFreeChannelHasReachedItsQuota()
-    {
-        /** one is grabbed */
-        $nbDownloadedEpisodes = $this->channel->numberOfEpisodesAllowed();
-        factory(Media::class, $nbDownloadedEpisodes)->create(
-            [
-                'channel_id' => $this->channel->channel_id,
-                'grabbed_at' => Carbon::now(),
-            ]
-        );
-
-        /** the second is not grabbed yet and shouldn't */
-        $media = factory(Media::class)->create(
-            [
-                'channel_id' => $this->channel->channel_id,
-                'media_id' => self::MARIO_COIN_VIDEO,
-            ]
-        );
-
-        $this->expectException(ChannelHasReachedItsQuotaException::class);
         DownloadMediaFactory::media($media)->run();
     }
 

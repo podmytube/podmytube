@@ -47,6 +47,16 @@ class MediasController extends Controller
         return view('medias.createOrEdit', compact('pageTitle', 'action', 'media', 'patch'));
     }
 
+    public function edit(Channel $channel, Media $media)
+    {
+        $this->authorize('addMedia', $channel);
+
+        $pageTitle = "Edit {$media->name} episode ";
+        $action = URL::route('channel.medias.update', ['channel' => $channel, 'media' => $media]);
+        $patch = true;
+        return view('medias.createOrEdit', compact('pageTitle', 'action', 'media', 'patch'));
+    }
+
     public function store(MediaRequest $request, Channel $channel)
     {
         $this->authorize('addMedia', $channel);
