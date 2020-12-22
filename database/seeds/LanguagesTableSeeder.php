@@ -87,19 +87,19 @@ class LanguagesTableSeeder extends Seeder
             ['iso_name' => 'Igbo', 'native_name' => 'Asụsụ Igbo', 'code' => 'ig'],
             ['iso_name' => 'Inupiaq', 'native_name' => 'Iñupiaq, Iñupiatun', 'code' => 'ik'],
             ['iso_name' => 'Ido', 'native_name' => 'Ido', 'code' => 'io'],
-            /*Icelandic 	Íslenska 	is 	isl 	ice 	isl
-            Italian 	Italiano 	it 	ita 	ita 	ita
-            Inuktitut 	ᐃᓄᒃᑎᑐᑦ 	iu 	iku 	iku 	iku + 2 	macrolanguage
-            Japanese 	日本語 (にほんご) 	ja 	jpn 	jpn 	jpn
-            Javanese 	ꦧꦱꦗꦮ, Basa Jawa 	jv 	jav 	jav 	jav
-            Kalaallisut, Greenlandic 	kalaallisut, kalaallit oqaasii 	kl 	kal 	kal 	kal
-            Kannada 	ಕನ್ನಡ 	kn 	kan 	kan 	kan
-            Kanuri 	Kanuri 	kr 	kau 	kau 	kau + 3 	macrolanguage
-            Kashmiri 	कश्मीरी, كشميري‎ 	ks 	kas 	kas 	kas
-            h 	қазақ тілі 	kk 	kaz 	kaz 	kaz
-            Central Khmer 	ខ្មែរ, ខេមរភាសា, ភាសាខ្មែរ 	km 	khm 	khm 	khm 	also known as Khmer or Cambodian
-            Kikuyu, Gikuyu 	Gĩkũyũ 	ki 	kik 	kik 	kik
-            Kinyarwanda 	Ikinyarwanda 	rw 	kin 	kin 	kin
+            ['iso_name' => 'Icelandic', 'native_name' => 'Íslenska', 'code' => 'is'],
+            ['iso_name' => 'Italian', 'native_name' => 'Italiano', 'code' => 'it'],
+            ['iso_name' => 'Inuktitut', 'native_name' => 'ᐃᓄᒃᑎᑐᑦ', 'code' => 'iu'],
+            ['iso_name' => 'Japanese', 'native_name' => '日本語 (にほんご)', 'code' => 'ja'],
+            ['iso_name' => 'Javanese', 'native_name' => 'ꦧꦱꦗꦮ, Basa Jawa', 'code' => '  jv'],
+            ['iso_name' => 'Kalaallisut, Greenlandic', 'native_name' => 'kalaallisut, kalaallit oqaasii', 'code' => 'kl'],
+            ['iso_name' => 'Kannada', 'native_name' => 'ಕನ್ನಡ', 'code' => 'kn'],
+            ['iso_name' => 'Kanuri', 'native_name' => 'Kanuri', 'code' => 'kr'],
+            ['iso_name' => 'Kashmiri', 'native_name' => 'कश्मीरी, كشميري‎', 'code' => 'ks'],
+            /*Kazakh 	                    қазақ тілі 	kk 	kaz 	kaz 	kaz
+            Central Khmer 	            ខ្មែរ, ខេមរភាសា, ភាសាខ្មែរ 	km 	khm 	khm 	khm 	also known as Khmer or Cambodian
+            Kikuyu, Gikuyu 	            Gĩkũyũ 	ki 	kik 	kik 	kik
+            Kinyarwanda 	            Ikinyarwanda 	rw 	kin 	kin 	kin
             Kirghiz, Kyrgyz 	Кыргызча, Кыргыз тили 	ky 	kir 	kir 	kir
             Komi 	коми кыв 	kv 	kom 	kom 	kom + 2 	macrolanguage
             Kongo 	Kikongo 	kg 	kon 	kon 	kon + 3 	macrolanguage
@@ -200,8 +200,8 @@ class LanguagesTableSeeder extends Seeder
             Xhosa 	isiXhosa 	xh 	xho 	xho 	xho
             Yiddish ייִדיש yi 	yid 	yid 	yid + 2 	macrolanguage. Changed in 1989 from original ISO 639:1988, ji.[1]
             Yoruba 	Yorùbá 	yo 	yor 	yor 	yor
-            Zhuang, Chuang 	Saɯ cueŋƅ, Saw cuengh 	za 	zha 	zha 	zha + 16 	macrolanguage
-            Zulu 	isiZulu 	zu 	zul 	zul 	zul 	 */
+            Zhuang, Chuang 	Saɯ cueŋƅ, Saw cuengh 	za 	zha 	zha 	zha + 16 	macrolanguage*/
+            ['iso_name' => 'Zulu', 'native_name' => 'isiZulu', 'code' => 'zu'],
         ];
 
         $index = 1;
