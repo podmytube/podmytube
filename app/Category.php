@@ -44,6 +44,13 @@ class Category extends Model
             ->first();
     }
 
+    public static function bySlug(string $slug): ?Category
+    {
+        return self::where('slug', $slug)
+            ->with('children')
+            ->first();
+    }
+
     /**
      * This function will return the whole list of categories (with children).
      *
@@ -69,21 +76,16 @@ class Category extends Model
         return $this->parent->name;
     }
 
-    public function categoryFeedValue()
+    public function feedValue()
     {
-        return $this->feedValue($this->name());
+        return htmlentities($this->name());
     }
 
-    public function parentCategoryFeedValue()
+    public function parentFeedValue()
     {
         if ($this->parentName()) {
-            return $this->feedValue($this->parentName());
+            return htmlentities($this->parentName());
         }
         return null;
-    }
-
-    protected function feedValue(string $text)
-    {
-        return htmlentities(trans('categories.' . $text));
     }
 }

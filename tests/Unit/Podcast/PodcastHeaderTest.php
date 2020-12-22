@@ -5,7 +5,6 @@ namespace Tests\Unit\Podcast;
 use App\Thumb;
 use App\Channel;
 use App\Podcast\PodcastHeader;
-
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -108,9 +107,9 @@ class PodcastHeaderTest extends TestCase
         $this->assertStringContainsString('</itunes:owner>', $renderedResult);
         $this->assertStringContainsString('<itunes:explicit>', $renderedResult);
         $this->assertStringContainsString(
-            "<itunes:category text=\"" .
-                $this->channel->category->categoryFeedValue() .
-                "\" />",
+            '<itunes:category text="' .
+                $this->channel->category->feedValue() .
+                '" />',
             $renderedResult
         );
         $this->assertStringContainsString(
@@ -189,9 +188,9 @@ class PodcastHeaderTest extends TestCase
         $this->assertStringContainsString('</itunes:owner>', $renderedResult);
         $this->assertStringContainsString('<itunes:explicit>', $renderedResult);
         $this->assertStringContainsString(
-            "<itunes:category text=\"" .
-                $this->channel->category->categoryFeedValue() .
-                "\" />",
+            '<itunes:category text="' .
+                $this->channel->category->feedValue() .
+                '" />',
             $renderedResult
         );
         $this->assertStringContainsString(

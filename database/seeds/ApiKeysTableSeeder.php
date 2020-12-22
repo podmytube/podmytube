@@ -3,6 +3,7 @@
 use App\ApiKey;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class ApiKeysTableSeeder extends Seeder
 {

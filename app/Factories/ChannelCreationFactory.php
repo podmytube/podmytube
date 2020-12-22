@@ -2,6 +2,7 @@
 
 namespace App\Factories;
 
+use App\Category;
 use App\Channel;
 use App\Events\ChannelRegistered;
 use App\Exceptions\ChannelAlreadyRegisteredException;
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 class ChannelCreationFactory
 {
     public const DEFAULT_PLAN_SLUG = 'forever_free';
+    public const DEFAULT_CATEGORY_SLUG = 'society-culture';
 
     /** @var \App\Channel $channel */
     protected $channel;
@@ -46,6 +48,7 @@ class ChannelCreationFactory
             throw new YoutubeChannelIdDoesNotExistException("This channel id {$this->channel_id} does not exists on youtube.");
         }
 
+        /** check if channel has already been registered */
         $channelExist = Channel::byChannelId($this->channel_id);
         if ($channelExist !== null) {
             throw new ChannelAlreadyRegisteredException("The channel {{$channelExist->channel_name}} with id {{$this->channel_id}} is already registered.");
@@ -57,6 +60,7 @@ class ChannelCreationFactory
                 'user_id' => $this->user->id(),
                 'channel_id' => $this->channel_id,
                 'channel_name' => $youtubeChannel->name(),
+                'category_id' => Category::bySlug(self::DEFAULT_CATEGORY_SLUG)->id,
             ]);
 
             /** Creating subscription for channel */

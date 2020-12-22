@@ -51,7 +51,7 @@
 		<div class="col-4">
 			<p><b>{{ __('messages.channel_category_label') }}</b></p>
 			@if ($channel->category)
-			{{ __("categories.".$channel->category->name) }}
+			{{ $channel->category->name }}
 			@else
 			{{ __('messages.no_category_defined_label') }}
 			@endif

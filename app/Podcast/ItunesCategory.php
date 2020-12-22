@@ -12,8 +12,8 @@ class ItunesCategory implements IsRenderableInterface
     private function __construct(Category $category = null)
     {
         if ($category) {
-            $this->name = $category->categoryFeedValue();
-            $this->parentName = $category->parentCategoryFeedValue();
+            $this->name = $category->feedValue();
+            $this->parentName = $category->parentFeedValue();
         }
     }
 
