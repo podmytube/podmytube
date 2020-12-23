@@ -4,6 +4,7 @@
 
 use App\Category;
 use App\Channel;
+use App\Language;
 use Faker\Generator as Faker;
 
 $factory->define(Channel::class, function (Faker $faker, $attributes) {
@@ -28,7 +29,10 @@ EOD,
         'category_id' => $attributes['category_id'] ?? function () {
             return factory(Category::class)->create()->id;
         },
-        'lang' => $attributes['lang'] ?? $faker->randomElement(['FR', 'EN']),
+        'lang' => $attributes['lang'] ?? 'EN',
+        'language_id' => $attributes['language_id'] ?? function () {
+            return factory(Language::class)->create()->id;
+        },
         'explicit' => $faker->boolean(),
         'channel_createdAt' => $attributes['created_at'] ?? $faker->dateTimeInInterval('now', '-5 days'),
         'channel_updatedAt' => $faker->dateTimeInInterval('now', '-3 days'),

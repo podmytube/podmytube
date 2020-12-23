@@ -61,7 +61,7 @@ class PodcastHeaderTest extends TestCase
             $renderedResult
         );
         $this->assertStringContainsString(
-            '<language>' . $this->channel->lang . '</language>',
+            '<language>' . $this->channel->language->code . '</language>',
             $renderedResult
         );
 
@@ -144,7 +144,7 @@ class PodcastHeaderTest extends TestCase
             $renderedResult
         );
         $this->assertStringContainsString(
-            '<language>' . $this->channel->lang . '</language>',
+            '<language>' . $this->channel->language->code . '</language>',
             $renderedResult
         );
 

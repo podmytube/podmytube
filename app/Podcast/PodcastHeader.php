@@ -32,7 +32,7 @@ class PodcastHeader
     {
         $this->link = $channel->link ?? null;
         $this->title = $channel->title();
-        $this->language = $channel->lang ?? null;
+        $this->language = $channel->language->code ?? null;
         $this->copyright = $channel->podcast_copyright ?? null;
         $this->description = $channel->description ?? null;
 
