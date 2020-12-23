@@ -128,15 +128,15 @@ class LanguagesTableSeeder extends Seeder
             ['iso_name' => 'Nauru', 	'native_name' => 'Dorerin Naoero', 'code' => 'na'],
             ['iso_name' => 'Navajo, Navaho' , 'native_name'=> 'Diné bizaad', 'code' =>'nv'],
             ['iso_name' => 'North Ndebele' ,'native_name'=>	'isiNdebele','code'=> 'nd'],
-            ['iso_name' => 'Nepali' ,'native_name'=>	'नेपाली 	ne 	nep 	nep 	nep + 2 	macrolanguage
-            ['iso_name' => 'Ndonga' ,'native_name'=>	'Owambo 	ng 	ndo 	ndo 	ndo
-            ['iso_name' => 'Norwegian Bokmål' ,'native_name'=>	'Norsk Bokmål 	nb 	nob 	nob 	nob 	Covered by macrolanguage [no/nor]
-            ['iso_name' => 'Norwegian Nynorsk' ,'native_name'=>	'Norsk Nynorsk 	nn 	nno 	nno 	nno 	Covered by macrolanguage [no/nor]
-            ['iso_name' => 'Norwegian' ,'native_name'=>	'Norsk 	no 	nor 	nor 	nor + 2 	macrolanguage, Bokmål is [nb/nob], Nynorsk is [nn/nno]
-            ['iso_name' => 'Sichuan Yi, Nuosu' ,'native_name'=>	'ꆈꌠ꒿ Nuosuhxop 	ii 	iii 	iii 	iii 	Standard form of Yi languages
-            ['iso_name' => 'South Ndebele' ,'native_name'=>	'isiNdebele 	nr 	nbl 	nbl 	nbl 	also known as Southern Ndebele
-            ['iso_name' => 'Occitan' ,'native_name'=>	'occitan, lenga d'òc 	oc 	oci 	oci 	oci
-            ['iso_name' => 'Ojibwa' ,'native_name'=>	'ᐊᓂᔑᓈᐯᒧᐎᓐ 	oj 	oji 	oji 	oji + 7 	macrolanguage, also known as Ojibwe
+            ['iso_name' => 'Nepali' ,'native_name'=>	'नेपाली','code'=> 'ne'],
+            ['iso_name' => 'Ndonga' ,'native_name'=>	'Owambo','code'=> 'ng'],
+            ['iso_name' => 'Norwegian Bokmål' ,'native_name'=>	'Norsk Bokmål','code'=> 'nb'],
+            ['iso_name' => 'Norwegian Nynorsk' ,'native_name'=>	'Norsk Nynorsk','code'=> 'nn'],
+            ['iso_name' => 'Norwegian' ,'native_name'=>	'Norsk','code'=> 'no'],
+            ['iso_name' => 'Sichuan Yi, Nuosu' ,'native_name'=>	'ꆈꌠ꒿ Nuosuhxop','code'=> 'ii'],
+            ['iso_name' => 'South Ndebele' ,'native_name'=>	'isiNdebele','code'=> 'nr'],
+            ['iso_name' => 'Occitan' ,'native_name'=>	"occitan, lenga d'òc",'code'=> 'oc'],
+            ['iso_name' => 'Ojibwa' ,'native_name'=>	'ᐊᓂᔑᓈᐯᒧᐎᓐ','code'=> 'oj'],
             ['iso_name' => 'Church Slavic, Old Slavonic, Church Slavonic, Old Bulgarian, Old Church Slavonic' ,'native_name'=>	'ѩзыкъ словѣньскъ 	cu 	chu 	chu 	chu 	ancient, in use by Orthodox Church
             ['iso_name' => 'Oromo' ,'native_name'=>	'Afaan Oromoo 	om 	orm 	orm 	orm + 4 	macrolanguage
             ['iso_name' => 'Oriya' ,'native_name'=>	'ଓଡ଼ିଆ 	or 	ori 	ori 	ori + 2 	macrolanguage, also known as Odia
@@ -181,26 +181,26 @@ class LanguagesTableSeeder extends Seeder
             ['iso_name' => 'Tagalog' ,'native_name'=>	'Wikang Tagalog 	tl 	tgl 	tgl 	tgl 	Note: Filipino (Pilipino) has the code [fil]
             ['iso_name' => 'Tswana' ,'native_name'=>	'Setswana 	tn 	tsn 	tsn 	tsn
             ['iso_name' => 'Tonga (Tonga Islands)' ,'native_name'=>	'Faka Tonga 	to 	ton 	ton 	ton 	also known as Tongan
-            ['iso_name' => 'Turkish 	Türkçe 	tr 	tur 	tur 	tur
-            ['iso_name' => 'Tsonga 	Xitsonga 	ts 	tso 	tso 	tso
-            ['iso_name' => 'Tatar 	татар теле, tatar tele 	tt 	tat 	tat 	tat
-            ['iso_name' => 'Twi 	Twi 	tw 	twi 	twi 	twi 	Covered by macrolanguage [ak/aka]
-            ['iso_name' => 'Tahitian 	Reo Tahiti 	ty 	tah 	tah 	tah 	One of the Reo Mā`ohi (languages of French Polynesia)
-            ['iso_name' => 'Uighur, Uyghur 	ئۇيغۇرچە‎, Uyghurche 	ug 	uig 	uig 	uig
-            ['iso_name' => 'Ukrainian 	Українська 	uk 	ukr 	ukr 	ukr
-            ['iso_name' => 'Urdu اردو ur 	urd 	urd 	urd
-            ['iso_name' => 'Oʻzbek, Ўзбек, أۇزبېك‎ 	uz 	uzb 	uzb 	uzb + 2 	macrolanguage
-            ['iso_name' => 'Venda 	Tshivenḓa 	ve 	ven 	ven 	ven
-            ['iso_name' => 'Vietnamese 	Tiếng Việt 	vi 	vie 	vie 	vie
-            ['iso_name' => 'Volapük 	Volapük 	vo 	vol 	vol 	vol 	constructed
-            ['iso_name' => 'Walloon 	Walon 	wa 	wln 	wln 	wln
-            ['iso_name' => 'Welsh 	Cymraeg 	cy 	cym 	wel 	cym
-            ['iso_name' => 'Wolof 	Wollof 	wo 	wol 	wol 	wol
-            ['iso_name' => 'Western Frisian 	Frysk 	fy 	fry 	fry 	fry 	also known as Frisian
-            ['iso_name' => 'Xhosa 	isiXhosa 	xh 	xho 	xho 	xho
-            ['iso_name' => 'Yiddish ייִדיש yi 	yid 	yid 	yid + 2 	macrolanguage. Changed in 1989 from original ISO 639:1988, ji.[1]
-            ['iso_name' => 'Yoruba 	Yorùbá 	yo 	yor 	yor 	yor
-            ['iso_name' => 'Zhuang, Chuang 	Saɯ cueŋƅ, Saw cuengh 	za 	zha 	zha 	zha + 16 	macrolanguage*/
+            ['iso_name' => 'Turkish' ,'native_name'=>	'Türkçe 	tr 	tur 	tur 	tur
+            ['iso_name' => 'Tsonga' ,'native_name'=>	'Xitsonga 	ts 	tso 	tso 	tso
+            ['iso_name' => 'Tatar' ,'native_name'=>	'татар теле, tatar tele 	tt 	tat 	tat 	tat
+            ['iso_name' => 'Twi' ,'native_name'=>	'Twi 	tw 	twi 	twi 	twi 	Covered by macrolanguage [ak/aka]
+            ['iso_name' => 'Tahitian' ,'native_name'=>	'Reo Tahiti 	ty 	tah 	tah 	tah 	One of the Reo Mā`ohi (languages of French Polynesia)
+            ['iso_name' => 'Uighur, Uyghur' ,'native_name'=>	'ئۇيغۇرچە‎, Uyghurche 	ug 	uig 	uig 	uig
+            ['iso_name' => 'Ukrainian' ,'native_name'=>	'Українська 	uk 	ukr 	ukr 	ukr
+            ['iso_name' => 'Urdu' ,'native_name'=>	'اردو ur 	urd 	urd 	urd
+            ['iso_name' => 'Uzbek' ,'native_name'=>	'Oʻzbek, Ўзбек, أۇزبېك‎ 	uz 	uzb 	uzb 	uzb + 2 	macrolanguage
+            ['iso_name' => 'Venda' ,'native_name'=>	'Tshivenḓa 	ve 	ven 	ven 	ven
+            ['iso_name' => 'Vietnamese' ,'native_name'=>	'Tiếng Việt 	vi 	vie 	vie 	vie
+            ['iso_name' => 'Volapük' ,'native_name'=>	'Volapük 	vo 	vol 	vol 	vol 	constructed
+            ['iso_name' => 'Walloon' ,'native_name'=>	'Walon 	wa 	wln 	wln 	wln
+            ['iso_name' => 'Welsh' ,'native_name'=>	'Cymraeg 	cy 	cym 	wel 	cym
+            ['iso_name' => 'Wolof' ,'native_name'=>	'Wollof 	wo 	wol 	wol 	wol
+            ['iso_name' => 'Western' ,'native_name'=>	'Frisian 	Frysk 	fy 	fry 	fry 	fry 	also known as Frisian
+            ['iso_name' => 'Xhosa' ,'native_name'=>	'isiXhosa 	xh 	xho 	xho 	xho
+            ['iso_name' => 'Yiddish' ,'native_name'=>	'ייִדיש yi 	yid 	yid 	yid + 2 	macrolanguage. Changed in 1989 from original ISO 639:1988, ji.[1]
+            ['iso_name' => 'Yoruba' ,'native_name'=>	'Yorùbá 	yo 	yor 	yor 	yor
+            ['iso_name' => 'Zhuang, Chuang' ,'native_name'=>	'Saɯ cueŋƅ, Saw cuengh 	za 	zha 	zha 	zha + 16 	macrolanguage*/
             ['iso_name' => 'Zulu', 'native_name' => 'isiZulu', 'code' => 'zu'],
         ];
 
