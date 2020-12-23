@@ -126,81 +126,81 @@ class LanguagesTableSeeder extends Seeder
             ['iso_name' => 'Marshallese', 	'native_name' => 'Kajin M̧ajeļ', 'code' => 'mh'],
             ['iso_name' => 'Mongolian', 	'native_name' => 'Монгол хэл', 'code' => 'mn'],
             ['iso_name' => 'Nauru', 	'native_name' => 'Dorerin Naoero', 'code' => 'na'],
-            ['iso_name' => 'Navajo, Navaho' , 'native_name'=> 'Diné bizaad', 'code' =>'nv'],
-            ['iso_name' => 'North Ndebele' ,'native_name'=>	'isiNdebele','code'=> 'nd'],
-            ['iso_name' => 'Nepali' ,'native_name'=>	'नेपाली','code'=> 'ne'],
-            ['iso_name' => 'Ndonga' ,'native_name'=>	'Owambo','code'=> 'ng'],
-            ['iso_name' => 'Norwegian Bokmål' ,'native_name'=>	'Norsk Bokmål','code'=> 'nb'],
-            ['iso_name' => 'Norwegian Nynorsk' ,'native_name'=>	'Norsk Nynorsk','code'=> 'nn'],
-            ['iso_name' => 'Norwegian' ,'native_name'=>	'Norsk','code'=> 'no'],
-            ['iso_name' => 'Sichuan Yi, Nuosu' ,'native_name'=>	'ꆈꌠ꒿ Nuosuhxop','code'=> 'ii'],
-            ['iso_name' => 'South Ndebele' ,'native_name'=>	'isiNdebele','code'=> 'nr'],
-            ['iso_name' => 'Occitan' ,'native_name'=>	"occitan, lenga d'òc",'code'=> 'oc'],
-            ['iso_name' => 'Ojibwa' ,'native_name'=>	'ᐊᓂᔑᓈᐯᒧᐎᓐ','code'=> 'oj'],
-            ['iso_name' => 'Church Slavic, Old Slavonic, Church Slavonic, Old Bulgarian, Old Church Slavonic' ,'native_name'=>	'ѩзыкъ словѣньскъ','code'=> 'cu 	chu 	chu 	chu 	ancient, in use by Orthodox Church
-            ['iso_name' => 'Oromo' ,'native_name'=>	'Afaan Oromoo','code'=> 'om 	orm 	orm 	orm + 4 	macrolanguage
-            ['iso_name' => 'Oriya' ,'native_name'=>	'ଓଡ଼ିଆ 	or 	ori 	ori 	ori + 2 	macrolanguage, also known as Odia
-            ['iso_name' => 'Ossetian, Ossetic' ,'native_name'=>	'ирон æвзаг 	os 	oss 	oss 	oss
-            ['iso_name' => 'Punjabi, Panjabi' ,'native_name'=>	'ਪੰਜਾਬੀ, پنجابی‎ 	pa 	pan 	pan 	pan
-            ['iso_name' => 'Pali' ,'native_name'=>	'पालि, पाळि 	pi 	pli 	pli 	pli 	ancient, also known as Pāli
-            ['iso_name' => 'Persian' ,'native_name'=>	'فارسی fa 	fas 	per 	fas + 2 	macrolanguage, also known as Farsi
-            ['iso_name' => 'Polish' ,'native_name'=>	'język polski, polszczyzna 	pl 	pol 	pol 	pol
-            ['iso_name' => 'Pashto, Pushto' ,'native_name'=>	'پښتو ps 	pus 	pus 	pus + 3 	macrolanguage
-            ['iso_name' => 'Portuguese' ,'native_name'=>	'Português 	pt 	por 	por 	por
-            ['iso_name' => 'Quechua' ,'native_name'=>	'Runa Simi, Kichwa 	qu 	que 	que 	que + 43 	macrolanguage
-            ['iso_name' => 'Romansh' ,'native_name'=>	'Rumantsch Grischun 	rm 	roh 	roh 	roh
-            ['iso_name' => 'Rundi' ,'native_name'=>	'Ikirundi 	rn 	run 	run 	run 	also known as Kirundi
-            ['iso_name' => 'Romanian, Moldavian, Moldovan' ,'native_name'=>	'Română 	ro 	ron 	rum 	ron 	The identifiers mo and mol are deprecated, leaving ro and ron (639-2/T) and rum (639-2/B) the current language identifiers to be used for the variant of the Romanian language also known as Moldavian and Moldovan in English and moldave in French. The identifiers mo and mol will not be assigned to different items, and recordings using these identifiers will not be invalid.
-            ['iso_name' => 'Russian' ,'native_name'=>	'русский 	ru 	rus 	rus 	rus
-            ['iso_name' => 'Sanskrit' ,'native_name'=>	'संस्कृतम् 	sa 	san 	san 	san 	ancient, still spoken, also known as Saṃskṛta
-            ['iso_name' => 'Sardinian' ,'native_name'=>	'sardu 	sc 	srd 	srd 	srd + 4 	macrolanguage
-            ['iso_name' => 'Sindhi' ,'native_name'=>	'सिन्धी, سنڌي، سندھی‎ 	sd 	snd 	snd 	snd
-            ['iso_name' => 'Northern Sami' ,'native_name'=>	'Davvisámegiella 	se 	sme 	sme 	sme
-            ['iso_name' => 'Samoan' ,'native_name'=>	"gagana fa'a Samoa" 	sm 	smo 	smo 	smo
-            ['iso_name' => 'Sango ,'native_name'=>	'yângâ tî sängö 	sg 	sag 	sag 	sag
-            ['iso_name' => 'Serbian' ,'native_name'=>	'српски језик 	sr 	srp 	srp 	srp 	The ISO 639-2/T code srp deprecated the ISO 639-2/B code scc[2]
-            ['iso_name' => 'Gaelic, Scottish Gaelic' ,'native_name'=>	'Gàidhlig 	gd 	gla 	gla 	gla
-            ['iso_name' => 'Shona' ,'native_name'=>	'chiShona 	sn 	sna 	sna 	sna
-            ['iso_name' => 'Sinhala, Sinhalese' ,'native_name'=>	'සිංහල 	si 	sin 	sin 	sin
-            ['iso_name' => 'Slovak' ,'native_name'=>	'Slovenčina, Slovenský' ,'native_name'=>	'jazyk 	sk 	slk 	slo 	slk
-            ['iso_name' => 'Slovenian' ,'native_name'=>	'Slovenski jezik, Slovenščina 	sl 	slv 	slv 	slv 	also known as Slovene
-            ['iso_name' => 'Somali' ,'native_name'=>	'Soomaaliga, af Soomaali 	so 	som 	som 	som
-            ['iso_name' => 'Southern Sotho' ,'native_name'=>	'Sesotho 	st 	sot 	sot 	sot
-            ['iso_name' => 'Spanish, Castilian' ,'native_name'=>	'Español 	es 	spa 	spa 	spa
-            ['iso_name' => 'Sundanese' ,'native_name'=>	'Basa Sunda 	su 	sun 	sun 	sun
-            ['iso_name' => 'Swahili' ,'native_name'=>	'Kiswahili 	sw 	swa 	swa 	swa + 2 	macrolanguage
-            ['iso_name' => 'Swati' ,'native_name'=>	'SiSwati 	ss 	ssw 	ssw 	ssw 	also known as Swazi
-            ['iso_name' => 'Swedish' ,'native_name'=>	'Svenska 	sv 	swe 	swe 	swe
-            ['iso_name' => 'Tamil' ,'native_name'=>	'தமிழ் 	ta 	tam 	tam 	tam
-            ['iso_name' => 'Telugu' ,'native_name'=>	'తెలుగు 	te 	tel 	tel 	tel
-            ['iso_name' => 'Tajik' ,'native_name'=>	'тоҷикӣ, toçikī, تاجیکی‎ 	tg 	tgk 	tgk 	tgk
-            ['iso_name' => 'Thai' ,'native_name'=>	'ไทย 	th 	tha 	tha 	tha
-            ['iso_name' => 'Tigrinya' ,'native_name'=>	'ትግርኛ 	ti 	tir 	tir 	tir
-            ['iso_name' => 'Tibetan' ,'native_name'=>	'བོད་ཡིག 	bo 	bod 	tib 	bod 	also known as Standard Tibetan
-            ['iso_name' => 'Turkmen' ,'native_name'=>	'Türkmen, Түркмен 	tk 	tuk 	tuk 	tuk
-            ['iso_name' => 'Tagalog' ,'native_name'=>	'Wikang Tagalog 	tl 	tgl 	tgl 	tgl 	Note: Filipino (Pilipino) has the code [fil]
-            ['iso_name' => 'Tswana' ,'native_name'=>	'Setswana 	tn 	tsn 	tsn 	tsn
-            ['iso_name' => 'Tonga (Tonga Islands)' ,'native_name'=>	'Faka Tonga 	to 	ton 	ton 	ton 	also known as Tongan
-            ['iso_name' => 'Turkish' ,'native_name'=>	'Türkçe 	tr 	tur 	tur 	tur
-            ['iso_name' => 'Tsonga' ,'native_name'=>	'Xitsonga 	ts 	tso 	tso 	tso
-            ['iso_name' => 'Tatar' ,'native_name'=>	'татар теле, tatar tele 	tt 	tat 	tat 	tat
-            ['iso_name' => 'Twi' ,'native_name'=>	'Twi 	tw 	twi 	twi 	twi 	Covered by macrolanguage [ak/aka]
-            ['iso_name' => 'Tahitian' ,'native_name'=>	'Reo Tahiti 	ty 	tah 	tah 	tah 	One of the Reo Mā`ohi (languages of French Polynesia)
-            ['iso_name' => 'Uighur, Uyghur' ,'native_name'=>	'ئۇيغۇرچە‎, Uyghurche 	ug 	uig 	uig 	uig
-            ['iso_name' => 'Ukrainian' ,'native_name'=>	'Українська 	uk 	ukr 	ukr 	ukr
-            ['iso_name' => 'Urdu' ,'native_name'=>	'اردو ur 	urd 	urd 	urd
-            ['iso_name' => 'Uzbek' ,'native_name'=>	'Oʻzbek, Ўзбек, أۇزبېك‎ 	uz 	uzb 	uzb 	uzb + 2 	macrolanguage
-            ['iso_name' => 'Venda' ,'native_name'=>	'Tshivenḓa 	ve 	ven 	ven 	ven
-            ['iso_name' => 'Vietnamese' ,'native_name'=>	'Tiếng Việt 	vi 	vie 	vie 	vie
-            ['iso_name' => 'Volapük' ,'native_name'=>	'Volapük 	vo 	vol 	vol 	vol 	constructed
-            ['iso_name' => 'Walloon' ,'native_name'=>	'Walon 	wa 	wln 	wln 	wln
-            ['iso_name' => 'Welsh' ,'native_name'=>	'Cymraeg 	cy 	cym 	wel 	cym
-            ['iso_name' => 'Wolof' ,'native_name'=>	'Wollof 	wo 	wol 	wol 	wol
-            ['iso_name' => 'Western' ,'native_name'=>	'Frisian 	Frysk 	fy 	fry 	fry 	fry 	also known as Frisian
-            ['iso_name' => 'Xhosa' ,'native_name'=>	'isiXhosa 	xh 	xho 	xho 	xho
-            ['iso_name' => 'Yiddish' ,'native_name'=>	'ייִדיש yi 	yid 	yid 	yid + 2 	macrolanguage. Changed in 1989 from original ISO 639:1988, ji.[1]
-            ['iso_name' => 'Yoruba' ,'native_name'=>	'Yorùbá 	yo 	yor 	yor 	yor
-            ['iso_name' => 'Zhuang, Chuang' ,'native_name'=>	'Saɯ cueŋƅ, Saw cuengh 	za 	zha 	zha 	zha + 16 	macrolanguage*/
+            ['iso_name' => 'Navajo, Navaho', 'native_name' => 'Diné bizaad', 'code' => 'nv'],
+            ['iso_name' => 'North Ndebele', 'native_name' => 'isiNdebele', 'code' => 'nd'],
+            ['iso_name' => 'Nepali', 'native_name' => 'नेपाली', 'code' => 'ne'],
+            ['iso_name' => 'Ndonga', 'native_name' => 'Owambo', 'code' => 'ng'],
+            ['iso_name' => 'Norwegian Bokmål', 'native_name' => 'Norsk Bokmål', 'code' => 'nb'],
+            ['iso_name' => 'Norwegian Nynorsk', 'native_name' => 'Norsk Nynorsk', 'code' => 'nn'],
+            ['iso_name' => 'Norwegian', 'native_name' => 'Norsk', 'code' => 'no'],
+            ['iso_name' => 'Sichuan Yi, Nuosu', 'native_name' => 'ꆈꌠ꒿ Nuosuhxop', 'code' => 'ii'],
+            ['iso_name' => 'South Ndebele', 'native_name' => 'isiNdebele', 'code' => 'nr'],
+            ['iso_name' => 'Occitan', 'native_name' => "occitan, lenga d'òc", 'code' => 'oc'],
+            ['iso_name' => 'Ojibwa', 'native_name' => 'ᐊᓂᔑᓈᐯᒧᐎᓐ', 'code' => 'oj'],
+            ['iso_name' => 'Church Slavic, Old Slavonic, Church Slavonic, Old Bulgarian, Old Church Slavonic', 'native_name' => 'ѩзыкъ словѣньскъ', 'code' => 'cu'],
+            ['iso_name' => 'Oromo', 'native_name' => 'Afaan Oromoo', 'code' => 'om'],
+            ['iso_name' => 'Oriya', 'native_name' => 'ଓଡ଼ିଆ', 'code' => 'or'],
+            ['iso_name' => 'Ossetian, Ossetic', 'native_name' => 'ирон æвзаг', 'code' => 'os'],
+            ['iso_name' => 'Punjabi, Panjabi', 'native_name' => 'ਪੰਜਾਬੀ, پنجابی‎', 'code' => 'pa'],
+            ['iso_name' => 'Pali', 'native_name' => 'पालि, पाळि', 'code' => 'pi'],
+            ['iso_name' => 'Persian', 'native_name' => 'فارسی', 'code' => 'fa'],
+            ['iso_name' => 'Polish', 'native_name' => 'język polski, polszczyzna', 'code' => 'pl'],
+            ['iso_name' => 'Pashto, Pushto', 'native_name' => 'پښتو', 'code' => 'ps'],
+            ['iso_name' => 'Portuguese', 'native_name' => 'Português', 'code' => 'pt'],
+            ['iso_name' => 'Quechua', 'native_name' => 'Runa Simi, Kichwa', 'code' => 'qu'],
+            ['iso_name' => 'Romansh', 'native_name' => 'Rumantsch Grischun', 'code' => 'rm'],
+            ['iso_name' => 'Rundi', 'native_name' => 'Ikirundi', 'code' => 'rn'],
+            ['iso_name' => 'Romanian, Moldavian, Moldovan', 'native_name' => 'Română', 'code' => 'ro'],
+            ['iso_name' => 'Russian', 'native_name' => 'русский', 'code' => 'ru'],
+            ['iso_name' => 'Sanskrit', 'native_name' => 'संस्कृतम्', 'code' => 'sa'],
+            ['iso_name' => 'Sardinian', 'native_name' => 'sardu', 'code' => 'sc'],
+            ['iso_name' => 'Sindhi', 'native_name' => 'सिन्धी, سنڌي، سندھی‎', 'code' => 'sd'],
+            ['iso_name' => 'Northern Sami', 'native_name' => 'Davvisámegiella', 'code' => 'se'],
+            ['iso_name' => 'Samoan', 'native_name' => "gagana fa'a Samoa", 'code' => 'sm'],
+            ['iso_name' => 'Sango', 'native_name' => 'yângâ tî sängö', 'code' => 'sg'],
+            ['iso_name' => 'Serbian', 'native_name' => 'српски језик', 'code' => 'sr'],
+            ['iso_name' => 'Gaelic, Scottish Gaelic', 'native_name' => 'Gàidhlig', 'code' => 'gd'],
+            ['iso_name' => 'Shona', 'native_name' => 'chiShona', 'code' => 'sn'],
+            ['iso_name' => 'Sinhala, Sinhalese', 'native_name' => 'සිංහල', 'code' => 'si'],
+            ['iso_name' => 'Slovak', 'native_name' => 'Slovenčina, Slovenský', 'native_name' => 'jazyk', 'code' => 'sk'],
+            ['iso_name' => 'Slovenian', 'native_name' => 'Slovenski jezik, Slovenščina', 'code' => 'sl'],
+            ['iso_name' => 'Somali', 'native_name' => 'Soomaaliga, af Soomaali', 'code' => 'so'],
+            ['iso_name' => 'Southern Sotho', 'native_name' => 'Sesotho', 'code' => 'st'],
+            ['iso_name' => 'Spanish, Castilian', 'native_name' => 'Español', 'code' => 'es'],
+            ['iso_name' => 'Sundanese', 'native_name' => 'Basa Sunda', 'code' => 'su'],
+            ['iso_name' => 'Swahili', 'native_name' => 'Kiswahili', 'code' => 'sw'],
+            ['iso_name' => 'Swati', 'native_name' => 'SiSwati', 'code' => 'ss'],
+            ['iso_name' => 'Swedish', 'native_name' => 'Svenska', 'code' => 'sv'],
+            ['iso_name' => 'Tamil', 'native_name' => 'தமிழ்', 'code' => 'ta'],
+            ['iso_name' => 'Telugu', 'native_name' => 'తెలుగు', 'code' => 'te'],
+            ['iso_name' => 'Tajik', 'native_name' => 'тоҷикӣ, toçikī, تاجیکی‎', 'code' => 'tg'],
+            ['iso_name' => 'Thai', 'native_name' => 'ไทย', 'code' => 'th'],
+            ['iso_name' => 'Tigrinya', 'native_name' => 'ትግርኛ', 'code' => 'ti'],
+            ['iso_name' => 'Tibetan', 'native_name' => 'བོད་ཡིག', 'code' => 'bo '],
+            ['iso_name' => 'Turkmen', 'native_name' => 'Türkmen, Түркмен', 'code' => 'tk '],
+            ['iso_name' => 'Tagalog', 'native_name' => 'Wikang Tagalog', 'code' => 'tl'],
+            ['iso_name' => 'Tswana', 'native_name' => 'Setswana', 'code' => 'tn'],
+            ['iso_name' => 'Tonga (Tonga Islands)', 'native_name' => 'Faka Tonga', 'code' => 'to'],
+            ['iso_name' => 'Turkish', 'native_name' => 'Türkçe', 'code' => 'tr'],
+            ['iso_name' => 'Tsonga', 'native_name' => 'Xitsonga', 'code' => 'ts'],
+            ['iso_name' => 'Tatar', 'native_name' => 'татар теле, tatar tele', 'code' => 'tt'],
+            ['iso_name' => 'Twi', 'native_name' => 'Twi', 'code' => 'tw'],
+            ['iso_name' => 'Tahitian', 'native_name' => 'Reo Tahiti', 'code' => 'ty'],
+            ['iso_name' => 'Uighur, Uyghur', 'native_name' => 'ئۇيغۇرچە‎, Uyghurche', 'code' => 'ug'],
+            ['iso_name' => 'Ukrainian', 'native_name' => 'Українська', 'code' => 'uk'],
+            ['iso_name' => 'Urdu', 'native_name' => 'اردو', 'code' => 'ur'],
+            ['iso_name' => 'Uzbek', 'native_name' => 'Oʻzbek, Ўзбек, أۇزبېك‎', 'code' => 'uz'],
+            ['iso_name' => 'Venda', 'native_name' => 'Tshivenḓa', 'code' => 've'],
+            ['iso_name' => 'Vietnamese', 'native_name' => 'Tiếng Việt', 'code' => 'vi'],
+            ['iso_name' => 'Volapük', 'native_name' => 'Volapük', 'code' => 'vo'],
+            ['iso_name' => 'Walloon', 'native_name' => 'Walon', 'code' => 'wa'],
+            ['iso_name' => 'Welsh', 'native_name' => 'Cymraeg', 'code' => 'cy'],
+            ['iso_name' => 'Wolof', 'native_name' => 'Wollof', 'code' => 'wo'],
+            ['iso_name' => 'Western Frisian', 'native_name' => 'Frysk', 'code' => 'fy'],
+            ['iso_name' => 'Xhosa', 'native_name' => 'isiXhosa', 'code' => 'xh'],
+            ['iso_name' => 'Yiddish', 'native_name' => 'ייִדיש', 'code' => 'yi'],
+            ['iso_name' => 'Yoruba', 'native_name' => 'Yorùbá', 'code' => 'yo'],
+            ['iso_name' => 'Zhuang, Chuang', 'native_name' => 'Saɯ cueŋƅ, Saw cuengh', 'code' => 'za'],
             ['iso_name' => 'Zulu', 'native_name' => 'isiZulu', 'code' => 'zu'],
         ];
 
