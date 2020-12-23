@@ -107,17 +107,17 @@ class LanguagesTableSeeder extends Seeder
             ['iso_name' => 'Kurdish', 'native_name' => 'Kurdî, کوردی‎', 'code' => 'ku'],
             ['iso_name' => 'Kuanyama, Kwanyama', 'native_name' => 'Kuanyama', 'code' => 'kj'],
             ['iso_name' => 'Latin',  'native_name' => 'latine, lingua latina', 'code' => 'la'],
-            /*Luxembourgish, Letzeburgesch 	Lëtzebuergesch 	lb 	ltz 	ltz 	ltz
-            Ganda 	Luganda 	lg 	lug 	lug 	lug
-            Limburgan, Limburger, Limburgish 	Limburgs 	li 	lim 	lim 	lim
-            Lingala 	Lingála 	ln 	lin 	lin 	lin
-            Lao 	ພາສາລາວ 	lo 	lao 	lao 	lao
-            Lithuanian 	lietuvių kalba 	lt 	lit 	lit 	lit
-            Luba-Katanga 	Kiluba 	lu 	lub 	lub 	lub 	also known as Luba-Shaba
-            Latvian 	latviešu valoda 	lv 	lav 	lav 	lav + 2 	macrolanguage
-            Manx 	Gaelg, Gailck 	gv 	glv 	glv 	glv
-            Macedonian 	македонски јазик 	mk 	mkd 	mac 	mkd
-            Malagasy 	fiteny malagasy 	mg 	mlg 	mlg 	mlg + 11 	macrolanguage
+            ['iso_name' => 'Luxembourgish, Letzeburgesch',	'native_name' => 'Lëtzebuergesch', 'code' => 'lb'],
+            ['iso_name' => 'Ganda',	'native_name' => 'Luganda', 'code' => 'lg'],
+            ['iso_name' => 'Limburgan, Limburger, Limburgish',	'native_name' => 'Limburgs', 'code' => 'li'],
+            ['iso_name' => 'Lingala',	'native_name' => 'Lingála', 'code' => 'ln'],
+            ['iso_name' => 'Lao',	'native_name' => 'ພາສາລາວ', 'code' => 'lo'],
+            ['iso_name' => 'Lithuanian',	'native_name' => 'lietuvių kalba', 'code' => 'lt'],
+            ['iso_name' => 'Luba-Katanga',	'native_name' => 'Kiluba', 'code' => 'lu'],
+            ['iso_name' => 'Latvian',	'native_name' => 'latviešu valoda', 'code' => 'lv'],
+            ['iso_name' => 'Manx',	'native_name' => 'Gaelg, Gailck', 'code' => 'gv'],
+            ['iso_name' => 'Macedonian',	'native_name' => 'македонски јазик', 'code' => 'mk'],
+            /*Malagasy 	fiteny malagasy 	mg 	mlg 	mlg 	mlg + 11 	macrolanguage
             Malay 	Bahasa Melayu, بهاس ملايو‎ 	ms 	msa 	may 	msa + 36 	macrolanguage, Standard Malay is [zsm], Indonesian is [id/ind]
             Malayalam 	മലയാളം 	ml 	mal 	mal 	mal
             Maltese 	Malti 	mt 	mlt 	mlt 	mlt
