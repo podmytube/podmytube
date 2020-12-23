@@ -116,91 +116,91 @@ class LanguagesTableSeeder extends Seeder
             ['iso_name' => 'Luba-Katanga',	'native_name' => 'Kiluba', 'code' => 'lu'],
             ['iso_name' => 'Latvian',	'native_name' => 'latviešu valoda', 'code' => 'lv'],
             ['iso_name' => 'Manx',	'native_name' => 'Gaelg, Gailck', 'code' => 'gv'],
-            ['iso_name' => 'Macedonian',	'native_name' => 'македонски јазик', 'code' => 'mk'],
-            /*Malagasy 	fiteny malagasy 	mg 	mlg 	mlg 	mlg + 11 	macrolanguage
-            Malay 	Bahasa Melayu, بهاس ملايو‎ 	ms 	msa 	may 	msa + 36 	macrolanguage, Standard Malay is [zsm], Indonesian is [id/ind]
-            Malayalam 	മലയാളം 	ml 	mal 	mal 	mal
-            Maltese 	Malti 	mt 	mlt 	mlt 	mlt
-            Maori 	te reo Māori 	mi 	mri 	mao 	mri 	also known as Māori
-            Marathi 	मराठी 	mr 	mar 	mar 	mar 	also known as Marāṭhī
-            Marshallese 	Kajin M̧ajeļ 	mh 	mah 	mah 	mah
-            Mongolian 	Монгол хэл 	mn 	mon 	mon 	mon + 2 	macrolanguage
-            Nauru 	Dorerin Naoero 	na 	nau 	nau 	nau 	also known as Nauruan
-            Navajo, Navaho 	Diné bizaad 	nv 	nav 	nav 	nav
-            North Ndebele 	isiNdebele 	nd 	nde 	nde 	nde 	also known as Northern Ndebele
-            Nepali 	नेपाली 	ne 	nep 	nep 	nep + 2 	macrolanguage
-            Ndonga 	Owambo 	ng 	ndo 	ndo 	ndo
-            Norwegian Bokmål 	Norsk Bokmål 	nb 	nob 	nob 	nob 	Covered by macrolanguage [no/nor]
-            Norwegian Nynorsk 	Norsk Nynorsk 	nn 	nno 	nno 	nno 	Covered by macrolanguage [no/nor]
-            Norwegian 	Norsk 	no 	nor 	nor 	nor + 2 	macrolanguage, Bokmål is [nb/nob], Nynorsk is [nn/nno]
-            Sichuan Yi, Nuosu 	ꆈꌠ꒿ Nuosuhxop 	ii 	iii 	iii 	iii 	Standard form of Yi languages
-            South Ndebele 	isiNdebele 	nr 	nbl 	nbl 	nbl 	also known as Southern Ndebele
-            Occitan 	occitan, lenga d'òc 	oc 	oci 	oci 	oci
-            Ojibwa 	ᐊᓂᔑᓈᐯᒧᐎᓐ 	oj 	oji 	oji 	oji + 7 	macrolanguage, also known as Ojibwe
-            Church Slavic, Old Slavonic, Church Slavonic, Old Bulgarian, Old Church Slavonic 	ѩзыкъ словѣньскъ 	cu 	chu 	chu 	chu 	ancient, in use by Orthodox Church
-            Oromo 	Afaan Oromoo 	om 	orm 	orm 	orm + 4 	macrolanguage
-            Oriya 	ଓଡ଼ିଆ 	or 	ori 	ori 	ori + 2 	macrolanguage, also known as Odia
-            Ossetian, Ossetic 	ирон æвзаг 	os 	oss 	oss 	oss
-            Punjabi, Panjabi 	ਪੰਜਾਬੀ, پنجابی‎ 	pa 	pan 	pan 	pan
-            Pali 	पालि, पाळि 	pi 	pli 	pli 	pli 	ancient, also known as Pāli
-            Persian فارسی fa 	fas 	per 	fas + 2 	macrolanguage, also known as Farsi
-            Polish 	język polski, polszczyzna 	pl 	pol 	pol 	pol
-            Pashto, Pushto پښتو ps 	pus 	pus 	pus + 3 	macrolanguage
-            Portuguese 	Português 	pt 	por 	por 	por
-            Quechua 	Runa Simi, Kichwa 	qu 	que 	que 	que + 43 	macrolanguage
-            Romansh 	Rumantsch Grischun 	rm 	roh 	roh 	roh
-            Rundi 	Ikirundi 	rn 	run 	run 	run 	also known as Kirundi
-            Romanian, Moldavian, Moldovan 	Română 	ro 	ron 	rum 	ron 	The identifiers mo and mol are deprecated, leaving ro and ron (639-2/T) and rum (639-2/B) the current language identifiers to be used for the variant of the Romanian language also known as Moldavian and Moldovan in English and moldave in French. The identifiers mo and mol will not be assigned to different items, and recordings using these identifiers will not be invalid.
-            Russian 	русский 	ru 	rus 	rus 	rus
-            Sanskrit 	संस्कृतम् 	sa 	san 	san 	san 	ancient, still spoken, also known as Saṃskṛta
-            Sardinian 	sardu 	sc 	srd 	srd 	srd + 4 	macrolanguage
-            Sindhi 	सिन्धी, سنڌي، سندھی‎ 	sd 	snd 	snd 	snd
-            Northern Sami 	Davvisámegiella 	se 	sme 	sme 	sme
-            Samoan 	gagana fa'a Samoa 	sm 	smo 	smo 	smo
-            yângâ tî sängö 	sg 	sag 	sag 	sag
-            Serbian 	српски језик 	sr 	srp 	srp 	srp 	The ISO 639-2/T code srp deprecated the ISO 639-2/B code scc[2]
-            Gaelic, Scottish Gaelic 	Gàidhlig 	gd 	gla 	gla 	gla
-            Shona 	chiShona 	sn 	sna 	sna 	sna
-            Sinhala, Sinhalese 	සිංහල 	si 	sin 	sin 	sin
-            Slovak 	Slovenčina, Slovenský jazyk 	sk 	slk 	slo 	slk
-            Slovenian 	Slovenski jezik, Slovenščina 	sl 	slv 	slv 	slv 	also known as Slovene
-            Somali 	Soomaaliga, af Soomaali 	so 	som 	som 	som
-            Southern Sotho 	Sesotho 	st 	sot 	sot 	sot
-            Spanish, Castilian 	Español 	es 	spa 	spa 	spa
-            Sundanese 	Basa Sunda 	su 	sun 	sun 	sun
-            Swahili 	Kiswahili 	sw 	swa 	swa 	swa + 2 	macrolanguage
-            Swati 	SiSwati 	ss 	ssw 	ssw 	ssw 	also known as Swazi
-            Swedish 	Svenska 	sv 	swe 	swe 	swe
-            Tamil 	தமிழ் 	ta 	tam 	tam 	tam
-            Telugu 	తెలుగు 	te 	tel 	tel 	tel
-            Tajik 	тоҷикӣ, toçikī, تاجیکی‎ 	tg 	tgk 	tgk 	tgk
-            Thai 	ไทย 	th 	tha 	tha 	tha
-            Tigrinya 	ትግርኛ 	ti 	tir 	tir 	tir
-            Tibetan 	བོད་ཡིག 	bo 	bod 	tib 	bod 	also known as Standard Tibetan
-            Turkmen 	Türkmen, Түркмен 	tk 	tuk 	tuk 	tuk
-            Tagalog 	Wikang Tagalog 	tl 	tgl 	tgl 	tgl 	Note: Filipino (Pilipino) has the code [fil]
-            Tswana 	Setswana 	tn 	tsn 	tsn 	tsn
-            Tonga (Tonga Islands) 	Faka Tonga 	to 	ton 	ton 	ton 	also known as Tongan
-            Turkish 	Türkçe 	tr 	tur 	tur 	tur
-            Tsonga 	Xitsonga 	ts 	tso 	tso 	tso
-            Tatar 	татар теле, tatar tele 	tt 	tat 	tat 	tat
-            Twi 	Twi 	tw 	twi 	twi 	twi 	Covered by macrolanguage [ak/aka]
-            Tahitian 	Reo Tahiti 	ty 	tah 	tah 	tah 	One of the Reo Mā`ohi (languages of French Polynesia)
-            Uighur, Uyghur 	ئۇيغۇرچە‎, Uyghurche 	ug 	uig 	uig 	uig
-            Ukrainian 	Українська 	uk 	ukr 	ukr 	ukr
-            Urdu اردو ur 	urd 	urd 	urd
-            Oʻzbek, Ўзбек, أۇزبېك‎ 	uz 	uzb 	uzb 	uzb + 2 	macrolanguage
-            Venda 	Tshivenḓa 	ve 	ven 	ven 	ven
-            Vietnamese 	Tiếng Việt 	vi 	vie 	vie 	vie
-            Volapük 	Volapük 	vo 	vol 	vol 	vol 	constructed
-            Walloon 	Walon 	wa 	wln 	wln 	wln
-            Welsh 	Cymraeg 	cy 	cym 	wel 	cym
-            Wolof 	Wollof 	wo 	wol 	wol 	wol
-            Western Frisian 	Frysk 	fy 	fry 	fry 	fry 	also known as Frisian
-            Xhosa 	isiXhosa 	xh 	xho 	xho 	xho
-            Yiddish ייִדיש yi 	yid 	yid 	yid + 2 	macrolanguage. Changed in 1989 from original ISO 639:1988, ji.[1]
-            Yoruba 	Yorùbá 	yo 	yor 	yor 	yor
-            Zhuang, Chuang 	Saɯ cueŋƅ, Saw cuengh 	za 	zha 	zha 	zha + 16 	macrolanguage*/
+            ['iso_name' => 'Macedonian', 'native_name' => 'македонски јазик', 'code' => 'mk'],
+            ['iso_name' => 'Malagasy', 	'native_name' => 'fiteny malagasy', 'code' => 'mg'],
+            ['iso_name' => 'Malay', 	'native_name' => 'Bahasa Melayu, بهاس ملايو‎', 'code' => 'ms'],
+            ['iso_name' => 'Malayalam', 	'native_name' => 'മലയാളം', 'code' => 'ml'],
+            ['iso_name' => 'Maltese', 	'native_name' => 'Malti', 'code' => 'mt'],
+            ['iso_name' => 'Maori', 	'native_name' => 'te reo Māori', 'code' => 'mi'],
+            ['iso_name' => 'Marathi', 	'native_name' => 'मराठी', 'code' => 'mr'],
+            ['iso_name' => 'Marshallese', 	'native_name' => 'Kajin M̧ajeļ', 'code' => 'mh'],
+            ['iso_name' => 'Mongolian', 	'native_name' => 'Монгол хэл', 'code' => 'mn'],
+            ['iso_name' => 'Nauru', 	'native_name' => 'Dorerin Naoero', 'code' => 'na'],
+            ['iso_name' => 'Navajo, Navaho' , 'native_name'=> 'Diné bizaad', 'code' =>'nv'],
+            ['iso_name' => 'North Ndebele' ,'native_name'=>	'isiNdebele','code'=> 'nd'],
+            ['iso_name' => 'Nepali' ,'native_name'=>	'नेपाली 	ne 	nep 	nep 	nep + 2 	macrolanguage
+            ['iso_name' => 'Ndonga' ,'native_name'=>	'Owambo 	ng 	ndo 	ndo 	ndo
+            ['iso_name' => 'Norwegian Bokmål' ,'native_name'=>	'Norsk Bokmål 	nb 	nob 	nob 	nob 	Covered by macrolanguage [no/nor]
+            ['iso_name' => 'Norwegian Nynorsk' ,'native_name'=>	'Norsk Nynorsk 	nn 	nno 	nno 	nno 	Covered by macrolanguage [no/nor]
+            ['iso_name' => 'Norwegian' ,'native_name'=>	'Norsk 	no 	nor 	nor 	nor + 2 	macrolanguage, Bokmål is [nb/nob], Nynorsk is [nn/nno]
+            ['iso_name' => 'Sichuan Yi, Nuosu' ,'native_name'=>	'ꆈꌠ꒿ Nuosuhxop 	ii 	iii 	iii 	iii 	Standard form of Yi languages
+            ['iso_name' => 'South Ndebele' ,'native_name'=>	'isiNdebele 	nr 	nbl 	nbl 	nbl 	also known as Southern Ndebele
+            ['iso_name' => 'Occitan' ,'native_name'=>	'occitan, lenga d'òc 	oc 	oci 	oci 	oci
+            ['iso_name' => 'Ojibwa' ,'native_name'=>	'ᐊᓂᔑᓈᐯᒧᐎᓐ 	oj 	oji 	oji 	oji + 7 	macrolanguage, also known as Ojibwe
+            ['iso_name' => 'Church Slavic, Old Slavonic, Church Slavonic, Old Bulgarian, Old Church Slavonic' ,'native_name'=>	'ѩзыкъ словѣньскъ 	cu 	chu 	chu 	chu 	ancient, in use by Orthodox Church
+            ['iso_name' => 'Oromo' ,'native_name'=>	'Afaan Oromoo 	om 	orm 	orm 	orm + 4 	macrolanguage
+            ['iso_name' => 'Oriya' ,'native_name'=>	'ଓଡ଼ିଆ 	or 	ori 	ori 	ori + 2 	macrolanguage, also known as Odia
+            ['iso_name' => 'Ossetian, Ossetic' ,'native_name'=>	'ирон æвзаг 	os 	oss 	oss 	oss
+            ['iso_name' => 'Punjabi, Panjabi' ,'native_name'=>	'ਪੰਜਾਬੀ, پنجابی‎ 	pa 	pan 	pan 	pan
+            ['iso_name' => 'Pali' ,'native_name'=>	'पालि, पाळि 	pi 	pli 	pli 	pli 	ancient, also known as Pāli
+            ['iso_name' => 'Persian' ,'native_name'=>	'فارسی fa 	fas 	per 	fas + 2 	macrolanguage, also known as Farsi
+            ['iso_name' => 'Polish' ,'native_name'=>	'język polski, polszczyzna 	pl 	pol 	pol 	pol
+            ['iso_name' => 'Pashto, Pushto' ,'native_name'=>	'پښتو ps 	pus 	pus 	pus + 3 	macrolanguage
+            ['iso_name' => 'Portuguese' ,'native_name'=>	'Português 	pt 	por 	por 	por
+            ['iso_name' => 'Quechua' ,'native_name'=>	'Runa Simi, Kichwa 	qu 	que 	que 	que + 43 	macrolanguage
+            ['iso_name' => 'Romansh' ,'native_name'=>	'Rumantsch Grischun 	rm 	roh 	roh 	roh
+            ['iso_name' => 'Rundi' ,'native_name'=>	'Ikirundi 	rn 	run 	run 	run 	also known as Kirundi
+            ['iso_name' => 'Romanian, Moldavian, Moldovan' ,'native_name'=>	'Română 	ro 	ron 	rum 	ron 	The identifiers mo and mol are deprecated, leaving ro and ron (639-2/T) and rum (639-2/B) the current language identifiers to be used for the variant of the Romanian language also known as Moldavian and Moldovan in English and moldave in French. The identifiers mo and mol will not be assigned to different items, and recordings using these identifiers will not be invalid.
+            ['iso_name' => 'Russian' ,'native_name'=>	'русский 	ru 	rus 	rus 	rus
+            ['iso_name' => 'Sanskrit' ,'native_name'=>	'संस्कृतम् 	sa 	san 	san 	san 	ancient, still spoken, also known as Saṃskṛta
+            ['iso_name' => 'Sardinian' ,'native_name'=>	'sardu 	sc 	srd 	srd 	srd + 4 	macrolanguage
+            ['iso_name' => 'Sindhi' ,'native_name'=>	'सिन्धी, سنڌي، سندھی‎ 	sd 	snd 	snd 	snd
+            ['iso_name' => 'Northern Sami' ,'native_name'=>	'Davvisámegiella 	se 	sme 	sme 	sme
+            ['iso_name' => 'Samoan' ,'native_name'=>	"gagana fa'a Samoa" 	sm 	smo 	smo 	smo
+            ['iso_name' => 'Sango ,'native_name'=>	'yângâ tî sängö 	sg 	sag 	sag 	sag
+            ['iso_name' => 'Serbian' ,'native_name'=>	'српски језик 	sr 	srp 	srp 	srp 	The ISO 639-2/T code srp deprecated the ISO 639-2/B code scc[2]
+            ['iso_name' => 'Gaelic, Scottish Gaelic' ,'native_name'=>	'Gàidhlig 	gd 	gla 	gla 	gla
+            ['iso_name' => 'Shona' ,'native_name'=>	'chiShona 	sn 	sna 	sna 	sna
+            ['iso_name' => 'Sinhala, Sinhalese' ,'native_name'=>	'සිංහල 	si 	sin 	sin 	sin
+            ['iso_name' => 'Slovak' ,'native_name'=>	'Slovenčina, Slovenský' ,'native_name'=>	'jazyk 	sk 	slk 	slo 	slk
+            ['iso_name' => 'Slovenian' ,'native_name'=>	'Slovenski jezik, Slovenščina 	sl 	slv 	slv 	slv 	also known as Slovene
+            ['iso_name' => 'Somali' ,'native_name'=>	'Soomaaliga, af Soomaali 	so 	som 	som 	som
+            ['iso_name' => 'Southern Sotho' ,'native_name'=>	'Sesotho 	st 	sot 	sot 	sot
+            ['iso_name' => 'Spanish, Castilian' ,'native_name'=>	'Español 	es 	spa 	spa 	spa
+            ['iso_name' => 'Sundanese' ,'native_name'=>	'Basa Sunda 	su 	sun 	sun 	sun
+            ['iso_name' => 'Swahili' ,'native_name'=>	'Kiswahili 	sw 	swa 	swa 	swa + 2 	macrolanguage
+            ['iso_name' => 'Swati' ,'native_name'=>	'SiSwati 	ss 	ssw 	ssw 	ssw 	also known as Swazi
+            ['iso_name' => 'Swedish' ,'native_name'=>	'Svenska 	sv 	swe 	swe 	swe
+            ['iso_name' => 'Tamil' ,'native_name'=>	'தமிழ் 	ta 	tam 	tam 	tam
+            ['iso_name' => 'Telugu' ,'native_name'=>	'తెలుగు 	te 	tel 	tel 	tel
+            ['iso_name' => 'Tajik' ,'native_name'=>	'тоҷикӣ, toçikī, تاجیکی‎ 	tg 	tgk 	tgk 	tgk
+            ['iso_name' => 'Thai' ,'native_name'=>	'ไทย 	th 	tha 	tha 	tha
+            ['iso_name' => 'Tigrinya' ,'native_name'=>	'ትግርኛ 	ti 	tir 	tir 	tir
+            ['iso_name' => 'Tibetan' ,'native_name'=>	'བོད་ཡིག 	bo 	bod 	tib 	bod 	also known as Standard Tibetan
+            ['iso_name' => 'Turkmen' ,'native_name'=>	'Türkmen, Түркмен 	tk 	tuk 	tuk 	tuk
+            ['iso_name' => 'Tagalog' ,'native_name'=>	'Wikang Tagalog 	tl 	tgl 	tgl 	tgl 	Note: Filipino (Pilipino) has the code [fil]
+            ['iso_name' => 'Tswana' ,'native_name'=>	'Setswana 	tn 	tsn 	tsn 	tsn
+            ['iso_name' => 'Tonga (Tonga Islands)' ,'native_name'=>	'Faka Tonga 	to 	ton 	ton 	ton 	also known as Tongan
+            ['iso_name' => 'Turkish 	Türkçe 	tr 	tur 	tur 	tur
+            ['iso_name' => 'Tsonga 	Xitsonga 	ts 	tso 	tso 	tso
+            ['iso_name' => 'Tatar 	татар теле, tatar tele 	tt 	tat 	tat 	tat
+            ['iso_name' => 'Twi 	Twi 	tw 	twi 	twi 	twi 	Covered by macrolanguage [ak/aka]
+            ['iso_name' => 'Tahitian 	Reo Tahiti 	ty 	tah 	tah 	tah 	One of the Reo Mā`ohi (languages of French Polynesia)
+            ['iso_name' => 'Uighur, Uyghur 	ئۇيغۇرچە‎, Uyghurche 	ug 	uig 	uig 	uig
+            ['iso_name' => 'Ukrainian 	Українська 	uk 	ukr 	ukr 	ukr
+            ['iso_name' => 'Urdu اردو ur 	urd 	urd 	urd
+            ['iso_name' => 'Oʻzbek, Ўзбек, أۇزبېك‎ 	uz 	uzb 	uzb 	uzb + 2 	macrolanguage
+            ['iso_name' => 'Venda 	Tshivenḓa 	ve 	ven 	ven 	ven
+            ['iso_name' => 'Vietnamese 	Tiếng Việt 	vi 	vie 	vie 	vie
+            ['iso_name' => 'Volapük 	Volapük 	vo 	vol 	vol 	vol 	constructed
+            ['iso_name' => 'Walloon 	Walon 	wa 	wln 	wln 	wln
+            ['iso_name' => 'Welsh 	Cymraeg 	cy 	cym 	wel 	cym
+            ['iso_name' => 'Wolof 	Wollof 	wo 	wol 	wol 	wol
+            ['iso_name' => 'Western Frisian 	Frysk 	fy 	fry 	fry 	fry 	also known as Frisian
+            ['iso_name' => 'Xhosa 	isiXhosa 	xh 	xho 	xho 	xho
+            ['iso_name' => 'Yiddish ייִדיש yi 	yid 	yid 	yid + 2 	macrolanguage. Changed in 1989 from original ISO 639:1988, ji.[1]
+            ['iso_name' => 'Yoruba 	Yorùbá 	yo 	yor 	yor 	yor
+            ['iso_name' => 'Zhuang, Chuang 	Saɯ cueŋƅ, Saw cuengh 	za 	zha 	zha 	zha + 16 	macrolanguage*/
             ['iso_name' => 'Zulu', 'native_name' => 'isiZulu', 'code' => 'zu'],
         ];
 
