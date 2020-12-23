@@ -14,6 +14,7 @@ use App\Category;
 use App\Channel;
 use App\Events\ChannelUpdated;
 use App\Http\Requests\ChannelRequest;
+use App\Language;
 
 /**
  * the channel controller class.
@@ -45,7 +46,9 @@ class ChannelsController extends Controller
     {
         $this->authorize($channel);
         $categories = Category::list();
-        return view('channel.edit', compact(['channel', 'categories']));
+        $languages = Language::all();
+        dd($languages);
+        return view('channel.edit', compact(['channel', 'categories', 'languages']));
     }
 
     /**

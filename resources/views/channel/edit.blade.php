@@ -74,9 +74,9 @@
 					</svg>
 					<select id="lang" name="lang"
 						class="border border-gray-300 rounded-lg text-gray-900 h-10 pl-5 pr-10 bg-gray-200 hover:border-gray-400 focus:outline-none appearance-none">
-						<option value="EN" {{ $channel->lang == 'EN' ? ' selected' : '' }}>English</option>
-						<option value="FR" {{ $channel->lang == 'FR' ? ' selected' : '' }}>Français</option>
-						<option value="PT" {{ $channel->lang == 'PT' ? ' selected' : '' }}>Português</option>
+						@foreach ($languages as $language)
+						<option value="{{$language->code}}" {{ $channel->language_id == $language->code ? ' selected' : '' }}>{{$language->native_name}}</option>
+						@endforeach
 						</select>
 				</div>
 			</div>
