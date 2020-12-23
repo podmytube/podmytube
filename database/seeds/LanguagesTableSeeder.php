@@ -137,8 +137,8 @@ class LanguagesTableSeeder extends Seeder
             ['iso_name' => 'South Ndebele' ,'native_name'=>	'isiNdebele','code'=> 'nr'],
             ['iso_name' => 'Occitan' ,'native_name'=>	"occitan, lenga d'òc",'code'=> 'oc'],
             ['iso_name' => 'Ojibwa' ,'native_name'=>	'ᐊᓂᔑᓈᐯᒧᐎᓐ','code'=> 'oj'],
-            ['iso_name' => 'Church Slavic, Old Slavonic, Church Slavonic, Old Bulgarian, Old Church Slavonic' ,'native_name'=>	'ѩзыкъ словѣньскъ 	cu 	chu 	chu 	chu 	ancient, in use by Orthodox Church
-            ['iso_name' => 'Oromo' ,'native_name'=>	'Afaan Oromoo 	om 	orm 	orm 	orm + 4 	macrolanguage
+            ['iso_name' => 'Church Slavic, Old Slavonic, Church Slavonic, Old Bulgarian, Old Church Slavonic' ,'native_name'=>	'ѩзыкъ словѣньскъ','code'=> 'cu 	chu 	chu 	chu 	ancient, in use by Orthodox Church
+            ['iso_name' => 'Oromo' ,'native_name'=>	'Afaan Oromoo','code'=> 'om 	orm 	orm 	orm + 4 	macrolanguage
             ['iso_name' => 'Oriya' ,'native_name'=>	'ଓଡ଼ିଆ 	or 	ori 	ori 	ori + 2 	macrolanguage, also known as Odia
             ['iso_name' => 'Ossetian, Ossetic' ,'native_name'=>	'ирон æвзаг 	os 	oss 	oss 	oss
             ['iso_name' => 'Punjabi, Panjabi' ,'native_name'=>	'ਪੰਜਾਬੀ, پنجابی‎ 	pa 	pan 	pan 	pan
