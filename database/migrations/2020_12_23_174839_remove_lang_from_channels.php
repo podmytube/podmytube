@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateLanguagesTable extends Migration
+class RemoveLangFromChannels extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,8 @@ class CreateLanguagesTable extends Migration
      */
     public function up()
     {
-        Schema::create('languages', function (Blueprint $table) {
-            $table->smallIncrements('id');
-            $table->string('code', 10);
-            $table->string('iso_name');
-            $table->string('native_name');
-            $table->timestamps();
+        Schema::table('channels', function (Blueprint $table) {
+            $table->dropColumn('lang');
         });
     }
 
@@ -29,6 +25,8 @@ class CreateLanguagesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('languages');
+        Schema::table('channels', function (Blueprint $table) {
+            //
+        });
     }
 }

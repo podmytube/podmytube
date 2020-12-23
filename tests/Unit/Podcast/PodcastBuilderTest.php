@@ -80,7 +80,7 @@ class PodcastBuilderTest extends TestCase
             $renderedPodcast
         );
         $this->assertStringContainsString(
-            '<language>' . $this->channel->lang . '</language>',
+            '<language>' . $this->channel->language->code . '</language>',
             $renderedPodcast
         );
 
@@ -235,7 +235,7 @@ class PodcastBuilderTest extends TestCase
             $savedPodcastContent
         );
         $this->assertStringContainsString(
-            '<language>' . $this->channel->lang . '</language>',
+            '<language>' . $this->channel->language->code . '</language>',
             $savedPodcastContent
         );
 

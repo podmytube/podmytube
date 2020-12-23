@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Channel;
+use App\Events\PodcastUpdated;
 use App\Podcast\PodcastBuilder;
 use App\Podcast\PodcastUrl;
 use Illuminate\Console\Command;
@@ -71,6 +72,7 @@ class UpdatePodcastsCommand extends Command
         $channels->map(function ($channel) {
             try {
                 PodcastBuilder::forChannel($channel)->build()->save();
+                PodcastUpdated::dispatch($channel);
                 $this->recordSuccess($channel);
             } catch (\Exception $exception) {
                 $this->recordFailure($channel, $exception);

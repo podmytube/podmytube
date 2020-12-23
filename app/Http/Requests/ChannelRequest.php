@@ -10,7 +10,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 /**
  * the channel form request class
@@ -28,7 +27,7 @@ class ChannelRequest extends FormRequest
             'email' => 'nullable|email',
             'category_id' => 'nullable|exists:\App\Category,id',
             'link' => 'nullable|URL',
-            'lang' => ['nullable', Rule::in($this->supportedLanguages)],
+            'language_id' => 'nullable|exists:\App\Language,id',
             'accept_video_by_tag' => 'nullable|max:255',
             'reject_video_by_keyword' => 'nullable|max:255',
             'reject_video_too_old' => 'nullable|date_format:d/m/Y|before:today',

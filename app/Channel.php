@@ -15,6 +15,7 @@ use App\Traits\BelongsToUser;
 use App\Traits\HasLimits;
 use App\Traits\HasManyMedias;
 use App\Traits\HasOneCategory;
+use App\Traits\HasOneLanguage;
 use App\Traits\HasOneThumb;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -29,7 +30,12 @@ use Illuminate\Support\Str;
  */
 class Channel extends Model
 {
-    use HasLimits, HasManyMedias, HasOneThumb, HasOneCategory, BelongsToUser;
+    use HasLimits,
+        HasManyMedias,
+        HasOneThumb,
+        HasOneCategory,
+        BelongsToUser,
+        HasOneLanguage;
 
     public const CREATED_AT = 'channel_createdAt';
     public const UPDATED_AT = 'channel_updatedAt';

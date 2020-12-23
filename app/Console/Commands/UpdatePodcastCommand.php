@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Channel;
+use App\Events\PodcastUpdated;
 use App\Podcast\PodcastBuilder;
 use Illuminate\Console\Command;
 
@@ -36,7 +37,7 @@ class UpdatePodcastCommand extends Command
         $this->info("Updating podcast for channel {$channel->channel_name} ({$channel->channel_id})", 'v');
 
         PodcastBuilder::forChannel($channel)->build()->save();
-
+        PodcastUpdated::dispatch($channel);
         $this->comment("Podcast {{$channel->title()}} has been successfully created.", 'v');
         $this->info("You can check it here : {$channel->podcastUrl()}", 'v');
     }

@@ -65,7 +65,7 @@ class LanguagesTableSeeder extends Seeder
             ['iso_name' => 'Faroese', 'native_name' => 'føroyskt', 'code' => 'fo'],
             ['iso_name' => 'Fijian', 'native_name' => 'vosa Vakaviti', 'code' => 'fj'],
             ['iso_name' => 'Finnish', 'native_name' => 'suomi, suomen kieli', 'code' => 'fi'],
-            ['iso_name' => 'French', 'native_name' => 'français, langue française', 'code' => 'fr'],
+            ['iso_name' => 'French', 'native_name' => 'Français, langue française', 'code' => 'fr'],
             ['iso_name' => 'Fulah', 'native_name' => 'Fulfulde, Pulaar, Pular', 'code' => 'ff'],
             ['iso_name' => 'Galician', 'native_name' => 'Galego', 'code' => 'gl'],
             ['iso_name' => 'Georgian', 'native_name' => 'ქართული', 'code' => 'ka'],
@@ -209,6 +209,8 @@ class LanguagesTableSeeder extends Seeder
             function ($item) use (&$index) {
                 return array_merge($item, [
                     'id' => $index++,
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ]);
             },
             $data

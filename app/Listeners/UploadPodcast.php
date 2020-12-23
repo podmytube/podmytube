@@ -17,9 +17,11 @@ class UploadPodcast
         $context = [
             'channel_name' => $event->channel->title(),
             'channel_id' => $event->channel->id(),
+            'remote_host' => config('filesystems.disks.sftpfeeds.host'),
+            'feed url' => $event->channel->podcastUrl()
         ];
         Log::debug(
-            'Uploading podcast for channel',
+            'Uploading podcast for channel ',
             $context
         );
         try {

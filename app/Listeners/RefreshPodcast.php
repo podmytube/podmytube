@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Events\PodcastUpdated;
 use App\Exceptions\PodcastUpdateFailureException;
 use App\Podcast\PodcastBuilder;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -21,23 +22,15 @@ class RefreshPodcast implements ShouldQueue
      */
     public function handle($event)
     {
-        Log::debug(
-            'Refreshing podcast for channel',
-            ['channel_id' => $event->channel->id(), ]
-        );
-
-        $result = PodcastBuilder::forChannel($event->channel)->build()->save();
+        Log::debug("Refreshing podcast for channel {$event->channel->nameWithId()}");
+        $factory = PodcastBuilder::forChannel($event->channel);
+        $result = $factory->build()->save();
         if ($result === false) {
-            $message = "Updating podcast for channel {$event->channel->title()} ({$event->channel->id()}) has failed.";
+            $message = "Updating podcast for channel {$event->channel->nameWithId()}) has failed.";
             Log::error($message);
             throw new PodcastUpdateFailureException($message);
         }
-        Log::debug(
-            'Podcast has been generated for channel',
-            [
-                'channel_id' => $event->channel->id(),
-                'podcast url' => $event->channel->podcastUrl(),
-            ]
-        );
+        Log::debug("Podcast has been generated {$factory->url()}");
+        PodcastUpdated::dispatch($event->channel);
     }
 }

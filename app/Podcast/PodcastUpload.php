@@ -52,11 +52,11 @@ class PodcastUpload
             Storage::disk(self::LOCAL_FEED_DISK)->get($this->relativePath())
         );
         if ($feedUploadResult === false) {
-            throw new PodcastUpdateFailureException();
+            throw new PodcastUpdateFailureException('Uploading feed on remote host has failed.');
         }
 
         /** granting +x perms to channelId/ */
-        Storage::disk(self::REMOTE_FEED_DISK)->setVisibility(
+        return Storage::disk(self::REMOTE_FEED_DISK)->setVisibility(
             $this->channel->channelId(),
             'public'
         );
