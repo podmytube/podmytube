@@ -5,6 +5,7 @@ namespace App\Modules;
 use App\Exceptions\ChannelCreationInvalidChannelUrlException;
 use App\Exceptions\ChannelCreationInvalidUrlException;
 use App\Exceptions\ChannelCreationOnlyYoutubeIsAccepted;
+use Illuminate\Support\Facades\Log;
 
 class YoutubeChannelId
 {
@@ -34,9 +35,9 @@ class YoutubeChannelId
                 $matches
             )
         ) {
-            throw new ChannelCreationInvalidChannelUrlException(
-                'This channel url is invalid.'
-            );
+            $message = "This channel url {$this->channelUrl} is invalid .";
+            Log::error($message, ['channel_url' => $this->channelUrl]);
+            throw new ChannelCreationInvalidChannelUrlException($message);
         }
 
         $this->channel_id = $matches['channel'];
