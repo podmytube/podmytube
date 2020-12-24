@@ -29,7 +29,6 @@ EOD,
         'category_id' => $attributes['category_id'] ?? function () {
             return factory(Category::class)->create()->id;
         },
-        'lang' => $attributes['lang'] ?? 'EN',
         'language_id' => $attributes['language_id'] ?? function () {
             return factory(Language::class)->create()->id;
         },
