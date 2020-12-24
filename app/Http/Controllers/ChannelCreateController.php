@@ -15,6 +15,7 @@ namespace App\Http\Controllers;
 use App\Factories\ChannelCreationFactory;
 use App\Http\Requests\ChannelCreationRequest;
 use App\Plan;
+use Exception;
 use Illuminate\Support\Facades\Auth;
 
 class ChannelCreateController extends Controller
@@ -45,9 +46,13 @@ class ChannelCreateController extends Controller
     public function store(ChannelCreationRequest $request)
     {
         $validatedParams = $request->validated();
-
-        $factory = ChannelCreationFactory::create(Auth::user(), $validatedParams['channel_url'], Plan::bySlug('forever_free'));
-
+        try {
+            $factory = ChannelCreationFactory::create(Auth::user(), $validatedParams['channel_url'], Plan::bySlug('forever_free'));
+        } catch (Exception $exception) {
+            return redirect()
+                ->back()
+                ->withErrors(['danger' => $exception->getMessage()]);
+        }
         return redirect()->route('home')->with('success', "Channel {$factory->channel()->channel_name} has been successfully registered.");
     }
 }

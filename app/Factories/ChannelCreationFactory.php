@@ -45,13 +45,13 @@ class ChannelCreationFactory
         try {
             $youtubeChannel->forChannel($this->channel_id)->exists();
         } catch (YoutubeNoResultsException $exception) {
-            throw new YoutubeChannelIdDoesNotExistException("This channel id {$this->channel_id} does not exists on youtube.");
+            throw new YoutubeChannelIdDoesNotExistException("This youtube channel ({$youtubeUrl}) does not exists on youtube 😔.");
         }
 
         /** check if channel has already been registered */
         $channelExist = Channel::byChannelId($this->channel_id);
         if ($channelExist !== null) {
-            throw new ChannelAlreadyRegisteredException("The channel {{$channelExist->channel_name}} with id {{$this->channel_id}} is already registered.");
+            throw new ChannelAlreadyRegisteredException("This youtube channel ({$youtubeUrl}) has already been registered 🤔️.");
         }
 
         DB::transaction(function () use ($youtubeChannel) {
