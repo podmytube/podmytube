@@ -21,8 +21,9 @@ class Playlist extends Model
 {
     use BelongsToChannel;
 
-    /**
-     * the way to specify users.user_id is the key (and not users.id)
-     */
+    public $incrementing = false;
+
     protected $primaryKey = 'playlist_id';
+
+    protected $guarded = [];
 }
