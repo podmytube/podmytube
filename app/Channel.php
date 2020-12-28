@@ -14,6 +14,7 @@ use App\Podcast\PodcastBuilder;
 use App\Traits\BelongsToUser;
 use App\Traits\HasLimits;
 use App\Traits\HasManyMedias;
+use App\Traits\HasManyPlaylists;
 use App\Traits\HasOneCategory;
 use App\Traits\HasOneLanguage;
 use App\Traits\HasOneThumb;
@@ -32,6 +33,7 @@ class Channel extends Model
 {
     use HasLimits,
         HasManyMedias,
+        HasManyPlaylists,
         HasOneThumb,
         HasOneCategory,
         BelongsToUser,
