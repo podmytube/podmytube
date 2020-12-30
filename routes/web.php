@@ -23,10 +23,7 @@ Route::domain('www.' . config('app.domain'))->group(function () {
     Route::resource('post', 'PostController')
         ->only(['index', 'show']);
 
-    Route::get('pricing', function () {
-        return view('pricing');
-    })
-        ->name('pricing');
+    Route::get('pricing', 'PricingController@index')->name('pricing');
 
     Route::get('about', function () {
         return view('about');

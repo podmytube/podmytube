@@ -8,7 +8,7 @@
     <div class="text-center py-4">
         <span
             class="inline-flex items-center font-display text-4xl md:text-5xl font-bold text-black mr-2 sm:mr-3">
-            <span class="text-xl md:text-2xl">&euro;</span><span class="billing-price">{{ $plan_monthly_price }}</span>
+            <span class="text-xl text-gray-600 md:text-2xl">&euro;</span><span class="billing-price">{{ $plan_monthly_price }}</span>
         </span>
         <span class="text-gray-600 billing-period">/mo</span>
     </div>
