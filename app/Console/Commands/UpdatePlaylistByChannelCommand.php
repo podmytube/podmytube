@@ -3,10 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Channel;
-use App\Quota;
+use App\Media;
 use App\Youtube\YoutubePlaylistItems;
-use App\Youtube\YoutubeQuotas;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Collection;
 
 class UpdatePlaylistByChannelCommand extends Command
 {
@@ -63,33 +63,34 @@ class UpdatePlaylistByChannelCommand extends Command
         }
 
         $playlists->map(function ($playlist) {
+            /**
+             * getting videos in the playlist
+             */
             $videos = (new YoutubePlaylistItems)->forPlaylist($playlist->playlist_id)->videos();
-            
+
+            /** keeping only ids */
+            $mediaIds = $this->keepingOnlyMediaIds($videos);
+
+            /** collecting medias we  */
+            $medias = $this->getMedias($mediaIds);
+
+            if (!$medias->count()) {
+                $this->info("This playlist {$playlist->playlist_id} has no grabbed media.");
+                return;
+            }
         });
-
-        //$apikeysAndQuotas = YoutubeQuotas::forUrls($factory->queriesUsed())->quotaConsumed();
-        Quota::saveScriptConsumption(pathinfo(__FILE__, PATHINFO_BASENAME), $apikeysAndQuotas);
     }
 
-    protected function prologue(int $nbItems)
+    protected function keepingOnlyMediaIds(array $videosItems):array
     {
-        if ($this->getOutput()->isVerbose()) {
-            $this->bar = $this->output->createProgressBar($nbItems);
-            $this->bar->start();
-        }
+        /** keeping only ids */
+        return array_map(function ($video) {
+            return $video['media_id'];
+        }, $videosItems);
     }
 
-    protected function epilogue()
+    protected function getMedias(array $mediaIds):?Collection
     {
-        if ($this->getOutput()->isVerbose()) {
-            $this->bar->finish();
-        }
-    }
-
-    protected function makeProgressBarProgress()
-    {
-        if ($this->getOutput()->isVerbose()) {
-            $this->bar->advance();
-        }
+        return Media::grabbedAt()->whereIn('media_id', $mediaIds)->get();
     }
 }

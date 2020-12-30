@@ -58,7 +58,7 @@ class PodcastBuilderTest extends TestCase
 
     public function testRenderingWholePodcast()
     {
-        $podcastBuilder = PodcastBuilder::forChannel($this->channel)->build();
+        $podcastBuilder = PodcastBuilder::init()->forChannel($this->channel)->build();
         $renderedPodcast = $podcastBuilder->render();
 
         $this->assertStringContainsString(
