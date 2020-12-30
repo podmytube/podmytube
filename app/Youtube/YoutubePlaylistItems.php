@@ -25,17 +25,24 @@ class YoutubePlaylistItems extends YoutubeCore
                 'playlistId' => $this->playlistId,
                 'maxResults' => 50,
             ])
-            ->addParts(['id', 'snippet', 'contentDetails'])
+            ->addParts(['id', 'snippet', 'contentDetails', 'status'])
             ->run()
             ->items();
 
         /**
-         * filtering invalid publishedAt video
+         * filtering video
          */
         $this->videos = array_filter($videos, function ($item) {
+            /** not published yet */
             if (!isset($item['contentDetails']['videoPublishedAt']) || !strlen($item['contentDetails']['videoPublishedAt'])) {
                 return false;
             }
+
+            /** filtering private video */
+            if ($item['status']['privacyStatus'] == 'private') {
+                return false;
+            }
+
             try {
                 Carbon::parse($item['contentDetails']['videoPublishedAt']);
             } catch (\Exception $exception) {
@@ -53,7 +60,8 @@ class YoutubePlaylistItems extends YoutubeCore
                 'description' => $videoItem['snippet']['description'],
                 'published_at' => Carbon::parse($videoItem['contentDetails']['videoPublishedAt'])->setTimezone('UTC'),
             ];
-        }, $videos);
+        }, $this->videos);
+
         return $this;
     }
 

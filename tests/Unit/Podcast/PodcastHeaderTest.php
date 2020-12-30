@@ -33,7 +33,7 @@ class PodcastHeaderTest extends TestCase
 
     public function testingNewChannelWithNoThumbShouldRenderFine()
     {
-        $renderedResult = ($podcastHeaderObj = PodcastHeader::generateFor(
+        $renderedResult = ($podcastHeaderObj = PodcastHeader::init()->forChannel(
             $this->channel
         ))->render();
 
@@ -124,7 +124,7 @@ class PodcastHeaderTest extends TestCase
             'channel_id' => $this->channel->channel_id,
         ]);
 
-        $renderedResult = PodcastHeader::generateFor($this->channel)->render();
+        $renderedResult = PodcastHeader::init()->forChannel($this->channel)->render();
         $this->assertStringContainsString(
             '<link>' . $this->channel->link . '</link>',
             $renderedResult

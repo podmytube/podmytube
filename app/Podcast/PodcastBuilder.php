@@ -4,6 +4,7 @@ namespace App\Podcast;
 
 use App\Channel;
 use App\Exceptions\SavingPodcastHasFailed;
+use App\Playlist;
 use Illuminate\Support\Facades\Storage;
 
 class PodcastBuilder
@@ -12,15 +13,32 @@ class PodcastBuilder
 
     public const FEED_FILENAME = 'podcast.xml';
 
-    /** @var Channel $channel is a Model/Channel object for the channel to generate */
+    /** @var \App\Channel $channel */
     protected $channel;
+
+    /** @var \App\Playlist $playlist */
+    protected $playlist;
 
     /** @var string $destinationFile where to save feed */
     protected $destinationFile;
 
-    private function __construct(Channel $channel)
+    private function __construct()
+    {
+    }
+
+    public static function init()
+    {
+        return new static();
+    }
+
+    public function forChannel(Channel $channel)
     {
         $this->channel = $channel;
+    }
+
+    public function forPlaylist(Playlist $playlist)
+    {
+        $this->playlist = $playlist;
     }
 
     public function build()
@@ -28,11 +46,6 @@ class PodcastBuilder
         $this->podcastHeader = PodcastHeader::generateFor($this->channel);
         $this->podcastItems = PodcastItems::prepare($this->channel);
         return $this;
-    }
-
-    public static function forChannel(Channel $channel)
-    {
-        return new static($channel);
     }
 
     public function exists()

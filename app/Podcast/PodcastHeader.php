@@ -3,10 +3,17 @@
 namespace App\Podcast;
 
 use App\Channel;
+use App\Playlist;
 use App\Thumb;
 
 class PodcastHeader
 {
+    /** @var \App\Channel $channel */
+    protected $channel;
+
+    /** @var \App\Playlist $playlist */
+    protected $playlist;
+
     /** @var string url of the show */
     protected $link;
 
@@ -28,42 +35,60 @@ class PodcastHeader
     /** @var ItunesHeader itunes properties to be set in header */
     protected $itunesHeader;
 
-    private function __construct(Channel $channel)
+    private function __construct()
     {
-        $this->link = $channel->link ?? null;
-        $this->title = $channel->title();
-        $this->language = $channel->language->code ?? null;
-        $this->copyright = $channel->podcast_copyright ?? null;
-        $this->description = $channel->description ?? null;
+    }
+
+    public function forChannel(Channel $channel)
+    {
+        $this->channel = $channel;
+        return $this->prepare();
+    }
+
+    public function forPlaylist(Playlist $playlist)
+    {
+        $this->channel = $playlist->channel;
+        $this->playlist = $playlist->channel;
+        return $this->prepare();
+    }
+
+    public function prepare()
+    {
+        $this->link = $this->channel->link ?? null;
+        $this->title = $this->playlist ? $this->playlist->title() : $this->channel->title();
+        $this->language = $this->channel->language->code ?? null;
+        $this->copyright = $this->channel->podcast_copyright ?? null;
+        $this->description = $this->channel->description ?? null;
 
         $this->itunesHeader = null;
 
         $this->podcastCover = PodcastCover::prepare([
-            'url' => isset($channel->thumb)
-                ? $channel->thumb->podcastUrl()
+            'url' => isset($this->channel->thumb)
+                ? $this->channel->thumb->podcastUrl()
                 : Thumb::defaultUrl(),
-            'link' => $channel->link,
-            'title' => $channel->title(),
+            'link' => $this->channel->link,
+            'title' => $this->channel->title(),
         ]);
 
         $this->itunesHeader = ItunesHeader::prepare([
-            'author' => $channel->authors,
-            'title' => $channel->title(),
-            'imageUrl' => isset($channel->thumb)
-                ? $channel->thumb->podcastUrl()
+            'author' => $this->channel->authors,
+            'title' => $this->channel->title(),
+            'imageUrl' => isset($this->channel->thumb)
+                ? $this->channel->thumb->podcastUrl()
                 : Thumb::defaultUrl(),
             'itunesOwner' => ItunesOwner::prepare(
-                $channel->authors,
-                $channel->email
+                $this->channel->authors,
+                $this->channel->email
             ),
-            'itunesCategory' => ItunesCategory::prepare($channel->category),
-            'explicit' => $channel->explicit,
+            'itunesCategory' => ItunesCategory::prepare($this->channel->category),
+            'explicit' => $this->channel->explicit,
         ]);
+        return $this;
     }
 
-    public static function generateFor(...$params)
+    public static function init()
     {
-        return new static(...$params);
+        return new static();
     }
 
     public function render()
