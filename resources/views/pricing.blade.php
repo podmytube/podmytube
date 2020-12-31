@@ -4,20 +4,16 @@
 
 @section('content')
 
-<div class="container mx-auto px-8 text-xl py-6 md:py-16">
+<div class="container mx-auto px-8 text-xl py-6 md:py-10">
     
     @include('partials.pricing_header')
 
-    <div class="mt-12 block lg:flex lg:flex-wrap lg:justify-center lg:mt-16">
+    <div class="md:flex content-center flex-wrap -mx-2 p-3 bg-grey rounded shadow-lg">
         @foreach ($plans as $plan)
-        <div class="bg-white shadow rounded-lg mt-2 max-w-xs lg:max-w-full lg:rounded-lg lg:min-w-0 lg:w-1/4 lg:mt-0 overflow-hidden">
+        <div class="md:flex md:w-1/2 lg:w-1/4 px-2 py-2">
             @include ('partials.pricing_single_plan', ['plan' => $plan])
         </div>
         @endforeach
-    </div>
-
-    <div class="text-gray-300">
-        and always <strong>No tracking</strong> I respect your privacy and the privacy of your listeners.
     </div>
     
 </div>

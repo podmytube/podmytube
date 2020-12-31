@@ -7,6 +7,7 @@ use App\Exceptions\YoutubeNoApiKeyAvailableException;
 use App\Quota;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 
 class ApiKeyModelTest extends TestCase
 {
@@ -18,6 +19,14 @@ class ApiKeyModelTest extends TestCase
     public function setUp():void
     {
         parent::setUp();
+        if (ApiKey::count()) {
+            /**
+             * !!! DON'T REMOVE THAT !!!
+             * sometime RefreshDatabase don't do what it should and some
+             * apikeys are still registered.
+             */
+            DB::table('api_keys')->delete();
+        }
         $this->apikey = factory(ApiKey::class)->create(['apikey' => 'flower-power']);
     }
 

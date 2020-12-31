@@ -49,8 +49,7 @@
                     class="shadow appearance-none border border-red rounded w-full py-2 px-3 text-grey-darker mb-3" placeholder="******************">
             </div>
             <div class="md:flex md:items-center mb-4">
-                <div class="md:w-1/3"></div>
-                <label for="owner" class="md:w-2/3 block text-gray-500 font-bold">
+                <label for="owner" class="text-gray-500 font-bold text-center ">
                     <input class="mr-2 leading-tight" type="checkbox" id="owner" name="owner" value="1" required="">
                     <span class="text-sm"> I accept the terms of service </span>
                 </label>
