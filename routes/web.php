@@ -19,29 +19,18 @@ Route::get('privacy', function () {
 
 Route::domain('www.' . config('app.domain'))->group(function () {
     Route::get('/', 'IndexController@index')->name('www.index');
-
-    Route::resource('post', 'PostController')
-        ->only(['index', 'show']);
-
     Route::get('pricing', 'PricingController@index')->name('pricing');
-
-    Route::get('about', function () {
-        return view('about');
-    })
-        ->name('about');
-
-    Route::get('thumb', function () {
-        return view('thumb');
-    });
+    Route::get('about', function () { return view('about'); })->name('about');
+    Route::get('thumb', function () { return view('thumb'); });
+    Route::resource('post', 'PostController')->only(['index', 'show']);
+    Route::get('test', function () { return view('test'); })->name('test');
 });
 
 Route::domain('dashboard.' . config('app.domain'))->group(function () {
     Auth::routes();
     // ================================================
     // Dash homepage is the login screen
-    Route::get('/', function () {
-        return view('auth.login');
-    })->name('root');
+    Route::get('/', function () { return view('auth.login'); })->name('root');
 
     /**
      * not a user interaction
