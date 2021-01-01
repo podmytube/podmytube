@@ -47,7 +47,7 @@ class PricingController extends Controller
                 'title' => 'Free',
                 'monthly_price' => 0,
                 'features' => [
-                    ['desc' => '<span class="text-2xl font-extrabold">1</span> episode / month', 'value' => true],
+                    ['desc' => 'Only <span class="text-2xl font-extrabold">1</span> episode / month', 'value' => true],
                     ['desc' => 'Only <span class="text-2xl font-extrabold">1</span> episode is included at start', 'value' => true],
                     ['desc' => 'Email customer support', 'value' => true],
                     ['desc' => 'Secure feed & no tracking', 'value' => true],
