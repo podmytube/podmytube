@@ -5,11 +5,7 @@ vendor
 node_modules
 .phpunit.result.cache
 .php_cs.cache
-# ===============================================
-# dashboard
-# ===============================================
-storage/debugbar
-storage/database.sqlite
+
 # ===============================================
 # not secured to commit these ones
 # ===============================================
