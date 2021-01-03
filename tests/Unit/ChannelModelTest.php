@@ -97,4 +97,20 @@ class ChannelModelTest extends TestCase
         factory(Channel::class, $expectedChannels)->create(['user_id' => $user->user_id]);
         $this->assertCount($expectedChannels, Channel::byUserId($user));
     }
+
+    public function testingToPodcastHeaderIsFine()
+    {
+        $expectedKeys = [
+            'title',
+            'link',
+            'description',
+            'coverUrl',
+        ];
+        $result = $this->channel->toPodcastHeader();
+        array_map(function ($key) use ($result) {
+            $this->assertArrayHasKey($key, $result, "Converting a channel to a podcast header should have key {$key}.");
+        }, $expectedKeys);
+
+        $this->assertEquals($result['explicit'], $this->media->channel->explicit());
+    }
 }
