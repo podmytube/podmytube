@@ -12,23 +12,13 @@ class PodcastHeaderTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var Channel $channel channel we are creating podcst for */
+    /** @var \App\Channel $channel */
     protected $channel;
 
     public function setUp(): void
     {
         parent::setUp();
         $this->channel = factory(Channel::class)->create();
-    }
-
-    /**
-     * Laravel is encoding.
-     * So i'm encoding the same way to be sure tests will stay green.
-     * By example "d'angelo" => "d&#039;angelo"
-     */
-    public function stringEncodingLikeLaravel(string $str)
-    {
-        return htmlspecialchars($str, ENT_QUOTES | ENT_HTML401);
     }
 
     public function testingNewChannelWithNoThumbShouldRenderFine()

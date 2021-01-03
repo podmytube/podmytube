@@ -2,10 +2,7 @@
 
 namespace Tests\Unit\Podcast;
 
-use App\Channel;
-use App\Media;
 use App\Podcast\PodcastItems;
-use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Artisan;
@@ -15,95 +12,35 @@ class PodcastItemsTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
 
+    /** @var \App\Channel $channel */
     protected $channel;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->channel = factory(Channel::class)->create();
+        $this->channel = $this->createChannelWithPlan();
         Artisan::call('view:clear');
     }
 
-    public function testWithMoreMedias()
+    public function testRenderingPodcastIsWorkingFine()
     {
-        $medias = factory(Media::class, 5)->create([
-            'channel_id' => $this->channel->channel_id,
-            'grabbed_at' => $this->faker->dateTimeBetween(Carbon::parse('1 year ago'), Carbon::now())
-        ]);
-        $renderedItems = PodcastItems::prepare($this->channel)->render();
+        /** adding some medias */
+        $this->addMediasToChannel($this->channel, 5, true);
 
-        foreach ($medias as $media) {
-            $this->assertStringContainsString(
-                '<guid>' . $media->media_id . '</guid>',
-                $renderedItems
-            );
-            $this->assertStringContainsString(
-                '<title>' . $media->title . '</title>',
-                $renderedItems
-            );
-            $this->assertStringContainsString(
-                '<enclosure url="' .
-                    $media->enclosureUrl() .
-                    '" length="' .
-                    $media->length .
-                    '" type="audio/mpeg" />',
-                $renderedItems
-            );
-            $this->assertStringContainsString(
-                '<pubDate>' . $media->pubDate() . '</pubDate>',
-                $renderedItems
-            );
+        $podcastItems = $this->channel->podcastItems();
 
+        $result = PodcastItems::with($podcastItems)->render();
+
+        foreach ($podcastItems as $podcastItem) {
+            $this->assertStringContainsString('<guid>' . $podcastItem->guid . '</guid>', $result);
+            $this->assertStringContainsString('<title>' . $podcastItem->title . '</title>', $result);
             $this->assertStringContainsString(
-                '<itunes:duration>' . $media->duration() . '</itunes:duration>',
-                $renderedItems
+                '<enclosure url="' . $podcastItem->enclosureUrl . '" length="' . $podcastItem->mediaLength . '" type="audio/mpeg" />',
+                $result
             );
-            $this->assertStringContainsString(
-                '<itunes:explicit>' .
-                    $media->channel->explicit() .
-                    '</itunes:explicit>',
-                $renderedItems
-            );
+            $this->assertStringContainsString('<pubDate>' . $podcastItem->pubDate . '</pubDate>', $result);
+            $this->assertStringContainsString('<itunes:duration>' . $podcastItem->duration . '</itunes:duration>', $result);
+            $this->assertStringContainsString('<itunes:explicit>' . $podcastItem->explicit . '</itunes:explicit>', $result);
         }
-    }
-
-    public function testWithOneMedia()
-    {
-        $media = factory(Media::class)->create([
-            'channel_id' => $this->channel->channel_id,
-            'grabbed_at' => $this->faker->dateTimeBetween(Carbon::parse('1 year ago'), Carbon::now())
-        ]);
-        $renderedItems = PodcastItems::prepare($this->channel)->render();
-        $this->assertStringContainsString(
-            '<guid>' . $media->media_id . '</guid>',
-            $renderedItems
-        );
-        $this->assertStringContainsString(
-            '<title>' . $media->title . '</title>',
-            $renderedItems
-        );
-        $this->assertStringContainsString(
-            '<enclosure url="' .
-                $media->enclosureUrl() .
-                '" length="' .
-                $media->length .
-                '" type="audio/mpeg" />',
-            $renderedItems
-        );
-        $this->assertStringContainsString(
-            '<pubDate>' . $media->pubDate() . '</pubDate>',
-            $renderedItems
-        );
-
-        $this->assertStringContainsString(
-            '<itunes:duration>' . $media->duration() . '</itunes:duration>',
-            $renderedItems
-        );
-        $this->assertStringContainsString(
-            '<itunes:explicit>' .
-                $media->channel->explicit() .
-                '</itunes:explicit>',
-            $renderedItems
-        );
     }
 }

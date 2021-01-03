@@ -77,7 +77,7 @@
 		</div>
 	</div>
 	@endif
-	@if ($channel->explicit())
+	@if ($channel->explicit)
 	<div class="alert alert-warning" role="alert">
 		{{ __('messages.channel_explicit_label') }}
 	</div>

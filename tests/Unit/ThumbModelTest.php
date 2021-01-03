@@ -14,18 +14,14 @@ class ThumbModelTest extends TestCase
     /** @var bool true, database is ready to run tests upon */
     protected static $dbIsWarm = false;
 
-    /** @var Channel channel obj used for the test */
+    /** @var \App\Channel $channel */
     protected $channel;
 
     public function setUp(): void
     {
         parent::setUp();
         $this->channel = factory(Channel::class)->create();
-        factory(Thumb::class)->create(
-            [
-                'channel_id' => $this->channel->channelId(),
-            ]
-        );
+        factory(Thumb::class)->create(['channel_id' => $this->channel->channelId(), ]);
     }
 
     public function testingDefaultUrl()

@@ -85,7 +85,7 @@ class Thumb extends Model
      */
     public function podcastUrl()
     {
-        return getenv('THUMBS_URL') . '/' . $this->relativePath;
+        return config('app.thumbs_url') . '/' . $this->relativePath;
     }
 
     /**

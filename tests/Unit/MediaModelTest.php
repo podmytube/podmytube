@@ -157,7 +157,7 @@ class MediaModelTest extends TestCase
         $this->assertEquals($result['pubDate'], $this->media->pubDate());
         $this->assertEquals($result['description'], $this->media->description);
         $this->assertEquals($result['duration'], $this->media->duration());
-        $this->assertEquals($result['explicit'], $this->media->channel->explicit());
+        $this->assertEquals($result['explicit'], $this->media->channel->explicit);
     }
 
     public function testToPodcastItemWithEmptyMediaInfos()
@@ -195,6 +195,6 @@ class MediaModelTest extends TestCase
         $this->assertEquals($result['mediaLength'], $media->length);
         $this->assertEquals($result['pubDate'], $media->pubDate());
         $this->assertEquals($result['duration'], $media->duration());
-        $this->assertEquals($result['explicit'], $media->channel->explicit());
+        $this->assertEquals($result['explicit'], $media->channel->explicit);
     }
 }
