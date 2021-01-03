@@ -4,8 +4,13 @@ namespace App\Podcast;
 
 class PodcastCover implements IsRenderableInterface
 {
+    /** @var string url*/
     public $url;
+
+    /** @var string link*/
     public $link;
+
+    /** @var string title*/
     public $title;
 
     private function __construct(array $attributes = [])
