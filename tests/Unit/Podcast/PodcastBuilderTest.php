@@ -174,7 +174,7 @@ class PodcastBuilderTest extends TestCase
             );
             $this->assertStringContainsString(
                 '<itunes:explicit>' .
-                    $media->channel->explicit() .
+                    $media->channel->explicit .
                     '</itunes:explicit>',
                 $renderedPodcast
             );
@@ -333,7 +333,7 @@ class PodcastBuilderTest extends TestCase
             );
             $this->assertStringContainsString(
                 '<itunes:explicit>' .
-                    $media->channel->explicit() .
+                    $media->channel->explicit .
                     '</itunes:explicit>',
                 $savedPodcastContent
             );

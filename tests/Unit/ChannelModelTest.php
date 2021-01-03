@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Tests\TestCase;
 use App\Podcast\PodcastBuilder;
 use App\Subscription;
+use App\Thumb;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
@@ -17,7 +18,7 @@ class ChannelModelTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var \App\Channel $channel channel model */
+    /** @var \App\Channel $channel */
     protected $channel;
 
     public function setUp(): void
@@ -98,19 +99,12 @@ class ChannelModelTest extends TestCase
         $this->assertCount($expectedChannels, Channel::byUserId($user));
     }
 
-    public function testingToPodcastHeaderIsFine()
+    public function testPodcastCoverUrlIsFine()
     {
-        $expectedKeys = [
-            'title',
-            'link',
-            'description',
-            'coverUrl',
-        ];
-        $result = $this->channel->toPodcastHeader();
-        array_map(function ($key) use ($result) {
-            $this->assertArrayHasKey($key, $result, "Converting a channel to a podcast header should have key {$key}.");
-        }, $expectedKeys);
+        $this->assertEquals(Thumb::defaultUrl(), $this->channel->podcastCoverUrl());
 
-        $this->assertEquals($result['explicit'], $this->media->channel->explicit());
+        $channelWithThumb = factory(Channel::class)->create();
+        $thumb = factory(Thumb::class)->create(['channel_id' => $channelWithThumb->channel_id]);
+        $this->assertEquals($thumb->podcastUrl(), $channelWithThumb->podcastCoverUrl());
     }
 }

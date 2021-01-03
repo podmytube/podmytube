@@ -11,12 +11,14 @@
 namespace App;
 
 use App\Podcast\PodcastBuilder;
+use App\Podcast\PodcastItem;
 use App\Traits\BelongsToUser;
 use App\Traits\HasLimits;
 use App\Traits\HasManyMedias;
 use App\Traits\HasManyPlaylists;
 use App\Traits\HasOneCategory;
 use App\Traits\HasOneLanguage;
+use App\Traits\HasOneSubscription;
 use App\Traits\HasOneThumb;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -31,12 +33,13 @@ use Illuminate\Support\Str;
  */
 class Channel extends Model
 {
-    use HasLimits,
+    use BelongsToUser,
+        HasLimits,
         HasManyMedias,
         HasManyPlaylists,
-        HasOneThumb,
         HasOneCategory,
-        BelongsToUser,
+        HasOneSubscription,
+        HasOneThumb,
         HasOneLanguage;
 
     public const CREATED_AT = 'channel_createdAt';
@@ -62,18 +65,14 @@ class Channel extends Model
         'reject_video_too_old',
     ];
 
+    protected $casts = [
+        'explicit' => 'boolean',
+    ];
+
     /**
      * the field that are guarded
      */
     protected $guarded = [];
-
-    /**
-     * We are getting active subscriptions for the channel.
-     */
-    public function subscription()
-    {
-        return $this->hasOne(Subscription::class, 'channel_id');
-    }
 
     /**
      * Getter : channel_id
@@ -91,11 +90,6 @@ class Channel extends Model
     public function title()
     {
         return $this->podcast_title ?? $this->channel_name;
-    }
-
-    public function explicit(): bool
-    {
-        return $this->explicit === 1 ? true : false;
     }
 
     public function createdAt()
@@ -334,5 +328,51 @@ class Channel extends Model
     public function nameWithId()
     {
         return "{$this->title()} ({$this->id()})";
+    }
+
+    /**
+     * Will return the medias to be published.
+     * Medias should have been grabbed
+     */
+    public function mediasToPublish():Collection
+    {
+        $query = $this->medias()
+            ->whereNotNull('grabbed_at')
+            ->orderBy('published_at', 'desc');
+        if ($this->isFree()) {
+            $query->take(3);
+        }
+        return $query->get();
+    }
+
+    public function podcastItems()
+    {
+        return $this->mediasToPublish()
+            ->map(function ($media) {
+                return PodcastItem::with($media->toPodcastItem());
+            });
+    }
+
+    public function podcastCoverUrl()
+    {
+        if (!$this->thumb) {
+            return Thumb::defaultUrl();
+        }
+        return $this->thumb->podcastUrl();
+    }
+
+    public function podcastHeader()
+    {
+        return  [
+            'title' => $this->title(),
+            'link' => $this->link,
+            'description' => $this->description,
+            'authors' => $this->authors,
+            'email' => $this->email,
+            'cover' => '',
+            'language' => '',
+            'podcastCategory' => '',
+            'explicit' => $this->explicit === true ? 'true' : 'false',
+        ];
     }
 }

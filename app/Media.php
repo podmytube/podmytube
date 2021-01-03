@@ -272,6 +272,7 @@ class Media extends Model
             'pubDate' => $this->pubDate(),
             'description' => $this->description,
             'duration' => $this->duration(),
-            'explicit' => $this->channel->explicit(), ];
+            'explicit' => $this->channel->explicit === true ? 'true' : 'false',
+        ];
     }
 }

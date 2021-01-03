@@ -2,39 +2,21 @@
 
 namespace App\Podcast;
 
-use App\Channel;
+use Illuminate\Support\Collection;
 
 class PodcastItems
 {
-    protected $medias;
-    protected $channel;
+    /** @var \Illuminate\Support\Collection $podcastItems */
+    protected $podcastItems;
 
-    private function __construct(Channel $channel)
+    private function __construct(Collection $podcastItems)
     {
-        $this->channel = $channel;
-        $this->collectItemsToPublish();
+        $this->podcastItems = $podcastItems;
     }
 
-    public static function prepare(...$params)
+    public static function with(Collection $podcastItems)
     {
-        return new static(...$params);
-    }
-
-    /**
-     * This function will return all medias to be published.
-     *
-     * @throw PodcastHasNoMediaToPublish when no medias has been grabbed
-     */
-    protected function collectItemsToPublish()
-    {
-        $this->medias = $this->channel
-            ->medias()
-            ->orderBy('published_at', 'desc')
-            ->get()
-            /** removing item not grabbed */
-            ->filter(function ($element) {
-                return $element->grabbed_at !== null;
-            });
+        return new static($podcastItems);
     }
 
     /**
@@ -44,8 +26,13 @@ class PodcastItems
      */
     public function render()
     {
+        $items = '';
+        foreach ($this->podcastItems as $podcastItem) {
+            $items .= $podcastItem->render() . "\n";
+        }
+
         return view('podcast.items')
-            ->with(['medias' => $this->medias])
+            ->with(['items' => $items])
             ->render();
     }
 }
