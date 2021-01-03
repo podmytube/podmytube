@@ -28,8 +28,8 @@ $factory->define(App\Media::class, function (Faker $faker, $attributes) {
             function () {
                 return factory(Channel::class)->create()->channel_id;
             },
-        'title' => $faker->sentence(),
-        'description' => <<<EOT
+        'title' => $attributes['title'] ?? $faker->sentence(),
+        'description' => $attributes['description'] ?? <<<EOT
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
 Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
 EOT,

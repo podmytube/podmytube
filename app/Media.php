@@ -261,4 +261,17 @@ class Media extends Model
     {
         return config('app.mp3_path') . $this->relativePath();
     }
+
+    public function toPodcastItem()
+    {
+        return  [
+            'guid' => $this->media_id,
+            'title' => $this->title,
+            'enclosureUrl' => $this->enclosureUrl(),
+            'mediaLength' => $this->length,
+            'pubDate' => $this->pubDate(),
+            'description' => $this->description,
+            'duration' => $this->duration(),
+            'explicit' => $this->channel->explicit(), ];
+    }
 }
