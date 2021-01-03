@@ -6,12 +6,13 @@ use App\Channel;
 use App\Media;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Storage;
 use Tests\TestCase;
 
 class MediaModelTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, WithFaker;
 
     /** @var \App\Channel $channel */
     protected $channel;
@@ -130,5 +131,70 @@ class MediaModelTest extends TestCase
             $expectedFilePath,
             $this->media->remoteFilePath()
         );
+    }
+
+    public function testToPodcastItemIsFine()
+    {
+        $expectedKeys = [
+            'guid',
+            'title',
+            'enclosureUrl',
+            'mediaLength',
+            'pubDate',
+            'description',
+            'duration',
+            'explicit',
+        ];
+        $result = $this->media->toPodcastItem();
+        array_map(function ($key) use ($result) {
+            $this->assertArrayHasKey($key, $result, "Converting a media to a podcast item should have key {$key}.");
+        }, $expectedKeys);
+
+        $this->assertEquals($result['guid'], $this->media->media_id);
+        $this->assertEquals($result['title'], $this->media->title);
+        $this->assertEquals($result['enclosureUrl'], $this->media->enclosureUrl());
+        $this->assertEquals($result['mediaLength'], $this->media->length);
+        $this->assertEquals($result['pubDate'], $this->media->pubDate());
+        $this->assertEquals($result['description'], $this->media->description);
+        $this->assertEquals($result['duration'], $this->media->duration());
+        $this->assertEquals($result['explicit'], $this->media->channel->explicit());
+    }
+
+    public function testToPodcastItemWithEmptyMediaInfos()
+    {
+        $expectedKeys = [
+            'guid',
+            'title',
+            'enclosureUrl',
+            'mediaLength',
+            'pubDate',
+            'description',
+            'duration',
+            'explicit',
+        ];
+        $media = factory(Media::class)->create([
+            'media_id' => $this->faker->regexify('[a-zA-Z0-9-_]{8}'),
+            'channel_id' => $this->channel->channel_id,
+            'title' => null,
+            'description' => null,
+            'length' => 0,
+            'duration' => 0,
+            'published_at' => $this->faker->dateTimeBetween(Carbon::now()->startOfMonth(), Carbon::now()),
+            'grabbed_at' => null,
+            'active' => true,
+        ]);
+        $result = $media->toPodcastItem();
+        array_map(function ($key) use ($result) {
+            $this->assertArrayHasKey($key, $result, "Converting a media to a podcast item should have key {$key}.");
+        }, $expectedKeys);
+
+        $this->assertEquals($result['guid'], $media->media_id);
+        $this->assertNull($result['title'], 'title should be null');
+        $this->assertNull($result['description'], 'description should be null');
+        $this->assertEquals($result['enclosureUrl'], $media->enclosureUrl());
+        $this->assertEquals($result['mediaLength'], $media->length);
+        $this->assertEquals($result['pubDate'], $media->pubDate());
+        $this->assertEquals($result['duration'], $media->duration());
+        $this->assertEquals($result['explicit'], $media->channel->explicit());
     }
 }
