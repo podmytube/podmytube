@@ -20,45 +20,24 @@ class ItunesCategoryTest extends TestCase
 
     public function testDocumentaryWillDisplaySocietyAndCulture()
     {
-        $renderedText = ItunesCategory::prepare(
-            Category::bySlug('documentary')
-        )->render();
-        $this->assertStringContainsString(
-            '<itunes:category text="Society &amp; Culture">',
-            $renderedText
-        );
-        $this->assertStringContainsString(
-            '<itunes:category text="Documentary" />',
-            $renderedText
-        );
+        $renderedText = ItunesCategory::prepare(Category::bySlug('documentary'))->render();
+        $this->assertStringContainsString('<itunes:category text="Society &amp; Culture">', $renderedText);
+        $this->assertStringContainsString('<itunes:category text="Documentary" />', $renderedText);
         $this->assertStringContainsString('</itunes:category>', $renderedText);
     }
 
     public function testFantasySportsWillDisplaySports()
     {
-        $renderedText = ItunesCategory::prepare(
-            Category::bySlug('fantasy-sports')
-        )->render();
-        $this->assertStringContainsString(
-            '<itunes:category text="Sports">',
-            $renderedText
-        );
-        $this->assertStringContainsString(
-            '<itunes:category text="Fantasy Sports" />',
-            $renderedText
-        );
+        $renderedText = ItunesCategory::prepare(Category::bySlug('fantasy-sports'))->render();
+        $this->assertStringContainsString('<itunes:category text="Sports">', $renderedText);
+        $this->assertStringContainsString('<itunes:category text="Fantasy Sports" />', $renderedText);
         $this->assertStringContainsString('</itunes:category>', $renderedText);
     }
 
     public function testingSimpleCategory()
     {
-        $renderedText = ItunesCategory::prepare(
-            Category::bySlug('leisure')
-        )->render();
-        $this->assertStringContainsString(
-            '<itunes:category text="Leisure" />',
-            $renderedText
-        );
+        $renderedText = ItunesCategory::prepare(Category::bySlug('leisure'))->render();
+        $this->assertStringContainsString('<itunes:category text="Leisure" />', $renderedText);
     }
 
     public function testingNoCategorySet()
