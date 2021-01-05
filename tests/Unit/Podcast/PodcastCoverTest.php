@@ -36,6 +36,8 @@ class PodcastCoverTest extends TestCase
         $this->assertStringContainsString("<url>{$imageUrl}</url>", $renderedResult);
         $this->assertStringContainsString("<title>{$imageTitle}</title>", $renderedResult);
         $this->assertStringContainsString('</image>', $renderedResult);
+
+        $this->assertStringNotContainsString('<link>', $renderedResult);
     }
 
     public function testingPartialInformationsShouldRenderProperly()
@@ -47,6 +49,9 @@ class PodcastCoverTest extends TestCase
         $this->assertStringContainsString('<image>', $renderedResult);
         $this->assertStringContainsString("<url>{$imageUrl}</url>", $renderedResult);
         $this->assertStringContainsString('</image>', $renderedResult);
+
+        $this->assertStringNotContainsString('<link>', $renderedResult);
+        $this->assertStringNotContainsString('<title>', $renderedResult);
     }
 
     public function testingNoInformationsShouldRenderNothing()
@@ -55,12 +60,12 @@ class PodcastCoverTest extends TestCase
         $this->assertEmpty($renderedResult);
     }
 
-    public function testingNoInformationShouldRenderEmpty()
+    public function testingInvalidUrlShouldThrowException()
     {
         $this->expectException(\InvalidArgumentException::class);
         PodcastCover::prepare([
             'title' => 'Lorem ipsum',
-            'url' => 'Invalid email address'
+            'url' => 'Invalid url.'
         ]);
     }
 }

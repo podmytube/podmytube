@@ -2,145 +2,72 @@
 
 namespace App\Podcast;
 
-use App\Channel;
-use App\Playlist;
-use App\Thumb;
-
 class PodcastHeader
 {
-    /** @var \App\Channel $channel */
-    protected $channel;
+    /** @var string $url */
+    public $link;
 
-    /** @var \App\Playlist $playlist */
-    protected $playlist;
+    /** @var string title */
+    public $title;
 
-    /** @var string url of the show */
-    protected $link;
+    /** @var string $language */
+    public $language;
 
-    /** @var string title of the show (channel name or podcast title) */
-    protected $title;
+    /** @var string $copyright */
+    public $copyright;
 
-    /** @var string The show language. */
-    protected $language;
+    /** @var string $description the show description */
+    public $description;
 
-    /** @var string The show copyright details. */
-    protected $copyright;
+    /** @var string $podcastCover */
+    public $podcastCover;
 
-    /** @var string the show description */
-    protected $description;
+    /** @var string $itunesHeader */
+    public $itunesHeader;
 
-    /** @var PodcastCover rss tags for podcast thumb */
-    protected $podcastCover;
-
-    /** @var ItunesHeader itunes properties to be set in header */
-    protected $itunesHeader;
-
-    private function __construct()
+    private function __construct(array $attributes = [])
     {
-    }
-
-    public function forChannel(Channel $channel)
-    {
-        $this->channel = $channel;
-        return $this->prepare();
-    }
-
-    public function forPlaylist(Playlist $playlist)
-    {
-        $this->channel = $playlist->channel;
-        $this->playlist = $playlist->channel;
-        return $this->prepare();
-    }
-
-    public function prepare()
-    {
-        $this->link = $this->channel->link ?? null;
-        $this->title = $this->playlist ? $this->playlist->title() : $this->channel->title();
-        $this->language = $this->channel->language->code ?? null;
-        $this->copyright = $this->channel->podcast_copyright ?? null;
-        $this->description = $this->channel->description ?? null;
-
-        $this->itunesHeader = null;
+        $this->link = $attributes['link'] ?? null;
+        $this->title = $attributes['title'] ?? null;
+        $this->language = $attributes['language'] ?? null;
+        $this->copyright = $attributes['copyright'] ?? null;
+        $this->description = $attributes['description'] ?? null;
 
         $this->podcastCover = PodcastCover::prepare([
-            'url' => isset($this->channel->thumb)
-                ? $this->channel->thumb->podcastUrl()
-                : Thumb::defaultUrl(),
-            'link' => $this->channel->link,
-            'title' => $this->channel->title(),
-        ]);
+            'url' => $attributes['imageUrl'] ?? null,
+            'link' => $attributes['link'] ?? null,
+            'title' => $attributes['title'] ?? null,
+        ])->render();
 
         $this->itunesHeader = ItunesHeader::prepare([
-            'author' => $this->channel->authors,
-            'title' => $this->channel->title(),
-            'imageUrl' => isset($this->channel->thumb)
-                ? $this->channel->thumb->podcastUrl()
-                : Thumb::defaultUrl(),
-            'itunesOwner' => ItunesOwner::prepare(
-                $this->channel->authors,
-                $this->channel->email
-            ),
-            'itunesCategory' => ItunesCategory::prepare($this->channel->category),
-            'explicit' => $this->channel->explicit,
-        ]);
-        return $this;
+            'author' => $attributes['author'] ?? null,
+            'email' => $attributes['email'] ?? null,
+            'title' => $attributes['title'] ?? null,
+            'imageUrl' => $attributes['podcastCoverUrl'] ?? null,
+            'itunesCategory' => $attributes['category'] ?? null,
+            'explicit' => $attributes['explicit'] ?? null,
+        ])->render();
     }
 
-    public static function init()
+    public static function create(array $attributes = [])
     {
-        return new static();
+        return new static($attributes);
     }
 
     public function render()
     {
-        $dataToRender = array_filter(get_object_vars($this), function (
+        if (array_filter(get_object_vars($this), function (
             $property
         ) {
             if (isset($property)) {
                 return true;
             }
             return false;
-        });
-        if (!$dataToRender) {
+        }) === false) {
             return '';
         }
         return view('podcast.header')
             ->with(['podcastHeader' => $this])
             ->render();
-    }
-
-    public function link()
-    {
-        return $this->link;
-    }
-
-    public function title()
-    {
-        return $this->title;
-    }
-
-    public function language()
-    {
-        return $this->language;
-    }
-
-    public function copyright()
-    {
-        return $this->copyright;
-    }
-
-    public function description()
-    {
-        return $this->description;
-    }
-
-    public function podcastCover()
-    {
-        return $this->podcastCover;
-    }
-
-    public function itunesHeader()
-    {
-        return $this->itunesHeader;
     }
 }

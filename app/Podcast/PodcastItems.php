@@ -9,12 +9,12 @@ class PodcastItems
     /** @var \Illuminate\Support\Collection $podcastItems */
     protected $podcastItems;
 
-    private function __construct(Collection $podcastItems)
+    private function __construct(?Collection $podcastItems)
     {
         $this->podcastItems = $podcastItems;
     }
 
-    public static function with(Collection $podcastItems)
+    public static function with(?Collection $podcastItems)
     {
         return new static($podcastItems);
     }
@@ -27,6 +27,10 @@ class PodcastItems
     public function render()
     {
         $items = '';
+        if ($this->podcastItems === null || $this->podcastItems->count() <= 0) {
+            return $items;
+        }
+
         foreach ($this->podcastItems as $podcastItem) {
             $items .= $podcastItem->render() . "\n";
         }

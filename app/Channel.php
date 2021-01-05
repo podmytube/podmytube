@@ -369,10 +369,10 @@ class Channel extends Model
             'description' => $this->description,
             'authors' => $this->authors,
             'email' => $this->email,
-            'cover' => '',
-            'language' => '',
-            'podcastCategory' => '',
-            'explicit' => $this->explicit === true ? 'true' : 'false',
+            'imageUrl' => $this->podcastCoverUrl(),
+            'language' => $this->language->code,
+            'itunesCategory' => $this->category,
+            'explicit' => $this->explicit,
         ];
     }
 }
