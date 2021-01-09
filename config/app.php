@@ -56,9 +56,13 @@ return [
     */
 
     'url' => env('APP_URL', 'https://dashboard.podmytube.com'),
+
     'feed_filename' => 'podcast.xml',
+    'feed_path' => env('FEED_PATH', 'podcasts.podmytube.com/www/'),
     'podcasts_url' => env('PODCASTS_URL', 'https://podcasts.podmytube.com'),
+
     'mp3_url' => env('MP3_URL', 'https://mp3.podmytube.com'),
+    'mp3_path' => env('MP3_PATH', 'mp3.podmytube.com/www/'),
 
     'thumbs_url' => env('THUMBS_URL', 'https://thumbs.podmytube.com'),
     'thumbs_domain' => env('THUMBS_DOMAIN', 'thumbs.podmytube.com'),

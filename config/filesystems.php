@@ -139,7 +139,7 @@ return [
             'permPublic' => 0755,
         ],
 
-        'kim1' => [
+        'remote' => [
             'driver' => 'sftp',
             'host' => $sshCredentials['host'],
             'username' => $sshCredentials['user'],

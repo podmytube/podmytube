@@ -2,7 +2,6 @@
 
 namespace App\Listeners;
 
-use App\Events\ChannelRegistered;
 use App\Mail\ChannelIsRegistered;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -13,7 +12,7 @@ class SendChannelIsRegisteredEmail implements ShouldQueue
 {
     use InteractsWithQueue;
 
-    public function handle(ChannelRegistered $event): void
+    public function handle($event): void
     {
         /** Sending the channel registered mail within the queue */
         Mail::to($event->channel->user)->send(

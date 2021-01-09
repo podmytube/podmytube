@@ -13,20 +13,20 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $listen = [
         \App\Events\ChannelRegistered::class => [
-            \App\Listeners\RefreshPodcast::class,
+            \App\Listeners\UploadPodcast::class,
             \App\Listeners\SendChannelIsRegisteredEmail::class,
         ],
         \App\Events\ChannelUpdated::class => [
-            \App\Listeners\RefreshPodcast::class,
+            \App\Listeners\UploadPodcast::class,
         ],
         \App\Events\MediaUploadedByUser::class => [
             \App\Listeners\UploadMedia::class,
-            \App\Listeners\RefreshPodcast::class,
+            \App\Listeners\UploadPodcast::class,
         ],
         /** thumb has been updated */
         \App\Events\ThumbUpdated::class => [
             \App\Listeners\UploadThumb::class,
-            \App\Listeners\RefreshPodcast::class,
+            \App\Listeners\UploadPodcast::class,
             \App\Listeners\RefreshVignette::class,
         ],
         /** feed has been updated */
@@ -35,13 +35,7 @@ class EventServiceProvider extends ServiceProvider
         ],
     ];
 
-    /**
-     * this RefreshPodcast listener will listen to
-     * ChannelRegistered, ChannelUpdated and ThumbUpdated
-     */
-    protected $subscribe = [
-        /* 'App\Listeners\RefreshPodcast', */
-    ];
+    protected $subscribe = [];
 
     /**
      * Register any events for your application.

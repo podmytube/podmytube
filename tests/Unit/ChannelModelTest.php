@@ -8,7 +8,6 @@ use App\Plan;
 use Carbon\Carbon;
 use Tests\TestCase;
 use App\Subscription;
-use App\Thumb;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
@@ -35,7 +34,7 @@ class ChannelModelTest extends TestCase
     public function testingPodcastUrl()
     {
         $this->assertEquals(
-            config('app.podcasts_url') . "/{$this->channel->channelId()}/" . config('feed_filename'),
+            config('app.podcasts_url') . "/{$this->channel->channelId()}/" . config('app.feed_filename'),
             $this->channel->podcastUrl()
         );
     }
@@ -75,5 +74,19 @@ class ChannelModelTest extends TestCase
         $this->assertCount($expectedChannels, Channel::byUserId($user));
     }
 
-    
+    public function testRelativeFeedPath()
+    {
+        $this->assertEquals(
+            "{$this->channel->channel_id}/" . config('app.feed_filename'),
+            $this->channel->relativeFeedPath()
+        );
+    }
+
+    public function testRemoteFilePath()
+    {
+        $this->assertEquals(
+            config('app.feed_path') . "{$this->channel->channel_id}/" . config('app.feed_filename'),
+            $this->channel->remoteFilePath()
+        );
+    }
 }
