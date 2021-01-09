@@ -7,7 +7,6 @@ use App\Media;
 use App\Plan;
 use Carbon\Carbon;
 use Tests\TestCase;
-use App\Podcast\PodcastBuilder;
 use App\Subscription;
 use App\Thumb;
 use App\User;
@@ -36,11 +35,7 @@ class ChannelModelTest extends TestCase
     public function testingPodcastUrl()
     {
         $this->assertEquals(
-            config('app.podcasts_url') .
-                '/' .
-                $this->channel->channelId() .
-                '/' .
-                PodcastBuilder::FEED_FILENAME,
+            config('app.podcasts_url') . "/{$this->channel->channelId()}/" . config('feed_filename'),
             $this->channel->podcastUrl()
         );
     }
@@ -80,12 +75,5 @@ class ChannelModelTest extends TestCase
         $this->assertCount($expectedChannels, Channel::byUserId($user));
     }
 
-    public function testPodcastCoverUrlIsFine()
-    {
-        $this->assertEquals(Thumb::defaultUrl(), $this->channel->podcastCoverUrl());
-
-        $channelWithThumb = factory(Channel::class)->create();
-        $thumb = factory(Thumb::class)->create(['channel_id' => $channelWithThumb->channel_id]);
-        $this->assertEquals($thumb->podcastUrl(), $channelWithThumb->podcastCoverUrl());
-    }
+    
 }

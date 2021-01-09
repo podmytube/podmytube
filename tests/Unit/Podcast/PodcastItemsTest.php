@@ -22,6 +22,12 @@ class PodcastItemsTest extends TestCase
         Artisan::call('view:clear');
     }
 
+    public function testNoItemsShouldRenderEmpty()
+    {
+        $podcastItems = $this->channel->podcastItems();
+        $this->assertEmpty(PodcastItems::with($podcastItems)->render());
+    }
+
     public function testRenderingPodcastIsWorkingFine()
     {
         /** adding some medias */
