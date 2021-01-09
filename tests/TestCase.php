@@ -27,9 +27,9 @@ abstract class TestCase extends BaseTestCase
     }
 
     /**
-     * create one channel 
+     * create one channel
      */
-    protected function createChannelWithPlan(Plan $plan = null)
+    protected function createChannelWithPlan(Plan $plan = null) : \App\Channel
     {
         $createContext = [];
         if ($plan) {

@@ -10,7 +10,6 @@
 
 namespace App;
 
-use App\Podcast\PodcastBuilder;
 use App\Podcast\PodcastItem;
 use App\Traits\BelongsToUser;
 use App\Traits\HasLimits;
@@ -104,7 +103,7 @@ class Channel extends Model
 
     public function podcastUrl()
     {
-        return config('app.podcasts_url') . '/' . $this->channelId() . '/' . PodcastBuilder::FEED_FILENAME;
+        return config('app.podcasts_url') . '/' . $this->channelId() . '/' . config('feed_filename');
     }
 
     /**
@@ -345,15 +344,15 @@ class Channel extends Model
         return $query->get();
     }
 
-    public function podcastItems()
+    public function podcastItems():Collection
     {
         return $this->mediasToPublish()
-            ->map(function ($media) {
+            ->map(function (Media $media) {
                 return PodcastItem::with($media->toPodcastItem());
             });
     }
 
-    public function podcastCoverUrl()
+    public function podcastCoverUrl():string
     {
         if (!$this->thumb) {
             return Thumb::defaultUrl();
@@ -361,7 +360,10 @@ class Channel extends Model
         return $this->thumb->podcastUrl();
     }
 
-    public function podcastHeader()
+    /**
+     * return informations needed to generate podcast header.
+     */
+    public function podcastHeader():array
     {
         return  [
             'title' => $this->title(),
@@ -369,10 +371,19 @@ class Channel extends Model
             'description' => $this->description,
             'authors' => $this->authors,
             'email' => $this->email,
+            'copyright' => $this->podcast_copyright,
             'imageUrl' => $this->podcastCoverUrl(),
             'language' => $this->language->code,
             'itunesCategory' => $this->category,
             'explicit' => $this->explicit,
         ];
+    }
+
+    public function toPodcast():array
+    {
+        return array_merge(
+            $this->podcastHeader(),
+            ['podcastItems' => $this->podcastItems()]
+        );
     }
 }

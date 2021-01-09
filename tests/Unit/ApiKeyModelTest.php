@@ -7,6 +7,7 @@ use App\Exceptions\YoutubeNoApiKeyAvailableException;
 use App\Quota;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 
 class ApiKeyModelTest extends TestCase
 {
@@ -18,6 +19,12 @@ class ApiKeyModelTest extends TestCase
     public function setUp():void
     {
         parent::setUp();
+        /**
+         * I don't know why but when you run all the tests
+         * this table, sometimes is not emptied.
+         * So I'm deleting it manually.
+         */
+        DB::table('api_keys')->delete();
         $this->apikey = factory(ApiKey::class)->create(['apikey' => 'flower-power']);
     }
 
@@ -56,12 +63,10 @@ class ApiKeyModelTest extends TestCase
     public function testingGetOneShouldReturnOneToo()
     {
         factory(Quota::class)->create(['apikey_id' => $this->apikey->id, 'quota_used' => 0, ]);
-
         $notAvailableApiKeys = factory(ApiKey::class, 3)->create();
         foreach ($notAvailableApiKeys as $notAvailableApiKey) {
             factory(Quota::class)->create(['apikey_id' => $notAvailableApiKey->id, 'quota_used' => Quota::LIMIT_PER_DAY + 1]);
         }
-
         $this->assertEquals($this->apikey->apikey, ApiKey::getOne());
     }
 }
