@@ -21,16 +21,16 @@ class SendFileBySFTPTest extends TestCase
 
     public function tearDown():void
     {
-        Storage::disk('kim1')->deleteDirectory($this->destFolder);
+        Storage::disk('remote')->deleteDirectory($this->destFolder);
         parent::tearDown();
     }
 
     public function testingFileUpdloadIsOk()
     {
         $localFile = __DIR__ . '/../fixtures/images/sampleVig.jpg';
-        $remoteFile = Storage::disk('kim1')->path($this->destFolder . '/testVig.jpg');
+        $remoteFile = Storage::disk('remote')->path($this->destFolder . '/testVig.jpg');
         $result = SendFileBySFTP::dispatchNow($localFile, $remoteFile);
         $this->assertTrue($result);
-        $this->assertTrue(Storage::disk('kim1')->exists($remoteFile));
+        $this->assertTrue(Storage::disk('remote')->exists($remoteFile));
     }
 }

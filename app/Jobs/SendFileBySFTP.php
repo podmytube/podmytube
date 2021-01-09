@@ -15,7 +15,7 @@ class SendFileBySFTP implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public const REMOTE_DISK = 'kim1';
+    public const REMOTE_DISK = 'remote';
 
     /** @var string $localFilePath */
     public $localFilePath;
@@ -81,6 +81,7 @@ class SendFileBySFTP implements ShouldQueue
         }
 
         if ($this->cleanAfter === true) {
+            Log::debug("Cleaning {$this->localFilePath}.");
             unlink($this->localFilePath);
         }
 

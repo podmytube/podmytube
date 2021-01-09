@@ -3,8 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Channel;
-use App\Events\PodcastUpdated;
-use App\Podcast\PodcastBuilder;
+use App\Factories\UploadPodcastFactory;
 use Illuminate\Console\Command;
 
 class UpdatePodcastCommand extends Command
@@ -23,6 +22,9 @@ class UpdatePodcastCommand extends Command
      */
     protected $description = 'This command will build one podcast feed at a time.';
 
+    /** @var \App\Channel $channel */
+    protected $channel;
+
     /**
      * Execute the console command.
      *
@@ -30,15 +32,12 @@ class UpdatePodcastCommand extends Command
      */
     public function handle()
     {
-        /**
-         * getting channel to build podcast for
-         */
-        $channel = Channel::findOrFail($this->argument('channelId'));
-        $this->info("Updating podcast for channel {$channel->channel_name} ({$channel->channel_id})", 'v');
+        $this->channel = Channel::findOrFail($this->argument('channelId'));
+        $this->info("Updating podcast for channel {$this->channel->nameWithId()}", 'v');
 
-        PodcastBuilder::forChannel($channel)->build()->save();
-        PodcastUpdated::dispatch($channel);
-        $this->comment("Podcast {{$channel->title()}} has been successfully created.", 'v');
-        $this->info("You can check it here : {$channel->podcastUrl()}", 'v');
+        UploadPodcastFactory::init()->forChannel($this->channel);
+
+        $this->comment("Podcast {$this->channel->nameWithId()} has been successfully updated.", 'v');
+        $this->info("You can check it here : {$this->channel->podcastUrl()}", 'v');
     }
 }

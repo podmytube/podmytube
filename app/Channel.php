@@ -101,9 +101,19 @@ class Channel extends Model
         return $this->podcast_updatedAt;
     }
 
+    public function relativeFeedPath():string
+    {
+        return $this->channelId() . '/' . config('app.feed_filename');
+    }
+
+    public function remoteFilePath()
+    {
+        return config('app.feed_path') . $this->relativeFeedPath();
+    }
+
     public function podcastUrl()
     {
-        return config('app.podcasts_url') . '/' . $this->channelId() . '/' . config('feed_filename');
+        return config('app.podcasts_url') . '/' . $this->relativeFeedPath();
     }
 
     /**
