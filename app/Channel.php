@@ -385,7 +385,7 @@ class Channel extends Model
             'copyright' => $this->podcast_copyright,
             'imageUrl' => $this->podcastCoverUrl(),
             'language' => $this->language->code,
-            'itunesCategory' => $this->category,
+            'category' => $this->category,
             'explicit' => $this->explicit,
         ];
     }
