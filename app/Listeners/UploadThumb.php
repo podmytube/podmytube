@@ -15,6 +15,7 @@ class UploadThumb implements ShouldQueue
 
     public function handle(ThumbUpdated $event)
     {
+        Log::debug('--- ' . __CLASS__ . ' start');
         /** @var \App\Channel $channel */
         $channel = $event->channel;
 
@@ -28,5 +29,6 @@ class UploadThumb implements ShouldQueue
         }
 
         SendFileBySFTP::dispatchNow($localPath, $remotePath);
+        Log::debug('--- ' . __CLASS__ . ' end');
     }
 }

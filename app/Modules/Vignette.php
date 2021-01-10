@@ -16,9 +16,8 @@ class Vignette
     public const REMOTE_STORAGE_DISK = 'sftpthumbs';
     public const VIGNETTE_SUFFIX = '_vig';
     public const DEFAULT_VIGNETTE_FILE = 'default_vignette.jpg';
-    public const DEFAULT_VIGNETTE_WIDTH = 300;
 
-    /** @var \App\Thumb used to create vignette */
+    /** @var \App\Thumb $thumb used to create vignette */
     protected $thumb;
 
     /**
@@ -35,8 +34,6 @@ class Vignette
     private function __construct(Thumb $thumb)
     {
         $this->thumb = $thumb;
-        $this->setFileName();
-        $this->setChannelId();
     }
 
     /**
@@ -47,35 +44,7 @@ class Vignette
      */
     public function relativePath(): string
     {
-        return $this->channelId() . '/' . $this->fileName();
-    }
-
-    /**
-     * This will obtain the channel_id from the thumb.
-     */
-    protected function setChannelId()
-    {
-        $this->channel_id = $this->thumb->channelId();
-    }
-
-    /**
-     * Return the channel_id.
-     *
-     * @return string channel_id of the vignette
-     */
-    public function channelId(): string
-    {
-        return $this->channel_id;
-    }
-
-    /**
-     * This will obtain the filename of the thumb and set the filename property for the vignette.
-     */
-    protected function setFileName()
-    {
-        $fileNameAry = explode('.', $this->thumb->fileName());
-        $this->file_name =
-            $fileNameAry[0] . self::VIGNETTE_SUFFIX . '.' . $fileNameAry[1];
+        return $this->thumb->channel->channel_id . '/' . $this->fileName();
     }
 
     /**
@@ -85,7 +54,8 @@ class Vignette
      */
     public function fileName(): string
     {
-        return $this->file_name;
+        $pathParts = pathinfo($this->thumb->fileName());
+        return $pathParts['filename'] . self::VIGNETTE_SUFFIX . '.' . $pathParts['extension'];
     }
 
     /**
@@ -122,7 +92,7 @@ class Vignette
             throw new VignetteCreationFromMissingThumbException(
                 'Thumb file { ' .
                     $this->thumb->relativePath .
-                    " } on disk {$this->thumb->file_disk} for channel {$this->channel_id} is missing."
+                    " } on disk {$this->thumb->file_disk} for channel {$this->thumb->channel->channel_id} is missing."
             );
         }
         try {
@@ -131,8 +101,8 @@ class Vignette
 
             /** creating vignette */
             $image->fit(
-                self::DEFAULT_VIGNETTE_WIDTH,
-                self::DEFAULT_VIGNETTE_WIDTH,
+                config('app.vignette_width'),
+                config('app.vignette_height'),
                 function ($constraint) {
                     $constraint->aspectRatio();
                 }
@@ -143,7 +113,7 @@ class Vignette
                 $this->relativePath(),
                 (string) $image->encode()
             );
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             throw new VignetteCreationFromThumbException(
                 "Creation of vignette from thumb {{$this->thumb}} for channel {{$this->thumb->channel_id}} has failed with message :" .
                     $exception->getMessage()

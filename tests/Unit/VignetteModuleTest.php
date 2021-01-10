@@ -42,7 +42,9 @@ class VignetteModuleTest extends TestCase
 
     public function testingFileName()
     {
-        list($fileName, $fileExtension) = explode('.', $this->thumb->fileName());
+        $pathParts = pathinfo($this->thumb->fileName());
+        $fileName = $pathParts['filename'];
+        $fileExtension = $pathParts['extension'];
         $expectedFileName = $fileName . Vignette::VIGNETTE_SUFFIX . '.' . $fileExtension;
 
         $this->assertEquals($expectedFileName, $this->vignette->fileName());

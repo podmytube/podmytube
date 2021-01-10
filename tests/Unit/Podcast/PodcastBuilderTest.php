@@ -60,6 +60,11 @@ class PodcastBuilderTest extends TestCase
 
     public function headerChecking()
     {
+        $this->assertStringContainsString('<?xml version="1.0" encoding="UTF-8"?>', $this->renderedPodcast);
+        $this->assertStringContainsString(
+            '<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:content="http://purl.org/rss/1.0/modules/content/">',
+            $this->renderedPodcast
+        );
         $this->assertStringContainsString('<link>' . $this->channel->link . '</link>', $this->renderedPodcast);
         $this->assertStringContainsString('<title>' . $this->channel->title() . '</title>', $this->renderedPodcast);
         $this->assertStringContainsString('<description><![CDATA[' . $this->channel->description . ']]></description>', $this->renderedPodcast);
@@ -70,5 +75,10 @@ class PodcastBuilderTest extends TestCase
         $this->assertStringContainsString('<title>' . $this->channel->title() . '</title>', $this->renderedPodcast);
         $this->assertStringContainsString('<link>' . $this->channel->link . '</link>', $this->renderedPodcast);
         $this->assertStringContainsString('</image>', $this->renderedPodcast);
+        $this->assertStringContainsString('<itunes:owner>', $this->renderedPodcast);
+        $this->assertStringContainsString('<itunes:email>' . $this->channel->email . '</itunes:email>', $this->renderedPodcast);
+        $this->assertStringContainsString('</itunes:owner>', $this->renderedPodcast);
+        //...
+        $this->assertStringContainsString('</rss>', $this->renderedPodcast);
     }
 }

@@ -53,14 +53,6 @@ class Thumb extends Model
     }
 
     /**
-     * getter filedisk function
-     */
-    public function fileDisk()
-    {
-        return $this->file_disk;
-    }
-
-    /**
      * getter channel_id function
      */
     public function channelId()

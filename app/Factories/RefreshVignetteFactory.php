@@ -2,16 +2,19 @@
 
 namespace App\Factories;
 
-use App\Channel;
 use App\Jobs\SendFileBySFTP;
-use App\Podcast\PodcastBuilder;
+use App\Modules\Vignette;
+use App\Thumb;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
-class UploadPodcastFactory
+class RefreshVignetteFactory
 {
     /** @var \App\Channel $channel */
     protected $channel;
+
+    /** @var \App\Modules\Vignette $vignette */
+    protected $vignette;
 
     private function __construct()
     {
@@ -22,27 +25,27 @@ class UploadPodcastFactory
         return new static();
     }
 
-    public function forChannel(Channel $channel)
+    public function forThumb(Thumb $thumb)
     {
-        $this->channel = $channel;
+        $this->channel = $thumb->channel;
 
         /** getting rendered podcast */
-        $renderedPodcast = PodcastBuilder::create($this->channel->toPodcast())->render();
+        $this->vignette = Vignette::fromThumb($thumb)->makeIt();
 
-        /** saving it in tmp */
-        Storage::disk('tmp')->put($this->localFilename(), $renderedPodcast);
+        /** saving it locally */
+        // Storage::disk('tmp')->put($this->localFilename(), $renderedPodcast);
 
         /** uploading */
-        SendFileBySFTP::dispatchNow($this->localPath(), $this->remotePath(), $cleanAfter = true);
+        /* SendFileBySFTP::dispatchNow($this->localPath(), $this->remotePath(), $cleanAfter = true);
 
         Log::debug("Podcast {$channel->nameWithId()} has been successfully updated.");
-        Log::debug("You can check it here : {$channel->podcastUrl()}");
+        Log::debug("You can check it here : {$channel->podcastUrl()}"); */
         return $this;
     }
 
     public function localFilename():string
     {
-        return "{$this->channel->channelId()}-" . config('app.feed_filename');
+        return $this->vignette->localFilePath();
     }
 
     public function localPath():string

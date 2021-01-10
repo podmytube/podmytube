@@ -107,11 +107,19 @@ class Channel extends Model
         return $this->channelId() . '/' . config('app.feed_filename');
     }
 
-    public function remoteFilePath()
+    /**
+     * Return the remote path of the podcast feed for this channel.
+     *
+     * @return string remote path
+     */
+    public function remoteFilePath():string
     {
         return config('app.feed_path') . $this->relativeFeedPath();
     }
 
+    /**
+     * Return the podcast url for this channel.
+     */
     public function podcastUrl()
     {
         return config('app.podcasts_url') . '/' . $this->relativeFeedPath();
