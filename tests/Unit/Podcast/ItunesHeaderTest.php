@@ -32,7 +32,7 @@ class ItunesHeaderTest extends TestCase
             'title' => $itunesTitle,
             'imageUrl' => Thumb::defaultUrl(),
             'email' => $authorEmail,
-            'itunesCategory' => Category::bySlug('documentary'),
+            'category' => Category::bySlug('documentary'),
             'explicit' => true,
         ])->render();
         $this->assertStringContainsString("<itunes:author>$authorName</itunes:author>", $this->renderedResult);

@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Category;
 use App\Channel;
 use App\Plan;
 use App\Podcast\PodcastItem;
@@ -123,7 +124,7 @@ class ChannelPodcastTest extends TestCase
             'description',
             'imageUrl',
             'language',
-            'itunesCategory',
+            'category',
             'explicit',
         ];
 
@@ -136,7 +137,8 @@ class ChannelPodcastTest extends TestCase
         $this->assertEquals($channelToPodcastInfos['description'], $channel->description);
         $this->assertEquals($channelToPodcastInfos['imageUrl'], $channel->podcastCoverUrl());
         $this->assertEquals($channelToPodcastInfos['language'], $channel->language->code);
-        $this->assertEquals($channelToPodcastInfos['itunesCategory'], $channel->category);
+        $this->assertEquals($channelToPodcastInfos['category'], $channel->category);
         $this->assertEquals($channelToPodcastInfos['explicit'], $channel->explicit);
+        $this->assertInstanceOf(Category::class, $channelToPodcastInfos['category']);
     }
 }

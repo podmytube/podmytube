@@ -44,7 +44,7 @@ class PodcastHeader
             'email' => $attributes['email'] ?? null,
             'title' => $attributes['title'] ?? null,
             'imageUrl' => $attributes['podcastCoverUrl'] ?? null,
-            'itunesCategory' => $attributes['category'] ?? null,
+            'category' => $attributes['category'] ?? null,
             'explicit' => $attributes['explicit'] ?? null,
         ])->render();
     }

@@ -42,8 +42,8 @@ class ItunesHeader implements IsRenderableInterface
             $this->setType($attributes['type']);
         }
 
-        if (isset($attributes['itunesCategory']) && $attributes['itunesCategory'] instanceof Category) {
-            $this->itunesCategory = ItunesCategory::prepare($attributes['itunesCategory'])->render();
+        if (isset($attributes['category']) && $attributes['category'] instanceof Category) {
+            $this->itunesCategory = ItunesCategory::prepare($attributes['category'])->render();
         }
 
         if ($this->author || $this->email) {

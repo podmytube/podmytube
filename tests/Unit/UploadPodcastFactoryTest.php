@@ -15,5 +15,12 @@ class UploadPodcastFactoryTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+        $this->channel = $this->createChannelWithPlan();
+    }
+
+    public function testfoo()
+    {
+        $this->assertFalse(false);
+        dd($this->channel->toPodcast());
     }
 }
