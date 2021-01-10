@@ -89,13 +89,17 @@ return [
             'permPublic' => 0755,
         ],
 
-        /**
-         * Thumbs from the dashboard
-         */
         'thumbs' => [
             'driver' => 'local',
             'root' => storage_path('app/public/thumbs'),
             'url' => env('THUMBS_URL', 'https://thumbs.podmytube.com'),
+            'visibility' => 'public',
+        ],
+
+        'vignettes' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/vignettes'),
+            'url' => env('APP_URL') . '/storage/vignettes',
             'visibility' => 'public',
         ],
 

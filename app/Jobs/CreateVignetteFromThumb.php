@@ -43,9 +43,9 @@ class CreateVignetteFromThumb implements ShouldQueue
 
         try {
             /** chaining vignette creation and upload */
-            Vignette::fromThumb($this->srcThumb)
+            $vignette = Vignette::fromThumb($this->srcThumb)
                 ->makeIt()
-                ->upload();
+                ->saveLocally();
         } catch (\Exception $exception) {
             throw new VignetteCreationFromThumbException(
                 "Creation of vignette from thumb {{$this->srcThumb}} for channel {{$this->srcThumb->channel_id}} has failed with message :" .

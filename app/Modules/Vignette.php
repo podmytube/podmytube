@@ -3,7 +3,6 @@
 namespace App\Modules;
 
 use App\Exceptions\VignetteCreationFromMissingThumbException;
-use App\Exceptions\VignetteCreationFromThumbException;
 use App\Exceptions\VignetteUploadException;
 use App\Thumb;
 use Exception;
@@ -13,12 +12,15 @@ use Image;
 
 class Vignette
 {
-    public const REMOTE_STORAGE_DISK = 'sftpthumbs';
+    public const LOCAL_STORAGE_DISK = 'vignettes';
     public const VIGNETTE_SUFFIX = '_vig';
     public const DEFAULT_VIGNETTE_FILE = 'default_vignette.jpg';
 
     /** @var \App\Thumb $thumb used to create vignette */
     protected $thumb;
+
+    /** @var \Intervention\Image\Image $image */
+    protected $image;
 
     /**
      * This function will instantiate vignette object from the thumb one.
@@ -65,9 +67,8 @@ class Vignette
      */
     public function exists()
     {
-        return Storage::disk($this->thumb->fileDisk())->exists(
-            $this->relativePath()
-        );
+        return Storage::disk(self::LOCAL_STORAGE_DISK)
+            ->exists($this->relativePath());
     }
 
     /**
@@ -77,9 +78,7 @@ class Vignette
      */
     public function url()
     {
-        return Storage::disk($this->thumb->file_disk)->url(
-            $this->relativePath()
-        );
+        return Storage::disk(self::LOCAL_STORAGE_DISK)->url($this->relativePath());
     }
 
     /**
@@ -90,35 +89,28 @@ class Vignette
         /** Verifying thumb file exists */
         if (!$this->thumb->exists()) {
             throw new VignetteCreationFromMissingThumbException(
-                'Thumb file { ' .
-                    $this->thumb->relativePath .
-                    " } on disk {$this->thumb->file_disk} for channel {$this->thumb->channel->channel_id} is missing."
+                "Thumb file {$this->thumb->relativePath()} for channel {$this->thumb->channel->channel_id} is missing."
             );
         }
-        try {
-            /** getting data and convert it to an image object */
-            $image = Image::make($this->thumb->getData());
+        /** getting data and convert it to an image object */
+        $this->image = Image::make($this->thumb->getData());
 
-            /** creating vignette */
-            $image->fit(
-                config('app.vignette_width'),
-                config('app.vignette_height'),
-                function ($constraint) {
-                    $constraint->aspectRatio();
-                }
-            );
+        /** creating vignette */
+        $this->image->fit(
+            config('app.vignette_width'),
+            config('app.vignette_height'),
+            function ($constraint) {
+                $constraint->aspectRatio();
+            }
+        );
 
-            /** Storing it locally */
-            Storage::disk($this->thumb->fileDisk())->put(
-                $this->relativePath(),
-                (string) $image->encode()
-            );
-        } catch (Exception $exception) {
-            throw new VignetteCreationFromThumbException(
-                "Creation of vignette from thumb {{$this->thumb}} for channel {{$this->thumb->channel_id}} has failed with message :" .
-                    $exception->getMessage()
-            );
-        }
+        return $this;
+    }
+
+    public function saveLocally()
+    {
+        Storage::disk(self::LOCAL_STORAGE_DISK)
+            ->put($this->relativePath(), (string) $this->image->encode());
         return $this;
     }
 
@@ -129,9 +121,7 @@ class Vignette
      */
     public function getData()
     {
-        return Storage::disk($this->thumb->fileDisk())->get(
-            $this->relativePath()
-        );
+        return (string) $this->image->encode();
     }
 
     /**
@@ -197,7 +187,7 @@ class Vignette
 
     public function localFilePath()
     {
-        return Storage::disk(Thumb::LOCAL_STORAGE_DISK)->path($this->relativePath());
+        return Storage::disk(self::LOCAL_STORAGE_DISK)->path($this->relativePath());
     }
 
     public function remoteFilePath()
