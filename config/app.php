@@ -71,6 +71,9 @@ return [
     'mp3_domain' => env('MP3_DOMAIN', 'mp3.podmytube.com'),
     'mp3_path' => env('MP3_PATH', 'mp3.podmytube.com/www/'),
 
+    'vignette_width' => env('VIGNETTE_WIDTH', 300),
+    'vignette_height' => env('VIGNETTE_HEIGHT', 300),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone
@@ -82,7 +85,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Europe/Paris',
 
     /*
     |--------------------------------------------------------------------------
