@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('pageTitle', "You want to know more about Frederick Tyteca ?")
+@section('pageTitle', "You want to know more about it ?")
 
 @section('content')
 
@@ -8,22 +8,27 @@
 
     <h1 class="text-center text-3xl pb-6 md:text-5xl text-white font-semibold">About me</h1>
 
-    <div class="text-center">
-        Coming soon
-        <!-- 
+    <div>
             
-        So you want to know more about me. Really ?
-        My name is Frederick Tyteca and I started working on Podmytube during christmas 2016. At this time I had almost ten hours commuting by week.
-        I was taking advantage of this time to listen my favourite media: <strong>podcasts</strong>.
-        The problem was, with so much time in my car I 
-
+        <p class="py-4 leading-relaxed">
+        So you want to know more about it. Really ? Let's go !<br>
+        My name is Frederick Tyteca and I'm a fullstack developper for more than 20 years now 😥. 
+        </p>
         
-        after I discovered that Youtube was hosting great shows that I would have loved to find in podcast format.
-
-        My goal is to give Youtube hosts the opportunity to create a podcast just from the videos of their youtube channel. The whole process has been designed to make podcast management as simple as possible. So that you can focus on what you do the best "produce content"
-
-        Don't wait, try Podmytube for free ! 
-        -->
+        <p class="py-4 leading-relaxed">
+        The story of Podmytube bring me back during christmas 2016.<br>
+        At this time I had almost ten hours commuting a week.<br>
+        I was taking advantage of this time to listen my favourite media: <strong>podcasts</strong> 😍.<br>
+        The problem was, I consumed a lot of them and often found myself without any to listen to.
+        </p>
+        
+        <p class="py-4 leading-relaxed">
+        One day I discovered that Youtube was hosting great shows too. <br>
+        Shows I would have loved to listen to in podcast format.<br>
+        Unfortunately there were no <strong>easy solution for youtuber</strong> to <strong>repurpose their content</strong> into podcast format.<br>
+        So I decided to build it. Initially, it was for me then I improved it for any youtuber who want to keep control on his show.
+        <p>
+    
     </div>
 
 </div>
