@@ -7,6 +7,15 @@
 #
 # Installing youtube-dl
 #
-sudo curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/youtube-dl
+SCRIPT_DIR=$(dirname ${0})
+echo $SCRIPT_DIR
+DESTINATION_DIR="$SCRIPT_DIR/../bin"
+echo $DESTINATION_DIR
+if [ ! -d $DESTINATION_DIR ]; then
+    mkdir $DESTINATION_DIR
+else
+    echo "$DESTINATION_DIR exists already"
+fi
 
-sudo chmod a+rx /usr/local/bin/youtube-dl
+curl -L https://yt-dl.org/downloads/latest/youtube-dl -o $DESTINATION_DIR/youtube-dl
+chmod +rx $DESTINATION_DIR/youtube-dl

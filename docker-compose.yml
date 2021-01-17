@@ -19,7 +19,7 @@ services:
         volumes:
             - .:/app
             - /etc/localtime:/etc/localtime:ro
-            - /usr/local/bin/youtube-dl:/usr/local/bin/youtube-dl
+            - ./bin/youtube-dl:/usr/local/bin/youtube-dl
         healthcheck:
             test: bash -c "[ -f /app/vendor/autoload.php ]"
             timeout: 10s
