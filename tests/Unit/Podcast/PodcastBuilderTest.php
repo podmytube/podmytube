@@ -43,6 +43,15 @@ class PodcastBuilderTest extends TestCase
         $this->itemsChecking();
     }
 
+    public function testRenderingExplicitChannelShouldBeGood()
+    {
+        $this->channel->explicit = true;
+        $this->addMediasToChannel($this->channel, 3, true);
+        $this->renderedPodcast = PodcastBuilder::create($this->channel->toPodcast())->render();
+        $this->headerChecking();
+        $this->itemsChecking();
+    }
+
     public function itemsChecking()
     {
         $this->channel->mediasToPublish()->map(function ($media) {
@@ -54,7 +63,10 @@ class PodcastBuilderTest extends TestCase
             );
             $this->assertStringContainsString('<pubDate>' . $media->pubDate() . '</pubDate>', $this->renderedPodcast);
             $this->assertStringContainsString('<itunes:duration>' . $media->duration() . '</itunes:duration>', $this->renderedPodcast);
-            $this->assertStringContainsString('<itunes:explicit>' . $media->explicit === true ? 'true' : 'false' . '</itunes:explicit>', $this->renderedPodcast);
+            $this->assertStringContainsString(
+                '<itunes:explicit>' . $this->channel->explicit === true ? 'true' : 'false' . '</itunes:explicit>',
+                $this->renderedPodcast
+            );
         });
     }
 
