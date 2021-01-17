@@ -25,7 +25,7 @@ class ChannelUpdateTest extends TestCase
     /**
      * @dataProvider provideValidData
      */
-    public function testValidData(string $message, array $data)
+    public function testValidData(array $data)
     {
         $this->followingRedirects()
             ->actingAs($this->channel->user)
@@ -38,7 +38,7 @@ class ChannelUpdateTest extends TestCase
     /**
      * @dataProvider provideInvalidData
      */
-    public function testInvalidData(string $message, array $data, $error)
+    public function testInvalidData(array $data, $error)
     {
         $this->actingAs($this->channel->user)
             ->from(route('channel.edit', $this->channel))
@@ -52,12 +52,12 @@ class ChannelUpdateTest extends TestCase
     public function provideValidData()
     {
         return [
-            ['title only should be valid', ['podcast_title' => 'Great podcast means great responsibilities']],
-            ['only explicit', ['explicit' => 0]],
-            ['only description', ['description' => 'Lorem ipsum dolore sit amet.']],
-            ['only lang', ['lang' => 'FR']],
-            ['title and explicit', ['podcast_title' => 'Great podcast means great responsibilities', 'explicit' => 1]],
-            ['Category should be valid', ['category_id' => 1]],
+            [['podcast_title' => 'Great podcast means great responsibilities']],
+            [['explicit' => 0]],
+            [['description' => 'Lorem ipsum dolore sit amet.']],
+            [['lang' => 'FR']],
+            [['podcast_title' => 'Great podcast means great responsibilities', 'explicit' => 1]],
+            [['category_id' => 1]],
         ];
     }
 
@@ -67,13 +67,13 @@ class ChannelUpdateTest extends TestCase
          * format is message, data to PATCH, field in error
          */
         return [
-            ['invalid link', ['link' => 'invalid url'], 'link'],
-            ['link without http', ['link' => 'google.com'], 'link'],
-            ['link without domain', ['link' => 'https://'], 'link'],
-            ['invalid email', ['email' => 'invalid email'], 'email'],
-            ['invalid lang', ['lang' => 'JP'], 'lang'],
-            ['invalid category', ['category_id' => 'not a category'], 'category_id'],
-            ['invalid explicit', ['explicit' => 'not a boolean'], 'explicit'],
+            [['link' => 'invalid url'], 'link'],
+            [['link' => 'google.com'], 'link'],
+            [['link' => 'https://'], 'link'],
+            [['email' => 'invalid email'], 'email'],
+            [['language_id' => 9999], 'language_id'],
+            [['category_id' => 'not a category'], 'category_id'],
+            [['explicit' => 'not a boolean'], 'explicit'],
         ];
     }
 }
