@@ -23,7 +23,7 @@ class MediaModelTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->channel = factory(Channel::class)->create();
+        $this->channel = factory(Channel::class)->create(['explicit' => false]);
         $this->media = factory(Media::class)->create(['channel_id' => $this->channel->channel_id]);
     }
 
@@ -133,7 +133,7 @@ class MediaModelTest extends TestCase
         );
     }
 
-    public function testToPodcastItemIsFine()
+    public function testToPodcastItemShouldReturnEveryField()
     {
         $expectedKeys = [
             'guid',
@@ -149,7 +149,11 @@ class MediaModelTest extends TestCase
         array_map(function ($key) use ($result) {
             $this->assertArrayHasKey($key, $result, "Converting a media to a podcast item should have key {$key}.");
         }, $expectedKeys);
+    }
 
+    public function testToPodcastItemWithNonExplicitChannel()
+    {
+        $result = $this->media->toPodcastItem();
         $this->assertEquals($result['guid'], $this->media->media_id);
         $this->assertEquals($result['title'], $this->media->title);
         $this->assertEquals($result['enclosureUrl'], $this->media->enclosureUrl());
@@ -157,7 +161,22 @@ class MediaModelTest extends TestCase
         $this->assertEquals($result['pubDate'], $this->media->pubDate());
         $this->assertEquals($result['description'], $this->media->description);
         $this->assertEquals($result['duration'], $this->media->duration());
-        $this->assertEquals($result['explicit'], $this->media->channel->explicit);
+        $this->assertEquals($result['explicit'], 'false');
+    }
+
+    public function testToPodcastItemWithExplicitChannel()
+    {
+        $channel = factory(Channel::class)->create(['explicit' => true]);
+        $media = factory(Media::class)->create(['channel_id' => $channel->channel_id]);
+        $result = $media->toPodcastItem();
+        $this->assertEquals($result['guid'], $media->media_id);
+        $this->assertEquals($result['title'], $media->title);
+        $this->assertEquals($result['enclosureUrl'], $media->enclosureUrl());
+        $this->assertEquals($result['mediaLength'], $media->length);
+        $this->assertEquals($result['pubDate'], $media->pubDate());
+        $this->assertEquals($result['description'], $media->description);
+        $this->assertEquals($result['duration'], $media->duration());
+        $this->assertEquals($result['explicit'], 'true');
     }
 
     public function testToPodcastItemWithEmptyMediaInfos()
@@ -195,6 +214,6 @@ class MediaModelTest extends TestCase
         $this->assertEquals($result['mediaLength'], $media->length);
         $this->assertEquals($result['pubDate'], $media->pubDate());
         $this->assertEquals($result['duration'], $media->duration());
-        $this->assertEquals($result['explicit'], $media->channel->explicit);
+        $this->assertEquals($result['explicit'], 'false');
     }
 }
