@@ -13,11 +13,11 @@ $factory->define(Channel::class, function (Faker $faker, $attributes) {
         'user_id' => $attributes['user_id'] ?? function () {
             return factory(App\User::class)->create()->user_id;
         },
-        'channel_name' => $faker->sentence('3', true),
-        'podcast_title' => $faker->sentence('5', true),
-        'podcast_copyright' => $faker->sentence('10', true),
-        'authors' => $faker->name,
-        'email' => $faker->safeEmail,
+        'channel_name' => $faker->words('3', true),
+        'podcast_title' => $attributes['podcast_title'] ?? $faker->words('5', true),
+        'podcast_copyright' => $attributes['podcast_copyright'] ?? $faker->sentence('10', true),
+        'authors' => $attributes['authors'] ?? 'John Lorem',
+        'email' => $attributes['email'] ?? 'john@loremipsum.com',
         'link' => $attributes['link'] ?? 'https://loremipsum.com',
         'category_id' => $attributes['category_id'] ?? function () {
             return factory(Category::class)->create()->id;

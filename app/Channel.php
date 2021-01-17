@@ -54,6 +54,7 @@ class Channel extends Model
      * the channel_id is not one auto_increment integer
      */
     public $incrementing = false;
+    protected $keyType = 'string';
 
     /**
      * those fields are converted into Carbon mutator

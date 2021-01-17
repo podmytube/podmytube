@@ -2,8 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Subscription;
+use App\Events\ChannelUpdated;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 class ChannelUpdateTest extends TestCase
@@ -15,10 +16,10 @@ class ChannelUpdateTest extends TestCase
 
     public function setUp(): void
     {
-        $this->markTestSkipped('This test is failing because of strange relationship handling with sqlite');
+        //$this->markTestSkipped('This test is failing because of strange relationship handling with sqlite');
         parent::setUp();
-        $subscription = factory(Subscription::class)->create();
-        $this->channel = $subscription->channel;
+        $this->channel = $this->createChannelWithPlan();
+        Event::fake();
     }
 
     /**
@@ -30,6 +31,8 @@ class ChannelUpdateTest extends TestCase
             ->actingAs($this->channel->user)
             ->patch(route('channel.update', $this->channel), $data)
             ->assertSuccessful();
+
+        Event::assertDispatched(ChannelUpdated::class);
     }
 
     /**
@@ -42,6 +45,8 @@ class ChannelUpdateTest extends TestCase
             ->patch(route('channel.update', $this->channel), $data)
             ->assertSessionHasErrors($error)
             ->assertRedirect(route('channel.edit', $this->channel));
+
+        Event::assertNotDispatched(ChannelUpdated::class);
     }
 
     public function provideValidData()

@@ -15,10 +15,14 @@ class MediasAccessTest extends TestCase
     /** @var \App\Channel $channel */
     protected $channel;
 
+    /** @var \App\Media $media */
+    protected $media;
+
     public function setUp(): void
     {
         parent::setUp();
         $this->channel = factory(Channel::class)->create();
+        $this->media = factory(Media::class)->create(['channel_id' => $this->channel->channel_id]);
     }
 
     public function testForbidenForGuests()
@@ -33,15 +37,20 @@ class MediasAccessTest extends TestCase
         ]);
     }
 
-    public function testForbiddenToAnotherUser()
+    public function testMediaEditForbiddenToAnotherUser()
     {
         $notTheOwner = factory(User::class)->create();
-        $media = factory(Media::class)->create(['channel_id' => $this->channel->channel_id]);
         $this->actingAs($notTheOwner)
-            ->get(route('channel.medias.edit', ['channel' => $this->channel, 'media' => $media]))
+            ->get(route('channel.medias.edit', ['channel' => $this->channel, 'media' => $this->media]))
             ->assertForbidden();
+    }
+
+    public function testMediaShowForbiddenToAnotherUser()
+    {
+        $this->markTestIncomplete('channel.medias.show route does not exist at this time.');
+        $notTheOwner = factory(User::class)->create();
         $this->actingAs($notTheOwner)
-            ->get(route('channel.medias.show', [$this->channel, $media]))
+            ->get(route('channel.medias.show', [$this->channel, $this->media]))
             ->assertForbidden();
     }
 

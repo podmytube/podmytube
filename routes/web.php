@@ -85,7 +85,8 @@ Route::domain('dashboard.' . config('app.domain'))->group(function () {
         /**
          * Medias
          */
-        Route::resource('channel.medias', 'MediasController');
+        Route::resource('channel.medias', 'MediasController')
+            ->only(['index', 'create', 'edit', 'store']);
 
         /**
          * Thumb
