@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\User;
-use App\Channel;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -11,12 +10,13 @@ class ChannelAccessTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected $user;
+    /** @var \App\Channel $channel */
+    protected $channel;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->user = factory(User::class)->create();
+        $this->channel = $this->createChannelWithPlan();
     }
 
     public function testChannelIndexIsNotPossibleForGuest()
@@ -24,67 +24,54 @@ class ChannelAccessTest extends TestCase
         $this->get(route('channel.index'))->assertRedirect('/login');
     }
 
-    public function testChannelIndexIsAllowedToOwnerAndHasAllItsChannel()
+    public function testUserShouldSeeAllHisChannel()
     {
-        $this->markTestIncomplete('You should take a look on the HomeController');
-        $channels = factory(Channel::class, 3)->create([
-            'user_id' => $this->user->id(),
-        ]);
-        $response = $this->followingRedirects()
-            ->actingAs($this->user)
+        $this->followingRedirects()
+            ->actingAs($this->channel->user)
             ->get(route('home'))
             ->assertSuccessful()
-            ->assertViewIs('home');
-
-        foreach ($channels as $channel) {
-            $response->assertSeeText($channel->title());
-        }
+            ->assertViewIs('home')
+            ->assertSeeText($this->channel->title());
     }
 
     public function testChannelEditIsNotPossibleForGuest()
     {
-        $channel = factory(Channel::class)->create();
-        $this->get(route('channel.edit', $channel))->assertRedirect('/login');
+        $this->get(route('channel.edit', $this->channel))->assertRedirect('/login');
     }
 
     public function testChannelEditIsForbidenForAnotherUser()
     {
-        $channel = factory(Channel::class)->create();
-        $forbiddenUser = factory(User::class)->create();
-        $this->actingAs($forbiddenUser)
-            ->get(route('channel.edit', $channel))
+        $notTheOwner = factory(User::class)->create();
+        $this->actingAs($notTheOwner)
+            ->get(route('channel.edit', $this->channel))
             ->assertForbidden();
     }
 
     public function testChannelEditIsAllowedToOwner()
     {
-        $channel = factory(Channel::class)->create();
-        $this->actingAs($channel->user)
-            ->get(route('channel.edit', $channel))
+        $this->actingAs($this->channel->user)
+            ->get(route('channel.edit', $this->channel))
             ->assertSuccessful()
             ->assertViewIs('channel.edit');
     }
 
     public function testChannelViewIsNotPossibleForGuest()
     {
-        $channel = factory(Channel::class)->create();
-        $this->get(route('channel.show', $channel))->assertRedirect('/login');
+        $this->get(route('channel.show', $this->channel))->assertRedirect('/login');
     }
 
     public function testChannelViewIsForbidenForAnotherUser()
     {
-        $channel = factory(Channel::class)->create();
-        $forbiddenUser = factory(User::class)->create();
-        $this->actingAs($forbiddenUser)
-            ->get(route('channel.show', $channel))
+        $notTheOwner = factory(User::class)->create();
+        $this->actingAs($notTheOwner)
+            ->get(route('channel.show', $this->channel))
             ->assertForbidden();
     }
 
     public function testChannelViewIsAllowedToOwner()
     {
-        $channel = factory(Channel::class)->create();
-        $this->actingAs($channel->user)
-            ->get(route('channel.show', $channel))
+        $this->actingAs($this->channel->user)
+            ->get(route('channel.show', $this->channel))
             ->assertSuccessful()
             ->assertViewIs('channel.show');
     }
