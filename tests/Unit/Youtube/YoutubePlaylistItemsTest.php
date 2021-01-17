@@ -21,20 +21,23 @@ class YoutubePlaylistItemsTest extends TestCase
 
     public function testHavingTheRightNumberOfItemsInPlaylist()
     {
+        $expectedVideosOnMyChannel = 2;
+        $expectedQuotaConsumed = 7;
         $videos = new YoutubePlaylistItems();
         $this->assertCount(
-            2,
-            $videos->forPlaylist(self::MY_PERSONAL_UPLOADS_PLAYLIST_ID)->videos()
+            $expectedVideosOnMyChannel,
+            $videos->forPlaylist(self::MY_PERSONAL_UPLOADS_PLAYLIST_ID)->videos(),
+            "I should have only ${expectedVideosOnMyChannel} uploaded videos on my personnal channel."
         );
         /**
-         * base : 1
          * id : 0
+         * base : 1
          * snippet : 2
          * contentDetails : 2
+         * status : 2
          */
-
         $this->assertEqualsCanonicalizing(
-            [$videos->apikey() => 5],
+            [$videos->apikey() => $expectedQuotaConsumed],
             YoutubeQuotas::forUrls($videos->queriesUsed())->quotaConsumed()
         );
     }

@@ -21,6 +21,7 @@ class YoutubeLastVideoFactoryTest extends TestCase
 
     public function testGettingLastVideoShouldBeGood()
     {
+        $expectedQuotaUsed = 14;
         /**
          * this factory is getting the last channel media info+tags,
          * then it is storing the total quota consumption
@@ -34,7 +35,11 @@ class YoutubeLastVideoFactoryTest extends TestCase
 
         /** checking quota consumption has been persisted */
         $quotaModel = Quota::first();
-        $this->assertEquals(12, $quotaModel->quota_used);
+        $this->assertEquals(
+            $expectedQuotaUsed,
+            $quotaModel->quota_used,
+            "We were expecting to consume $expectedQuotaUsed, and we consumed {$quotaModel->quota_used}"
+        );
         $this->assertEquals(YoutubeLastVideoFactory::SCRIPT_NAME, $quotaModel->script);
     }
 
