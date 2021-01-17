@@ -18,6 +18,7 @@ class YoutubeChannelVideosTest extends TestCase
 
     public function testHavingTheRightNumberOfVideos()
     {
+        $expectedConsumedQuota = 7;
         $factory = YoutubeChannelVideos::forChannel(YoutubeCoreTest::PERSONAL_CHANNEL_ID, 50);
         $this->assertCount(
             2,
@@ -30,13 +31,14 @@ class YoutubeChannelVideosTest extends TestCase
          * obtaining videos list for uploads => 5
          */
         $this->assertEqualsCanonicalizing(
-            [$factory->apikey() => 5],
+            [$factory->apikey() => $expectedConsumedQuota],
             YoutubeQuotas::forUrls($factory->queriesUsed())->quotaConsumed()
         );
     }
 
     public function testLimitingTheNumberOfResults()
     {
+        $expectedConsumedQuota = 7;
         $factory = YoutubeChannelVideos::forChannel(YoutubeCoreTest::PEWDIEPIE_CHANNEL_ID, 50);
 
         $this->assertCount(
@@ -52,7 +54,7 @@ class YoutubeChannelVideosTest extends TestCase
          * obtaining videos list for uploads => 5
          */
         $this->assertEqualsCanonicalizing(
-            [$factory->apikey() => 5],
+            [$factory->apikey() => $expectedConsumedQuota],
             YoutubeQuotas::forUrls($factory->queriesUsed())->quotaConsumed()
         );
     }
