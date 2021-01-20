@@ -20,9 +20,9 @@
         </div>
         <div class="lg:flex -mx-6 mt-8">
             <div class="w-full lg:w-1/2 px-6">
-                <div class="text-sm uppercase font-bold">About us</div>
+                <div class="text-sm uppercase font-bold">About podmytube</div>
                 <p class="mt-3 md:mt-6 text-base sm:text-lg">
-                    Podmytube provides podcast hosting for dozens of organizations, brands, and creatives around the world.<br>
+                    Podmytube is providing podcast hosting for <strong>{{$activeChannelsCount}}</strong> great youtube channels around the world.<br>
                     <!--a href="/how-to-start-a-podcast" class="underline">Learn how to start a podcast →.</a-->
                 </p>
             </div>

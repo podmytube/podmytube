@@ -25,28 +25,19 @@ class YoutubePlaylistItems extends YoutubeCore
                 'playlistId' => $this->playlistId,
                 'maxResults' => 50,
             ])
-            ->addParts(['id', 'snippet', 'contentDetails', 'status'])
+            ->addParts(['id', 'snippet', 'contentDetails'])
             ->run()
             ->items();
 
         /**
          * filtering video
          */
-        $this->videos = array_filter($videos, function ($item) {
-            /** not published yet */
-            if (!isset($item['contentDetails']['videoPublishedAt']) || !strlen($item['contentDetails']['videoPublishedAt'])) {
-                return false;
-            }
-
-            /** filtering private video */
-            if ($item['status']['privacyStatus'] == 'private') {
-                return false;
-            }
-
-            try {
-                Carbon::parse($item['contentDetails']['videoPublishedAt']);
-            } catch (\Exception $exception) {
-                Log::error("Media id : {$item['contentDetails']['videoId']} publication date {$item['contentDetails']['videoPublishedAt']} is invalid ");
+        $onlyValidVideos = array_filter($videos, function ($item) {
+            if (
+                !isset($item['contentDetails']['videoPublishedAt']) ||
+                !strlen($item['contentDetails']['videoPublishedAt'])
+                ) {
+                Log::debug('========> REJECTED ========> ', $item);
                 return false;
             }
             return true;
@@ -60,8 +51,7 @@ class YoutubePlaylistItems extends YoutubeCore
                 'description' => $videoItem['snippet']['description'],
                 'published_at' => Carbon::parse($videoItem['contentDetails']['videoPublishedAt'])->setTimezone('UTC'),
             ];
-        }, $this->videos);
-
+        }, $onlyValidVideos);
         return $this;
     }
 

@@ -22,7 +22,7 @@ class YoutubePlaylistItemsTest extends TestCase
     public function testHavingTheRightNumberOfItemsInPlaylist()
     {
         $expectedVideosOnMyChannel = 2;
-        $expectedQuotaConsumed = 7;
+        $expectedQuotaConsumed = 5;
         $videos = new YoutubePlaylistItems();
         $this->assertCount(
             $expectedVideosOnMyChannel,
@@ -34,7 +34,6 @@ class YoutubePlaylistItemsTest extends TestCase
          * base : 1
          * snippet : 2
          * contentDetails : 2
-         * status : 2
          */
         $this->assertEqualsCanonicalizing(
             [$videos->apikey() => $expectedQuotaConsumed],
