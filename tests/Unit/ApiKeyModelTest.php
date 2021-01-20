@@ -19,12 +19,14 @@ class ApiKeyModelTest extends TestCase
     public function setUp():void
     {
         parent::setUp();
-        /**
-         * I don't know why but when you run all the tests
-         * this table, sometimes is not emptied.
-         * So I'm deleting it manually.
-         */
-        DB::table('api_keys')->delete();
+        if (ApiKey::count()) {
+            /**
+             * !!! DON'T REMOVE THAT !!!
+             * sometime RefreshDatabase don't do what it should and some
+             * apikeys are still registered.
+             */
+            DB::table('api_keys')->delete();
+        }
         $this->apikey = factory(ApiKey::class)->create(['apikey' => 'flower-power']);
     }
 

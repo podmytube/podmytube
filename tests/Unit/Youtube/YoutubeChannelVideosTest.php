@@ -18,7 +18,7 @@ class YoutubeChannelVideosTest extends TestCase
 
     public function testHavingTheRightNumberOfVideos()
     {
-        $expectedConsumedQuota = 7;
+        $expectedConsumedQuota = 5;
         $factory = YoutubeChannelVideos::forChannel(YoutubeCoreTest::PERSONAL_CHANNEL_ID, 50);
         $this->assertCount(
             2,
@@ -38,7 +38,7 @@ class YoutubeChannelVideosTest extends TestCase
 
     public function testLimitingTheNumberOfResults()
     {
-        $expectedConsumedQuota = 7;
+        $expectedConsumedQuota = 5;
         $factory = YoutubeChannelVideos::forChannel(YoutubeCoreTest::PEWDIEPIE_CHANNEL_ID, 50);
 
         $this->assertCount(

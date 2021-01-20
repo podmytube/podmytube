@@ -21,7 +21,7 @@ class YoutubeLastVideoFactoryTest extends TestCase
 
     public function testGettingLastVideoShouldBeGood()
     {
-        $expectedQuotaUsed = 14;
+        $expectedQuotaUsed = 12;
         /**
          * this factory is getting the last channel media info+tags,
          * then it is storing the total quota consumption
