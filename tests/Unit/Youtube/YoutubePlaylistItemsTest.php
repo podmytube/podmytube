@@ -27,8 +27,8 @@ class YoutubePlaylistItemsTest extends TestCase
             $videos->forPlaylist(self::MY_PERSONAL_UPLOADS_PLAYLIST_ID)->videos()
         );
         /**
-         * base : 1
          * id : 0
+         * base : 1
          * snippet : 2
          * contentDetails : 2
          */
