@@ -32,14 +32,12 @@ class YoutubePlaylistItems extends YoutubeCore
         /**
          * filtering invalid publishedAt video
          */
-        $this->videos = array_filter($videos, function ($item) {
-            if (!isset($item['contentDetails']['videoPublishedAt']) || !strlen($item['contentDetails']['videoPublishedAt'])) {
-                return false;
-            }
-            try {
-                Carbon::parse($item['contentDetails']['videoPublishedAt']);
-            } catch (\Exception $exception) {
-                Log::error("Media id : {$item['contentDetails']['videoId']} publication date {$item['contentDetails']['videoPublishedAt']} is invalid ");
+        $onlyValidVideos = array_filter($videos, function ($item) {
+            if (
+                !isset($item['contentDetails']['videoPublishedAt']) ||
+                !strlen($item['contentDetails']['videoPublishedAt'])
+                ) {
+                Log::debug('========> REJECTED ========> ', $item);
                 return false;
             }
             return true;
@@ -53,7 +51,7 @@ class YoutubePlaylistItems extends YoutubeCore
                 'description' => $videoItem['snippet']['description'],
                 'published_at' => Carbon::parse($videoItem['contentDetails']['videoPublishedAt'])->setTimezone('UTC'),
             ];
-        }, $videos);
+        }, $onlyValidVideos);
         return $this;
     }
 
