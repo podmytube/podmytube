@@ -29,6 +29,7 @@
         "spatie/laravel-stripe-webhooks": "^2.3",
         "stripe/stripe-php": "^7.39",
         "symfony/console": "^5.1",
+        "symfony/process": "^5.0",
         "wapmorgan/mp3info": "^0.0.5"
     },
     "require-dev": {
