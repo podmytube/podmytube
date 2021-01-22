@@ -13,7 +13,7 @@ class ThumbRequest extends FormRequest
      */
     public function authorize()
     {
-        return $this->channel->user_id === $this->user()->id();
+        return true;
     }
 
     /**

@@ -82,8 +82,7 @@ COPY    .docker/vhost.conf /etc/apache2/sites-available/000-default.conf
 COPY    .docker/laravel-worker.conf /etc/supervisor/conf.d/
 
 # disabling php short tags (IE : <? ?>)
-COPY    .docker/disablingShortTags.ini /usr/local/etc/php/conf.d/
-COPY    .docker/timezone.ini /usr/local/etc/php/conf.d/
+COPY    .docker/additionnalConf.ini /usr/local/etc/php/conf.d/
 
 # this script will launch supervisor then apache on the foreground
 COPY    .docker/run-on-start.sh /etc/init.d/run-on-start.sh
