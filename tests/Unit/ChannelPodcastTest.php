@@ -2,19 +2,18 @@
 
 namespace Tests\Unit;
 
-use App\Category;
 use App\Channel;
 use App\Plan;
-use App\Podcast\PodcastItem;
 use App\Thumb;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Artisan;
+use Tests\Traits\IsAbleToTestPodcast;
 
 class ChannelPodcastTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, IsAbleToTestPodcast;
 
     /** @var \App\Channel $channel */
     protected $channel;
@@ -34,9 +33,25 @@ class ChannelPodcastTest extends TestCase
         $this->assertEquals($thumb->podcastUrl(), $channelWithThumb->podcastCoverUrl());
     }
 
-    public function testingToPodcastHeaderIsFine()
+    public function testingToPodcastHeaderIsFineWithAllInformations()
     {
-        $this->headerInfosChecking($this->channel, $this->channel->podcastHeader());
+        $this->podcastHeaderInfosChecking($this->channel, $this->channel->podcastHeader());
+    }
+
+    public function testingToPodcastHeaderIsFineWithoutSome()
+    {
+        $this->channel->update([
+            'podcast_title' => null,
+            'podcast_copyright' => null,
+            'authors' => null,
+            'email' => null,
+            'description' => null,
+            'link' => null,
+            'category_id' => null,
+            'language_id' => null,
+            'explicit' => false,
+        ]);
+        $this->podcastHeaderInfosChecking($this->channel, $this->channel->podcastHeader());
     }
 
     public function testToPodcastItemsForEmptyChannelShouldBeGood()
@@ -67,7 +82,7 @@ class ChannelPodcastTest extends TestCase
     {
         $channelToPodcastInfos = $this->channel->toPodcast();
         /** checking header */
-        $this->headerInfosChecking($this->channel, $channelToPodcastInfos);
+        $this->podcastHeaderInfosChecking($this->channel, $channelToPodcastInfos);
         /** checking items */
         $this->assertCount(0, $channelToPodcastInfos['podcastItems']);
     }
@@ -80,7 +95,7 @@ class ChannelPodcastTest extends TestCase
         $channelToPodcastInfos = $channel->toPodcast();
 
         /** checking header */
-        $this->headerInfosChecking($channel, $channelToPodcastInfos);
+        $this->podcastHeaderInfosChecking($channel, $channelToPodcastInfos);
         /** checking items */
         $this->assertInstanceOf(Collection::class, $channelToPodcastInfos['podcastItems']);
         $this->assertCount(3, $channelToPodcastInfos['podcastItems']);
@@ -96,49 +111,10 @@ class ChannelPodcastTest extends TestCase
         $channelToPodcastInfos = $channel->toPodcast();
 
         /** checking header */
-        $this->headerInfosChecking($channel, $channelToPodcastInfos);
+        $this->podcastHeaderInfosChecking($channel, $channelToPodcastInfos);
         /** checking items */
         $this->assertInstanceOf(Collection::class, $channelToPodcastInfos['podcastItems']);
         $this->assertCount($expectedNumberOfPodcastItems, $channelToPodcastInfos['podcastItems']);
         $this->podcastItemsChecking($channelToPodcastInfos['podcastItems']);
-    }
-
-    public function podcastItemsChecking(Collection $podcastItems)
-    {
-        $podcastItems->map(
-            function ($podcastItem) {
-                $this->assertInstanceOf(
-                    PodcastItem::class,
-                    $podcastItem,
-                    'PodcastItems should be a collection of PodcastItem Object'
-                );
-            }
-        );
-    }
-
-    public function headerInfosChecking(Channel $channel, array $channelToPodcastInfos)
-    {
-        $expectedKeys = [
-            'title',
-            'link',
-            'description',
-            'imageUrl',
-            'language',
-            'category',
-            'explicit',
-        ];
-
-        array_map(function ($key) use ($channelToPodcastInfos) {
-            $this->assertArrayHasKey($key, $channelToPodcastInfos, "Converting a channel to a podcast header should have key {$key}.");
-        }, $expectedKeys);
-
-        $this->assertEquals($channelToPodcastInfos['title'], $channel->title());
-        $this->assertEquals($channelToPodcastInfos['link'], $channel->link);
-        $this->assertEquals($channelToPodcastInfos['description'], $channel->description);
-        $this->assertEquals($channelToPodcastInfos['imageUrl'], $channel->podcastCoverUrl());
-        $this->assertEquals($channelToPodcastInfos['language'], $channel->language->code);
-        $this->assertEquals($channelToPodcastInfos['category'], $channel->category);
-        $this->assertEquals($channelToPodcastInfos['explicit'], $channel->explicit);
-        $this->assertInstanceOf(Category::class, $channelToPodcastInfos['category']);
     }
 }

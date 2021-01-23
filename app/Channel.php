@@ -10,6 +10,7 @@
 
 namespace App;
 
+use App\Interfaces\Podcastable;
 use App\Podcast\PodcastItem;
 use App\Traits\BelongsToUser;
 use App\Traits\HasLimits;
@@ -31,7 +32,7 @@ use Illuminate\Support\Str;
 /**
  * the channel model and its functions
  */
-class Channel extends Model
+class Channel extends Model implements Podcastable
 {
     use BelongsToUser,
         HasLimits,
@@ -45,15 +46,11 @@ class Channel extends Model
     public const CREATED_AT = 'channel_createdAt';
     public const UPDATED_AT = 'channel_updatedAt';
 
-    /**
-     * the way to specify users.user_id is the key (and not users.id)
-     */
+    /** I didn't know about the convention and I bite my hand everytime */
     protected $primaryKey = 'channel_id';
-
-    /**
-     * the channel_id is not one auto_increment integer
-     */
+    /** the channel_id is not one auto_increment integer */
     public $incrementing = false;
+    /** and it's a string */
     protected $keyType = 'string';
 
     /**
@@ -88,9 +85,49 @@ class Channel extends Model
         return $this->user_id;
     }
 
-    public function title()
+    public function title():string
     {
         return $this->podcast_title ?? $this->channel_name;
+    }
+
+    public function link():?string
+    {
+        return $this->link;
+    }
+
+    public function description():?string
+    {
+        return $this->description;
+    }
+
+    public function authors():?string
+    {
+        return $this->authors;
+    }
+
+    public function email():?string
+    {
+        return $this->email;
+    }
+
+    public function copyright():?string
+    {
+        return $this->podcast_copyright;
+    }
+
+    public function languageCode():?string
+    {
+        return optional($this->language)->code;
+    }
+
+    public function category():?Category
+    {
+        return $this->category;
+    }
+
+    public function explicit():?bool
+    {
+        return $this->explict;
     }
 
     public function createdAt()
@@ -387,15 +424,15 @@ class Channel extends Model
     {
         return  [
             'title' => $this->title(),
-            'link' => $this->link,
-            'description' => $this->description,
-            'authors' => $this->authors,
-            'email' => $this->email,
-            'copyright' => $this->podcast_copyright,
+            'link' => $this->link(),
+            'description' => $this->description(),
+            'authors' => $this->authors(),
+            'email' => $this->email(),
+            'copyright' => $this->copyright(),
             'imageUrl' => $this->podcastCoverUrl(),
-            'language' => $this->language->code,
-            'category' => $this->category,
-            'explicit' => $this->explicit,
+            'language' => $this->languageCode(),
+            'category' => $this->category(),
+            'explicit' => $this->explicit(),
         ];
     }
 

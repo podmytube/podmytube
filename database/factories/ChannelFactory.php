@@ -9,7 +9,7 @@ use Faker\Generator as Faker;
 
 $factory->define(Channel::class, function (Faker $faker, $attributes) {
     return [
-        'channel_id' => $attributes['channel_id'] ?? 'FAKE-' . $faker->regexify('[a-zA-Z0-9]{15}'),
+        'channel_id' => $attributes['channel_id'] ?? 'FAKE-' . $faker->regexify('[a-zA-Z0-9]{10}'),
         'user_id' => $attributes['user_id'] ?? function () {
             return factory(App\User::class)->create()->user_id;
         },
