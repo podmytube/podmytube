@@ -8,29 +8,35 @@ use Illuminate\Support\Collection as SupportCollection;
 
 interface Podcastable
 {
-    public function title():string;
+    public function relativeFeedPath():string;
 
-    public function link():?string;
+    public function remoteFilePath():string;
 
-    public function description():?string;
+    public function podcastTitle():string;
 
-    public function authors():?string;
+    public function podcastLink():?string;
 
-    public function email():?string;
+    public function podcastDescription():?string;
 
-    public function copyright():?string;
+    public function podcastAuthors():?string;
 
-    public function languageCode():?string;
+    public function podcastEmail():?string;
 
-    public function category():?Category;
+    public function podcastCopyright():?string;
 
-    public function explicit():?bool;
+    public function podcastLanguage():?string;
+
+    public function podcastCategory():?Category;
+
+    public function podcastExplicit():?string;
 
     public function mediasToPublish():Collection;
 
     public function podcastItems():SupportCollection;
 
     public function podcastCoverUrl():string;
+
+    public function podcastUrl():string;
 
     public function podcastHeader():array;
 

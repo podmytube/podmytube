@@ -80,9 +80,8 @@ class PodcastItemTest extends TestCase
         $this->assertStringContainsString('<pubDate>' . $this->media->pubDate() . '</pubDate>', $renderedItem);
         $this->assertStringContainsString('<itunes:duration>' . $this->media->duration() . '</itunes:duration>', $renderedItem);
 
-        $booleanString = $this->media->channel->explicit === true ? 'true' : 'false';
         $this->assertStringContainsString(
-            "<itunes:explicit>{$booleanString}</itunes:explicit>",
+            "<itunes:explicit>{$this->media->channel->podcastExplicit()}</itunes:explicit>",
             $renderedItem
         );
         $this->assertStringContainsString('</item>', $renderedItem);

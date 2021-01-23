@@ -14,7 +14,7 @@ class UploadPodcast implements ShouldQueue
     public function handle($event)
     {
         Log::debug('--- ' . __CLASS__ . ' start');
-        UploadPodcastFactory::init()->forChannel($event->channel);
+        UploadPodcastFactory::init()->for($event->channel);
         Log::debug('--- ' . __CLASS__ . ' end');
     }
 }

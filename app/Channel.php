@@ -12,11 +12,11 @@ namespace App;
 
 use App\Interfaces\Podcastable;
 use App\Podcast\PodcastItem;
+use App\Traits\BelongsToCategory;
 use App\Traits\BelongsToUser;
 use App\Traits\HasLimits;
 use App\Traits\HasManyMedias;
 use App\Traits\HasManyPlaylists;
-use App\Traits\HasOneCategory;
 use App\Traits\HasOneLanguage;
 use App\Traits\HasOneSubscription;
 use App\Traits\HasOneThumb;
@@ -34,11 +34,11 @@ use Illuminate\Support\Str;
  */
 class Channel extends Model implements Podcastable
 {
-    use BelongsToUser,
+    use BelongsToCategory,
+        BelongsToUser,
         HasLimits,
         HasManyMedias,
         HasManyPlaylists,
-        HasOneCategory,
         HasOneSubscription,
         HasOneThumb,
         HasOneLanguage;
@@ -72,10 +72,7 @@ class Channel extends Model implements Podcastable
      */
     protected $guarded = [];
 
-    /**
-     * Getter : channel_id
-     */
-    public function channelId()
+    public function channelId():string
     {
         return $this->channel_id;
     }
@@ -83,51 +80,6 @@ class Channel extends Model implements Podcastable
     public function userId()
     {
         return $this->user_id;
-    }
-
-    public function title():string
-    {
-        return $this->podcast_title ?? $this->channel_name;
-    }
-
-    public function link():?string
-    {
-        return $this->link;
-    }
-
-    public function description():?string
-    {
-        return $this->description;
-    }
-
-    public function authors():?string
-    {
-        return $this->authors;
-    }
-
-    public function email():?string
-    {
-        return $this->email;
-    }
-
-    public function copyright():?string
-    {
-        return $this->podcast_copyright;
-    }
-
-    public function languageCode():?string
-    {
-        return optional($this->language)->code;
-    }
-
-    public function category():?Category
-    {
-        return $this->category;
-    }
-
-    public function explicit():?bool
-    {
-        return $this->explict;
     }
 
     public function createdAt()
@@ -158,7 +110,7 @@ class Channel extends Model implements Podcastable
     /**
      * Return the podcast url for this channel.
      */
-    public function podcastUrl()
+    public function podcastUrl():string
     {
         return config('app.podcasts_url') . '/' . $this->relativeFeedPath();
     }
@@ -424,15 +376,15 @@ class Channel extends Model implements Podcastable
     {
         return  [
             'title' => $this->title(),
-            'link' => $this->link(),
-            'description' => $this->description(),
-            'authors' => $this->authors(),
-            'email' => $this->email(),
-            'copyright' => $this->copyright(),
+            'link' => $this->podcastLink(),
+            'description' => $this->podcastDescription(),
+            'authors' => $this->podcastAuthors(),
+            'email' => $this->podcastEmail(),
+            'copyright' => $this->podcastCopyright(),
             'imageUrl' => $this->podcastCoverUrl(),
-            'language' => $this->languageCode(),
-            'category' => $this->category(),
-            'explicit' => $this->explicit(),
+            'language' => $this->podcastLanguage(),
+            'category' => $this->podcastCategory(),
+            'explicit' => $this->podcastExplicit(),
         ];
     }
 
@@ -442,5 +394,55 @@ class Channel extends Model implements Podcastable
             $this->podcastHeader(),
             ['podcastItems' => $this->podcastItems()]
         );
+    }
+
+    public function title():string
+    {
+        return $this->podcast_title ?? $this->channel_name;
+    }
+
+    public function podcastTitle():string
+    {
+        return $this->title();
+    }
+
+    public function podcastLink():?string
+    {
+        return $this->link;
+    }
+
+    public function podcastDescription():?string
+    {
+        return $this->description;
+    }
+
+    public function podcastAuthors():?string
+    {
+        return $this->authors;
+    }
+
+    public function podcastEmail():?string
+    {
+        return $this->email;
+    }
+
+    public function podcastCategory():?Category
+    {
+        return $this->category;
+    }
+
+    public function podcastCopyright():?string
+    {
+        return $this->podcast_copyright;
+    }
+
+    public function podcastLanguage():?string
+    {
+        return optional($this->language)->code;
+    }
+
+    public function podcastExplicit():?string
+    {
+        return $this->explicit === true ? 'true' : 'false';
     }
 }

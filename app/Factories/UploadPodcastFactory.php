@@ -2,7 +2,7 @@
 
 namespace App\Factories;
 
-use App\Channel;
+use App\Interfaces\Podcastable;
 use App\Jobs\SendFileBySFTP;
 use App\Podcast\PodcastBuilder;
 use Illuminate\Support\Facades\Log;
@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\Storage;
 
 class UploadPodcastFactory
 {
-    /** @var \App\Channel $channel */
-    protected $channel;
+    /** @var \App\Interfaces\Podcastable $podcastable */
+    protected $podcastable;
 
     private function __construct()
     {
@@ -22,36 +22,31 @@ class UploadPodcastFactory
         return new static();
     }
 
-    public function forChannel(Channel $channel)
+    public function for(Podcastable $podcastable)
     {
-        $this->channel = $channel;
+        $this->podcastable = $podcastable;
 
         /** getting rendered podcast */
-        $renderedPodcast = PodcastBuilder::create($this->channel->toPodcast())->render();
+        $renderedPodcast = PodcastBuilder::create($this->podcastable->toPodcast())->render();
 
         /** saving it in tmp */
-        Storage::disk('tmp')->put($this->localFilename(), $renderedPodcast);
+        Storage::disk('tmp')->put($this->podcastable->relativeFeedPath(), $renderedPodcast);
 
         /** uploading */
         SendFileBySFTP::dispatchNow($this->localPath(), $this->remotePath(), $cleanAfter = true);
 
-        Log::debug("Podcast {$channel->nameWithId()} has been successfully updated.");
-        Log::debug("You can check it here : {$channel->podcastUrl()}");
+        Log::debug("Podcast {$podcastable->podcastTitle()} has been successfully updated.");
+        Log::debug("You can check it here : {$podcastable->podcastUrl()}");
         return $this;
-    }
-
-    public function localFilename():string
-    {
-        return "{$this->channel->channelId()}-" . config('app.feed_filename');
     }
 
     public function localPath():string
     {
-        return Storage::disk('tmp')->path($this->localFilename());
+        return Storage::disk('tmp')->path($this->podcastable->relativeFeedPath());
     }
 
     public function remotePath():string
     {
-        return $this->channel->remoteFilePath();
+        return $this->podcastable->remoteFilePath();
     }
 }

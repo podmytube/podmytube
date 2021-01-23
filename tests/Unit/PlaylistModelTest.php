@@ -24,7 +24,14 @@ class PlaylistModelTest extends TestCase
         parent::setUp();
         Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
         $this->playlist = factory(Playlist::class)->create();
-        dd($this->playlist->channel->category);
+    }
+
+    public function testPodcastUrlIsFine()
+    {
+        $this->assertEquals(
+            config('app.playlists_url') . '/' . $this->playlist->channel->channel_id . '/' . $this->playlist->youtube_playlist_id . '.xml',
+            $this->playlist->podcastUrl()
+        );
     }
 
     public function testMediasToPublishShouldBeFine()
@@ -62,7 +69,6 @@ class PlaylistModelTest extends TestCase
 
     public function testingToPodcastHeaderIsFineWithAllInformations()
     {
-        dump($this->playlist->podcastHeader());
         $this->podcastHeaderInfosChecking($this->playlist, $this->playlist->podcastHeader());
     }
 
@@ -80,5 +86,37 @@ class PlaylistModelTest extends TestCase
             'explicit' => false,
         ]);
         $this->podcastHeaderInfosChecking($this->playlist, $this->playlist->podcastHeader());
+    }
+
+    public function testPlaylistToPodcastIsRunningFine()
+    {
+        $expectedItems = 2;
+        factory(Media::class)->create(['media_id' => 'GJzweq_VbVc', 'grabbed_at' => now()->subday()]);
+        factory(Media::class)->create(['media_id' => 'AyU4u-iQqJ4', 'grabbed_at' => now()->subWeek()]);
+        factory(Media::class)->create(['media_id' => 'hb0Fo1Jqxkc']);
+
+        $this->playlist = factory(Playlist::class)->create(['youtube_playlist_id' => self::PODMYTUBE_TEST_PLAYLIST_ID]);
+        $playlistToPodcastInfos = $this->playlist->toPodcast();
+        /** checking header */
+        $this->podcastHeaderInfosChecking($this->playlist, $playlistToPodcastInfos);
+        /** checking items */
+        $this->assertCount($expectedItems, $playlistToPodcastInfos['podcastItems']);
+        $this->podcastItemsChecking($playlistToPodcastInfos['podcastItems']);
+    }
+
+    public function testRelativeFeedPathIsGood()
+    {
+        $this->assertEquals(
+            $this->playlist->channel->channelId() . '/' . $this->playlist->youtube_playlist_id . '.xml',
+            $this->playlist->relativeFeedPath()
+        );
+    }
+
+    public function testRemoteFilePathIsGood()
+    {
+        $this->assertEquals(
+            config('app.playlists_path') . $this->playlist->channel->channelId() . '/' . $this->playlist->youtube_playlist_id . '.xml',
+            $this->playlist->remoteFilePath()
+        );
     }
 }
