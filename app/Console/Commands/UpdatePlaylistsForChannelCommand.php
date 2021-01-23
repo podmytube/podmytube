@@ -8,21 +8,21 @@ use App\Youtube\YoutubePlaylistItems;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Collection;
 
-class UpdatePlaylistByChannelCommand extends Command
+class UpdatePlaylistsForChannelCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'update:playlist {channel_id} ';
+    protected $signature = 'update:playlists {channel_id} ';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'This will update one playlist for specific channel';
+    protected $description = 'This will update playlists for specific channel';
 
     /** @var \App\Youtube\YoutubeCore $youtubeCore */
     protected $youtubeCore;

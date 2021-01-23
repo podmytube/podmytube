@@ -64,7 +64,7 @@ class PodcastBuilderTest extends TestCase
             $this->assertStringContainsString('<pubDate>' . $media->pubDate() . '</pubDate>', $this->renderedPodcast);
             $this->assertStringContainsString('<itunes:duration>' . $media->duration() . '</itunes:duration>', $this->renderedPodcast);
             $this->assertStringContainsString(
-                '<itunes:explicit>' . $this->channel->explicit === true ? 'true' : 'false' . '</itunes:explicit>',
+                '<itunes:explicit>' . $this->channel->podcastExplicit() . '</itunes:explicit>',
                 $this->renderedPodcast
             );
         });

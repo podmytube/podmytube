@@ -23,15 +23,15 @@ trait IsAbleToTestPodcast
         array_map(function ($key) use ($podcastable, $podcastInfos) {
             $this->assertArrayHasKey($key, $podcastInfos, 'Converting a ' . get_class($podcastable) . " to a podcast header should have key {$key}.");
         }, $expectedKeys);
-
-        $this->assertEquals($podcastInfos['title'], $podcastable->title());
-        $this->assertEquals($podcastInfos['link'], $podcastable->link());
-        $this->assertEquals($podcastInfos['description'], $podcastable->description());
+        
+        $this->assertEquals($podcastInfos['title'], $podcastable->podcastTitle());
+        $this->assertEquals($podcastInfos['link'], $podcastable->podcastLink());
+        $this->assertEquals($podcastInfos['description'], $podcastable->podcastDescription());
         $this->assertEquals($podcastInfos['imageUrl'], $podcastable->podcastCoverUrl());
-        $this->assertEquals($podcastInfos['language'], $podcastable->languageCode());
-        $this->assertEquals($podcastInfos['category'], $podcastable->category());
-        $this->assertEquals($podcastInfos['copyright'], $podcastable->copyright());
-        $this->assertEquals($podcastInfos['explicit'], $podcastable->explicit());
+        $this->assertEquals($podcastInfos['language'], $podcastable->podcastLanguage());
+        $this->assertEquals($podcastInfos['category'], $podcastable->podcastCategory());
+        $this->assertEquals($podcastInfos['copyright'], $podcastable->podcastCopyright());
+        $this->assertEquals($podcastInfos['explicit'], $podcastable->podcastExplicit());
     }
 
     public function podcastItemsChecking(Collection $podcastItems)

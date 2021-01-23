@@ -30,51 +30,6 @@ class Playlist extends Model implements Podcastable
 
     protected $guarded = [];
 
-    public function title():string
-    {
-        return $this->title;
-    }
-
-    public function link():?string
-    {
-        return $this->channel->link;
-    }
-
-    public function description():?string
-    {
-        return $this->description;
-    }
-
-    public function authors():?string
-    {
-        return $this->channel->authors;
-    }
-
-    public function email():?string
-    {
-        return $this->channel->email;
-    }
-
-    public function copyright():?string
-    {
-        return $this->channel->podcast_copyright;
-    }
-
-    public function languageCode():?string
-    {
-        return optional($this->language)->code;
-    }
-
-    public function category():?Category
-    {
-        return $this->channel->category;
-    }
-
-    public function explicit():?bool
-    {
-        return $this->channel->explict;
-    }
-
     public function mediasToPublish():Collection
     {
         /**
@@ -121,16 +76,16 @@ class Playlist extends Model implements Podcastable
     public function podcastHeader():array
     {
         return  [
-            'title' => $this->title(),
-            'link' => $this->link(),
-            'description' => $this->description(),
-            'authors' => $this->authors(),
-            'email' => $this->email(),
-            'copyright' => $this->copyright(),
+            'title' => $this->podcastTitle(),
+            'link' => $this->podcastLink(),
+            'description' => $this->podcastDescription(),
+            'authors' => $this->podcastAuthors(),
+            'email' => $this->podcastEmail(),
+            'copyright' => $this->podcastCopyright(),
             'imageUrl' => $this->podcastCoverUrl(),
-            'language' => $this->languageCode(),
-            'category' => $this->category(),
-            'explicit' => $this->explicit(),
+            'language' => $this->podcastLanguage(),
+            'category' => $this->podcastCategory(),
+            'explicit' => $this->podcastExplicit(),
         ];
     }
 
@@ -140,5 +95,70 @@ class Playlist extends Model implements Podcastable
             $this->podcastHeader(),
             ['podcastItems' => $this->podcastItems()]
         );
+    }
+
+    public function podcastTitle():string
+    {
+        return $this->title;
+    }
+
+    public function podcastLink():?string
+    {
+        return $this->channel->podcastLink();
+    }
+
+    public function podcastDescription():?string
+    {
+        return $this->description;
+    }
+
+    public function podcastAuthors():?string
+    {
+        return $this->channel->podcastAuthors();
+    }
+
+    public function podcastEmail():?string
+    {
+        return $this->channel->podcastEmail();
+    }
+
+    public function podcastCopyright():?string
+    {
+        return $this->channel->podcastCopyright();
+    }
+
+    public function podcastLanguage():?string
+    {
+        return $this->channel->podcastLanguage();
+    }
+
+    public function podcastCategory():?Category
+    {
+        return $this->channel->podcastCategory();
+    }
+
+    public function podcastExplicit():?string
+    {
+        return $this->channel->podcastExplicit();
+    }
+
+    public function podcastUrl():string
+    {
+        return config('app.playlists_url') . '/' . $this->relativeFeedPath();
+    }
+
+    public function relativeFeedPath():string
+    {
+        return $this->channel->channelId() . '/' . $this->youtube_playlist_id . '.xml';
+    }
+
+    /**
+     * Return the remote path of the podcast feed for this channel.
+     *
+     * @return string remote path
+     */
+    public function remoteFilePath():string
+    {
+        return config('app.playlists_path') . $this->relativeFeedPath();
     }
 }
