@@ -10,6 +10,7 @@ use App\Youtube\YoutubeChannelVideos;
 use App\Youtube\YoutubeQuotas;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
+use RuntimeException;
 
 class UpdateChannelsCommand extends Command
 {
@@ -47,22 +48,15 @@ class UpdateChannelsCommand extends Command
      */
     public function handle()
     {
-        if (!$this->checkChannelTypeToUpdate()) {
-            return;
-        }
-
-        // get channel(s) to refresh (free/early/all/..)
-        $this->channels = Channel::byPlanType(
-            $this->argument('channelTypeToUpdate')
-        );
+        // update all channels
+        $this->channels = Channel::active()->get();
 
         // no channel to refresh => nothing to do
         if (!$this->channels->count()) {
-            $this->error(
-                "There is no channels with this kind of plan ({$this->argument(
-                    'channelTypeToUpdate'
-                )})"
-            );
+            $message = 'There is no channel to update, 🤔 strange.';
+            throw new RuntimeException($message);
+            $this->error($message);
+            Log::debug($message);
             return;
         }
 
@@ -110,21 +104,6 @@ class UpdateChannelsCommand extends Command
         });
 
         $this->epilogue();
-    }
-
-    protected function checkChannelTypeToUpdate()
-    {
-        // parse argument
-        $typesAllowed = ['free', 'paying', 'early', 'all'];
-
-        if (!in_array($this->argument('channelTypeToUpdate'), $typesAllowed)) {
-            $this->error(
-                'Only these options are available : ' .
-                    implode(', ', $typesAllowed)
-            );
-            return false;
-        }
-        return true;
     }
 
     protected function prologue(int $prograssBarNbItems)

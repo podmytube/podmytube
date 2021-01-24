@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Channel;
 use App\Factories\UploadPodcastFactory;
-use App\Podcast\PodcastUrl;
 use Illuminate\Console\Command;
 
 class UpdatePodcastsCommand extends Command
@@ -99,7 +98,7 @@ class UpdatePodcastsCommand extends Command
         $this->addMessage(
             self::SUCCESS,
             "Channel {$channel->title()} {{$channel->channelId()}} has been successfully generated {" .
-                PodcastUrl::prepare($channel)->get() .
+                $channel->podcastUrl() .
                 '}'
         );
     }
