@@ -18,8 +18,7 @@ class LastMediaCheckerTest extends TestCase
     use RefreshDatabase;
 
     public const DELAY_IN_HOURS = 6;
-    public const PERSONAL_CHANNEL_ID = 'UCw6bU9JT_Lihb2pbtqAUGQw';
-
+    
     /** @var \App\Channel $channel */
     protected $channel;
 

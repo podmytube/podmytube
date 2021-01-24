@@ -8,6 +8,8 @@ use App\Quota;
 use App\Youtube\YoutubeChannelVideos;
 use App\Youtube\YoutubeQuotas;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
+use RuntimeException;
 
 class UpdateChannelCommand extends Command
 {
@@ -48,7 +50,10 @@ class UpdateChannelCommand extends Command
 
         // no channel to refresh => nothing to do
         if ($channelToUpdate === null) {
-            $this->error("There is no channel with this channel_id ({$this->argument('channel_id')})");
+            $message = "There is no channel with this channel_id ({$this->argument('channel_id')})";
+            throw new RuntimeException($message);
+            $this->error($message);
+            Log::debug($message);
             return;
         }
 
