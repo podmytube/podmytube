@@ -36,16 +36,16 @@ class YoutubeChannelIdTest extends TestCase
 
     public function testingValidYoutubeUrls()
     {
-        $expectedChannelId = 'UCw6bU9JT_Lihb2pbtqAUGQw-';
+        $expectedChannelId = self::PERSONAL_CHANNEL_ID;
         foreach ([
-                'http://www.youtube.com/channel/UCw6bU9JT_Lihb2pbtqAUGQw-/',
-                'http://www.youtube.com/channel/UCw6bU9JT_Lihb2pbtqAUGQw-',
-                'https://www.youtube.com/channel/UCw6bU9JT_Lihb2pbtqAUGQw-/',
-                'https://www.youtube.com/channel/UCw6bU9JT_Lihb2pbtqAUGQw-',
-                'https://www.youtube.com/channel/UCw6bU9JT_Lihb2pbtqAUGQw-?',
-                'https://www.youtube.com/channel/UCw6bU9JT_Lihb2pbtqAUGQw-?view_as=subscriber',
-                'https://www.youtube.com/channel/UCw6bU9JT_Lihb2pbtqAUGQw-?MyTailorIsRich&view_as=subscriber&whateverYouMightTypeAfter',
-            ]
+            'http://www.youtube.com/channel/' . self::PERSONAL_CHANNEL_ID . '/',
+            'http://www.youtube.com/channel/' . self::PERSONAL_CHANNEL_ID . '',
+            'https://www.youtube.com/channel/' . self::PERSONAL_CHANNEL_ID . '/',
+            'https://www.youtube.com/channel/' . self::PERSONAL_CHANNEL_ID . '',
+            'https://www.youtube.com/channel/' . self::PERSONAL_CHANNEL_ID . '?',
+            'https://www.youtube.com/channel/' . self::PERSONAL_CHANNEL_ID . '?view_as=subscriber',
+            'https://www.youtube.com/channel/' . self::PERSONAL_CHANNEL_ID . '?MyTailorIsRich&view_as=subscriber&whateverYouMightTypeAfter',
+        ]
             as $youtubeUrl) {
             $this->assertEquals(
                 $expectedChannelId,

@@ -14,6 +14,10 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication, WithFaker;
 
+    /** some channels */
+    public const PERSONAL_CHANNEL_ID = 'UCw6bU9JT_Lihb2pbtqAUGQw';
+
+    /** some playlists */
     public const NOWTECH_LEMUG_YOUTUBE_PLAYLIST_ID = 'PLhQHoIKUR5vD0vq6Jwns89QAz9OZWTvpx';
     public const PODMYTUBE_TEST_PLAYLIST_ID = 'PLyeI3mV1fCpovDzuc8gRaWh2HysiVaoBQ';
 
