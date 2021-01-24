@@ -261,29 +261,6 @@ class Channel extends Model implements Podcastable
         return $query->where('active', '=', 1);
     }
 
-    public static function byPlanType(string $planType): Collection
-    {
-        return Channel::select('channel_id', 'channel_name')
-            ->whereHas('subscription', function (
-                \Illuminate\Database\Eloquent\Builder $query
-            ) use ($planType) {
-                switch ($planType) {
-                    case 'free':
-                        $query->where('plan_id', '=', Plan::FREE_PLAN_ID);
-                        break;
-                    case 'paying':
-                        $query->whereNotIn('plan_id', [
-                            Plan::FREE_PLAN_ID,
-                            Plan::EARLY_PLAN_ID,
-                        ]);
-                        break;
-                    default:
-                        break;
-                }
-            })
-            ->get();
-    }
-
     /**
      * get one channel by its id.
      *

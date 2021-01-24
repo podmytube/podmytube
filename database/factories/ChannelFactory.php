@@ -26,6 +26,7 @@ $factory->define(Channel::class, function (Faker $faker, $attributes) {
             return factory(Language::class)->create()->id;
         },
         'explicit' => $attributes['explicit'] ?? false,
+        'active' => $attributes['explicit'] ?? true,
         'channel_createdAt' => $attributes['created_at'] ?? $faker->dateTimeInInterval('now', '-5 days'),
         'channel_updatedAt' => $faker->dateTimeInInterval('now', '-3 days'),
         'podcast_updatedAt' => $faker->dateTimeInInterval('now', '-2 days'),
