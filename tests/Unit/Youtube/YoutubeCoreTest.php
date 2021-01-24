@@ -14,7 +14,6 @@ class YoutubeCoreTest extends TestCase
     /** @var App\Youtube\YoutubeCore $youtubeCore*/
     protected $abstractCore;
 
-    public const PERSONAL_CHANNEL_ID = 'UCw6bU9JT_Lihb2pbtqAUGQw';
     public const PERSONAL_UPLOADS_PLAYLIST_ID = 'UUw6bU9JT_Lihb2pbtqAUGQw';
     public const PERSONAL_CHANNEL_NB_OF_PLAYLISTS = 2;
     public const PEWDIEPIE_CHANNEL_ID = 'UC-lHJZR3Gqxm24_Vd_AJ5Yw';
@@ -28,8 +27,7 @@ class YoutubeCoreTest extends TestCase
         parent::setUp();
         Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
         // Create a new instance from the Abstract Class
-        $this->abstractCore = new class extends YoutubeCore
-        {
+        $this->abstractCore = new class extends YoutubeCore {
             // Just a sample public function that returns this anonymous instance
             public function returnThis()
             {
