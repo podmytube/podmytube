@@ -23,9 +23,6 @@ class ChannelCreationFactoryTest extends TestCase
     /** @var \App\User $user */
     protected $user;
 
-    /** @var string $myChannelId */
-    protected $myChannelId = 'UCw6bU9JT_Lihb2pbtqAUGQw';
-
     /** @var \App\Category $defaultCategory */
     protected $defaultCategory;
 
@@ -41,7 +38,7 @@ class ChannelCreationFactoryTest extends TestCase
     public function testCreationWithDefaultFreePlanShouldBeOk()
     {
         Event::fake();
-        $validYoutubeUrl = "https://www.youtube.com/channel/{$this->myChannelId}?view_as=subscriber";
+        $validYoutubeUrl = 'https://www.youtube.com/channel/' . self::PERSONAL_CHANNEL_ID . '?view_as=subscriber';
         $channelFactory = ChannelCreationFactory::create(
             $this->user,
             $validYoutubeUrl,
@@ -49,7 +46,7 @@ class ChannelCreationFactoryTest extends TestCase
         );
         $channel = $channelFactory->channel();
         $this->assertInstanceOf(Channel::class, $channel);
-        $this->assertEquals($this->myChannelId, $channel->channel_id);
+        $this->assertEquals(self::PERSONAL_CHANNEL_ID, $channel->channel_id);
 
         $this->assertEquals($this->user->id(), $channelFactory->user()->id());
 
@@ -66,7 +63,7 @@ class ChannelCreationFactoryTest extends TestCase
     {
         Event::fake();
 
-        $validYoutubeUrl = "https://www.youtube.com/channel/{$this->myChannelId}?view_as=subscriber";
+        $validYoutubeUrl = 'https://www.youtube.com/channel/' . self::PERSONAL_CHANNEL_ID . '?view_as=subscriber';
         $weeklyYoutuberPlan = Plan::bySlug('weekly_youtuber');
         $channelFactory = ChannelCreationFactory::create(
             $this->user,
@@ -75,7 +72,7 @@ class ChannelCreationFactoryTest extends TestCase
         );
 
         $this->assertInstanceOf(Channel::class, $channelFactory->channel());
-        $this->assertEquals($this->myChannelId, $channelFactory->channel()->channel_id);
+        $this->assertEquals(self::PERSONAL_CHANNEL_ID, $channelFactory->channel()->channel_id);
 
         $this->assertEquals($this->user->id(), $channelFactory->user()->id());
 
@@ -99,11 +96,11 @@ class ChannelCreationFactoryTest extends TestCase
 
     public function testTryingToRegisterSameChannelShouldThrowException()
     {
-        factory(Channel::class)->create(['channel_id' => $this->myChannelId]);
+        factory(Channel::class)->create(['channel_id' => self::PERSONAL_CHANNEL_ID]);
         $this->expectException(ChannelAlreadyRegisteredException::class);
         ChannelCreationFactory::create(
             $this->user,
-            "https://www.youtube.com/channel/{$this->myChannelId}?view_as=subscriber",
+            'https://www.youtube.com/channel/'.self::PERSONAL_CHANNEL_ID.'?view_as=subscriber',
             Plan::bySlug('forever_free')
         );
     }
