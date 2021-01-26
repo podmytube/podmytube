@@ -63,11 +63,7 @@ class ChannelsController extends Controller
     {
         $this->authorize($channel);
 
-        $validatedParams = $request->validated();
-
-        $validatedParams['explicit'] = $request->has('explicit') ? 1 : 0;
-
-        $channel->update($validatedParams);
+        $channel->update($request->validated());
 
         ChannelUpdated::dispatch($channel);
 
