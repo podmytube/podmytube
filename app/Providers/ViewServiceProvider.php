@@ -24,7 +24,7 @@ class ViewServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        View::composer('*', function ($view) {
+        View::composer(['partials.footer'], function ($view) {
             $view->with('activeChannelsCount', Channel::active()->count());
         });
     }
