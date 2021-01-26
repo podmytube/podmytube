@@ -261,4 +261,9 @@ class Media extends Model
     {
         return config('app.mp3_path') . $this->relativePath();
     }
+
+    public static function youtubeUrl(string $mediaId)
+    {
+        return 'https://www.youtube.com/watch?v=' . $mediaId;
+    }
 }
