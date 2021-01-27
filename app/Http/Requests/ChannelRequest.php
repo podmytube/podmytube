@@ -32,6 +32,7 @@ class ChannelRequest extends FormRequest
             'reject_video_by_keyword' => 'nullable|max:255',
             'reject_video_too_old' => 'nullable|date_format:d/m/Y|before:today',
             'explicit' => 'nullable|boolean',
+            'accept_video_by_tag' => 'nullable|string',
         ];
     }
 
