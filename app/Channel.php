@@ -170,8 +170,9 @@ class Channel extends Model implements Podcastable
 
     public function hasFilter()
     {
-        return $this->accept_video_by_tag !== null || $this->reject_video_by_keyword !== null ||
-        $this->reject_video_too_old !== null;
+        return $this->accept_video_by_tag !== null ||
+            $this->reject_video_by_keyword !== null ||
+            $this->reject_video_too_old !== null;
     }
 
     public function hasAcceptOnlyTags()

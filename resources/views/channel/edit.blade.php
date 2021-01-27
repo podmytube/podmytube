@@ -90,7 +90,18 @@
 				</label>
 			</div>
 
-			<div class="flex justify-center items-center">
+			<div class="w-3/4 mx-auto pb-6 px-6 rounded-lg border-2 border-red-700 bg-red-200 text-center ">
+				<div class="p-4 font-semibold">
+					<strong>💣 Danger zone 💥</strong><br>
+					 change only if you know what you are doing ! 🔥
+				</div>
+				I only want to include videos with the 
+				<input type="text" id="accept_video_by_tag" name="accept_video_by_tag" value="{{$channel->accept_video_by_tag}}" 
+					class="px-5 py-1 text-gray-900 bg-gray-200 rounded placeholder-black"> 
+				tag
+			</div>
+
+			<div class="flex mt-4 justify-center items-center">
 				<a href="#" onclick="event.preventDefault(); document.getElementById('edit-podcast-form').submit();">
 					<button type="submit" class="flex-1 bg-gray-800 text-gray-100 hover:bg-gray-700 font-bold py-2 px-4 rounded-l-lg">Submit</button>
 				</a>

@@ -275,4 +275,9 @@ class Media extends Model
             'explicit' => $this->channel->podcastExplicit(),
         ];
     }
+
+    public static function youtubeUrl(string $mediaId)
+    {
+        return 'https://www.youtube.com/watch?v=' . $mediaId;
+    }
 }
