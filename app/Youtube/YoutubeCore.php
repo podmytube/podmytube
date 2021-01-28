@@ -145,6 +145,7 @@ abstract class YoutubeCore implements QuotasConsumer
         if ($this->limit > 0 && $this->nbItemsGrabbed() >= $this->limit) {
             return false;
         }
+
         if (!isset($this->jsonDecoded['nextPageToken'])) {
             return false;
         }
