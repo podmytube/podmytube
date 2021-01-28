@@ -16,7 +16,7 @@ class UpdateChannelCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'update:channel {channel_id} ';
+    protected $signature = 'update:channel {channel_id} {limit=50}';
 
     /**
      * The console command description.
@@ -53,7 +53,7 @@ class UpdateChannelCommand extends Command
         }
 
         $this->info('channel to update ' . $channelToUpdate->channel_id, 'v');
-        $factory = YoutubeChannelVideos::forChannel($channelToUpdate->channel_id, 50);
+        $factory = YoutubeChannelVideos::forChannel($channelToUpdate->channel_id, $this->argument('limit'));
 
         $nbVideos = count($factory->videos());
         if ($nbVideos <= 0) {
