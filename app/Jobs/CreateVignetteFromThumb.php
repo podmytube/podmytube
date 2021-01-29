@@ -11,6 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class CreateVignetteFromThumb implements ShouldQueue
 {
@@ -43,14 +44,12 @@ class CreateVignetteFromThumb implements ShouldQueue
 
         try {
             /** chaining vignette creation and upload */
-            $vignette = Vignette::fromThumb($this->srcThumb)
-                ->makeIt()
-                ->saveLocally();
+            $vignette = Vignette::fromThumb($this->srcThumb)->makeIt()->saveLocally();
         } catch (\Exception $exception) {
-            throw new VignetteCreationFromThumbException(
-                "Creation of vignette from thumb {{$this->srcThumb}} for channel {{$this->srcThumb->channel_id}} has failed with message :" .
-                    $exception->getMessage()
-            );
+            $message = "Creation of vignette from thumb {{$this->srcThumb}} for channel {{$this->srcThumb->channel_id}} has failed with message :" .
+                    $exception->getMessage();
+            throw new VignetteCreationFromThumbException($message);
+            Log::debug($message);
         }
     }
 }

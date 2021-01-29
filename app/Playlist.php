@@ -152,6 +152,11 @@ class Playlist extends Model implements Podcastable
         return $this->channel->channelId() . '/' . $this->youtube_playlist_id . '.xml';
     }
 
+    public function channelId():string
+    {
+        return $this->channel->channelId();
+    }
+
     /**
      * Return the remote path of the podcast feed for this channel.
      *

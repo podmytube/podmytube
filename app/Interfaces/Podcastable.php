@@ -41,4 +41,6 @@ interface Podcastable
     public function podcastHeader():array;
 
     public function toPodcast():array;
+
+    public function channelId():string;
 }

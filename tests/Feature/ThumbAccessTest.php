@@ -2,9 +2,13 @@
 
 namespace Tests\Feature;
 
-use App\Channel;
+use App\Events\ThumbUpdated;
+use App\Listeners\UploadPodcast;
+use App\Modules\Vignette;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 class ThumbAccessTest extends TestCase
@@ -17,7 +21,7 @@ class ThumbAccessTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->channel = factory(Channel::class)->create();
+        $this->channel = $this->createChannelWithPlan();
     }
 
     public function testThumbAreForbidenForGuests()
@@ -53,4 +57,21 @@ class ThumbAccessTest extends TestCase
             ['channel.thumbs.index', 'channel.thumbs.edit']
         );
     }
+
+    public function testThumpIsUpdated()
+    {
+        Event::fake();
+
+        $this->followingRedirects()
+            ->actingAs($this->channel->user)
+            ->post(route('channel.thumbs.store', $this->channel), [
+                'new_thumb_file' => UploadedFile::fake()->image('photo1.jpg', 1400, 1400)
+            ])
+            ->assertSuccessful()
+            ->assertSee(Vignette::fromThumb($this->channel->thumb)->url());
+
+        Event::assertDispatched(ThumbUpdated::class);
+    }
+
+    
 }
