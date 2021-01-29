@@ -6,6 +6,8 @@ use App\Channel;
 use App\Events\ThumbUpdated;
 use App\Http\Requests\ThumbRequest;
 use App\Thumb;
+use Exception;
+use Illuminate\Support\Facades\Log;
 
 class ThumbsController extends Controller
 {
@@ -35,17 +37,16 @@ class ThumbsController extends Controller
      */
     public function store(ThumbRequest $request, Channel $channel)
     {
+        Log::debug(__CLASS__ . '::' . __FUNCTION__ . ' - start');
         $this->authorize('update', $channel);
 
         if (!$request->file('new_thumb_file')->isValid()) {
-            throw new \Exception('A problem occurs during new thumb upload !');
+            Log::error("A problem occurs during new thumb upload for {$channel->nameWithId()}!");
+            throw new Exception('A problem occurs during new thumb upload !');
         }
 
         /** attaching uploaded thumb to channel */
-        $thumb = Thumb::make()->attachItToChannel(
-            $request->file('new_thumb_file'),
-            $channel
-        );
+        $thumb = Thumb::make()->attachItToChannel($request->file('new_thumb_file'), $channel);
 
         ThumbUpdated::dispatch($thumb->channel);
 

@@ -4,6 +4,7 @@ namespace App;
 
 use App\Exceptions\ThumbUploadHasFailedException;
 use App\Traits\BelongsToChannel;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -143,16 +144,11 @@ class Thumb extends Model
                 [
                     'file_size' => $uploadedFile->getSize(),
                     /** get filename of the stored file */
-                    'file_name' => basename(
-                        $uploadedFile->store(
-                            $channel->channelId(),
-                            self::LOCAL_STORAGE_DISK
-                        )
-                    ),
+                    'file_name' => basename($uploadedFile->store($channel->channelId(), self::LOCAL_STORAGE_DISK)),
                     'file_disk' => self::LOCAL_STORAGE_DISK,
                 ]
             );
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             throw new ThumbUploadHasFailedException(
                 "Attaching thumb to {$channel->channelId()} has failed {$exception->getMessage()}"
             );

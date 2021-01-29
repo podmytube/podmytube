@@ -16,7 +16,6 @@ class UploadMedia implements ShouldQueue
     public function handle(MediaUploadedByUser $event)
     {
         Log::debug('--- ' . __CLASS__ . ' start');
-        /** @var \App\Channel $channel */
         $media = $event->media;
 
         $localPath = $media->uploadedFilePath();

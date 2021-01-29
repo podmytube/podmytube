@@ -23,6 +23,7 @@ class SendFileBySFTP implements ShouldQueue
     /** @var string $remoteFilePath */
     public $remoteFilePath;
 
+    /** @var bool $cleanAfter clean local file if true */
     public $cleanAfter = false;
 
     public function __construct(
@@ -42,6 +43,7 @@ class SendFileBySFTP implements ShouldQueue
      */
     public function handle()
     {
+        Log::debug(__CLASS__ . '::' . __FUNCTION__ . ' - start');
         $destFolder = pathinfo($this->remoteFilePath, PATHINFO_DIRNAME);
         $destFilename = pathinfo($this->remoteFilePath, PATHINFO_BASENAME);
         Log::debug(
@@ -54,11 +56,7 @@ class SendFileBySFTP implements ShouldQueue
             ]
         );
 
-        $result = Storage::disk(self::REMOTE_DISK)->putFileAs(
-            $destFolder,
-            $this->localFilePath,
-            $destFilename
-        );
+        $result = Storage::disk(self::REMOTE_DISK)->putFileAs($destFolder, $this->localFilePath, $destFilename);
 
         if ($result === false) {
             throw new FileUploadFailureException(
@@ -68,16 +66,11 @@ class SendFileBySFTP implements ShouldQueue
         Log::debug("file {$destFilename} has been uploaded");
 
         /** granting +x perms to folder */
-        $result = Storage::disk(self::REMOTE_DISK)->setVisibility(
-            $destFolder,
-            'public'
-        );
+        $result = Storage::disk(self::REMOTE_DISK)->setVisibility($destFolder, 'public');
         Log::debug("folder {$destFolder} is visible");
 
         if ($result === false) {
-            throw new FileUploadFailureException(
-                "Setting visibility for {$destFolder} has failed"
-            );
+            throw new FileUploadFailureException("Setting visibility for {$destFolder} has failed");
         }
 
         if ($this->cleanAfter === true) {
