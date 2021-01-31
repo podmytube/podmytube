@@ -117,4 +117,9 @@ class ChannelPodcastTest extends TestCase
         $this->assertCount($expectedNumberOfPodcastItems, $channelToPodcastInfos['podcastItems']);
         $this->podcastItemsChecking($channelToPodcastInfos['podcastItems']);
     }
+
+    public function testPodcastAuthorsIsOk()
+    {
+        $this->assertEquals($this->channel->authors, $this->channel->podcastAuthors());
+    }
 }

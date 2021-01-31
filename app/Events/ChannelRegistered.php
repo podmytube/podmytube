@@ -2,7 +2,7 @@
 
 namespace App\Events;
 
-use App\Channel;
+use App\Interfaces\Podcastable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
@@ -11,11 +11,11 @@ class ChannelRegistered
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    /** @var \App\Channel $channel */
-    public $channel;
+    /** @var \App\Interfaces\Podcastable $podcastable */
+    public $podcastable;
 
-    public function __construct(Channel $channel)
+    public function __construct(Podcastable $podcastable)
     {
-        $this->channel = $channel;
+        $this->podcastable = $podcastable;
     }
 }

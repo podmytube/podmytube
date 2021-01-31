@@ -8,10 +8,11 @@ use App\Podcast\PodcastHeader;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
+use Tests\Traits\IsAbleToTestPodcast;
 
 class PodcastHeaderTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, IsAbleToTestPodcast;
 
     /** @var \App\Channel $channel */
     protected $channel;
