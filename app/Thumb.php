@@ -14,7 +14,6 @@ class Thumb extends Model
     use BelongsToChannel;
 
     public const LOCAL_STORAGE_DISK = 'thumbs';
-    public const REMOTE_STORAGE_DISK = 'sftpthumbs';
     public const DEFAULT_THUMB_FILE = 'default_thumb.jpg';
 
     protected $fillable = ['channel_id', 'file_name', 'file_disk', 'file_size'];
@@ -99,31 +98,6 @@ class Thumb extends Model
     public static function defaultUrl()
     {
         return getenv('THUMBS_URL') . '/' . self::DEFAULT_THUMB_FILE;
-    }
-
-    /**
-     * This function will upload thum to thumb server.
-     */
-    public function upload()
-    {
-        /**
-         * put is taking 2 arguments
-         * - the relative path from SFTP_THUMBS_PATH where to store data
-         * - the file content (data)
-         */
-        Storage::disk(self::REMOTE_STORAGE_DISK)->put(
-            $this->relativePath,
-            $this->getData()
-        );
-
-        /**
-         * Once uploaded, we are setting the channel_path
-         * on the remote to public visibility
-         */
-        Storage::disk(self::REMOTE_STORAGE_DISK)->setVisibility(
-            $this->channelId(),
-            'public'
-        );
     }
 
     /**

@@ -2,8 +2,6 @@
 
 namespace Tests\Unit\Podcast;
 
-use App\Category;
-use App\Interfaces\Podcastable;
 use App\Thumb;
 use App\Podcast\PodcastBuilder;
 use Tests\TestCase;
@@ -54,6 +52,4 @@ class PodcastBuilderTest extends TestCase
         $this->headerChecking($this->channel, $renderedPodcast);
         $this->itemsChecking($this->channel, $renderedPodcast);
     }
-
-    
 }

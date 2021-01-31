@@ -74,21 +74,6 @@ return [
             'visibility' => 'public',
         ],
 
-        /**
-         * Remote feeds
-         */
-        'sftpfeeds' => [
-            'driver' => 'sftp',
-            'host' => $sshCredentials['host'],
-            'username' => $sshCredentials['user'],
-            'privateKey' => $sshCredentials['path'],
-            // 'port' => 22,
-            'root' => env('SFTP_PODCASTS_PATH'),
-            'timeout' => 20,
-            'visibility' => 'public',
-            'permPublic' => 0755,
-        ],
-
         'thumbs' => [
             'driver' => 'local',
             'root' => storage_path('app/public/thumbs'),
@@ -126,21 +111,6 @@ return [
             'driver' => 'local',
             'root' => storage_path('app/uploadedMedias'),
             'visibility' => 'private',
-        ],
-
-        /**
-         * Thumbs real url for podcast listeners
-         */
-        'sftpthumbs' => [
-            'driver' => 'sftp',
-            'host' => $sshCredentials['host'],
-            'username' => $sshCredentials['user'],
-            'privateKey' => $sshCredentials['path'],
-            // 'port' => 22,
-            'root' => env('SFTP_THUMBS_PATH'),
-            'timeout' => 20,
-            'visibility' => 'public',
-            'permPublic' => 0755,
         ],
 
         'remote' => [

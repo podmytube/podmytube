@@ -36,22 +36,24 @@ class PodcastHeaderTest extends TestCase
             'category' => Category::bySlug('fashion-beauty'),
             'title' => $this->channel->title(),
             'link' => $this->channel->link,
+            'explicit' => $this->channel->podcastExplicit(),
         ];
 
-        $renderedResult = PodcastHeader::create($attributes)->render();
-        $this->assertStringContainsString('<link>' . $this->channel->link . '</link>', $renderedResult);
-        $this->assertStringContainsString('<title>' . $this->channel->title() . '</title>', $renderedResult);
-        $this->assertStringContainsString('<description><![CDATA[' . $this->channel->description . ']]></description>', $renderedResult);
-        $this->assertStringContainsString('<copyright>' . $this->channel->podcast_copyright . '</copyright>', $renderedResult);
-        $this->assertStringContainsString('<language>' . $this->channel->language->code . '</language>', $renderedResult);
-        $this->assertStringContainsString('<image>', $renderedResult);
-        $this->assertStringContainsString('<url>' . $this->channel->podcastCoverUrl() . '</url>', $renderedResult);
-        $this->assertStringContainsString('<title>' . $this->channel->title() . '</title>', $renderedResult);
-        $this->assertStringContainsString('<link>' . $this->channel->link . '</link>', $renderedResult);
-        $this->assertStringContainsString('<itunes:category text="Arts">', $renderedResult);
-        $this->assertStringContainsString('<itunes:category text="Fashion &amp; Beauty"', $renderedResult);
-        $this->assertStringContainsString('</itunes:category>', $renderedResult);
-        $this->assertStringContainsString('</image>', $renderedResult);
+        $rendered = PodcastHeader::create($attributes)->render();
+        $this->assertStringContainsString('<link>' . $this->channel->link . '</link>', $rendered);
+        $this->assertStringContainsString('<title>' . $this->channel->title() . '</title>', $rendered);
+        $this->assertStringContainsString('<description><![CDATA[' . $this->channel->description . ']]></description>', $rendered);
+        $this->assertStringContainsString('<copyright>' . $this->channel->podcast_copyright . '</copyright>', $rendered);
+        $this->assertStringContainsString('<language>' . $this->channel->language->code . '</language>', $rendered);
+        $this->assertStringContainsString('<image>', $rendered);
+        $this->assertStringContainsString('<url>' . $this->channel->podcastCoverUrl() . '</url>', $rendered);
+        $this->assertStringContainsString('<title>' . $this->channel->title() . '</title>', $rendered);
+        $this->assertStringContainsString('<link>' . $this->channel->link . '</link>', $rendered);
+        $this->assertStringContainsString('</image>', $rendered);
+        $this->assertStringContainsString('<itunes:category text="Arts">', $rendered);
+        $this->assertStringContainsString('<itunes:category text="Fashion &amp; Beauty"', $rendered);
+        $this->assertStringContainsString('</itunes:category>', $rendered);
+        $this->assertStringContainsString('<itunes:explicit>' . $this->channel->podcastExplicit() . '</itunes:explicit>', $rendered);
     }
 
     public function testingNewChannelWithSimpleCategoryShouldRenderFine()
@@ -68,17 +70,17 @@ class PodcastHeaderTest extends TestCase
             'link' => $this->channel->link,
         ];
 
-        $renderedResult = PodcastHeader::create($attributes)->render();
-        $this->assertStringContainsString('<link>' . $this->channel->link . '</link>', $renderedResult);
-        $this->assertStringContainsString('<title>' . $this->channel->title() . '</title>', $renderedResult);
-        $this->assertStringContainsString('<description><![CDATA[' . $this->channel->description . ']]></description>', $renderedResult);
-        $this->assertStringContainsString('<copyright>' . $this->channel->podcast_copyright . '</copyright>', $renderedResult);
-        $this->assertStringContainsString('<language>' . $this->channel->language->code . '</language>', $renderedResult);
-        $this->assertStringContainsString('<image>', $renderedResult);
-        $this->assertStringContainsString('<url>' . $this->channel->podcastCoverUrl() . '</url>', $renderedResult);
-        $this->assertStringContainsString('<title>' . $this->channel->title() . '</title>', $renderedResult);
-        $this->assertStringContainsString('<link>' . $this->channel->link . '</link>', $renderedResult);
-        $this->assertStringContainsString('<itunes:category text="Health &amp; Fitness" />', $renderedResult);
-        $this->assertStringContainsString('</image>', $renderedResult);
+        $rendered = PodcastHeader::create($attributes)->render();
+        $this->assertStringContainsString('<link>' . $this->channel->link . '</link>', $rendered);
+        $this->assertStringContainsString('<title>' . $this->channel->title() . '</title>', $rendered);
+        $this->assertStringContainsString('<description><![CDATA[' . $this->channel->description . ']]></description>', $rendered);
+        $this->assertStringContainsString('<copyright>' . $this->channel->podcast_copyright . '</copyright>', $rendered);
+        $this->assertStringContainsString('<language>' . $this->channel->language->code . '</language>', $rendered);
+        $this->assertStringContainsString('<image>', $rendered);
+        $this->assertStringContainsString('<url>' . $this->channel->podcastCoverUrl() . '</url>', $rendered);
+        $this->assertStringContainsString('<title>' . $this->channel->title() . '</title>', $rendered);
+        $this->assertStringContainsString('<link>' . $this->channel->link . '</link>', $rendered);
+        $this->assertStringContainsString('<itunes:category text="Health &amp; Fitness" />', $rendered);
+        $this->assertStringContainsString('</image>', $rendered);
     }
 }

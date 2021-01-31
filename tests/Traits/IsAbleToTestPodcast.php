@@ -2,6 +2,7 @@
 
 namespace Tests\Traits;
 
+use App\Category;
 use App\Interfaces\Podcastable;
 use App\Podcast\PodcastItem;
 use Illuminate\Support\Collection;
@@ -14,6 +15,9 @@ trait IsAbleToTestPodcast
             'title',
             'link',
             'description',
+            'author',
+            'email',
+            'copyright',
             'imageUrl',
             'language',
             'category',
@@ -27,6 +31,9 @@ trait IsAbleToTestPodcast
         $this->assertEquals($podcastInfos['title'], $podcastable->podcastTitle());
         $this->assertEquals($podcastInfos['link'], $podcastable->podcastLink());
         $this->assertEquals($podcastInfos['description'], $podcastable->podcastDescription());
+        $this->assertEquals($podcastInfos['author'], $podcastable->podcastAuthor());
+        $this->assertEquals($podcastInfos['email'], $podcastable->podcastEmail());
+        $this->assertEquals($podcastInfos['copyright'], $podcastable->podcastCopyright());
         $this->assertEquals($podcastInfos['imageUrl'], $podcastable->podcastCoverUrl());
         $this->assertEquals($podcastInfos['language'], $podcastable->podcastLanguage());
         $this->assertEquals($podcastInfos['category'], $podcastable->podcastCategory());
@@ -78,6 +85,7 @@ trait IsAbleToTestPodcast
          * Required tags
          * =======================================
          */
+
         $this->assertStringContainsString('<title>' . $podcastable->title() . '</title>', $renderedPodcast);
         $this->assertStringContainsString('<description><![CDATA[' . $podcastable->description . ']]></description>', $renderedPodcast);
         $this->assertStringContainsString('<image>', $renderedPodcast);
@@ -102,14 +110,14 @@ trait IsAbleToTestPodcast
             $this->assertStringContainsString('<copyright>' . $podcastable->podcastCopyright() . '</copyright>', $renderedPodcast);
         }
 
-        if ($podcastable->podcastAuthors()) {
-            $this->assertStringContainsString('<itunes:author>' . $podcastable->podcastAuthors() . '</itunes:author>', $renderedPodcast);
+        if ($podcastable->podcastAuthor()) {
+            $this->assertStringContainsString('<itunes:author>' . $podcastable->podcastAuthor() . '</itunes:author>', $renderedPodcast);
         }
 
-        if ($podcastable->podcastAuthors() || $podcastable->podcastEmail()) {
+        if ($podcastable->podcastAuthor() || $podcastable->podcastEmail()) {
             $this->assertStringContainsString('<itunes:owner>', $renderedPodcast);
-            if ($podcastable->podcastAuthors()) {
-                $this->assertStringContainsString('<itunes:name>' . $podcastable->podcastAuthors() . '</itunes:name>', $renderedPodcast);
+            if ($podcastable->podcastAuthor()) {
+                $this->assertStringContainsString('<itunes:name>' . $podcastable->podcastAuthor() . '</itunes:name>', $renderedPodcast);
             }
             if ($podcastable->podcastEmail()) {
                 $this->assertStringContainsString('<itunes:email>' . $podcastable->podcastEmail() . '</itunes:email>', $renderedPodcast);

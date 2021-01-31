@@ -21,34 +21,34 @@
 				<label class="block py-1" for="podcast_title">Podcast name</label>
 				<input type="text" id="podcast_title" name="podcast_title" value="{{ old('podcast_title') ?? $channel->title()}}"
 					placeholder="Do your podcast or do not. There is no try." aria-label="Podcast name"
-					class="w-full px-5 py-1 text-gray-900 bg-gray-200 rounded placeholder-black">
+					class="w-full px-5 py-1 text-gray-900 bg-gray-200 rounded placeholder-gray-700">
 			</div>
 
 			<div class="pb-4">
 				<label class="block py-1" for="authors">Author(s)</label>
 				<input type="text" id="authors" name="authors" value="{{ old('authors') ?? $channel->authors }}"
 					placeholder="Master yoda" aria-label="Podcast authors"
-					class="w-full px-5 py-1 text-gray-900 bg-gray-200 rounded placeholder-black">
+					class="w-full px-5 py-1 text-gray-900 bg-gray-200 rounded placeholder-gray-700">
 			</div>
 
 			<div class="pb-4">
 				<label class="block py-1" for="authors">Email</label>
 				<input type="email" id="email" name="email" value="{{ old('email') ?? $channel->email}}"
 					placeholder="yoda@usetheforce.com" aria-label="Podcast authors email"
-					class="w-full px-5 py-1 text-gray-900 bg-gray-200 rounded placeholder-black">
+					class="w-full px-5 py-1 text-gray-900 bg-gray-200 rounded placeholder-gray-700">
 			</div>
 
 			<div class="pb-4">
 				<label class="block py-1" for="description">Description</label>
 				<textarea id="description" name="description"
-					class="w-full px-5 py-1 text-gray-900 bg-gray-200 rounded placeholder-black">{{ old('description') ?? $channel->description}}</textarea> 
+					class="w-full px-5 py-1 text-gray-900 bg-gray-200 rounded placeholder-gray-700">{{ old('description') ?? $channel->description}}</textarea> 
 			</div>
 
 			<div class="pb-4">
 				<label class="block py-1" for="link">Website</label>
 				<input type="url" id="link" name="link" value="{{ old('link') ?? $channel->link}}"
 					placeholder="https://usetheforce.com" aria-label="Podcast website"
-					class="w-full px-5 py-1 text-gray-900 bg-gray-200 rounded placeholder-black">
+					class="w-full px-5 py-1 text-gray-900 bg-gray-200 rounded placeholder-gray-700">
 			</div>
 
 			<div class="pb-4">
@@ -97,7 +97,7 @@
 				</div>
 				I only want to include videos with the 
 				<input type="text" id="accept_video_by_tag" name="accept_video_by_tag" value="{{$channel->accept_video_by_tag}}" 
-					class="px-5 py-1 text-gray-900 bg-gray-200 rounded placeholder-black"> 
+					class="px-5 py-1 text-gray-900 bg-gray-200 rounded placeholder-gray-700"> 
 				tag
 			</div>
 

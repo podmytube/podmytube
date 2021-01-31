@@ -79,7 +79,7 @@ class Playlist extends Model implements Podcastable
             'title' => $this->podcastTitle(),
             'link' => $this->podcastLink(),
             'description' => $this->podcastDescription(),
-            'authors' => $this->podcastAuthors(),
+            'author' => $this->podcastAuthor(),
             'email' => $this->podcastEmail(),
             'copyright' => $this->podcastCopyright(),
             'imageUrl' => $this->podcastCoverUrl(),
@@ -112,9 +112,9 @@ class Playlist extends Model implements Podcastable
         return $this->description;
     }
 
-    public function podcastAuthors():?string
+    public function podcastAuthor():?string
     {
-        return $this->channel->podcastAuthors();
+        return $this->channel->podcastAuthor();
     }
 
     public function podcastEmail():?string

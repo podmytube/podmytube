@@ -33,7 +33,7 @@ class ItunesHeaderTest extends TestCase
             'imageUrl' => Thumb::defaultUrl(),
             'email' => $authorEmail,
             'category' => Category::bySlug('documentary'),
-            'explicit' => true,
+            'explicit' => 'true',
         ])->render();
         $this->assertStringContainsString("<itunes:author>$authorName</itunes:author>", $this->renderedResult);
         $this->assertStringContainsString("<itunes:title>$itunesTitle</itunes:title>", $this->renderedResult);
@@ -209,5 +209,16 @@ class ItunesHeaderTest extends TestCase
                 "Tag {$tagToCheck} should be missing in {$this->renderedResult}."
             );
         }, $tagsThatShouldBeMissing);
+    }
+
+    public function testCheckExplicitIsOk()
+    {
+        $this->assertEquals('true', ItunesHeader::checkExplicit(true));
+        $this->assertEquals('true', ItunesHeader::checkExplicit('true'));
+
+        $this->assertEquals('false', ItunesHeader::checkExplicit(false));
+        $this->assertEquals('false', ItunesHeader::checkExplicit('false'));
+
+        $this->assertEquals('false', ItunesHeader::checkExplicit('chat'));
     }
 }

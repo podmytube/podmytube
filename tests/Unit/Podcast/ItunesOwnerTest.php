@@ -8,33 +8,38 @@ use InvalidArgumentException;
 
 class ItunesOwnerTest extends TestCase
 {
+    protected $ownerName = 'John doe';
+    protected $ownerEmail = 'john.doe@gmail.com';
+
     public function testingValidInformationsShouldRenderProperly()
     {
         $result = ItunesOwner::prepare([
-            'itunesOwnerName' => 'John doe',
-            'itunesOwnerEmail' => 'john.doe@gmail.com'
+            'itunesOwnerName' => $this->ownerName,
+            'itunesOwnerEmail' => $this->ownerEmail,
         ])
             ->render();
+        $this->assertStringContainsString("<itunes:name>{$this->ownerName}</itunes:name>", $result);
         $this->assertStringContainsString('<itunes:owner>', $result);
-        $this->assertStringContainsString('<itunes:name>John doe</itunes:name>', $result);
-        $this->assertStringContainsString('<itunes:email>john.doe@gmail.com</itunes:email>', $result);
+        $this->assertStringContainsString("<itunes:name>{$this->ownerName}</itunes:name>", $result);
+        $this->assertStringContainsString("<itunes:email>{$this->ownerEmail}</itunes:email>", $result);
         $this->assertStringContainsString('</itunes:owner>', $result);
     }
 
     public function testingOnlyOwnerNameShouldRenderProperlyToo()
     {
         $result = ItunesOwner::prepare(['itunesOwnerName' => 'John doe', ])->render();
+        $this->assertStringContainsString("<itunes:name>{$this->ownerName}</itunes:name>", $result);
         $this->assertStringContainsString('<itunes:owner>', $result);
-        $this->assertStringContainsString('<itunes:name>John doe</itunes:name>', $result);
+        $this->assertStringContainsString("<itunes:name>{$this->ownerName}</itunes:name>", $result);
         $this->assertStringContainsString('</itunes:owner>', $result);
         $this->assertStringNotContainsString('<itunes:email>', $result);
     }
 
     public function testingOnlyOwnerEmailShouldRenderProperlyToo()
     {
-        $result = ItunesOwner::prepare(['itunesOwnerEmail' => 'john.doe@gmail.com'])->render();
+        $result = ItunesOwner::prepare(['itunesOwnerEmail' => $this->ownerEmail])->render();
         $this->assertStringContainsString('<itunes:owner>', $result);
-        $this->assertStringContainsString('<itunes:email>john.doe@gmail.com</itunes:email>', $result);
+        $this->assertStringContainsString("<itunes:email>{$this->ownerEmail}</itunes:email>", $result);
         $this->assertStringContainsString('</itunes:owner>', $result);
         $this->assertStringNotContainsString('<itunes:name>', $result);
     }
