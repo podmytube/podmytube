@@ -16,8 +16,8 @@ class ItunesHeader implements IsRenderableInterface
     public $author;
     /** @var string $email */
     public $email;
-    /** @var bool $explicit */
-    public $explicit = false;
+    /** @var string $explicit */
+    public $explicit = 'false';
     /** @var string $type (episodic or serial) */
     public $type;
     /** @var string $imageUrl */
@@ -32,8 +32,10 @@ class ItunesHeader implements IsRenderableInterface
         $this->title = $attributes['title'] ?? null;
         $this->author = $attributes['author'] ?? null;
         $this->email = $attributes['email'] ?? null;
-        $this->explicit = $attributes['explicit'] ?? null;
 
+        if (isset($attributes['explicit'])) {
+            $this->explicit = self::checkExplicit($attributes['explicit']);
+        }
         if (isset($attributes['imageUrl'])) {
             $this->setImageUrl($attributes['imageUrl']);
         }
@@ -72,11 +74,6 @@ class ItunesHeader implements IsRenderableInterface
             ->render();
     }
 
-    public function explicit()
-    {
-        return $this->explicit ? 'true' : 'false';
-    }
-
     protected function setType(string $type = self::TYPE_EPISODIC)
     {
         if ($type === self::TYPE_EPISODIC || $type === self::TYPE_SERIAL) {
@@ -90,5 +87,16 @@ class ItunesHeader implements IsRenderableInterface
             throw new InvalidArgumentException('ImageUrl is not a valid url.');
         }
         $this->imageUrl = $imageUrl;
+    }
+
+    public static function checkExplicit($explicit)
+    {
+        if (is_bool($explicit)) {
+            return $explicit === true ? 'true' : 'false';
+        }
+        if ($explicit === 'true') {
+            return 'true';
+        }
+        return 'false';
     }
 }

@@ -49,7 +49,7 @@ class ChannelPodcastTest extends TestCase
             'link' => null,
             'category_id' => null,
             'language_id' => null,
-            'explicit' => false,
+            'explicit' => true,
         ]);
         $this->podcastHeaderInfosChecking($this->channel, $this->channel->podcastHeader());
     }
@@ -120,6 +120,17 @@ class ChannelPodcastTest extends TestCase
 
     public function testPodcastAuthorsIsOk()
     {
-        $this->assertEquals($this->channel->authors, $this->channel->podcastAuthors());
+        $this->assertEquals($this->channel->authors, $this->channel->podcastAuthor());
+    }
+
+    public function testPodcastExplicitIsOk()
+    {
+        $this->channel->update(['explicit' => true]);
+        $this->assertTrue($this->channel->explicit);
+        $this->assertEquals('true', $this->channel->podcastExplicit());
+
+        $this->channel->update(['explicit' => false]);
+        $this->assertFalse($this->channel->explicit);
+        $this->assertEquals('false', $this->channel->podcastExplicit());
     }
 }

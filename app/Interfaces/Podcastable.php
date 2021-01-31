@@ -18,7 +18,7 @@ interface Podcastable
 
     public function podcastDescription():?string;
 
-    public function podcastAuthors():?string;
+    public function podcastAuthor():?string;
 
     public function podcastEmail():?string;
 

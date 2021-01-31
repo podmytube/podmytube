@@ -4,4 +4,4 @@
 @if ($itunesHeader->itunesOwner){!! $itunesHeader->itunesOwner !!} @endif
 @if ($itunesHeader->itunesCategory){!! $itunesHeader->itunesCategory !!} @endif
 @if ($itunesHeader->imageUrl)<itunes:image href="{{$itunesHeader->imageUrl}}" /> @endif
-@if ($itunesHeader->explicit())<itunes:explicit>{{$itunesHeader->explicit()}}</itunes:explicit> @endif
+@if ($itunesHeader->explicit)<itunes:explicit>{{$itunesHeader->explicit}}</itunes:explicit> @endif
