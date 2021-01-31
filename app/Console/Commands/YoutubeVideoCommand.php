@@ -35,7 +35,7 @@ class YoutubeVideoCommand extends Command
         $factory = YoutubeVideo::forMedia($this->argument('videoId'));
 
         $this->line("Title : {$factory->title()}");
-        $this->line("Description : {$factory->description()}");
+        //$this->line("Description : {$factory->description()}");
         $this->line("Duration : {$factory->duration()}");
 
         if ($factory->isAvailable()) {
