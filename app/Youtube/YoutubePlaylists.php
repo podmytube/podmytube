@@ -12,40 +12,33 @@ class YoutubePlaylists extends YoutubeCore
     /** @var string $channelId $youtube channel id */
     protected $channelId;
 
-    /** @var array $playlistIds ['uploads' => 'id1', 'xyz' => 'id2' ]*/
-    protected $playlistIds = [];
+    /** @var array $playlists */
+    protected $playlists = [];
 
     public function forChannel(string $channelId): self
     {
         $this->channelId = $channelId;
-        $items = $this->defineEndpoint('/youtube/v3/channels')
+        $playlistItems = $this->defineEndpoint('/youtube/v3/playlists')
             ->addParams([
-                'id' => $this->channelId,
+                'channelId' => $this->channelId,
             ])
-            ->addParts(['id', 'contentDetails'])
+            ->addParts(['id', 'contentDetails', 'snippet'])
             ->run()
             ->items();
-        foreach (
-            $items[0]['contentDetails']['relatedPlaylists']
-            as $playlistName => $playlistId
-        ) {
-            $this->playlistIds[$playlistName] = $playlistId;
+
+        foreach ($playlistItems as $playlistItem) {
+            $this->playlists[$playlistItem['id']] = [
+                'id' => $playlistItem['id'],
+                'title' => $playlistItem['snippet']['title'],
+                'description' => $playlistItem['snippet']['description'],
+                'nbVideos' => $playlistItem['contentDetails']['itemCount'],
+            ];
         }
         return $this;
     }
 
-    /**
-     * return the 'uploads' playlist id.
-     *
-     * @return string the uploads playlist id
-     */
-    public function uploadsPlaylistId()
+    public function playlists()
     {
-        return $this->playlistIds['uploads'];
-    }
-
-    public function favoritesPlaylistId()
-    {
-        return $this->playlistIds['favorites'];
+        return $this->playlists;
     }
 }

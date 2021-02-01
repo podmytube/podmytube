@@ -30,7 +30,6 @@ class YoutubeChannelVideos implements QuotasConsumer
         $this->channelId = $channelId;
         $this->limit = $limit;
         $this->obtainUploadPlaylistIdBeingSmart();
-        //$this->obtainUploadsPlaylistIdFromYoutube();
         $this->obtainVideos();
     }
 
@@ -50,22 +49,6 @@ class YoutubeChannelVideos implements QuotasConsumer
     {
         $this->uploadsPlaylistId = $this->channelId;
         $this->uploadsPlaylistId[1] = 'U';
-    }
-
-    /**
-     * getting 'uploads' playlist id the normal way.
-     */
-    protected function obtainUploadsPlaylistIdFromYoutube(): void
-    {
-        /**
-         * get the uploads playlist id
-         */
-        $this->uploadsPlaylistId = ($playlist = new YoutubePlaylists())
-            ->forChannel($this->channelId)
-            ->uploadsPlaylistId();
-
-        $this->apikey = $playlist->apikey();
-        $this->queries = array_merge($this->queries, $playlist->queriesUsed());
     }
 
     protected function obtainVideos(): void

@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\Channel;
 use App\Media;
-use App\Youtube\YoutubePlaylistItems;
+use App\Playlist;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -27,7 +27,7 @@ class UpdatePlaylistsForChannelCommand extends Command
     /** @var \App\Youtube\YoutubeCore $youtubeCore */
     protected $youtubeCore;
 
-    /** @var App\Channel[] $channels list of channel models */
+    /** @var \App\Channels[] $channels list of channel models */
     protected $channels = [];
 
     /** @var string[] $errors list of errors that occured */
@@ -62,22 +62,8 @@ class UpdatePlaylistsForChannelCommand extends Command
             return;
         }
 
-        $playlists->map(function ($playlist) {
-            /**
-             * getting videos in the playlist
-             */
-            $videos = (new YoutubePlaylistItems)->forPlaylist($playlist->playlist_id)->videos();
-
-            /** keeping only ids */
-            $mediaIds = $this->keepingOnlyMediaIds($videos);
-
-            /** collecting medias we  */
-            $medias = $this->getMedias($mediaIds);
-
-            if (!$medias->count()) {
-                $this->info("This playlist {$playlist->playlist_id} has no grabbed media.");
-                return;
-            }
+        $playlists->map(function (Playlist $playlist) {
+            dump($playlist->toPodcast());
         });
     }
 
@@ -89,7 +75,7 @@ class UpdatePlaylistsForChannelCommand extends Command
         }, $videosItems);
     }
 
-    protected function getMedias(array $mediaIds):?Collection
+    protected function getGrabbedMedias(array $mediaIds):?Collection
     {
         return Media::grabbedAt()->whereIn('media_id', $mediaIds)->get();
     }
