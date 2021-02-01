@@ -65,7 +65,7 @@ class UpdatePlaylistsForPayingChannelsCommand extends Command
          */
         $channels->map(function ($channel) {
             $this->comment('======================================================================', 'v');
-            $this->comment("Obtaining playlists for {$channel->nameWithId()}", 'v');
+            $this->comment("Updating playlists podcast for {$channel->nameWithId()}", 'v');
             $playlists = $channel->playlists()->where('active', '=', 1)->get();
             if ($playlists->count() <= 0) {
                 $message = "This channel ({$channel->channelId()}) has no active playlists.";
