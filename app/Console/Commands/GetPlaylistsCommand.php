@@ -52,13 +52,24 @@ class GetPlaylistsCommand extends Command
         }
 
         /**
+         * add now tech
+         */
+        $nowtech = Channel::find('UCRU38zigLJNtMIh7oRm2hIg');
+        if ($nowtech !== null) {
+            $channels->push($nowtech);
+        }
+
+        /**
          * get playlists from youtube
          */
         $nbPlaylists = 0;
         $channels->map(function (Channel $channel) use (&$nbPlaylists) {
+            $this->comment('======================================================================', 'v');
+            $this->comment("Getting playlists (from youtube) for {$channel->nameWithId()}", 'v');
             $playlists = ((new YoutubePlaylists)->forChannel($channel->channelId())->playlists());
             $nbPlaylists += count($playlists);
             array_map(function ($playlistItem) use ($channel) {
+                $this->line("Getting {$playlistItem['title']}");
                 Playlist::updateOrCreate(
                     ['youtube_playlist_id' => $playlistItem['id']],
                     [
