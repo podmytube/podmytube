@@ -53,9 +53,19 @@ class UpdatePlaylistsForPayingChannelsCommand extends Command
         }
 
         /**
+         * add now tech
+         */
+        $nowtech = Channel::find('UCRU38zigLJNtMIh7oRm2hIg');
+        if ($nowtech !== null) {
+            $channels->push($nowtech);
+        }
+
+        /**
          * getting active playlists
          */
         $channels->map(function ($channel) {
+            $this->comment('======================================================================', 'v');
+            $this->comment("Obtaining playlists for {$channel->nameWithId()}", 'v');
             $playlists = $channel->playlists()->where('active', '=', 1)->get();
             if ($playlists->count() <= 0) {
                 $message = "This channel ({$channel->channelId()}) has no active playlists.";
@@ -66,9 +76,8 @@ class UpdatePlaylistsForPayingChannelsCommand extends Command
 
             $playlists->map(function (Playlist $playlist) {
                 UploadPodcastFactory::init()->for($playlist);
-
-                $this->comment("Playlist {$playlist->podcastTitle()} has been successfully updated.", 'v');
-                $this->info("You can check it here : {$playlist->podcastUrl()}", 'v');
+                $this->line("Playlist {$playlist->podcastTitle()} has been successfully updated.", null, 'v');
+                $this->line("You can check it here : {$playlist->podcastUrl()}", null, 'v');
             });
         });
     }
