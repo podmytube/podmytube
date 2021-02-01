@@ -48,7 +48,10 @@ class Playlist extends Model implements Podcastable
         /**
          * get the ones that I know about
          */
-        $medias = Media::grabbedAt()->whereIn('media_id', $mediaIds)->get();
+        $medias = Media::grabbedAt()
+            ->whereIn('media_id', $mediaIds)
+            ->orderBy('published_at', 'desc')
+            ->get();
 
         if (!$medias->count()) {
             throw new PlaylistWithNoMediaWeKnowAboutException("This playlist {$this->youtube_playlist_id} has no video we know about.");
