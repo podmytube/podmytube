@@ -3,10 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Channel;
-use App\Media;
+use App\Factories\UploadPodcastFactory;
 use App\Playlist;
 use Illuminate\Console\Command;
-use Illuminate\Database\Eloquent\Collection;
 
 class UpdatePlaylistsForChannelCommand extends Command
 {
@@ -15,14 +14,14 @@ class UpdatePlaylistsForChannelCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'update:playlists {channel_id} ';
+    protected $signature = 'update:playlist {channel_id} ';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'This will update playlists for specific channel';
+    protected $description = 'This will update playlists podcast for specific channel';
 
     /** @var \App\Youtube\YoutubeCore $youtubeCore */
     protected $youtubeCore;
@@ -56,27 +55,17 @@ class UpdatePlaylistsForChannelCommand extends Command
         /**
          * getting active playlists
          */
-        $playlists = $channelToUpdate->playlists()->where('playlist_active', '=', 1)->get();
+        $playlists = $channelToUpdate->playlists()->where('active', '=', 1)->get();
         if ($playlists->count() <= 0) {
             $this->error("This channel ({$this->argument('channel_id')}) has no active playlists.");
             return;
         }
 
         $playlists->map(function (Playlist $playlist) {
-            dump($playlist->toPodcast());
+            UploadPodcastFactory::init()->for($playlist);
+
+            $this->comment("Playlist {$playlist->podcastTitle()} has been successfully updated.", 'v');
+            $this->info("You can check it here : {$playlist->podcastUrl()}", 'v');
         });
-    }
-
-    protected function keepingOnlyMediaIds(array $videosItems):array
-    {
-        /** keeping only ids */
-        return array_map(function ($video) {
-            return $video['media_id'];
-        }, $videosItems);
-    }
-
-    protected function getGrabbedMedias(array $mediaIds):?Collection
-    {
-        return Media::grabbedAt()->whereIn('media_id', $mediaIds)->get();
     }
 }
