@@ -28,12 +28,13 @@ class PodcastItem
         array_map(function ($property) use ($itemData) {
             $this->$property = $itemData[$property];
         }, array_keys(get_object_vars($this)));
+
         if (!$this->isValid()) {
             $message = 'Podcast item is not valid.';
             $message .= "title received : ({$itemData['title']})";
             $message .= "enclosureUrl received ({$itemData['enclosureUrl']}). ";
             $message .= "mediaLength received ({$itemData['mediaLength']}). ";
-            throw new PodcastItemNotValidException();
+            throw new PodcastItemNotValidException($message);
         }
     }
 
