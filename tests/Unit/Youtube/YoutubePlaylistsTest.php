@@ -4,7 +4,6 @@ namespace Tests\Unit\Youtube;
 
 use App\Exceptions\YoutubeNoResultsException;
 use App\Youtube\YoutubePlaylists;
-use App\Youtube\YoutubeQuotas;
 use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 
@@ -18,39 +17,19 @@ class YoutubePlaylistsTest extends TestCase
         Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
     }
 
-    public function testChannelIsGettingTheRightUploadsPlaylist()
-    {
-        $this->assertEquals(
-            self::MY_PERSONAL_UPLOADS_PLAYLIST_ID,
-            ($playlists = new YoutubePlaylists())
-                ->forChannel(YoutubeCoreTest::PERSONAL_CHANNEL_ID)
-                ->uploadsPlaylistId()
-        );
-        $this->assertEqualsCanonicalizing(
-            [$playlists->apikey() => 3],
-            YoutubeQuotas::forUrls($playlists->queriesUsed())->quotaConsumed()
-        );
-    }
-
-    public function testChannelIsGettingTheRightFavoritesPlaylist()
-    {
-        $this->assertEquals(
-            'FLw6bU9JT_Lihb2pbtqAUGQw',
-            ($playlists = new YoutubePlaylists())
-                ->forChannel(YoutubeCoreTest::PERSONAL_CHANNEL_ID)
-                ->favoritesPlaylistId()
-        );
-        $this->assertEqualsCanonicalizing(
-            [$playlists->apikey() => 3],
-            YoutubeQuotas::forUrls($playlists->queriesUsed())->quotaConsumed()
-        );
-    }
-
     public function testInvalidChannelIdShouldThrowAnException()
     {
         $this->expectException(YoutubeNoResultsException::class);
         (new YoutubePlaylists())
-            ->forChannel('ForSureThisChannelWillNeverEverExist')
-            ->uploadsPlaylistId();
+            ->forChannel('ForSureThisChannelWillNeverEverExist');
+    }
+
+    public function testPlaylistsIsOk()
+    {
+        $playlists = (new YoutubePlaylists())->forChannel(self::PERSONAL_CHANNEL_ID)->playlists();
+        $this->assertCount(2, $playlists);
+        $this->assertArrayHasKey('PLQz1j9ftwaG0h5LWWnqgMYPo31PlXZcko', $playlists);
+        $this->assertEquals('testPmt', $playlists['PLQz1j9ftwaG0h5LWWnqgMYPo31PlXZcko']['title']);
+        $this->assertEquals(0, $playlists['PLQz1j9ftwaG0h5LWWnqgMYPo31PlXZcko']['nbVideos']);
     }
 }
