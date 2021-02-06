@@ -21,7 +21,7 @@ composer install --ignore-platform-reqs
 npm install && npm run production
 
 # updating database migrations
-docker exec -it --user www-data $containerName php artisan migrate
+docker exec -it --user www-data $containerName php artisan migrate --force
 
 # emptying failed_jobs table
 docker exec -it --user www-data $containerName php artisan queue:flush
