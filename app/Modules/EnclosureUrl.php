@@ -23,13 +23,7 @@ class EnclosureUrl
 
     protected function setEnclosureUrl()
     {
-        $separator = '/';
-        $this->enclosureUrl = config('app.mp3_url') .
-            $separator .
-            $this->media->channel_id .
-            $separator .
-            $this->media->media_id .
-            '.mp3';
+        $this->enclosureUrl = config('app.mp3_url') . '/' . $this->media->channel_id . '/' . $this->media->media_id . '.mp3';
     }
 
     public function get()

@@ -29,20 +29,19 @@ class MediaCleaning implements ShouldQueue
 
     public function delete()
     {
-        Storage::disk(Media::REMOTE_DISK);
+        Storage::disk(SendFileBySFTP::REMOTE_DISK);
 
         /**
          * delete file
          */
-        if (Storage::exists($this->mediaToDelete->relativePath())) {
-            Storage::delete($this->mediaToDelete->relativePath());
+        if (Storage::exists($this->mediaToDelete->remoteFilePath())) {
+            Storage::delete($this->mediaToDelete->remoteFilePath());
         }
 
         /**
          * soft deleting db entry
          */
         $this->mediaToDelete->update(['length' => 0, 'duration' => 0, 'grabbed_at' => null]);
-        $this->mediaToDelete->save();
         $this->mediaToDelete->delete();
 
         /**
