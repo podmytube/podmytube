@@ -6,11 +6,13 @@ use App\Channel;
 use App\Exceptions\DownloadMediaTagException;
 use App\Exceptions\YoutubeMediaDoesNotExistException;
 use App\Factories\DownloadMediaFactory;
+use App\Jobs\SendFileBySFTP;
 use App\Media;
 use App\Plan;
 use App\Subscription;
-use Artisan;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Bus;
 use Storage;
 use Tests\TestCase;
 
@@ -33,6 +35,7 @@ class DownloadMediaFactoryTest extends TestCase
     {
         parent::setUp();
         Artisan::call('db:seed');
+        Bus::fake(SendFileBySFTP::class);
         $this->channel = factory(Channel::class)->create(['channel_id' => 'test']);
         $this->subscription = factory(Subscription::class)->create(
             [
@@ -90,6 +93,6 @@ class DownloadMediaFactoryTest extends TestCase
         $this->assertEquals('Super Mario Bros. - Coin Sound Effect', $media->title);
         $this->assertEquals(26898, $media->length);
         $this->assertEquals(5, $media->duration);
-        $this->assertTrue($media->remoteFileExists());
+        Bus::assertDispatched(SendFileBySFTP::class);
     }
 }

@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Events\ChannelUpdated;
 use App\Jobs\MediaCleaning as MediaCleaning;
+use App\Jobs\SendFileBySFTP;
 use App\Media;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
@@ -17,7 +18,7 @@ class MediaCleaningTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Storage::fake(Media::REMOTE_DISK);
+        Storage::fake(SendFileBySFTP::REMOTE_DISK);
         Event::fake();
     }
 
@@ -28,13 +29,13 @@ class MediaCleaningTest extends TestCase
          */
         $media = factory(Media::class)->create();
         Storage::put(
-            $media->relativePath(),
+            $media->remoteFilePath(),
             file_get_contents(base_path('tests/fixtures/Audio/l8i4O7_btaA.mp3'))
         );
         /**
          * just to check media file exists
          */
-        $this->assertTrue(Storage::exists($media->relativePath()));
+        $this->assertTrue(Storage::exists($media->remoteFilePath()));
 
         /**
          * dispatching media deletion
@@ -44,7 +45,7 @@ class MediaCleaningTest extends TestCase
         /**
          * checking all has been soft deleted
          */
-        $this->assertFalse(Storage::exists($media->relativePath()));
+        $this->assertFalse(Storage::exists($media->remoteFilePath()));
         $this->assertTrue($media->trashed());
 
         /**

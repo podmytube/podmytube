@@ -5,6 +5,7 @@ namespace App\Factories;
 use App\Events\ChannelUpdated;
 use App\Exceptions\DownloadMediaTagException;
 use App\Exceptions\YoutubeMediaIsNotAvailableException;
+use App\Jobs\SendFileBySFTP;
 use App\Media;
 use App\Modules\CheckingGrabbedFile;
 use App\Modules\DownloadYTMedia;
@@ -82,9 +83,7 @@ class DownloadMediaFactory
             /**
              * upload it
              */
-            Log::notice("Uploading Media from {$downloadedFilePath} to {$this->media->url()} ");
-            $this->media->uploadFromPath($downloadedFilePath);
-            Log::notice("Downloading media {$this->media->media_id} is successfully finished.");
+            SendFileBySFTP::dispatchNow($downloadedFilePath, $this->media->remoteFilePath(), $cleanAfter = true);
 
             /**
              * update infos
@@ -96,14 +95,6 @@ class DownloadMediaFactory
             $this->media->length = $mediaProperties->filesize();
             $this->media->duration = $mediaProperties->duration();
             $this->media->save();
-
-            /**
-             * cleaning
-             */
-            $result = unlink($downloadedFilePath);
-            if ($result === false) {
-                Log::error("Removing file {$downloadedFilePath} has failed. You should do it manually.");
-            }
 
             ChannelUpdated::dispatch($this->media->channel);
             return true;

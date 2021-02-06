@@ -124,11 +124,26 @@ class MediaModelTest extends TestCase
         );
     }
 
-    public function testRemotePath()
+    public function testMediaFilenameIsOk()
     {
-        $expectedFilePath = config('app.mp3_path') . $this->media->relativePath();
         $this->assertEquals(
-            $expectedFilePath,
+            $this->media->media_id . '.mp3',
+            $this->media->mediaFileName()
+        );
+    }
+
+    public function testRelativePathIsOk()
+    {
+        $this->assertEquals(
+            $this->media->channel->channel_id . '/' . $this->media->mediaFileName(),
+            $this->media->relativePath()
+        );
+    }
+
+    public function testRemotePathIsOk()
+    {
+        $this->assertEquals(
+            config('app.mp3_path') . $this->media->relativePath(),
             $this->media->remoteFilePath()
         );
     }
