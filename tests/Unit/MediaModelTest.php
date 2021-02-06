@@ -7,7 +7,7 @@ use App\Media;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Storage;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class MediaModelTest extends TestCase
