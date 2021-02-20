@@ -77,9 +77,8 @@ class DownloadMediaFactory
             /**
              * checking obtained file duration of result
              */
-            CheckingGrabbedFile::init($mediaProperties, $youtubeVideo->duration())
-                ->check();
-
+            CheckingGrabbedFile::init($mediaProperties, $youtubeVideo->duration()) ->check();
+            
             /**
              * upload it
              */

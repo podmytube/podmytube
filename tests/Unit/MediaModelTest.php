@@ -231,4 +231,13 @@ class MediaModelTest extends TestCase
         $this->assertEquals($result['duration'], $media->duration());
         $this->assertEquals($result['explicit'], 'false');
     }
+
+    /** @test */
+    public function youtube_watch_url_is_ok()
+    {
+        $this->assertEquals(
+            "https://www.youtube.com/watch?v={$this->media->media_id}",
+            $this->media->youtubeWatchUrl()
+        );
+    }
 }

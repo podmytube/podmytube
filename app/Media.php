@@ -209,4 +209,9 @@ class Media extends Model
     {
         return 'https://www.youtube.com/watch?v=' . $mediaId;
     }
+
+    public function youtubeWatchUrl()
+    {
+        return self::youtubeUrl($this->media_id);
+    }
 }

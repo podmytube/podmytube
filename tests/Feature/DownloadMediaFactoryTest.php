@@ -84,10 +84,7 @@ class DownloadMediaFactoryTest extends TestCase
                 'media_id' => self::MARIO_COIN_VIDEO
             ]
         );
-        $this->assertTrue(
-            DownloadMediaFactory::media($media)->run(),
-            'channel video should have been processed'
-        );
+        $this->assertTrue(DownloadMediaFactory::media($media)->run(), 'channel video should have been processed');
         $media = Media::byMediaId(self::MARIO_COIN_VIDEO);
         $this->assertNotNull($media);
         $this->assertEquals('Super Mario Bros. - Coin Sound Effect', $media->title);
