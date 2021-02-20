@@ -76,16 +76,15 @@ class LastMediaPublishedChecker extends Command
             }
         });
 
-        $this->info('Nb paying channels in trouble : ' . count($this->channelInTroubleMessages), 'v');
+        $this->comment('Nb paying channels in trouble : ' . count($this->channelInTroubleMessages), 'v');
 
         if (count($this->channelInTroubleMessages)) {
-            /**
-             * Send myself an email with channels in trouble
-             */
+            /** Send myself an email with channels in trouble */
+            $this->comment(implode("\n", $this->channelInTroubleMessages), 'v');
             Mail::to(config('mail.email_to_warn'))
                 ->queue(new ChannelIsInTroubleWarningMail($this->channelInTroubleMessages));
         }
-        $this->comment("It's all folks.", 'v');
+        $this->info("It's all folks.", 'v');
     }
 
     /**
