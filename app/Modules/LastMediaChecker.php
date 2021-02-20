@@ -6,6 +6,7 @@ use App\Channel;
 use App\Factories\YoutubeLastVideoFactory;
 use App\Media;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class LastMediaChecker
 {
@@ -43,6 +44,13 @@ class LastMediaChecker
     {
         /** if already grabbed return false */
         if ($this->isTheMediaGrabbed()) {
+            Log::notice("Last media already grabbed for {$this->channel->nameWithId()}. No alert to send.");
+            return false;
+        }
+
+        /** if media is upcoming live (not processed yet) */
+        if ($this->isMediaAvailableToBeDownloaded() === false) {
+            Log::notice("Last media {$this->media->youtubeWatchUrl()} is not available yet for {$this->channel->nameWithId()}. No alert to send.");
             return false;
         }
 
@@ -53,16 +61,15 @@ class LastMediaChecker
          * - not being filtered by date
          */
 
-        if (
-            $this->isMediaExcludedByTag() === true ||
-            $this->isMediaExcludedByDate() === true
-            ) {
+        if ($this->isMediaExcludedByTag() === true || $this->isMediaExcludedByDate() === true) {
             /** filtered => no alert should not been grabbed */
+            Log::notice("Last media {$this->lastMediaFromYoutube['media_id']} is excluded by tag for {$this->channel->nameWithId()}. No alert to send.");
             return false;
         }
 
         if ($this->hasMediaBeenPublishedRecently() === true) {
             /** media is too recent to be already processed */
+            Log::notice("Last media {$this->media->media_id} has been published recently for {$this->channel->nameWithId()}. No alert to send.");
             return false;
         }
 
@@ -92,6 +99,11 @@ class LastMediaChecker
     public function hasMediaBeenPublishedRecently(): bool
     {
         return $this->lastMediaFromYoutube['published_at']->isAfter($this->someHoursAgo);
+    }
+
+    public function isMediaAvailableToBeDownloaded():bool
+    {
+        return $this->lastMediaFromYoutube['available'];
     }
 
     public function isMediaBeenPublishedSomeHoursAgo()

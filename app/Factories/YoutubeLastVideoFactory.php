@@ -52,6 +52,7 @@ class YoutubeLastVideoFactory implements QuotasConsumer
             ['id', 'status']
         );
         $this->lastMedia['tags'] = $factory->tags();
+        $this->lastMedia['available'] = $factory->isAvailable();
         $this->queries = array_merge($this->queries, $factory->queriesUsed());
     }
 
