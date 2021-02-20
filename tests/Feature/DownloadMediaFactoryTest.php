@@ -88,7 +88,7 @@ class DownloadMediaFactoryTest extends TestCase
         $media = Media::byMediaId(self::MARIO_COIN_VIDEO);
         $this->assertNotNull($media);
         $this->assertEquals('Super Mario Bros. - Coin Sound Effect', $media->title);
-        $this->assertEquals(26898, $media->length);
+        $this->assertEquals(26666, $media->length);
         $this->assertEquals(5, $media->duration);
         Bus::assertDispatched(SendFileBySFTP::class);
     }
