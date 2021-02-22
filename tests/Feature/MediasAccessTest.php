@@ -45,14 +45,14 @@ class MediasAccessTest extends TestCase
             ->assertForbidden();
     }
 
-    public function testMediaShowForbiddenToAnotherUser()
+    /* public function testMediaShowForbiddenToAnotherUser()
     {
         $this->markTestIncomplete('channel.medias.show route does not exist at this time.');
         $notTheOwner = factory(User::class)->create();
         $this->actingAs($notTheOwner)
             ->get(route('channel.medias.show', [$this->channel, $this->media]))
             ->assertForbidden();
-    }
+    } */
 
     public function testAllowedForOwner()
     {
