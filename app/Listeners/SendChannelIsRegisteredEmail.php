@@ -14,13 +14,13 @@ class SendChannelIsRegisteredEmail implements ShouldQueue
 
     public function handle($event): void
     {
-        /** Sending the channel registered mail within the queue */
-        Mail::to($event->channel->user)->send(
-            new ChannelIsRegistered($event->channel)
+        /** Sending the podcastable registered mail within the queue */
+        Mail::to($event->podcastable->user)->send(
+            new ChannelIsRegistered($event->podcastable)
         );
         Log::debug(
-            'Newly registered channel email has been sent',
-            ['channel_id', $event->channel->id(), ]
+            'Newly registered podcastable email has been sent',
+            ['channel_id', $event->podcastable->id(), ]
         );
     }
 }
