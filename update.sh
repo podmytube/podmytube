@@ -1,5 +1,4 @@
 #!/bin/bash
-
 containerName=dashboard.podmytube.com
 
 # updating code

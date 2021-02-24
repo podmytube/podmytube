@@ -50,6 +50,7 @@ class DownloadMediaFactoryTest extends TestCase
         }
     }
 
+    /** YT media does not exists - should throw exception */
     public function testInvalidMediaShouldBeRejected()
     {
         $media = factory(Media::class)->create([
@@ -62,9 +63,8 @@ class DownloadMediaFactoryTest extends TestCase
 
     public function testVideoHasATagProblem()
     {
-        //$channel = factory(Channel::class)->create(['accept_video_by_tag' => 'window,house']);
-        $this->channel->accept_video_by_tag = 'window,house';
-        $this->channel->save();
+        /** channel accept only "window,mouse" tags - this video is tagged with "dev,podmytube"*/
+        $this->channel->update(['accept_video_by_tag' => 'window,house']);
 
         $media = factory(Media::class)->create(
             [
