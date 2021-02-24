@@ -2,10 +2,13 @@
 
 namespace App\Console\Commands;
 
+use App\Exceptions\DownloadMediaTagException;
+use App\Exceptions\YoutubeMediaIsNotAvailableException;
 use App\Factories\DownloadMediaFactory;
 use App\Media;
 use App\Modules\PeriodsHelper;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
@@ -62,7 +65,9 @@ class DownloadVideosByChannelCommand extends Command
         foreach ($medias as $media) {
             try {
                 DownloadMediaFactory::media($media, $this->getOutput()->isVerbose())->run();
-            } catch (\Exception $exception) {
+            } catch (YoutubeMediaIsNotAvailableException | DownloadMediaTagException $exception) {
+                Log::notice($exception->getMessage());
+            } catch (Exception $exception) {
                 Log::error($exception->getMessage());
             }
             if ($this->getOutput()->isVerbose()) {
