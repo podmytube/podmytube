@@ -56,6 +56,7 @@ class YoutubeVideoTagsForChannelCommand extends Command
             $videoFactory = YoutubeVideo::forMedia($media->media_id);
             return [
                 'title' => $videoFactory->title(),
+                'media_id' => $videoFactory->videoId(),
                 'published' => $media->published_at->format('Y-m-d'),
                 'tags' => implode(',', $videoFactory->tags()),
                 'isTagged' => in_array($tagToLookFor, $videoFactory->tags()),
@@ -66,7 +67,7 @@ class YoutubeVideoTagsForChannelCommand extends Command
         $this->comment("During this period here are the medias and tags published on {$channel->nameWithId()}");
         $results->map(
             function ($result) {
-                $message = "* {$result['published']} - {$result['title']} (tags: {$result['tags']})";
+                $message = "* {$result['published']} - {$result['title']} - {$result['media_id']} (tags: {$result['tags']})";
                 if ($result['isTagged']) {
                     $this->info($message);
                     return true;

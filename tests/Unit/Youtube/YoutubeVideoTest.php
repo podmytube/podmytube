@@ -72,4 +72,15 @@ class YoutubeVideoTest extends TestCase
         $expectedDescription = "20 octobre 2015 - Stade des 3 moulins. 2 duos mixtes s'affrontent dans un match de beach volley. Sans doute pas le plus violent de la saison :)";
         $this->assertEquals($expectedDescription, YoutubeVideo::forMedia(self::BEACH_VOLLEY_VIDEO_1)->description());
     }
+
+    public function testingVideoIdIsOk()
+    {
+        $this->assertEquals(self::BEACH_VOLLEY_VIDEO_1, YoutubeVideo::forMedia(self::BEACH_VOLLEY_VIDEO_1)->videoId());
+    }
+
+    public function testSpecialHasan()
+    {
+        $expectedTags = ['podcast'];
+        $this->assertEqualsCanonicalizing($expectedTags, YoutubeVideo::forMedia('5xHkilEZlFA')->tags());
+    }
 }

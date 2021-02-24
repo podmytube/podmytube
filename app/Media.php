@@ -214,4 +214,9 @@ class Media extends Model
     {
         return self::youtubeUrl($this->media_id);
     }
+
+    public function titleWithId()
+    {
+        return "{$this->title} ({$this->media_id})";
+    }
 }

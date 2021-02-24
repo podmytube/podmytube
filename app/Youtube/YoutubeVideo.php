@@ -44,7 +44,7 @@ class YoutubeVideo extends YoutubeCore
 
     public function isTagged(): bool
     {
-        return count($this->tags());
+        return count($this->tags()) > 0;
     }
 
     public function tags(): array
@@ -61,6 +61,11 @@ class YoutubeVideo extends YoutubeCore
     public function title():?string
     {
         return $this->item['snippet']['title'];
+    }
+
+    public function videoId():?string
+    {
+        return $this->videoId;
     }
 
     public function description():?string

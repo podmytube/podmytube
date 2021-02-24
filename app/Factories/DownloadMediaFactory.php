@@ -43,19 +43,15 @@ class DownloadMediaFactory
             Log::notice("Getting informations for media {$this->media->media_id}");
             $youtubeVideo = YoutubeVideo::forMedia($this->media->media_id);
 
-            /**
-             * is video downladable (not upcoming and processed)
-             */
+            /** is video downladable (not upcoming and processed) */
             if (!$youtubeVideo->isAvailable()) {
                 $message = "This video {$this->media->media_id} is not available yet. 'upcoming' live or not yet 'processed'.";
                 Log::notice($message);
                 throw new YoutubeMediaIsNotAvailableException($message);
             }
 
-            /**
-             * if media has a tag, is it downladable
-             */
-            if ($youtubeVideo->isTagged() && !$this->media->channel->areTagsAccepted($youtubeVideo->tags())) {
+            /** if media has a tag, is it downladable */
+            if (!$this->media->channel->areTagsAccepted($youtubeVideo->tags())) {
                 $message = 'Media tags ' . implode(',', $youtubeVideo->tags()) .
                     " are not in allowed tags {$this->media->channel->accept_video_by_tag}.";
                 Log::notice($message);
@@ -63,7 +59,6 @@ class DownloadMediaFactory
             }
 
             /** download, convert and get its path */
-            Log::notice("Downloading media {$this->media->media_id} from youtube.");
             $downloadedFilePath = DownloadYTMedia::init($this->media, Storage::disk('tmp')->path(''), false)
                 ->download()
                 ->downloadedFilePath();
@@ -77,8 +72,8 @@ class DownloadMediaFactory
             /**
              * checking obtained file duration of result
              */
-            CheckingGrabbedFile::init($mediaProperties, $youtubeVideo->duration()) ->check();
-            
+            CheckingGrabbedFile::init($mediaProperties, $youtubeVideo->duration())->check();
+
             /**
              * upload it
              */

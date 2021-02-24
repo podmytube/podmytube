@@ -27,6 +27,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 /**
@@ -183,11 +184,16 @@ class Channel extends Model implements Podcastable
     /**
      * check if tag is in the allowed tags
      */
-    public function isTagInAcceptedOnlyTags(string $tag)
+    public function isTagInAcceptedOnlyTags(string $tag = null)
     {
         /** if channel has no accept only tag */
         if (!$this->hasAcceptOnlyTags()) {
             return true;
+        }
+
+        /** tag is empty or null => rejected */
+        if (strlen($tag) <= 0 || $tag === null) {
+            return false;
         }
 
         return in_array(
@@ -196,29 +202,22 @@ class Channel extends Model implements Podcastable
         );
     }
 
-    public function isTagAccepted(string $tag)
-    {
-        /** no filter set all medias accepted */
-        if (!$this->hasFilter()) {
-            return true;
-        }
-
-        return $this->isTagInAcceptedOnlyTags($tag);
-    }
-
     public function areTagsAccepted(array $tags)
     {
         /** no filter set all medias accepted */
         if (!$this->hasFilter()) {
+            Log::debug('Channel has no filters => accept');
             return true;
         }
 
         foreach ($tags as $tag) {
-            if ($this->isTagAccepted($tag)) {
+            Log::debug("is tag {$tag} present in {{$this->accept_video_by_tag}}");
+            if ($this->isTagInAcceptedOnlyTags($tag)) {
+                Log::debug("tag {$tag} is accepted");
                 return true;
             }
         }
-
+        Log::debug('tags ' . implode(',', $tags) . ' are/is rejected');
         return false;
     }
 
