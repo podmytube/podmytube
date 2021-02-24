@@ -4,7 +4,6 @@ namespace Tests\Unit\Youtube;
 
 use App\Exceptions\YoutubeNoResultsException;
 use App\Youtube\YoutubeChannel;
-use App\Youtube\YoutubeQuotas;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
@@ -23,54 +22,25 @@ class YoutubeChannelTest extends TestCase
         $this->youtubeChannel = new YoutubeChannel();
     }
 
-    public function testPewDiePieShouldExistsForLong()
+    /** @test */
+    public function youtube_channel_name_is_ok()
     {
-        $this->assertTrue(
-            $this->youtubeChannel
-                ->forChannel(YoutubeCoreTest::PEWDIEPIE_CHANNEL_ID)
-                ->exists()
-        );
-
-        $this->assertEquals('PewDiePie', $this->youtubeChannel->name());
-        $expectedQuota = [$this->youtubeChannel->apikey() => 3];
-        $this->assertEqualsCanonicalizing(
-            $expectedQuota,
-            YoutubeQuotas::forUrls($this->youtubeChannel->queriesUsed())->quotaConsumed()
-        );
+        $this->assertEquals('PewDiePie', $this->youtubeChannel->forChannel(YoutubeCoreTest::PEWDIEPIE_CHANNEL_ID)->name());
     }
 
-    public function testGettingManyChannelsequence()
+    /** @test */
+    public function youtube_channel_exists_is_ok()
     {
-        $this->assertTrue(
-            $this->youtubeChannel
-                ->forChannel(YoutubeCoreTest::PEWDIEPIE_CHANNEL_ID)
-                ->exists()
-        );
-        $this->assertEquals('PewDiePie', $this->youtubeChannel->name());
+        $this->assertTrue($this->youtubeChannel->forChannel(YoutubeCoreTest::PEWDIEPIE_CHANNEL_ID)->exists());
 
-        $this->assertTrue(
-            $this->youtubeChannel->forChannel(YoutubeCoreTest::PERSONAL_CHANNEL_ID)->exists()
-        );
-        $this->assertEquals('Frédérick Tyteca', $this->youtubeChannel->name());
-
-        $expectedQuota = [$this->youtubeChannel->apikey() => 6];
-        $this->assertEqualsCanonicalizing(
-            $expectedQuota,
-            YoutubeQuotas::forUrls($this->youtubeChannel->queriesUsed())->quotaConsumed()
-        );
-    }
-
-    public function testThisOneShouldNotExistsAtAll()
-    {
         $this->expectException(YoutubeNoResultsException::class);
         $this->youtubeChannel->forChannel('Je-Doute-Que-Ce-Channel-Existe-Un-Jour-Meme-Lointain-Pour-De-Vrai')->exists();
     }
 
     public function testAnotherWayToObtainUploadsPlaylistId()
     {
-        $expected = 'UUw6bU9JT_Lihb2pbtqAUGQw';
         $this->assertEquals(
-            $expected,
+            'UUw6bU9JT_Lihb2pbtqAUGQw',
             $this->youtubeChannel->forChannel(YoutubeCoreTest::PERSONAL_CHANNEL_ID, ['id', 'snippet', 'contentDetails'])->uploadsPlaylistId()
         );
     }
