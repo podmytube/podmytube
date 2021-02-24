@@ -3,6 +3,7 @@
 namespace App\Youtube;
 
 use App\Exceptions\YoutubeMediaDoesNotExistException;
+use DateInterval;
 
 class YoutubeVideo extends YoutubeCore
 {
@@ -46,23 +47,23 @@ class YoutubeVideo extends YoutubeCore
         return count($this->tags());
     }
 
-    public function tags(): ?array
+    public function tags(): array
     {
         return $this->item['snippet']['tags'] ?? [];
     }
 
-    public function duration()
+    public function duration():int
     {
-        $interval = new \DateInterval($this->item['contentDetails']['duration']);
+        $interval = new DateInterval($this->item['contentDetails']['duration']);
         return ($interval->d * 24 * 60 * 60) + ($interval->h * 60 * 60) + ($interval->i * 60) + $interval->s;
     }
 
-    public function title()
+    public function title():?string
     {
         return $this->item['snippet']['title'];
     }
 
-    public function description()
+    public function description():?string
     {
         return $this->item['snippet']['description'];
     }
