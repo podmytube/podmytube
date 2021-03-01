@@ -184,7 +184,7 @@ class Channel extends Model implements Podcastable
     /**
      * check if tag is in the allowed tags
      */
-    public function isTagInAcceptedOnlyTags(string $tag = null)
+    public function isTagAccepted(string $tag = null)
     {
         /** if channel has no accept only tag */
         if (!$this->hasAcceptOnlyTags()) {
@@ -212,7 +212,7 @@ class Channel extends Model implements Podcastable
 
         foreach ($tags as $tag) {
             Log::debug("is tag {$tag} present in {{$this->accept_video_by_tag}}");
-            if ($this->isTagInAcceptedOnlyTags($tag)) {
+            if ($this->isTagAccepted($tag)) {
                 Log::debug("tag {$tag} is accepted");
                 return true;
             }
