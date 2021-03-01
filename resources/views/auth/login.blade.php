@@ -5,10 +5,10 @@
 @section('content')
 
 <div class="max-w-xs mx-auto py-12">
-  <form class="form-signin" method="POST" action="{{ route('login') }}">
-    @csrf
-    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col">
-      <div class="mx-auto">
+  <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col">
+    <form class="form-signin" method="POST" action="{{ route('login') }}">
+      @csrf
+      <div class="text-center">
           <svg class="h-24 w-auto inline fill-current" viewBox="0 0 128 128"
             xmlns="http://www.w3.org/2000/svg">
             <path d="m80.5 70.6a1.8 1.8 0 0 0 2.4-0.4 23.5 23.5 0 1 0-37.9 0 1.8 1.8 0 1 0 2.8-2.1 20 20 0 1 1 32.2 0 1.8 1.8 0 0 0 0.4 2.4z"/>
@@ -38,8 +38,8 @@
           </li>
         </ul>
       </div>
-    </div>
-  </form>
+    </form>
+  </div>
 </div>
 
 @endsection
