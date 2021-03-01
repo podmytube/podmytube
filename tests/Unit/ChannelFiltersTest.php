@@ -31,22 +31,54 @@ class ChannelFiltersTest extends TestCase
         $this->assertTrue($this->channel->hasAcceptOnlyTags());
     }
 
-    public function testingIsTagInAcceptedOnlyTagsShouldBeGood()
+    /** @test */
+    public function is_tag_accepted_is_ok()
     {
+        $this->assertTrue(
+            $this->channel->isTagAccepted('podcast'),
+            'Channel has no filtering, "podcast" should be accepted.'
+        );
+        $this->assertTrue(
+            $this->channel->isTagAccepted(''),
+            'Channel has no filtering, "" should be accepted.'
+        );
+        $this->assertTrue(
+            $this->channel->isTagAccepted(),
+            'Channel has no filtering, null should be accepted.'
+        );
+
+        /** adding filtering on "podcast" only */
         $this->channel->update(['accept_video_by_tag' => 'podcast', ]);
-        $this->assertTrue($this->channel->isTagInAcceptedOnlyTags('podcast'));
-        $this->assertFalse($this->channel->isTagInAcceptedOnlyTags());
-        $this->assertFalse($this->channel->isTagInAcceptedOnlyTags(''));
-        $this->assertFalse($this->channel->isTagInAcceptedOnlyTags(null));
-        $this->assertFalse($this->channel->isTagInAcceptedOnlyTags('window'));
+        $this->assertTrue(
+            $this->channel->isTagAccepted('podcast'),
+            'Channel is filtering on "podcast", "podcast" should be accepted.'
+        );
+        $this->assertFalse(
+            $this->channel->isTagAccepted(),
+            'Channel is filtering on "podcast", null should be rejected.'
+        );
+        $this->assertFalse(
+            $this->channel->isTagAccepted(''),
+            'Channel is filtering on "podcast", "" should be rejected.'
+        );
+        $this->assertFalse(
+            $this->channel->isTagAccepted('window'),
+            'Channel is filtering on "podcast", null should be rejected.'
+        );
     }
 
-    public function testingAreTagsAccepted()
+    /** @test */
+    public function are_tags_accepted_is_ok()
     {
         /** channel with no filter accept everything */
         $this->assertTrue(
             $this->channel->areTagsAccepted(['window', 'house']),
-            'channel is filtering nothing, tag should be accepted.'
+            'Channel is filtering nothing, media with tags ["window", "house"] should be accepted.'
+        );
+
+        $this->assertTrue(
+            $this->channel->areTagsAccepted([]),
+            'Channel is filtering nothing, media with no tags should be accepted.'
         );
 
         /** channel with some only tags to accept */
