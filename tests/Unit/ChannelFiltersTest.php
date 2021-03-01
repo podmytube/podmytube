@@ -43,6 +43,10 @@ class ChannelFiltersTest extends TestCase
             'Channel has no filtering, "" should be accepted.'
         );
         $this->assertTrue(
+            $this->channel->isTagAccepted(' '),
+            'Channel has no filtering, " " should be accepted.'
+        );
+        $this->assertTrue(
             $this->channel->isTagAccepted(),
             'Channel has no filtering, null should be accepted.'
         );
@@ -64,6 +68,32 @@ class ChannelFiltersTest extends TestCase
         $this->assertFalse(
             $this->channel->isTagAccepted('window'),
             'Channel is filtering on "podcast", null should be rejected.'
+        );
+    }
+
+    /** @test */
+    public function is_tag_accepted_on_unwanted_characters_is_ok()
+    {
+        $this->assertTrue(
+            $this->channel->isTagAccepted(' '),
+            'Channel is not filtering, <space> should be accepted.'
+        );
+
+        $this->assertTrue(
+            $this->channel->isTagAccepted("\n"),
+            'Channel is not filtering, <newline> should be accepted.'
+        );
+
+        /** with filtering */
+        $this->channel->update(['accept_video_by_tag' => 'podcast', ]);
+        $this->assertFalse(
+            $this->channel->isTagAccepted(' '),
+            'Channel is filtering on "podcast", <space> should be accepted.'
+        );
+
+        $this->assertFalse(
+            $this->channel->isTagAccepted("\n"),
+            'Channel is filtering on "podcast", <newline> should be accepted.'
         );
     }
 

@@ -188,12 +188,17 @@ class Channel extends Model implements Podcastable
     {
         /** if channel has no accept only tag */
         if (!$this->hasAcceptOnlyTags()) {
+            Log::debug('Channel has no accept only filter => accept');
             return true;
         }
 
         /** tag is empty or null => rejected */
         if (strlen($tag) <= 0 || $tag === null) {
-            return false;
+            if ($this->hasAcceptOnlyTags()) {
+                Log::debug("Tag ---{$tag}--- is empty => accepted (probably a typo)");
+                return false;
+            }
+            return true;
         }
 
         return in_array(
@@ -217,7 +222,7 @@ class Channel extends Model implements Podcastable
                 return true;
             }
         }
-        Log::debug('tags ' . implode(',', $tags) . ' are/is rejected');
+        Log::debug('tags ---' . implode(',', $tags) . '--- are/is rejected');
         return false;
     }
 
