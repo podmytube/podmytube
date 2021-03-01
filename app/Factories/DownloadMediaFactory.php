@@ -52,8 +52,7 @@ class DownloadMediaFactory
 
             /** if media has a tag, is it downladable */
             if (!$this->media->channel->areTagsAccepted($youtubeVideo->tags())) {
-                $message = 'Media tags ' . implode(',', $youtubeVideo->tags()) .
-                    " are not in allowed tags {$this->media->channel->accept_video_by_tag}.";
+                $message = 'Media tags ---' . implode(',', $youtubeVideo->tags()) . "--- are not in allowed tags {$this->media->channel->accept_video_by_tag}.";
                 Log::notice($message);
                 throw new DownloadMediaTagException($message);
             }

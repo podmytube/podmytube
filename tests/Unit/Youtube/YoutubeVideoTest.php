@@ -83,4 +83,11 @@ class YoutubeVideoTest extends TestCase
         $expectedTags = ['podcast'];
         $this->assertEqualsCanonicalizing($expectedTags, YoutubeVideo::forMedia('5xHkilEZlFA')->tags());
     }
+
+    public function testSpecialSOSPC()
+    {
+        $youtubeVideo = YoutubeVideo::forMedia('lK_vsyAfcGk');
+        $this->assertIsArray($youtubeVideo->tags());
+        $this->assertCount(0, $youtubeVideo->tags());
+    }
 }
