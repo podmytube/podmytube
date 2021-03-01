@@ -25,14 +25,14 @@
 			@endif
 
 			<div class="mb-4 mt-2">
-				<label class="block text-grey-darker text-sm font-bold mb-2" for="username"> Email address </label>
+				<label class="block text-grey-darker text-sm font-bold mb-2" for="email"> Email address </label>
 				<input type="email" name="email" id="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker" placeholder="yoda@usetheforce.com">
 			</div>
 
 			<div class="text-center">
-			<button class="bg-gray-900 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded text-center" type="submit">
-				{{ __('messages.button_lost_password') }}
-			</button>
+				<button class="bg-gray-900 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded text-center" type="submit">
+					{{ __('messages.button_lost_password') }}
+				</button>
 			</div>
 
 			<ul class="mt-2">
