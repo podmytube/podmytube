@@ -195,9 +195,10 @@ class Channel extends Model implements Podcastable
         /** tag is empty or null => rejected */
         if (strlen($tag) <= 0 || $tag === null) {
             if ($this->hasAcceptOnlyTags()) {
-                Log::debug("Tag ---{$tag}--- is empty => accepted (probably a typo)");
+                Log::debug("Tag ---{$tag}--- is empty BUT owner accept only {$this->accept_video_by_tag} => rejected.");
                 return false;
             }
+            Log::debug("Tag ---{$tag}--- is empty BUT owner accept all tags => accepted.");
             return true;
         }
 
