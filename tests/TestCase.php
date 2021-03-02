@@ -19,6 +19,14 @@ abstract class TestCase extends BaseTestCase
     public const NOWTECH_CHANNEL_ID = 'UCVwG9JHqGLfEO-4TkF-lf2g';
     public const NOWTECH_LIVE_CHANNEL_ID = 'UCRU38zigLJNtMIh7oRm2hIg';
 
+    /**
+     * some medias
+     * this video does exist and has two tags ['dev', 'podmytube']
+     */
+    protected const BEACH_VOLLEY_VIDEO_1 = 'EePwbhMqEh0';
+    protected const BEACH_VOLLEY_VIDEO_2 = '9pTBAkkTRbw';
+    protected const MARIO_COIN_VIDEO = 'qfx6yf8pux4';
+
     /** some playlists */
     public const NOWTECH_LEMUG_YOUTUBE_PLAYLIST_ID = 'PLhQHoIKUR5vD0vq6Jwns89QAz9OZWTvpx';
 
