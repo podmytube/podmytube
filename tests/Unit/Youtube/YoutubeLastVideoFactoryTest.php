@@ -30,7 +30,7 @@ class YoutubeLastVideoFactoryTest extends TestCase
         $lastMedia = $factory->lastMedia();
 
         /** checking results */
-        $this->assertEquals('EePwbhMqEh0', $lastMedia['media_id']);
+        $this->assertEquals(self::BEACH_VOLLEY_VIDEO_1, $lastMedia['media_id']);
         $this->assertEqualsCanonicalizing(['dev', 'podmytube'], $lastMedia['tags']);
 
         /** checking quota consumption has been persisted */

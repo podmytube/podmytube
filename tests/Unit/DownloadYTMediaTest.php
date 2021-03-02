@@ -14,7 +14,6 @@ class DownloadYTMediaTest extends TestCase
 {
     use RefreshDatabase;
 
-    const MARIO_COIN_MEDIA_ID = 'qfx6yf8pux4';
     const AUDIO_FILE_EXTENSION = '.mp3';
     const MARIO_COIN_DURATION = 6;
 
@@ -51,8 +50,8 @@ class DownloadYTMediaTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->media = factory(Media::class)->create(['media_id' => self::MARIO_COIN_MEDIA_ID]);
-        $this->expectedVideoFile = Storage::disk('tmp')->path(self::MARIO_COIN_MEDIA_ID . self::AUDIO_FILE_EXTENSION);
+        $this->media = factory(Media::class)->create(['media_id' => self::MARIO_COIN_VIDEO]);
+        $this->expectedVideoFile = Storage::disk('tmp')->path(self::MARIO_COIN_VIDEO . self::AUDIO_FILE_EXTENSION);
         $this->destinationFolder = Storage::disk('tmp')->path('');
         if (file_exists($this->expectedVideoFile)) {
             unlink($this->expectedVideoFile);
@@ -91,7 +90,7 @@ class DownloadYTMediaTest extends TestCase
 
     public function testExistingFileShouldBeRemovedBeforeDownload()
     {
-        $expectedFileToBeRemovedBefore = $this->destinationFolder . '/' . self::MARIO_COIN_MEDIA_ID . '.mp4';
+        $expectedFileToBeRemovedBefore = $this->destinationFolder . '/' . self::MARIO_COIN_VIDEO . '.mp4';
         /** creating fake file */
         touch($expectedFileToBeRemovedBefore);
         $this->assertFileExists($expectedFileToBeRemovedBefore);

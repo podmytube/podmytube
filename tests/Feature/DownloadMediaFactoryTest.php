@@ -20,11 +20,6 @@ class DownloadMediaFactoryTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** this video does exist and has two tags ['dev', 'podmytube'] */
-    protected const BEACH_VOLLEY_VIDEO_1 = 'EePwbhMqEh0';
-    protected const BEACH_VOLLEY_VIDEO_2 = '9pTBAkkTRbw';
-    protected const MARIO_COIN_VIDEO = 'qfx6yf8pux4';
-
     /** \App\Channel $channel */
     protected $channel;
 

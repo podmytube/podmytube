@@ -9,11 +9,6 @@ use Tests\TestCase;
 
 class YoutubeVideoTest extends TestCase
 {
-    /**
-     * this video exists and has 2 tags ['dev','podmytube'];
-     */
-    public const BEACH_VOLLEY_VIDEO_1 = 'EePwbhMqEh0';
-
     public function setUp(): void
     {
         parent::setUp();
