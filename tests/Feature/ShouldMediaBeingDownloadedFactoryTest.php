@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Channel;
+use App\Exceptions\DownloadMediaTagException;
 use App\Exceptions\MediaIsTooOldException;
 use App\Factories\ShouldMediaBeingDownloadedFactory;
 use App\Media;
@@ -54,8 +55,12 @@ class ShouldMediaBeingDownloadedFactoryTest extends TestCase
         ShouldMediaBeingDownloadedFactory::create($this->taggedMedia)->check();
     }
 
-    /** @test */
-    public function tag_checking_is_ok()
+    /**
+     * Channel has no filter every media should be accepted.
+     *
+     * @test
+     */
+    public function no_filtering_tag_at_is_ok()
     {
         /** channel with no filter accept everything - TAGGED media */
         $this->assertTrue(
@@ -68,33 +73,46 @@ class ShouldMediaBeingDownloadedFactoryTest extends TestCase
             ShouldMediaBeingDownloadedFactory::create($this->nonTaggedMedia)->check(),
             'Channel is filtering nothing, media with tags ["dev", "podmytube"] should be accepted.'
         );
+    }
 
+    /**
+     * Only media tagged with podmytube should be accepted.
+     *
+     * @test
+     */
+    public function filtering_on_podmytube_tag_is_ok()
+    {
         /**
          * adding accepted tag "podmytube" to channel
          */
         $this->taggedMedia->channel->update(['accept_video_by_tag' => 'podmytube', ]);
         $this->nonTaggedMedia->refresh();
-        $this->assertFalse(
-            ShouldMediaBeingDownloadedFactory::create($this->nonTaggedMedia)->check(),
-            'Channel is accepting only videos with "podmytube" tag, non tagged media with no tag should be rejected.'
-        );
+
         $this->assertTrue(
             ShouldMediaBeingDownloadedFactory::create($this->taggedMedia)->check(),
             'Channel is accepting only videos with "podmytube" tag, properly tagged media should be accepted.'
         );
 
+        $this->expectException(DownloadMediaTagException::class);
+        ShouldMediaBeingDownloadedFactory::create($this->nonTaggedMedia)->check();
+    }
+
+    /** @test */
+    public function non_tagged_media_is_rejected()
+    {
         /**
          * adding accepted tag "rejected" to channel
          */
-        $this->taggedMedia->channel->update(['accept_video_by_tag' => 'rejected', ]);
-        $this->nonTaggedMedia->refresh();
-        $this->assertFalse(
-            ShouldMediaBeingDownloadedFactory::create($this->nonTaggedMedia)->check(),
-            'Channel is accepting only videos with "rejected" tag, non tagged media with no tag should be rejected.'
-        );
-        $this->assertFalse(
-            ShouldMediaBeingDownloadedFactory::create($this->taggedMedia)->check(),
-            'Channel is accepting only videos with "rejected" tag, uproperly tagged media should be rejected too.'
-        );
+        $this->nonTaggedMedia->channel->update(['accept_video_by_tag' => 'rejecting', ]);
+        $this->expectException(DownloadMediaTagException::class);
+        ShouldMediaBeingDownloadedFactory::create($this->nonTaggedMedia)->check();
+    }
+
+    /** @test */
+    public function tagged_media_with_wrong_tag_is_rejected()
+    {
+        $this->taggedMedia->channel->update(['accept_video_by_tag' => 'rejecting', ]);
+        $this->expectException(DownloadMediaTagException::class);
+        ShouldMediaBeingDownloadedFactory::create($this->taggedMedia)->check() ;
     }
 }

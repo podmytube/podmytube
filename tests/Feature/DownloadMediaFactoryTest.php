@@ -87,4 +87,19 @@ class DownloadMediaFactoryTest extends TestCase
         $this->assertEquals(5, $media->duration);
         Bus::assertDispatched(SendFileBySFTP::class);
     }
+
+    public function testSOSPC()
+    {
+        $expectedMediaId = 'lK_vsyAfcGk';
+        $media = factory(Media::class)->create(
+            [
+                'channel_id' => $this->channel->channel_id,
+                'media_id' => $expectedMediaId,
+            ]
+        );
+        $this->assertTrue(DownloadMediaFactory::media($media)->run(), 'channel video should have been processed');
+        $media = Media::byMediaId($expectedMediaId);
+        $this->assertNotNull($media);
+        Bus::assertDispatched(SendFileBySFTP::class);
+    }
 }
