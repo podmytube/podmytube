@@ -3,8 +3,6 @@
 namespace App\Factories;
 
 use App\Events\ChannelUpdated;
-use App\Exceptions\DownloadMediaTagException;
-use App\Exceptions\YoutubeMediaIsNotAvailableException;
 use App\Jobs\SendFileBySFTP;
 use App\Media;
 use App\Modules\CheckingGrabbedFile;
@@ -43,20 +41,10 @@ class DownloadMediaFactory
             Log::notice("Getting informations for media {$this->media->media_id}");
             $youtubeVideo = YoutubeVideo::forMedia($this->media->media_id);
 
-            /** is video downladable (not upcoming and processed) */
-            if (!$youtubeVideo->isAvailable()) {
-                $message = "This video {$this->media->media_id} is not available yet. 'upcoming' live or not yet 'processed'.";
-                Log::notice($message);
-                throw new YoutubeMediaIsNotAvailableException($message);
-            }
-
-            /** if media has a tag, is it downladable */
-            if (!$this->media->channel->areTagsAccepted($youtubeVideo->tags())) {
-                $message = 'Media tags ' . implode(',', $youtubeVideo->tags()) .
-                    " are not in allowed tags {$this->media->channel->accept_video_by_tag}.";
-                Log::notice($message);
-                throw new DownloadMediaTagException($message);
-            }
+            /**
+             * check if media is eligible for download
+             */
+            ShouldMediaBeingDownloadedFactory::create($this->media)->check();
 
             /** download, convert and get its path */
             $downloadedFilePath = DownloadYTMedia::init($this->media, Storage::disk('tmp')->path(''), false)

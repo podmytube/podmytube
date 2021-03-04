@@ -9,6 +9,12 @@ use App\Media;
 use App\Youtube\YoutubeVideo;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * Check if a media is eligible for download.
+ * Check if :
+ * - video is processed on youtube
+ * - video is passing filters (date and tags)
+ */
 class ShouldMediaBeingDownloadedFactory
 {
     /** @var \App\Media $media */
@@ -24,6 +30,14 @@ class ShouldMediaBeingDownloadedFactory
         return new static($media);
     }
 
+    /**
+     * check if media is eligible for download.
+     * check filters and date.
+     *
+     * @throws YoutubeMediaIsNotAvailableException
+     * @throws MediaIsTooOldException
+     * @throws DownloadMediaTagException
+     */
     public function check():bool
     {
         Log::notice("Getting informations for media {$this->media->media_id}");

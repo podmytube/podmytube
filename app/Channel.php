@@ -188,12 +188,18 @@ class Channel extends Model implements Podcastable
     {
         /** if channel has no accept only tag */
         if (!$this->hasAcceptOnlyTags()) {
+            Log::debug('Channel has no accept only filter => accept');
             return true;
         }
 
         /** tag is empty or null => rejected */
         if (strlen($tag) <= 0 || $tag === null) {
-            return false;
+            if ($this->hasAcceptOnlyTags()) {
+                Log::debug("Tag ---{$tag}--- is empty BUT owner accept only ---{$this->accept_video_by_tag}~~~ => rejected.");
+                return false;
+            }
+            Log::debug("Tag ---{$tag}--- is empty BUT owner accept all tags => accepted.");
+            return true;
         }
 
         return in_array(
@@ -202,23 +208,31 @@ class Channel extends Model implements Podcastable
         );
     }
 
-    public function areTagsAccepted(array $tags)
+    public function areTagsAccepted(array $tags = [])
     {
         /** no filter set all medias accepted */
         if (!$this->hasFilter()) {
-            Log::debug('Channel has no filters => accept');
+            Log::debug('Channel has no filters => accepted');
             return true;
         }
 
-        foreach ($tags as $tag) {
-            Log::debug("is tag {$tag} present in {{$this->accept_video_by_tag}}");
-            if ($this->isTagAccepted($tag)) {
-                Log::debug("tag {$tag} is accepted");
-                return true;
+        if (count($tags)) {
+            foreach ($tags as $tag) {
+                Log::debug("is tag {$tag} present in {{$this->accept_video_by_tag}}");
+                if ($this->isTagAccepted($tag)) {
+                    Log::debug("tag {$tag} is accepted");
+                    return true;
+                }
             }
         }
-        Log::debug('tags ' . implode(',', $tags) . ' are/is rejected');
-        return false;
+
+        /** arriving here means there is no tag */
+        if ($this->hasAcceptOnlyTags()) {
+            Log::debug("No tag specified BUT owner accept only ---{$this->accept_video_by_tag}~~~ => rejected.");
+            return false;
+        }
+        Log::debug('No tag specified but no filtering => accepted');
+        return true;
     }
 
     public function isDateAccepted(Carbon $date): bool
