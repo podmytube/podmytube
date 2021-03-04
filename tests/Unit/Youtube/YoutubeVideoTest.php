@@ -78,4 +78,11 @@ class YoutubeVideoTest extends TestCase
         $expectedTags = ['podcast'];
         $this->assertEqualsCanonicalizing($expectedTags, YoutubeVideo::forMedia('5xHkilEZlFA')->tags());
     }
+
+    /** @test */
+    public function tags_is_ok()
+    {
+        $this->assertEqualsCanonicalizing(['dev', 'podmytube'], YoutubeVideo::forMedia(self::BEACH_VOLLEY_VIDEO_1)->tags());
+        $this->assertEqualsCanonicalizing([], YoutubeVideo::forMedia(self::BEACH_VOLLEY_VIDEO_2)->tags());
+    }
 }
