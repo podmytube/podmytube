@@ -73,7 +73,7 @@ class DownloadMediaFactoryTest extends TestCase
 
     public function testVideoIsBeingDownloaded()
     {
-        $expectedMediaLength = 26898;
+        $expectedMediaLength = [26666, 26898];
         $expectedDuration = 5;
         $media = factory(Media::class)->create(
             [
@@ -85,7 +85,8 @@ class DownloadMediaFactoryTest extends TestCase
         $media = Media::byMediaId(self::MARIO_COIN_VIDEO);
         $this->assertNotNull($media);
         $this->assertEquals('Super Mario Bros. - Coin Sound Effect', $media->title);
-        $this->assertEquals($expectedMediaLength, $media->length);
+        /** same video is giving me 2 length 26898 && 26666 depends of lib/python installed */
+        $this->assertTrue(in_array($media->length, $expectedMediaLength));
         $this->assertEquals($expectedDuration, $media->duration);
         Bus::assertDispatched(SendFileBySFTP::class);
     }
