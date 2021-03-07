@@ -3,6 +3,11 @@
 namespace App\Modules;
 
 use App\Channel;
+use App\Exceptions\DownloadMediaTagException;
+use App\Exceptions\MediaAlreadyGrabbedException;
+use App\Exceptions\MediaIsTooOldException;
+use App\Exceptions\YoutubeMediaIsNotAvailableException;
+use App\Factories\ShouldMediaBeingDownloadedFactory;
 use App\Factories\YoutubeLastVideoFactory;
 use App\Media;
 use Carbon\Carbon;
@@ -42,53 +47,29 @@ class LastMediaChecker
      */
     public function shouldMediaBeingGrabbed(): bool
     {
-        /** if already grabbed return false */
-        if ($this->isTheMediaGrabbed()) {
-            Log::notice("Last media already grabbed for {$this->channel->nameWithId()}. No alert to send.");
-            return false;
-        }
-
-        /** if media is upcoming live (not processed yet) */
-        if ($this->isMediaAvailableToBeDownloaded() === false) {
-            Log::notice("Last media {$this->media->youtubeWatchUrl()} is not available yet for {$this->channel->nameWithId()}. No alert to send.");
-            return false;
-        }
-
-        /**
-         * To raise an alert media should
-         * - have been published long ago
-         * - not being filtered by tag
-         * - not being filtered by date
-         */
-
-        if ($this->isMediaExcludedByTag() === true || $this->isMediaExcludedByDate() === true) {
-            /** filtered => no alert should not been grabbed */
-            Log::notice("Last media {$this->lastMediaFromYoutube['media_id']} is excluded by tag for {$this->channel->nameWithId()}. No alert to send.");
-            return false;
-        }
-
         if ($this->hasMediaBeenPublishedRecently() === true) {
             /** media is too recent to be already processed */
             Log::notice("Last media {$this->media->media_id} has been published recently for {$this->channel->nameWithId()}. No alert to send.");
             return false;
         }
 
-        return true;
-    }
+        if ($this->media === null) {
+            Log::notice("Media {$this->lastMediaFromYoutube['media_id']} published more than " . self::NB_HOURS_AGO . " hours ago is still unknown for {$this->channel->nameWithId()}. Sending alert !");
+            return true;
+        }
 
-    public function isMediaExcludedByTag(): bool
-    {
-        // this media has no tag so there is no filtering to apply
-        if (!count($this->lastMediaFromYoutube['tags'])) {
+        try {
+            ShouldMediaBeingDownloadedFactory::create($this->media)->check();
+        } catch (
+            MediaAlreadyGrabbedException |
+            YoutubeMediaIsNotAvailableException |
+            MediaIsTooOldException |
+            DownloadMediaTagException $exception
+            ) {
             return false;
         }
 
-        return !$this->channel->areTagsAccepted($this->lastMediaFromYoutube['tags']);
-    }
-
-    public function isMediaExcludedByDate(): bool
-    {
-        return !$this->channel->isDateAccepted($this->lastMediaFromYoutube['published_at']);
+        return true;
     }
 
     /**
@@ -99,29 +80,5 @@ class LastMediaChecker
     public function hasMediaBeenPublishedRecently(): bool
     {
         return $this->lastMediaFromYoutube['published_at']->isAfter($this->someHoursAgo);
-    }
-
-    public function isMediaAvailableToBeDownloaded():bool
-    {
-        return $this->lastMediaFromYoutube['available'];
-    }
-
-    public function isMediaBeenPublishedSomeHoursAgo()
-    {
-        return !$this->hasMediaBeenPublishedRecently();
-    }
-
-    /**
-     * check if media has been created in DB and grabbed
-     *
-     * @return bool
-     */
-    public function isTheMediaGrabbed(): bool
-    {
-        if ($this->media === null) {
-            return false;
-        }
-
-        return $this->media->hasBeenGrabbed();
     }
 }

@@ -218,7 +218,6 @@ class Channel extends Model implements Podcastable
 
         if (count($tags)) {
             foreach ($tags as $tag) {
-                Log::debug("is tag {$tag} present in {{$this->accept_video_by_tag}}");
                 if ($this->isTagAccepted($tag)) {
                     Log::debug("tag {$tag} is accepted");
                     return true;

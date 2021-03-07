@@ -73,6 +73,8 @@ class DownloadMediaFactoryTest extends TestCase
 
     public function testVideoIsBeingDownloaded()
     {
+        $expectedMediaLength = 26898;
+        $expectedDuration = 5;
         $media = factory(Media::class)->create(
             [
                 'channel_id' => $this->channel->channel_id,
@@ -83,23 +85,8 @@ class DownloadMediaFactoryTest extends TestCase
         $media = Media::byMediaId(self::MARIO_COIN_VIDEO);
         $this->assertNotNull($media);
         $this->assertEquals('Super Mario Bros. - Coin Sound Effect', $media->title);
-        $this->assertEquals(26666, $media->length);
-        $this->assertEquals(5, $media->duration);
-        Bus::assertDispatched(SendFileBySFTP::class);
-    }
-
-    public function testSOSPC()
-    {
-        $expectedMediaId = 'lK_vsyAfcGk';
-        $media = factory(Media::class)->create(
-            [
-                'channel_id' => $this->channel->channel_id,
-                'media_id' => $expectedMediaId,
-            ]
-        );
-        $this->assertTrue(DownloadMediaFactory::media($media)->run(), 'channel video should have been processed');
-        $media = Media::byMediaId($expectedMediaId);
-        $this->assertNotNull($media);
+        $this->assertEquals($expectedMediaLength, $media->length);
+        $this->assertEquals($expectedDuration, $media->duration);
         Bus::assertDispatched(SendFileBySFTP::class);
     }
 }
