@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Channel;
 use App\Exceptions\DownloadMediaTagException;
+use App\Exceptions\MediaAlreadyGrabbedException;
 use App\Exceptions\MediaIsTooOldException;
 use App\Factories\ShouldMediaBeingDownloadedFactory;
 use App\Media;
@@ -113,6 +114,14 @@ class ShouldMediaBeingDownloadedFactoryTest extends TestCase
     {
         $this->taggedMedia->channel->update(['accept_video_by_tag' => 'rejecting', ]);
         $this->expectException(DownloadMediaTagException::class);
+        ShouldMediaBeingDownloadedFactory::create($this->taggedMedia)->check() ;
+    }
+
+    /** @test */
+    public function media_already_grabbed()
+    {
+        $this->taggedMedia->update(['grabbed_at' => now()->subDay()]);
+        $this->expectException(MediaAlreadyGrabbedException::class);
         ShouldMediaBeingDownloadedFactory::create($this->taggedMedia)->check() ;
     }
 }
