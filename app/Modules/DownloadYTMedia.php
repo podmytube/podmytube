@@ -59,12 +59,12 @@ class DownloadYTMedia
         /**
          * Initialize default parameters
          */
-        $this->setYoutubeDlParameters();
+        $this->youtubeDlParameters();
 
         /**
          * Initialize command line to be played
          */
-        $this->setCommandLine();
+        $this->buildCommandLine();
     }
 
     public static function init(...$params)
@@ -98,7 +98,7 @@ class DownloadYTMedia
     /**
      * This function will generate full command line to be used to grab video media
      */
-    protected function setCommandLine()
+    protected function buildCommandLine()
     {
         $this->commandLine = self::YOUTUBE_DL_BINARY . ' ' . implode(' ', $this->getYoutubeDlParameters());
     }
@@ -125,7 +125,7 @@ class DownloadYTMedia
     /**
      * This function will define the youtube-dl parameters to be used
      */
-    protected function setYoutubeDlParameters()
+    protected function youtubeDlParameters()
     {
         $this->youtubeDlparameters = [
             '--no-warnings', // Ignore warnings

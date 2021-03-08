@@ -49,7 +49,7 @@ class MediaProperties
         $this->mediaObj->analyze($mediaFile);
         if (isset($this->mediaObj->info['error'])) {
             $errors = implode("\n", $this->mediaObj->info['error']);
-            throw new InvalidArgumentException("Error analyzing media file {$mediaFile}. $errors", 1);
+            throw new InvalidArgumentException("Error analyzing media file {$mediaFile}. {$errors}", 1);
         }
     }
 
@@ -77,4 +77,4 @@ class MediaProperties
     {
         return (int) $this->mediaObj->info['filesize'];
     }
-};
+}

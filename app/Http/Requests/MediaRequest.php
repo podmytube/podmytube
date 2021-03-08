@@ -23,7 +23,7 @@ class MediaRequest extends FormRequest
         return [
             'title' => 'string|max:' . self::TITLE_MAX_LENGTH,
             'description' => 'nullable',
-            'media_file' => 'required|file|mimetypes:audio/mpeg'
+            'media_file' => 'required|file|mimetypes:audio/mpeg',
         ];
     }
 

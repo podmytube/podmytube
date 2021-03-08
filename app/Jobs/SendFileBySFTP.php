@@ -43,7 +43,7 @@ class SendFileBySFTP implements ShouldQueue
      */
     public function handle()
     {
-        Log::debug(__CLASS__ . '::' . __FUNCTION__ . ' - start');
+        Log::debug(self::class . '::' . __FUNCTION__ . ' - start');
         $destFolder = pathinfo($this->remoteFilePath, PATHINFO_DIRNAME);
         $destFilename = pathinfo($this->remoteFilePath, PATHINFO_BASENAME);
         Log::debug(

@@ -13,7 +13,7 @@ class UploadPodcast implements ShouldQueue
 
     public function handle($event)
     {
-        Log::debug(__CLASS__ . '::' . __FUNCTION__ . ' - start');
+        Log::debug(self::class . '::' . __FUNCTION__ . ' - start');
         UploadPodcastFactory::init()->for($event->podcastable);
         return true; // only for tests
     }

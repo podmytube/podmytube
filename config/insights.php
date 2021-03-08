@@ -6,9 +6,14 @@ use NunoMaduro\PhpInsights\Domain\Insights\ForbiddenDefineFunctions;
 use NunoMaduro\PhpInsights\Domain\Insights\ForbiddenFinalClasses;
 use NunoMaduro\PhpInsights\Domain\Insights\ForbiddenNormalClasses;
 use NunoMaduro\PhpInsights\Domain\Insights\ForbiddenPrivateMethods;
+use NunoMaduro\PhpInsights\Domain\Insights\ForbiddenSecurityIssues;
 use NunoMaduro\PhpInsights\Domain\Insights\ForbiddenTraits;
 use NunoMaduro\PhpInsights\Domain\Metrics\Architecture\Classes;
 use ObjectCalisthenics\Sniffs\Classes\ForbiddenPublicPropertySniff;
+use ObjectCalisthenics\Sniffs\Files\ClassTraitAndInterfaceLengthSniff;
+use ObjectCalisthenics\Sniffs\Files\FunctionLengthSniff;
+use ObjectCalisthenics\Sniffs\Metrics\MethodPerClassLimitSniff;
+use PHP_CodeSniffer\Standards\Generic\Sniffs\Files\LineLengthSniff;
 use SlevomatCodingStandard\Sniffs\Commenting\UselessFunctionDocCommentSniff;
 use SlevomatCodingStandard\Sniffs\Namespaces\AlphabeticallySortedUsesSniff;
 use SlevomatCodingStandard\Sniffs\TypeHints\DeclareStrictTypesSniff;
@@ -77,6 +82,7 @@ return [
         ForbiddenDefineFunctions::class,
         ForbiddenNormalClasses::class,
         ForbiddenTraits::class,
+        ForbiddenSecurityIssues::class,
         ParameterTypeHintSniff::class,
         PropertyTypeHintSniff::class,
         ReturnTypeHintSniff::class,
@@ -93,11 +99,30 @@ return [
         ForbiddenPrivateMethods::class => [
             'title' => 'The usage of private methods is not idiomatic in Laravel.',
         ],
+        LineLengthSniff::class => [
+            'lineLimit' => 120,
+            'absoluteLineLimit' => 160
+        ],
         ForbiddenPublicPropertySniff::class => [
             'exclude' => [
-                'timestamps',
+                'app/Category.php',
+                'app/Channel.php',
+                'app/Events',
+                'app/Jobs',
+                'app/Mail',
+                'app/Media.php',
+                'app/Podcast',
             ],
         ],
+        MethodPerClassLimitSniff::class => [
+            'maxCount' => 20,
+        ],
+        FunctionLengthSniff::class => [
+            'maxLength' => 30,
+        ],
+        ClassTraitAndInterfaceLengthSniff::class => [
+            'maxLength' => 300,
+        ]
     ],
 
     /*

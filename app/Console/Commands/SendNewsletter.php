@@ -18,8 +18,8 @@ class SendNewsletter extends Command
 
     /**
      * @var array $availableNewsletters
-     * list of newsletter files that that are in
-     * resources/views/emails/newsletters/2020-06-free-plan-update.blade.php
+     *            list of newsletter files that that are in
+     *            resources/views/emails/newsletters/2020-06-free-plan-update.blade.php
      */
     protected $availableNewsletters = [];
 
@@ -69,7 +69,7 @@ class SendNewsletter extends Command
         $this->comment('Here are the mails you can send :');
         $i = 0;
         foreach ($this->availableNewsletters as $newsletter) {
-            $this->info("$i - $newsletter");
+            $this->info($i . ' - ' . $newsletter);
             $i++;
         }
 

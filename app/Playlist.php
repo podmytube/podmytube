@@ -54,7 +54,9 @@ class Playlist extends Model implements Podcastable
             ->get();
 
         if (!$medias->count()) {
-            throw new PlaylistWithNoMediaWeKnowAboutException("This playlist {$this->youtube_playlist_id} has no video we know about.");
+            throw new PlaylistWithNoMediaWeKnowAboutException(
+                "This playlist {$this->youtube_playlist_id} has no video we know about."
+            );
         }
 
         return $medias;

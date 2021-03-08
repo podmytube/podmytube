@@ -34,11 +34,10 @@ class ChannelIsInTroubleWarningMail extends Mailable
      */
     public function build()
     {
-        $view = $this->view('emails.channelIsInTrouble')
+        return $this->view('emails.channelIsInTrouble')
             ->with([
                 'mailTitle' => $this->mailTitle,
                 'channelInTroubleMessages' => $this->channelInTroubleMessages,
             ]);
-        return $view;
     }
 }
