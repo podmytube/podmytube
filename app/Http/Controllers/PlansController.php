@@ -33,8 +33,7 @@ class PlansController extends Controller
                     ],
                 ],
                 'mode' => 'subscription',
-                'success_url' =>
-                    config('app.url') .
+                'success_url' => config('app.url') .
                     '/success?session_id={CHECKOUT_SESSION_ID}',
                 'cancel_url' => config('app.url') . '/cancel',
                 'metadata' => ['channel_id' => $channel->channel_id],
