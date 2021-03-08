@@ -30,7 +30,7 @@ class Playlist extends Model implements Podcastable
 
     protected $guarded = [];
 
-    public function mediasToPublish():Collection
+    public function mediasToPublish(): Collection
     {
         /**
          * get all items from youtube playlist
@@ -60,7 +60,7 @@ class Playlist extends Model implements Podcastable
         return $medias;
     }
 
-    public function podcastItems():SupportCollection
+    public function podcastItems(): SupportCollection
     {
         return $this->mediasToPublish()
             ->map(function (Media $media) {
@@ -68,7 +68,7 @@ class Playlist extends Model implements Podcastable
             });
     }
 
-    public function podcastCoverUrl():string
+    public function podcastCoverUrl(): string
     {
         return $this->channel->podcastCoverUrl();
     }
@@ -76,9 +76,9 @@ class Playlist extends Model implements Podcastable
     /**
      * return informations needed to generate podcast header.
      */
-    public function podcastHeader():array
+    public function podcastHeader(): array
     {
-        return  [
+        return [
             'title' => $this->podcastTitle(),
             'link' => $this->podcastLink(),
             'description' => $this->podcastDescription(),
@@ -92,7 +92,7 @@ class Playlist extends Model implements Podcastable
         ];
     }
 
-    public function toPodcast():array
+    public function toPodcast(): array
     {
         return array_merge(
             $this->podcastHeader(),
@@ -100,62 +100,62 @@ class Playlist extends Model implements Podcastable
         );
     }
 
-    public function podcastTitle():string
+    public function podcastTitle(): string
     {
         return $this->title;
     }
 
-    public function podcastLink():?string
+    public function podcastLink(): ?string
     {
         return $this->channel->podcastLink();
     }
 
-    public function podcastDescription():?string
+    public function podcastDescription(): ?string
     {
         return $this->description;
     }
 
-    public function podcastAuthor():?string
+    public function podcastAuthor(): ?string
     {
         return $this->channel->podcastAuthor();
     }
 
-    public function podcastEmail():?string
+    public function podcastEmail(): ?string
     {
         return $this->channel->podcastEmail();
     }
 
-    public function podcastCopyright():?string
+    public function podcastCopyright(): ?string
     {
         return $this->channel->podcastCopyright();
     }
 
-    public function podcastLanguage():?string
+    public function podcastLanguage(): ?string
     {
         return $this->channel->podcastLanguage();
     }
 
-    public function podcastCategory():?Category
+    public function podcastCategory(): ?Category
     {
         return $this->channel->podcastCategory();
     }
 
-    public function podcastExplicit():?string
+    public function podcastExplicit(): ?string
     {
         return $this->channel->podcastExplicit();
     }
 
-    public function podcastUrl():string
+    public function podcastUrl(): string
     {
         return config('app.playlists_url') . '/' . $this->relativeFeedPath();
     }
 
-    public function relativeFeedPath():string
+    public function relativeFeedPath(): string
     {
         return $this->channel->channelId() . '/' . $this->youtube_playlist_id . '.xml';
     }
 
-    public function channelId():string
+    public function channelId(): string
     {
         return $this->channel->channelId();
     }
@@ -165,7 +165,7 @@ class Playlist extends Model implements Podcastable
      *
      * @return string remote path
      */
-    public function remoteFilePath():string
+    public function remoteFilePath(): string
     {
         return config('app.playlists_path') . $this->relativeFeedPath();
     }

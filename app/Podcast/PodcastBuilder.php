@@ -22,7 +22,7 @@ class PodcastBuilder
         return new static($attributes);
     }
 
-    public function render():string
+    public function render(): string
     {
         return view('podcast.main')
             ->with(['podcast' => $this])

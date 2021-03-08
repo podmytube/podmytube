@@ -102,7 +102,7 @@ class HandleCheckoutSessionCompleted implements ShouldQueue
          */
         $this->user = User::where('email', '=', $customerEmail)->first();
         if ($this->user === null) {
-            throw new UnknownEmailReceivedFromStripeException("Email address $customerEmail is unknown.");
+            throw new UnknownEmailReceivedFromStripeException("Email address {$customerEmail} is unknown.");
         }
 
         /**

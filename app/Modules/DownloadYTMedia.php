@@ -77,7 +77,7 @@ class DownloadYTMedia
      *
      * @param string destinationFolder
      */
-    protected function checkDestinationFolder() :bool
+    protected function checkDestinationFolder(): bool
     {
         if (!is_dir($this->destinationFolder) || !is_writable($this->destinationFolder)) {
             throw new \InvalidArgumentException("The folder {$this->destinationFolder} is either invalid or not writable");

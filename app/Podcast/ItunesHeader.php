@@ -49,7 +49,7 @@ class ItunesHeader implements IsRenderableInterface
         }
 
         if ($this->author || $this->email) {
-            $this->itunesOwner = ItunesOwner::prepare(['itunesOwnerName' => $this->author, 'itunesOwnerEmail' => $this->email, ])
+            $this->itunesOwner = ItunesOwner::prepare(['itunesOwnerName' => $this->author, 'itunesOwnerEmail' => $this->email])
                 ->render();
         }
     }

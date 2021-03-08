@@ -42,22 +42,22 @@ class Media extends Model
     /**
      * get media url with trait HasFile
      */
-    public function mediaUrl()
+    public function mediaUrl(): string
     {
         return $this->enclosureUrl();
     }
 
-    public function mediaFileName()
+    public function mediaFileName(): string
     {
         return $this->media_id . self::FILE_EXTENSION;
     }
 
-    public function relativePath()
+    public function relativePath(): string
     {
         return $this->mediaFolder() . '/' . $this->mediaFileName();
     }
 
-    public function mediaFolder()
+    public function mediaFolder(): string
     {
         return $this->channel_id;
     }
@@ -153,7 +153,7 @@ class Media extends Model
         return $this->duration;
     }
 
-    public function id() :string
+    public function id(): string
     {
         return $this->media_id;
     }
@@ -161,12 +161,12 @@ class Media extends Model
     /**
      * check if a media has already been grabbed
      */
-    public function hasBeenGrabbed()
+    public function hasBeenGrabbed(): bool
     {
         return $this->grabbed_at !== null;
     }
 
-    public function url()
+    public function url(): string
     {
         return config('app.mp3_url') . '/' . $this->remoteFilePath();
     }
@@ -176,7 +176,7 @@ class Media extends Model
         return $query->whereDate('grabbed_at', '<', $date);
     }
 
-    public static function byMediaId(string $mediaId):?self
+    public static function byMediaId(string $mediaId): ?self
     {
         return self::where('media_id', '=', $mediaId)->first();
     }
@@ -193,7 +193,7 @@ class Media extends Model
 
     public function toPodcastItem()
     {
-        return  [
+        return [
             'guid' => $this->media_id,
             'title' => $this->title,
             'enclosureUrl' => $this->enclosureUrl(),

@@ -73,7 +73,7 @@ class Channel extends Model implements Podcastable
      */
     protected $guarded = [];
 
-    public function channelId():string
+    public function channelId(): string
     {
         return $this->channel_id;
     }
@@ -93,7 +93,7 @@ class Channel extends Model implements Podcastable
         return $this->podcast_updatedAt;
     }
 
-    public function relativeFeedPath():string
+    public function relativeFeedPath(): string
     {
         return $this->channelId() . '/' . config('app.feed_filename');
     }
@@ -103,7 +103,7 @@ class Channel extends Model implements Podcastable
      *
      * @return string remote path
      */
-    public function remoteFilePath():string
+    public function remoteFilePath(): string
     {
         return config('app.feed_path') . $this->relativeFeedPath();
     }
@@ -111,7 +111,7 @@ class Channel extends Model implements Podcastable
     /**
      * Return the podcast url for this channel.
      */
-    public function podcastUrl():string
+    public function podcastUrl(): string
     {
         return config('app.podcasts_url') . '/' . $this->relativeFeedPath();
     }
@@ -169,14 +169,14 @@ class Channel extends Model implements Podcastable
             ->get();
     }
 
-    public function hasFilter()
+    public function hasFilter(): bool
     {
         return $this->accept_video_by_tag !== null ||
             $this->reject_video_by_keyword !== null ||
             $this->reject_video_too_old !== null;
     }
 
-    public function hasAcceptOnlyTags()
+    public function hasAcceptOnlyTags(): bool
     {
         return $this->accept_video_by_tag !== null;
     }
@@ -184,7 +184,7 @@ class Channel extends Model implements Podcastable
     /**
      * check if tag is in the allowed tags
      */
-    public function isTagAccepted(string $tag = null)
+    public function isTagAccepted(?string $tag = null): bool
     {
         /** if channel has no accept only tag */
         if (!$this->hasAcceptOnlyTags()) {
@@ -208,7 +208,7 @@ class Channel extends Model implements Podcastable
         );
     }
 
-    public function areTagsAccepted(array $tags = [])
+    public function areTagsAccepted(array $tags = []): bool
     {
         /** no filter set all medias accepted */
         if (!$this->hasFilter()) {
@@ -227,10 +227,10 @@ class Channel extends Model implements Podcastable
 
         /** arriving here means there is no tag */
         if ($this->hasAcceptOnlyTags()) {
-            Log::debug("No tag specified BUT owner accept only ---{$this->accept_video_by_tag}~~~ => rejected.");
+            /** No tag specified BUT owner accept only some TAG => rejected. */
             return false;
         }
-        Log::debug('No tag specified but no filtering => accepted');
+        /** No tag specified but no filtering => accepted */
         return true;
     }
 
@@ -281,7 +281,7 @@ class Channel extends Model implements Podcastable
      *
      * @return \App\Channel
      */
-    public static function byChannelId(string $channelId)
+    public static function byChannelId(string $channelId): ?self
     {
         return self::where('channel_id', '=', $channelId)->first();
     }
@@ -293,7 +293,7 @@ class Channel extends Model implements Podcastable
      *
      * @return \App\Channel
      */
-    public static function byUserId(Authenticatable $user) : ?Collection
+    public static function byUserId(Authenticatable $user): ?Collection
     {
         $channelsCollection = self::where('user_id', '=', $user->user_id)->get();
         if ($channelsCollection->count()) {
@@ -305,14 +305,14 @@ class Channel extends Model implements Podcastable
     /**
      * @return string channel_id of channel
      */
-    public function id():string
+    public function id(): string
     {
         return $this->channel_id;
     }
 
-    public function isFree()
+    public function isFree(): bool
     {
-        return $this->subscription->plan_id == Plan::FREE_PLAN_ID;
+        return $this->subscription->plan_id === Plan::FREE_PLAN_ID;
     }
 
     public function nextMediaId()
@@ -323,7 +323,7 @@ class Channel extends Model implements Podcastable
     /**
      * I'm using this kind of information everywhere.
      */
-    public function nameWithId()
+    public function nameWithId(): string
     {
         return "{$this->title()} ({$this->id()})";
     }
@@ -332,7 +332,7 @@ class Channel extends Model implements Podcastable
      * Will return the medias to be published.
      * Medias should have been grabbed
      */
-    public function mediasToPublish():Collection
+    public function mediasToPublish(): Collection
     {
         $query = $this->medias()
             ->whereNotNull('grabbed_at')
@@ -343,7 +343,7 @@ class Channel extends Model implements Podcastable
         return $query->get();
     }
 
-    public function podcastItems():SupportCollection
+    public function podcastItems(): SupportCollection
     {
         return $this->mediasToPublish()
             ->map(function (Media $media) {
@@ -351,7 +351,7 @@ class Channel extends Model implements Podcastable
             });
     }
 
-    public function podcastCoverUrl():string
+    public function podcastCoverUrl(): string
     {
         if (!$this->thumb) {
             return Thumb::defaultUrl();
@@ -362,9 +362,9 @@ class Channel extends Model implements Podcastable
     /**
      * return informations needed to generate podcast header.
      */
-    public function podcastHeader():array
+    public function podcastHeader(): array
     {
-        return  [
+        return [
             'title' => $this->title(),
             'link' => $this->podcastLink(),
             'description' => $this->podcastDescription(),
@@ -378,7 +378,7 @@ class Channel extends Model implements Podcastable
         ];
     }
 
-    public function toPodcast():array
+    public function toPodcast(): array
     {
         return array_merge(
             $this->podcastHeader(),
@@ -386,52 +386,52 @@ class Channel extends Model implements Podcastable
         );
     }
 
-    public function title():string
+    public function title(): string
     {
         return $this->podcast_title ?? $this->channel_name;
     }
 
-    public function podcastTitle():string
+    public function podcastTitle(): string
     {
         return $this->title();
     }
 
-    public function podcastLink():?string
+    public function podcastLink(): ?string
     {
         return $this->link;
     }
 
-    public function podcastDescription():?string
+    public function podcastDescription(): ?string
     {
         return $this->description;
     }
 
-    public function podcastAuthor():?string
+    public function podcastAuthor(): ?string
     {
         return $this->authors;
     }
 
-    public function podcastEmail():?string
+    public function podcastEmail(): ?string
     {
         return $this->email;
     }
 
-    public function podcastCategory():?Category
+    public function podcastCategory(): ?Category
     {
         return $this->category;
     }
 
-    public function podcastCopyright():?string
+    public function podcastCopyright(): ?string
     {
         return $this->podcast_copyright;
     }
 
-    public function podcastLanguage():?string
+    public function podcastLanguage(): ?string
     {
         return optional($this->language)->code;
     }
 
-    public function podcastExplicit():?string
+    public function podcastExplicit(): ?string
     {
         return $this->explicit === true ? 'true' : 'false';
     }
