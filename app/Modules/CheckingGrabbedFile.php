@@ -60,4 +60,4 @@ class CheckingGrabbedFile
         }
         return $acceptableSpread;
     }
-};
+}

@@ -13,7 +13,7 @@ class EnclosureUrl
     private function __construct(Media $media)
     {
         $this->media = $media;
-        $this->setEnclosureUrl();
+        $this->build();
     }
 
     public static function create(...$params): EnclosureUrl
@@ -21,12 +21,12 @@ class EnclosureUrl
         return new static(...$params);
     }
 
-    protected function setEnclosureUrl()
+    protected function build()
     {
         $this->enclosureUrl = config('app.mp3_url') . '/' . $this->media->channel_id . '/' . $this->media->media_id . '.mp3';
     }
 
-    public function get()
+    public function get(): string
     {
         return $this->enclosureUrl;
     }

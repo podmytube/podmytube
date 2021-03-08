@@ -33,7 +33,7 @@ class MediasController extends Controller
 
     public function show(Channel $channel, Media $media)
     {
-        throw new NotImplementedException(__CLASS__ . '::' . __FUNCTION__ . ' is not implemented yet');
+        throw new NotImplementedException(self::class . '::' . __FUNCTION__ . ' is not implemented yet');
     }
 
     public function create(Channel $channel)

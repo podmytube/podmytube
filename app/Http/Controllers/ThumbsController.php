@@ -37,7 +37,7 @@ class ThumbsController extends Controller
      */
     public function store(ThumbRequest $request, Channel $channel)
     {
-        Log::debug(__CLASS__ . '::' . __FUNCTION__ . ' - start');
+        Log::debug(self::class . '::' . __FUNCTION__ . ' - start');
         $this->authorize('update', $channel);
 
         if (!$request->file('new_thumb_file')->isValid()) {

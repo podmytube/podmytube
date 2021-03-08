@@ -273,7 +273,9 @@ abstract class YoutubeCore implements QuotasConsumer
     protected function cacheKey()
     {
         $separator = '_';
-        return 'youtube' . $separator . $this->endpoint() . $separator . http_build_query($this->params(), '', $separator);
+        return 'youtube' . $separator .
+            $this->endpoint() . $separator .
+            http_build_query($this->params(), '', $separator);
     }
 
     public function quotasUsed(): int

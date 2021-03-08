@@ -217,11 +217,9 @@ class Channel extends Model implements Podcastable
         }
 
         if (count($tags)) {
-            foreach ($tags as $tag) {
-                if ($this->isTagAccepted($tag)) {
-                    Log::debug("tag {$tag} is accepted");
-                    return true;
-                }
+            $result = array_filter($tags, [$this, 'isTagAccepted']);
+            if (count($result)) {
+                return true;
             }
         }
 

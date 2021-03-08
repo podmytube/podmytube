@@ -54,7 +54,7 @@ class PricingController extends Controller
                     ['desc' => 'Only the 3 last', 'value' => false],
                     ['desc' => 'Add exclusive content', 'value' => false],
                 ],
-            ]
+            ],
         ];
         return view('pricing', compact('plans'));
     }

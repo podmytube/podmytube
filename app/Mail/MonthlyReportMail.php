@@ -47,8 +47,7 @@ class MonthlyReportMail extends Mailable
             'channel_name' => $this->channel->channel_name,
         ]);
 
-        $this->publishedMedias = $this->channel
-            ->medias()
+        $this->publishedMedias = $this->channel->medias()
             ->publishedLastMonth()
             ->orderBy('published_at', 'desc')
             ->get();

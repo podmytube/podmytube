@@ -18,7 +18,7 @@ class UploadThumb implements ShouldQueue
 
     public function handle(ThumbUpdated $event)
     {
-        Log::debug(__CLASS__ . '::' . __FUNCTION__ . ' - start');
+        Log::debug(self::class . '::' . __FUNCTION__ . ' - start');
         $this->podcastable = $event->podcastable;
 
         $localPath = $this->podcastable->thumb->localFilePath();

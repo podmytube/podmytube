@@ -43,7 +43,7 @@ class Newsletter extends Mailable
     {
         $period = Carbon::now()->locale('en')->monthName . ' ' . date('Y');
 
-        $subject = "Podmytube Newsletter - $period";
+        $subject = "Podmytube Newsletter - {$period}";
         return $this->subject($subject)
             ->view('emails.newsletter')
             ->with([
