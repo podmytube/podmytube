@@ -8,6 +8,7 @@ use NunoMaduro\PhpInsights\Domain\Insights\ForbiddenNormalClasses;
 use NunoMaduro\PhpInsights\Domain\Insights\ForbiddenPrivateMethods;
 use NunoMaduro\PhpInsights\Domain\Insights\ForbiddenTraits;
 use NunoMaduro\PhpInsights\Domain\Metrics\Architecture\Classes;
+use ObjectCalisthenics\Sniffs\Classes\ForbiddenPublicPropertySniff;
 use SlevomatCodingStandard\Sniffs\Commenting\UselessFunctionDocCommentSniff;
 use SlevomatCodingStandard\Sniffs\Namespaces\AlphabeticallySortedUsesSniff;
 use SlevomatCodingStandard\Sniffs\TypeHints\DeclareStrictTypesSniff;
@@ -90,8 +91,12 @@ return [
 
     'config' => [
         ForbiddenPrivateMethods::class => [
-            'title' =>
-                'The usage of private methods is not idiomatic in Laravel.',
+            'title' => 'The usage of private methods is not idiomatic in Laravel.',
+        ],
+        ForbiddenPublicPropertySniff::class => [
+            'exclude' => [
+                'timestamps',
+            ],
         ],
     ],
 

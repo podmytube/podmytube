@@ -65,7 +65,7 @@ class UpdateChannelsCommand extends Command
         /** for each channel */
         $this->channels->map(function ($channel) {
             try {
-                Log::info("Processing channel ($channel->channel_name) ({$channel->channel_id})");
+                Log::info("Processing channel {$channel->nameWithId()}");
                 $factory = YoutubeChannelVideos::forChannel($channel->channel_id, 50);
                 if (!count($factory->videos())) {
                     Log::info("Channel {$channel->channel_name} ({$channel->channel_id}) has no video.");

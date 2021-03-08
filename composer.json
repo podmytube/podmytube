@@ -38,7 +38,7 @@
         "filp/whoops": "~2.0",
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "^1.4",
-        "nunomaduro/phpinsights": "^1.1",
+        "nunomaduro/phpinsights": "^1.14",
         "phpunit/phpunit": "^9.0"
     },
     "autoload": {

@@ -40,12 +40,12 @@ class UploadPodcastFactory
         return $this;
     }
 
-    public function localPath():string
+    public function localPath(): string
     {
         return Storage::disk('tmp')->path($this->podcastable->relativeFeedPath());
     }
 
-    public function remotePath():string
+    public function remotePath(): string
     {
         return $this->podcastable->remoteFilePath();
     }

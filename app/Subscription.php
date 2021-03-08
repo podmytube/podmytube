@@ -11,4 +11,8 @@ class Subscription extends Model
     use BelongsToChannel, BelongsToPlan;
 
     protected $fillable = ['channel_id', 'plan_id'];
+
+    protected $casts = [
+        'plan_id' => 'integer',
+    ];
 }

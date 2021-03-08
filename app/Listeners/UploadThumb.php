@@ -24,7 +24,7 @@ class UploadThumb implements ShouldQueue
         $localPath = $this->podcastable->thumb->localFilePath();
         $remotePath = $this->podcastable->thumb->remoteFilePath();
 
-        Log::debug("$localPath - $remotePath");
+        Log::debug("{$localPath} - {$remotePath}");
 
         if (!file_exists($localPath)) {
             $message = "File on {$localPath} does not exists.";

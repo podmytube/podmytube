@@ -40,7 +40,7 @@ class ShouldMediaBeingDownloadedFactory
      * @throws MediaIsTooOldException
      * @throws DownloadMediaTagException
      */
-    public function check():bool
+    public function check(): bool
     {
         /** if already grabbed return false */
         if ($this->isMediaAlreadyGrabbed()) {
@@ -76,7 +76,7 @@ class ShouldMediaBeingDownloadedFactory
         return true;
     }
 
-    public function isMediaAlreadyGrabbed():bool
+    public function isMediaAlreadyGrabbed(): bool
     {
         return $this->media->hasBeenGrabbed();
     }

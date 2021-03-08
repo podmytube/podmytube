@@ -4,14 +4,18 @@ namespace App\Modules;
 
 /**
  * @category lib
+ *
  * @package  PodMyTube\core
+ *
  * @author   Frederick Tyteca <fred@podmytube.com>
+ *
  * @license  http://www.podmytube.com closed
+ *
  * @link     Podmytube website, http://www.podmytube.com
  */
 
-use InvalidArgumentException;
 use getID3;
+use InvalidArgumentException;
 
 /**
  * This class goal is to get audio file information.

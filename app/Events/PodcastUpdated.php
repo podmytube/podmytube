@@ -6,7 +6,6 @@ use App\Interfaces\Podcastable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
 
 class PodcastUpdated
 {
@@ -17,7 +16,6 @@ class PodcastUpdated
 
     public function __construct(Podcastable $podcastable)
     {
-        Log::debug(__CLASS__ . '::' . __FUNCTION__ . " - start for {$podcastable->podcastTitle()}");
         $this->podcastable = $podcastable;
     }
 }

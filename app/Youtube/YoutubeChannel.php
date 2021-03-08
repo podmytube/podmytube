@@ -6,6 +6,7 @@ class YoutubeChannel extends YoutubeCore
 {
     /** @var string $channelId $youtube channel id */
     protected $channelId;
+
     /** @var array $results result of youtube query */
     protected $results;
 
@@ -27,22 +28,22 @@ class YoutubeChannel extends YoutubeCore
      *
      * @throws App\Exceptions\YoutubeNoResultsException if channel does not exists
      */
-    public function exists() :bool
+    public function exists(): bool
     {
         return $this->channelId === $this->results['items'][0]['id']; // double check
     }
 
-    public function name() : ?string
+    public function name(): ?string
     {
         return $this->results['items'][0]['snippet']['title'];
     }
 
-    public function description() :?string
+    public function description(): ?string
     {
         return $this->results['items'][0]['snippet']['description'];
     }
 
-    public function uploadsPlaylistId() :?string
+    public function uploadsPlaylistId(): ?string
     {
         return $this->results['items'][0]['contentDetails']['relatedPlaylists']['uploads'] ?? false;
     }

@@ -52,23 +52,23 @@ class YoutubeVideo extends YoutubeCore
         return $this->item['snippet']['tags'] ?? [];
     }
 
-    public function duration():int
+    public function duration(): int
     {
         $interval = new DateInterval($this->item['contentDetails']['duration']);
         return ($interval->d * 24 * 60 * 60) + ($interval->h * 60 * 60) + ($interval->i * 60) + $interval->s;
     }
 
-    public function title():?string
+    public function title(): ?string
     {
         return $this->item['snippet']['title'];
     }
 
-    public function videoId():?string
+    public function videoId(): ?string
     {
         return $this->videoId;
     }
 
-    public function description():?string
+    public function description(): ?string
     {
         return $this->item['snippet']['description'];
     }

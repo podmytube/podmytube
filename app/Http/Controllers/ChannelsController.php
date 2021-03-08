@@ -15,7 +15,6 @@ use App\Channel;
 use App\Events\ChannelUpdated;
 use App\Http\Requests\ChannelRequest;
 use App\Language;
-use Illuminate\Support\Facades\Storage;
 
 /**
  * the channel controller class.

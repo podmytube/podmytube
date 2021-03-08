@@ -15,7 +15,6 @@ class UploadMedia implements ShouldQueue
 
     public function handle(MediaUploadedByUser $event)
     {
-        Log::debug('--- ' . __CLASS__ . ' start');
         $media = $event->media;
 
         $localPath = $media->uploadedFilePath();
@@ -28,6 +27,5 @@ class UploadMedia implements ShouldQueue
         }
 
         SendFileBySFTP::dispatchNow($localPath, $remotePath, true);
-        Log::debug('--- ' . __CLASS__ . ' start');
     }
 }

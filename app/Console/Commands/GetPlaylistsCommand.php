@@ -66,7 +66,7 @@ class GetPlaylistsCommand extends Command
         $channels->map(function (Channel $channel) use (&$nbPlaylists) {
             $this->comment('======================================================================', 'v');
             $this->comment("Getting playlists (from youtube) for {$channel->nameWithId()}", 'v');
-            $playlists = ((new YoutubePlaylists)->forChannel($channel->channelId())->playlists());
+            $playlists = ((new YoutubePlaylists())->forChannel($channel->channelId())->playlists());
             $nbPlaylists += count($playlists);
             array_map(function ($playlistItem) use ($channel) {
                 $this->line("Getting {$playlistItem['title']}");
