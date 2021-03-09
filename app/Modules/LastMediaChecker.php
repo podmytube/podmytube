@@ -49,7 +49,7 @@ class LastMediaChecker
     {
         if ($this->hasMediaBeenPublishedRecently() === true) {
             /** media is too recent to be already processed */
-            Log::notice("Last media {$this->media->media_id} has been published recently for {$this->channel->nameWithId()}. No alert to send.");
+            Log::notice("Last media {$this->lastMediaFromYoutube['media_id']} has been published recently for {$this->channel->nameWithId()}. No alert to send.");
             return false;
         }
 
