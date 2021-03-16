@@ -13,6 +13,9 @@ class YoutubeVideo extends YoutubeCore
     /** @var string $videoId */
     protected $videoId;
 
+    /**
+     * @throws App\Exceptions\YoutubeMediaDoesNotExistException
+     */
     private function __construct(string $videoId)
     {
         parent::__construct();

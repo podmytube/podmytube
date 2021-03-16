@@ -3,6 +3,10 @@
 namespace App\Factories;
 
 use App\Events\ChannelUpdated;
+use App\Exceptions\DownloadMediaTagException;
+use App\Exceptions\MediaIsTooOldException;
+use App\Exceptions\YoutubeMediaDoesNotExistException;
+use App\Exceptions\YoutubeMediaIsNotAvailableException;
 use App\Jobs\SendFileBySFTP;
 use App\Media;
 use App\Modules\CheckingGrabbedFile;
@@ -10,7 +14,7 @@ use App\Modules\DownloadYTMedia;
 use App\Modules\MediaProperties;
 use App\Youtube\YoutubeVideo;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
+use Exception;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -34,7 +38,7 @@ class DownloadMediaFactory
 
     public function run()
     {
-        return DB::transaction(function () {
+        try {
             /**
              * getting media infos
              */
@@ -68,18 +72,35 @@ class DownloadMediaFactory
             SendFileBySFTP::dispatchNow($downloadedFilePath, $this->media->remoteFilePath(), $cleanAfter = true);
 
             /**
-             * update infos
+             * setting status
              */
-            Log::notice('Persisting media infos into DB.');
-            $this->media->title = $youtubeVideo->title();
-            $this->media->description = $youtubeVideo->description();
-            $this->media->grabbed_at = Carbon::now();
-            $this->media->length = $mediaProperties->filesize();
-            $this->media->duration = $mediaProperties->duration();
-            $this->media->save();
+            $status = Media::STATUS_DOWNLOADED;
+        } catch (YoutubeMediaDoesNotExistException $exception) {
+            $status = Media::STATUS_NOT_AVAILABLE_ON_YOUTUBE;
+        } catch (YoutubeMediaIsNotAvailableException $exception) {
+            $status = Media::STATUS_NOT_PROCESSED_ON_YOUTUBE;
+        } catch (DownloadMediaTagException $exception) {
+            $status = Media::STATUS_TAG_FILTERED;
+        } catch (MediaIsTooOldException $exception) {
+            $status = Media::STATUS_AGE_FILTERED;
+        }
 
-            ChannelUpdated::dispatch($this->media->channel);
-            return true;
-        });
+        /**
+         * update infos
+         */
+        Log::notice('Persisting media infos into DB.');
+        $this->media->update(
+            [
+                'title' => isset($youtubeVideo) ? $youtubeVideo->title() : null,
+                'description' => isset($youtubeVideo) ? $youtubeVideo->description() : null,
+                'grabbed_at' => $status === Media::STATUS_DOWNLOADED ? Carbon::now() : null,
+                'length' => isset($mediaProperties) ? $mediaProperties->filesize() : 0,
+                'duration' => isset($mediaProperties) ? $mediaProperties->duration() : 0,
+                'status' => $status,
+            ]
+        );
+
+        ChannelUpdated::dispatch($this->media->channel);
+        return true;
     }
 }

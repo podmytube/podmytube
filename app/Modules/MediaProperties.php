@@ -38,7 +38,7 @@ class MediaProperties
     public function __construct(string $mediaFile)
     {
         if (!file_exists($mediaFile)) {
-            throw new \InvalidArgumentException("Media file {$mediaFile} does not exists", 1);
+            throw new InvalidArgumentException("Media file {$mediaFile} does not exists", 1);
         }
 
         /**

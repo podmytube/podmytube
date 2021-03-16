@@ -3,10 +3,11 @@
 /* @var $factory \Illuminate\Database\Eloquent\Factory */
 
 use App\Channel;
+use App\Media;
 use Carbon\Carbon;
 use Faker\Generator as Faker;
 
-$factory->define(App\Media::class, function (Faker $faker, $attributes) {
+$factory->define(Media::class, function (Faker $faker, $attributes) {
     /** preparing published and grabbed at period */
     $publishedAt =
         $attributes['published_at'] ??
@@ -37,6 +38,6 @@ EOT,
         'duration' => $duration,
         'published_at' => $publishedAt,
         'grabbed_at' => $grabbedAt,
-        'active' => true,
+        'status' => $attributes['status'] ?? Media::STATUS_NOT_DOWNLOADED,
     ];
 });
