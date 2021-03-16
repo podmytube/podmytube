@@ -31,7 +31,6 @@ class MonthlyReportMail extends Mailable
     public function __construct(Channel $channel)
     {
         $this->channel = $channel;
-        $this->medias = $channel->medias()->publishedLastMonth();
     }
 
     /**

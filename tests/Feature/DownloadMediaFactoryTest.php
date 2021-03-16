@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\Channel;
-use App\Exceptions\DownloadMediaTagException;
 use App\Exceptions\YoutubeMediaDoesNotExistException;
 use App\Factories\DownloadMediaFactory;
 use App\Jobs\SendFileBySFTP;
@@ -52,8 +51,13 @@ class DownloadMediaFactoryTest extends TestCase
             'channel_id' => $this->channel->channel_id,
             'media_id' => 'absolutely-not-valid'
         ]);
-        $this->expectException(YoutubeMediaDoesNotExistException::class);
         DownloadMediaFactory::media($media)->run();
+        $this->assertEquals(Media::STATUS_NOT_AVAILABLE_ON_YOUTUBE, $media->status);
+        $this->assertNull($media->title);
+        $this->assertNull($media->description);
+        $this->assertNull($media->grabbed_at);
+        $this->assertEquals(0, $media->length);
+        $this->assertEquals(0, $media->duration);
     }
 
     public function testVideoHasATagProblem()
@@ -67,8 +71,11 @@ class DownloadMediaFactoryTest extends TestCase
                 'media_id' => self::BEACH_VOLLEY_VIDEO_1
             ]
         );
-        $this->expectException(DownloadMediaTagException::class);
         DownloadMediaFactory::media($media)->run();
+        $this->assertEquals(Media::STATUS_TAG_FILTERED, $media->status);
+        $this->assertNull($media->grabbed_at);
+        $this->assertEquals(0, $media->length);
+        $this->assertEquals(0, $media->duration);
     }
 
     public function testVideoIsBeingDownloaded()
@@ -88,6 +95,9 @@ class DownloadMediaFactoryTest extends TestCase
         /** same video is giving me 2 length 26898 && 26666 depends of lib/python installed */
         $this->assertTrue(in_array($media->length, $expectedMediaLength));
         $this->assertEquals($expectedDuration, $media->duration);
+        $this->assertEquals(Media::STATUS_DOWNLOADED, $media->status);
+        $this->assertEquals(26666, $media->length);
+        $this->assertEquals(5, $media->duration);
         Bus::assertDispatched(SendFileBySFTP::class);
     }
 }

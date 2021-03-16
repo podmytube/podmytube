@@ -19,6 +19,13 @@ class Media extends Model
     public const REMOTE_DISK = 'medias';
     public const FILE_EXTENSION = '.mp3';
 
+    public const STATUS_NOT_DOWNLOADED = 0;
+    public const STATUS_DOWNLOADED = 1;
+    public const STATUS_TAG_FILTERED = 10; // filtered by tag
+    public const STATUS_AGE_FILTERED = 11; // filtered too old
+    public const STATUS_NOT_PROCESSED_ON_YOUTUBE = 20; // upcoming
+    public const STATUS_NOT_AVAILABLE_ON_YOUTUBE = 21; // should not be possible unless deleted after being registered in pod
+
     /** @var string $table medias table name - without it fails */
     protected $table = 'medias';
 
