@@ -46,7 +46,7 @@ abstract class TestCase extends BaseTestCase
     /**
      * create one channel
      */
-    protected function createChannelWithPlan(Plan $plan = null) : \App\Channel
+    protected function createChannelWithPlan(Plan $plan = null): Channel
     {
         $createContext = [];
         if ($plan) {
@@ -60,7 +60,7 @@ abstract class TestCase extends BaseTestCase
      * So i'm encoding the same way to be sure tests will stay green.
      * By example "d'angelo" => "d&#039;angelo"
      */
-    public function stringEncodingLikeLaravel(string $str)
+    public function stringEncodingLikeLaravel(string $str): string
     {
         return htmlspecialchars($str, ENT_QUOTES | ENT_HTML401);
     }

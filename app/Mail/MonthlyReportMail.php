@@ -48,32 +48,18 @@ class MonthlyReportMail extends Mailable
 
         $this->publishedMedias = $this->channel->medias()
             ->publishedLastMonth()
-            ->orderBy('published_at', 'desc')
             ->get();
+
+        $lastMonth = now()->subMonth();
 
         return $this->subject($subject)
             ->view('emails.monthlyReport')
             ->with([
                 'mailTitle' => $subject,
+                'period' => $period,
                 'channel' => $this->channel,
                 'publishedMedias' => $this->publishedMedias,
-                'shouldChannelBeUpgraded' => $this->shouldChannelBeUpgraded(),
+                'shouldChannelBeUpgraded' => $this->shouldChannelBeUpgraded($lastMonth->month, $lastMonth->year),
             ]);
-    }
-
-    protected function shouldChannelBeUpgraded()
-    {
-        if ($this->channel->subscription->plan->id == Plan::FREE_PLAN_ID) {
-            return true;
-        }
-
-        if (
-            $this->publishedMedias->count() >
-            $this->channel->subscription->plan->nb_episodes_per_month
-        ) {
-            return true;
-        }
-
-        return false;
     }
 }

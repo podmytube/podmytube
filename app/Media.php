@@ -76,11 +76,8 @@ class Media extends Model
      * @param object query is the query object
      * @param array value should have 2 date in it [0] is the startDate, [1] is the endDate
      */
-    public function scopeGrabbedBetween(
-        $query,
-        Carbon $startDate,
-        Carbon $endDate
-    ) {
+    public function scopeGrabbedBetween($query, Carbon $startDate, Carbon $endDate): Builder
+    {
         if ($startDate > $endDate) {
             throw new InvalidStartDateException(
                 'Start date should be before end date !'
@@ -99,11 +96,8 @@ class Media extends Model
      * @param Illuminate\Database\Eloquent\Builder query is the query object
      * @param array value should have 2 date in it [0] is the startDate, [1] is the endDate
      */
-    public function scopePublishedBetween(
-        Builder $query,
-        Carbon $startDate,
-        Carbon $endDate
-    ) {
+    public function scopePublishedBetween(Builder $query, Carbon $startDate, Carbon $endDate): Builder
+    {
         if ($startDate > $endDate) {
             throw new InvalidStartDateException(
                 'Start date should be before end date !'
@@ -121,7 +115,7 @@ class Media extends Model
      *
      * @param Illuminate\Database\Eloquent\Builder query is the query object
      */
-    public function scopeGrabbedAt(Builder $query)
+    public function scopeGrabbedAt(Builder $query): Builder
     {
         return $query->whereNotNull('grabbed_at');
     }
@@ -129,34 +123,27 @@ class Media extends Model
     /**
      * scope episodes published last month.
      */
-    public function scopePublishedLastMonth(Builder $query)
+    public function scopePublishedLastMonth(Builder $query): Builder
     {
         return $query
             ->publishedBetween(
-                Carbon::now()
-                    ->startOfDay()
-                    ->subMonth()
-                    ->startOfMonth()
-                    ->subDay(),
-                Carbon::now()
-                    ->startOfDay()
-                    ->subMonth()
-                    ->endOfMonth()
+                Carbon::now()->startOfDay()->subMonth()->startOfMonth()->subDay(),
+                Carbon::now()->startOfDay()->subMonth()->endOfMonth()
             )
             ->orderBy('published_at', 'desc');
     }
 
-    public function enclosureUrl()
+    public function enclosureUrl(): string
     {
         return EnclosureUrl::create($this)->get();
     }
 
-    public function pubDate()
+    public function pubDate(): string
     {
         return $this->published_at->timezone('Europe/Paris')->format(DATE_RSS);
     }
 
-    public function duration()
+    public function duration(): int
     {
         return $this->duration;
     }
@@ -179,7 +166,7 @@ class Media extends Model
         return config('app.mp3_url') . '/' . $this->remoteFilePath();
     }
 
-    public function scopeGrabbedBefore(Builder $query, Carbon $date)
+    public function scopeGrabbedBefore(Builder $query, Carbon $date): Builder
     {
         return $query->whereDate('grabbed_at', '<', $date);
     }
@@ -189,12 +176,12 @@ class Media extends Model
         return self::where('media_id', '=', $mediaId)->first();
     }
 
-    public function uploadedFilePath()
+    public function uploadedFilePath(): string
     {
         return Storage::disk(self::UPLOADED_BY_USER_DISK)->path($this->mediaFileName());
     }
 
-    public function remoteFilePath()
+    public function remoteFilePath(): string
     {
         return config('app.mp3_path') . $this->relativePath();
     }

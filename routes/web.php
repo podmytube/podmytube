@@ -7,6 +7,7 @@
  *
  * @author Frederick Tyteca <fred@podmytube.com>
  */
+
 Route::get('test', function () {
     return view('test');
 })->name('terms');
@@ -16,6 +17,8 @@ Route::get('terms', function () {
 Route::get('privacy', function () {
     return view('privacy');
 })->name('privacy');
+
+Route::get('monthlyReport/{channel}', 'MailViewerController@monthlyReport');
 
 Route::domain('www.' . config('app.domain'))->group(function () {
     Route::get('/', 'IndexController@index')->name('www.index');

@@ -433,4 +433,13 @@ class Channel extends Model implements Podcastable
     {
         return $this->explicit === true ? 'true' : 'false';
     }
+
+    public function shouldChannelBeUpgraded(int $month = null, int $year = null)
+    {
+        if ($this->isFree()) {
+            return true;
+        }
+
+        return $this->hasReachedItslimit($month, $year);
+    }
 }

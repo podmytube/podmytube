@@ -2,13 +2,14 @@
     <meta charset="UTF-8">
     <title>Success !</title>
     <title>@yield('mailTitle') - PodMyTube</title>
+    <link href="https://fonts.googleapis.com/css?family=Heebo&display=swap" rel="stylesheet"> 
     <style>
         body {
             margin: 0 20px;
-            font-family: Helvetica, Arial, sans-serif;
-            color: #666666
+            font-family: Heebo, Helvetica, Arial, sans-serif;
+            color: #111827; /** gray-900 */
         }
-
+        
         h1 {
             color: #555555;
         }
@@ -53,6 +54,9 @@
 
         .bordered {
             border: 1px solid grey;
+        }
+        a,a:hover{
+            text-decoration: none;
         }
     </style>
 </head>
