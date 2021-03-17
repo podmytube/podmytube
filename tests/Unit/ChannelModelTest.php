@@ -5,11 +5,10 @@ namespace Tests\Unit;
 use App\Channel;
 use App\Media;
 use App\Plan;
-use Carbon\Carbon;
 use Tests\TestCase;
-use App\Subscription;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
 
 class ChannelModelTest extends TestCase
@@ -22,16 +21,12 @@ class ChannelModelTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->channel = factory(Channel::class)->create();
+        Artisan::call('db:seed', ['--class' => 'PlansTableSeeder']);
+        $this->channel = $this->createChannelWithPlan(Plan::find(Plan::FREE_PLAN_ID));
     }
 
-    public function testCreatedAt()
-    {
-        $this->assertNotNull($this->channel->createdAt());
-        $this->assertInstanceOf(Carbon::class, $this->channel->createdAt());
-    }
-
-    public function testingPodcastUrl()
+    /** @test */
+    public function podcast_url_is_ok()
     {
         $this->assertEquals(
             config('app.podcasts_url') . "/{$this->channel->channelId()}/" . config('app.feed_filename'),
@@ -39,22 +34,20 @@ class ChannelModelTest extends TestCase
         );
     }
 
-    public function testByChannelIdIsRunningFine()
+    /** @test */
+    public function by_channel_id_is_ok()
     {
         $this->assertNull(Channel::byChannelId('this_will_never_exists'));
         $this->assertEquals($this->channel->channel_id, Channel::byChannelId($this->channel->channel_id)->channel_id);
     }
 
-    public function testingIsFreeShouldBeTrue()
+    /** @test */
+    public function is_free_should_be_ok()
     {
-        factory(Subscription::class)->create(['channel_id' => $this->channel->channel_id, 'plan_id' => Plan::FREE_PLAN_ID]);
         $this->assertTrue($this->channel->isFree());
-    }
 
-    public function testingIsFreeShouldBeFalse()
-    {
-        factory(Subscription::class)->create(['channel_id' => $this->channel->channel_id, 'plan_id' => Plan::WEEKLY_PLAN_ID]);
-        $this->assertFalse($this->channel->isFree());
+        $payingChannel = $this->createChannelWithPlan(Plan::find(Plan::WEEKLY_PLAN_ID));
+        $this->assertFalse($payingChannel->isFree());
     }
 
     public function testingNextMediaIdShouldBeOk()
@@ -88,5 +81,27 @@ class ChannelModelTest extends TestCase
             config('app.feed_path') . "{$this->channel->channel_id}/" . config('app.feed_filename'),
             $this->channel->remoteFilePath()
         );
+    }
+
+    /** @test */
+    public function should_channel_be_upgraded_is_fine()
+    {
+        /** this one is a free one */
+        $this->assertTrue($this->channel->shouldChannelBeUpgraded());
+
+        /** with a paying one */
+        $channelWithEnoughQuota = $this->createChannelWithPlan(Plan::find(Plan::WEEKLY_PLAN_ID));
+        $this->addMediasToChannel($channelWithEnoughQuota, 2, true);
+        $this->assertFalse($channelWithEnoughQuota->shouldChannelBeUpgraded());
+
+        /** with not paying enough channel */
+        $channelWhichIsNotPayingEnough = $this->createChannelWithPlan(Plan::find(Plan::WEEKLY_PLAN_ID));
+        factory(Media::class, 10)->create(
+            [
+                'channel_id' => $channelWhichIsNotPayingEnough->channel_id,
+                'grabbed_at' => now()->subHour(),
+            ]
+        );
+        $this->assertTrue($channelWhichIsNotPayingEnough->shouldChannelBeUpgraded());
     }
 }
