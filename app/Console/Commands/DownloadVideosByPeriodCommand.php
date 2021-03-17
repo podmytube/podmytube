@@ -55,7 +55,7 @@ class DownloadVideosByPeriodCommand extends Command
         /**
          * looping on all channels
          */
-        $channels->map(function ($channel) use ($period) {
+        $channels->map(function (Channel $channel) use ($period) {
             try {
                 /**
                  * check if channnel has reached its quota
