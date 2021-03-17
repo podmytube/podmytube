@@ -5,7 +5,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class SettingActiveDefault0Medias extends Migration
+class AddingStatusToMedias extends Migration
 {
     /**
      * Run the migrations.
@@ -15,7 +15,7 @@ class SettingActiveDefault0Medias extends Migration
     public function up()
     {
         Schema::table('medias', function (Blueprint $table) {
-            $table->boolean('status')->default(Media::STATUS_NOT_DOWNLOADED)->change();
+            $table->unsignedTinyInteger('status')->default(Media::STATUS_NOT_DOWNLOADED)->after('grabbed_at');
         });
     }
 

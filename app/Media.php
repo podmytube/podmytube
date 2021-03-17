@@ -25,6 +25,7 @@ class Media extends Model
     public const STATUS_AGE_FILTERED = 11; // filtered too old
     public const STATUS_NOT_PROCESSED_ON_YOUTUBE = 20; // upcoming
     public const STATUS_NOT_AVAILABLE_ON_YOUTUBE = 21; // should not be possible unless deleted after being registered in pod
+    public const STATUS_EXHAUSTED_QUOTA = 99; // user has more episode to be converted but is not paying enough for
 
     /** @var string $table medias table name - without it fails */
     protected $table = 'medias';
@@ -35,7 +36,7 @@ class Media extends Model
     /** @var bool $incrementing come with my fucking legacy media_id */
     public $incrementing = false;
 
-    protected $guarded = [];
+    protected $guarded = ['id'];
     /**
      * those fields are converted into Carbon mutator
      */
@@ -225,5 +226,19 @@ class Media extends Model
     public function titleWithId()
     {
         return "{$this->title} ({$this->media_id})";
+    }
+
+    public function statusComment()
+    {
+        $comments = [
+            self::STATUS_NOT_DOWNLOADED => "Episode {$this->title} has not been downloaded yet.",
+            self::STATUS_DOWNLOADED => "Episode {$this->title} has been added to your podcast.",
+            self::STATUS_TAG_FILTERED => "Episode {$this->title} has been filtered by tag ",
+            self::STATUS_AGE_FILTERED => "Episode {$this->title} is too old to be included to your podcast.",
+            self::STATUS_NOT_PROCESSED_ON_YOUTUBE => "Episode {$this->title} is not available yet on Youtube (upcoming live ?)",
+            self::STATUS_NOT_AVAILABLE_ON_YOUTUBE => "Episode {$this->title} is unknow on Youtube. Did you remove it ?",
+            self::STATUS_EXHAUSTED_QUOTA => 'Your quota has been exhausted this month. What about upgrading ?',
+        ];
+        return $comments[$this->status];
     }
 }
