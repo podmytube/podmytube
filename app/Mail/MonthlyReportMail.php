@@ -59,7 +59,7 @@ class MonthlyReportMail extends Mailable
                 'period' => $period,
                 'channel' => $this->channel,
                 'publishedMedias' => $this->publishedMedias,
-                'shouldChannelBeUpgraded' => $this->shouldChannelBeUpgraded($lastMonth->month, $lastMonth->year),
+                'shouldChannelBeUpgraded' => $this->channel->shouldChannelBeUpgraded($lastMonth->month, $lastMonth->year),
             ]);
     }
 }

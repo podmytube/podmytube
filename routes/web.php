@@ -18,8 +18,6 @@ Route::get('privacy', function () {
     return view('privacy');
 })->name('privacy');
 
-Route::get('monthlyReport/{channel}', 'MailViewerController@monthlyReport');
-
 Route::domain('www.' . config('app.domain'))->group(function () {
     Route::get('/', 'IndexController@index')->name('www.index');
     Route::get('pricing', 'PricingController@index')->name('pricing');
