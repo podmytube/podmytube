@@ -40,7 +40,7 @@ class UploadPodcastListenerTest extends TestCase
     public function testUploadPodcastListenerForChannel()
     {
         $thumbUpdatedEvent = new ThumbUpdated($this->channel);
-        $this->assertTrue((new UploadPodcast)->handle($thumbUpdatedEvent));
+        $this->assertTrue((new UploadPodcast())->handle($thumbUpdatedEvent));
         Bus::assertDispatched(function (SendFileBySFTP $job) {
             return config('app.feed_path') . $this->channel->channelId() . '/' . config('app.feed_filename') === $job->remoteFilePath;
         });

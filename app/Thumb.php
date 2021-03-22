@@ -97,7 +97,7 @@ class Thumb extends Model
      */
     public static function defaultUrl()
     {
-        return getenv('THUMBS_URL') . '/' . self::DEFAULT_THUMB_FILE;
+        return config('app.thumbs_url') . '/' . self::DEFAULT_THUMB_FILE;
     }
 
     /**
