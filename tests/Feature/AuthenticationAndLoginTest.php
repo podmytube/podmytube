@@ -87,7 +87,16 @@ class AuthenticationAndLoginTest extends TestCase
 
     public function testInvalidPasswordShouldNotAuthenticate()
     {
-        $response = $this->from(route('login'))->post(route('login'), [
+        $response = $this->from('/')->post('/login', [
+            'email' => $this->user->email,
+            'password' => 'invalid-password',
+        ]);
+        $response->assertRedirect('/');
+        $response->assertSessionHasErrors('email');
+        $this->assertTrue(session()->hasOldInput('email'));
+        $this->assertFalse(session()->hasOldInput('password'));
+        $this->assertGuest();
+        /* $response = $this->from(route('login'))->post(route('login'), [
             'email' => $this->user->email,
             'password' => 'invalid-password',
         ]);
@@ -96,6 +105,6 @@ class AuthenticationAndLoginTest extends TestCase
         $response->assertSessionHasErrors('email');
         $this->assertTrue(session()->hasOldInput('email'));
         $this->assertFalse(session()->hasOldInput('password'));
-        $this->assertGuest();
+        $this->assertGuest(); */
     }
 }

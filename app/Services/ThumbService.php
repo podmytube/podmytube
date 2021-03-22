@@ -109,7 +109,7 @@ class ThumbService
      */
     public static function getDefaultThumbUrl()
     {
-        return getenv('THUMBS_URL') . '/' . Thumb::DEFAULT_THUMB_FILE;
+        return config('app.thumbs_url') . '/' . Thumb::DEFAULT_THUMB_FILE;
     }
 
     /**
@@ -119,7 +119,7 @@ class ThumbService
      */
     public static function getDefaultVignetteUrl()
     {
-        return getenv('THUMBS_URL') . '/' . Vignette::DEFAULT_VIGNETTE_FILE;
+        return config('app.thumbs_url') . '/' . Vignette::DEFAULT_VIGNETTE_FILE;
     }
 
     /**
