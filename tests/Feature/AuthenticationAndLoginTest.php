@@ -96,15 +96,5 @@ class AuthenticationAndLoginTest extends TestCase
         $this->assertTrue(session()->hasOldInput('email'));
         $this->assertFalse(session()->hasOldInput('password'));
         $this->assertGuest();
-        /* $response = $this->from(route('login'))->post(route('login'), [
-            'email' => $this->user->email,
-            'password' => 'invalid-password',
-        ]);
-
-        $response->assertRedirect(route('login'));
-        $response->assertSessionHasErrors('email');
-        $this->assertTrue(session()->hasOldInput('email'));
-        $this->assertFalse(session()->hasOldInput('password'));
-        $this->assertGuest(); */
     }
 }
