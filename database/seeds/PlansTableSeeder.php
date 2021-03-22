@@ -4,17 +4,10 @@ use App\Plan;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class PlansTableSeeder extends Seeder
 {
-    const max_episodes_by_plan = [
-        'free' => 2,
-        'standard_premium' => 10,
-        'accropolis' => 20, // to be removed ... when they will upgrade or leave
-        'vip_premium' => 33,
-        'early' => 33,
-    ];
-
     /**
      * Run the database seeds.
      *
@@ -32,8 +25,7 @@ class PlansTableSeeder extends Seeder
                 'name' => 'Forever free',
                 'slug' => 'forever_free',
                 'price' => 0,
-                'billing_yearly' => false,
-                'nb_episodes_per_month' => self::max_episodes_by_plan['free'],
+                'nb_episodes_per_month' => 1,
                 'created_at' => Carbon::createFromDate(2017, 1, 1),
                 'updated_at' => Carbon::now(),
             ],
@@ -45,8 +37,7 @@ class PlansTableSeeder extends Seeder
                 'name' => 'Early bird',
                 'slug' => 'early_bird',
                 'price' => 0,
-                'billing_yearly' => false,
-                'nb_episodes_per_month' => self::max_episodes_by_plan['vip_premium'],
+                'nb_episodes_per_month' => 30,
                 'created_at' => Carbon::createFromDate(2017, 1, 1),
                 'updated_at' => Carbon::now(),
             ],
@@ -55,24 +46,10 @@ class PlansTableSeeder extends Seeder
              * first premium subscribers --- monthly
              */
             [
-                'name' => 'Promo 6 (monthly)',
-                'slug' => 'monthly_6',
+                'name' => 'Promo',
+                'slug' => 'promo',
                 'price' => 6,
-                'billing_yearly' => false,
-                'nb_episodes_per_month' => self::max_episodes_by_plan['standard_premium'],
-                'created_at' => Carbon::createFromDate(2017, 1, 1),
-                'updated_at' => Carbon::now(),
-            ],
-
-            /**
-             * first premium subscribers --- yearly
-             */
-            [
-                'name' => 'Promo 66 (yearly)',
-                'slug' => 'yearly_66',
-                'price' => 66,
-                'billing_yearly' => true,
-                'nb_episodes_per_month' => self::max_episodes_by_plan['standard_premium'],
+                'nb_episodes_per_month' => 5,
                 'created_at' => Carbon::createFromDate(2017, 1, 1),
                 'updated_at' => Carbon::now(),
             ],
@@ -84,33 +61,41 @@ class PlansTableSeeder extends Seeder
                 'name' => 'Weekly Youtuber',
                 'slug' => 'weekly_youtuber',
                 'price' => 9,
-                'billing_yearly' => false,
-                'nb_episodes_per_month' => self::max_episodes_by_plan['standard_premium'],
+                'nb_episodes_per_month' => 10,
                 'created_at' => Carbon::createFromDate(2018, 9, 1),
-                'updated_at' => Carbon::now(),
             ],
 
             [
                 'name' => 'Daily Youtuber',
                 'slug' => 'daily_youtuber',
                 'price' => 29,
-                'billing_yearly' => false,
-                'nb_episodes_per_month' => self::max_episodes_by_plan['vip_premium'],
+                'nb_episodes_per_month' => 33,
                 'created_at' => Carbon::createFromDate(2018, 9, 1),
-                'updated_at' => Carbon::now(),
             ],
 
             /**
-             * Accropolis wart
+             * March 2021
+             * yearly price is monthly price x10
              */
             [
-                'name' => 'Spécial accropolis',
-                'slug' => 'accropolis_6_euros',
-                'price' => 6,
-                'billing_yearly' => false,
-                'nb_episodes_per_month' => self::max_episodes_by_plan['accropolis'],
-                'created_at' => Carbon::createFromDate(2017, 1, 1),
-                'updated_at' => Carbon::now(),
+                'name' => 'Starter',
+                'price' => 9,
+                'nb_episodes_per_month' => 5,
+                'created_at' => Carbon::createFromDate(2021, 3, 22),
+            ],
+
+            [
+                'name' => 'Professional',
+                'price' => 29,
+                'nb_episodes_per_month' => 12,
+                'created_at' => Carbon::createFromDate(2021, 3, 22),
+            ],
+
+            [
+                'name' => 'Business',
+                'price' => 79,
+                'nb_episodes_per_month' => 33,
+                'created_at' => Carbon::createFromDate(2021, 3, 22),
             ],
         ];
 
@@ -119,6 +104,8 @@ class PlansTableSeeder extends Seeder
             function ($item) use (&$index) {
                 return array_merge($item, [
                     'id' => $index++,
+                    'slug' => $item['slug'] ?? Str::slug($item['name']),
+                    'updated_at' => Carbon::now(),
                 ]);
             },
             $data

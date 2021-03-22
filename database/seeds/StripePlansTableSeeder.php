@@ -2,7 +2,6 @@
 
 use App\Plan;
 use App\StripePlan;
-use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -16,127 +15,126 @@ class StripePlansTableSeeder extends Seeder
     public function run()
     {
         DB::table('stripe_plans')->delete();
+
+        $freePlan = Plan::bySlug('forever_free');
+        $earlyPlan = Plan::bySlug('early_bird');
+        $promoPlan = Plan::bySlug('promo');
+        $weeklyPlan9 = Plan::bySlug('weekly_youtuber');
+        $dailyPlan29 = Plan::bySlug('daily_youtuber');
+        $starterPlan = Plan::bySlug('starter');
+        $professionalPlan = Plan::bySlug('professional');
+        $businessPlan = Plan::bySlug('business');
+
         /**
          * ======================================
-         * promo monthly
+         * promo
          * ======================================
-         * test
          */
+        /** monthly */
         StripePlan::insert([
-            'plan_id' => Plan::PROMO_MONTHLY_PLAN_ID,
-            'stripe_id' => StripePlan::PROMO_MONTHLY_PLAN_TEST,
-            'is_live' => 0,
-            'created_at' => Carbon::createFromDate(2019, 3, 10),
-            'updated_at' => Carbon::now(),
+            'plan_id' => $promoPlan->id,
+            'stripe_live_id' => 'price_1Gu1YPLrQ8vSqYZERxvBFAgu',
+            'stripe_test_id' => '',
+            'is_yearly' => false,
         ]);
-        /**
-         * prod
-         */
+
+        /** yearly */
         StripePlan::insert([
-            'plan_id' => Plan::PROMO_MONTHLY_PLAN_ID,
-            'stripe_id' => StripePlan::PROMO_MONTHLY_PLAN_PROD,
-            'is_live' => 1,
-            'created_at' => Carbon::createFromDate(2019, 3, 10),
-            'updated_at' => Carbon::now(),
+            'plan_id' => $promoPlan->id,
+            'stripe_live_id' => 'plan_EcuJ2npV5EMrCg',
+            'stripe_test_id' => '',
+            'is_yearly' => true,
         ]);
 
         /**
          * ======================================
-         * promo yearly
+         * weekly
          * ======================================
-         * test
          */
+
+        /** monthly */
         StripePlan::insert([
-            'plan_id' => Plan::PROMO_YEARLY_PLAN_ID,
-            'stripe_id' => StripePlan::PROMO_YEARLY_PLAN_TEST,
-            'is_live' => 0,
-            'created_at' => Carbon::createFromDate(2019, 3, 10),
-            'updated_at' => Carbon::now(),
-        ]);
-        /**
-         * prod
-         */
-        StripePlan::insert([
-            'plan_id' => Plan::PROMO_YEARLY_PLAN_ID,
-            'stripe_id' => StripePlan::PROMO_YEARLY_PLAN_PROD,
-            'is_live' => 1,
-            'created_at' => Carbon::createFromDate(2019, 3, 10),
-            'updated_at' => Carbon::now(),
+            'plan_id' => $weeklyPlan9->id,
+            'stripe_live_id' => 'price_1Gu1YPLrQ8vSqYZERxvBFAgu',
+            'stripe_test_id' => '',
+            'is_yearly' => false,
         ]);
 
         /**
          * ======================================
-         * weekly monthly
+         * daily
          * ======================================
-         * test
          */
 
+        /** monthly */
         StripePlan::insert([
-            'plan_id' => Plan::WEEKLY_PLAN_ID,
-            'stripe_id' => StripePlan::WEEKLY_PLAN_TEST,
-            'is_live' => 0,
-            'created_at' => Carbon::createFromDate(2019, 3, 10),
-            'updated_at' => Carbon::now(),
-        ]);
-        /**
-         * prod
-         */
-        StripePlan::insert([
-            'plan_id' => Plan::WEEKLY_PLAN_ID,
-            'stripe_id' => StripePlan::WEEKLY_PLAN_PROD,
-            'is_live' => 1,
-            'created_at' => Carbon::createFromDate(2019, 3, 10),
-            'updated_at' => Carbon::now(),
+            'plan_id' => $dailyPlan29->id,
+            'stripe_live_id' => 'plan_DFsB9U76WaSaR3',
+            'stripe_test_id' => '',
+            'is_yearly' => false,
         ]);
 
         /**
          * ======================================
-         * daily monthly
+         * starter
          * ======================================
-         * test
          */
-
+        /** yearly */
         StripePlan::insert([
-            'plan_id' => Plan::DAILY_PLAN_ID,
-            'stripe_id' => StripePlan::DAILY_PLAN_TEST,
-            'is_live' => 0,
-            'created_at' => Carbon::createFromDate(2019, 3, 10),
-            'updated_at' => Carbon::now(),
+            'plan_id' => $starterPlan->id,
+            'stripe_live_id' => 'price_1HmxVLLrQ8vSqYZEFlv2SUpd',
+            'stripe_test_id' => '',
+            'is_yearly' => true,
         ]);
-        /**
-         * prod
-         */
+
+        /** monthly */
         StripePlan::insert([
-            'plan_id' => Plan::DAILY_PLAN_ID,
-            'stripe_id' => StripePlan::DAILY_PLAN_PROD,
-            'is_live' => 1,
-            'created_at' => Carbon::createFromDate(2019, 3, 10),
-            'updated_at' => Carbon::now(),
+            'plan_id' => $starterPlan->id,
+            'stripe_live_id' => 'price_1HmxVLLrQ8vSqYZEOK2BxHfy',
+            'stripe_test_id' => '',
+            'is_yearly' => false,
         ]);
 
         /**
          * ======================================
-         * accropolis only
+         * professional
          * ======================================
-         * test
          */
-
+        /** yearly */
         StripePlan::insert([
-            'plan_id' => Plan::ACCROPOLIS_PLAN_ID,
-            'stripe_id' => StripePlan::ACCROPOLIS_PLAN_TEST,
-            'is_live' => 0,
-            'created_at' => Carbon::createFromDate(2019, 3, 10),
-            'updated_at' => Carbon::now(),
+            'plan_id' => $professionalPlan->id,
+            'stripe_live_id' => 'price_1Hmxa6LrQ8vSqYZEGmgc6MXn',
+            'stripe_test_id' => '',
+            'is_yearly' => true,
         ]);
-        /**
-         * prod
-         */
+
+        /** monthly */
         StripePlan::insert([
-            'plan_id' => Plan::ACCROPOLIS_PLAN_ID,
-            'stripe_id' => StripePlan::ACCROPOLIS_PLAN_PROD,
-            'is_live' => 1,
-            'created_at' => Carbon::createFromDate(2019, 3, 10),
-            'updated_at' => Carbon::now(),
+            'plan_id' => $professionalPlan->id,
+            'stripe_live_id' => 'price_1Hmxa7LrQ8vSqYZErLv9rG9m',
+            'stripe_test_id' => '',
+            'is_yearly' => false,
+        ]);
+
+        /**
+         * ======================================
+         * business
+         * ======================================
+         */
+        /** yearly */
+        StripePlan::insert([
+            'plan_id' => $businessPlan->id,
+            'stripe_live_id' => 'price_1HmxbYLrQ8vSqYZEdab8H6WN',
+            'stripe_test_id' => '',
+            'is_yearly' => true,
+        ]);
+
+        /** monthly */
+        StripePlan::insert([
+            'plan_id' => $businessPlan->id,
+            'stripe_live_id' => 'price_1HmxbYLrQ8vSqYZE1Q3qOMt1',
+            'stripe_test_id' => '',
+            'is_yearly' => false,
         ]);
     }
 }
