@@ -30,6 +30,7 @@ class PlansController extends Controller
                     [
                         'price' => $plan->stripe_id,
                         'quantity' => 1,
+                        'trial_period_days' => 30,
                     ],
                 ],
                 'mode' => 'subscription',

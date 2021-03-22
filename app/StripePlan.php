@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class StripePlan extends Model
 {
+    public $timestamps = false;
+
     use BelongsToPlan;
 
     public const PROMO_MONTHLY_PLAN_TEST = 'plan_EfYDgsuNMdj8Sb'; // old 6€/month

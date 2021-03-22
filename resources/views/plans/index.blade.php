@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('pageTitle', __('plans.title_upgrade_your_plan') )
+@section('pageTitle', 'Consider upgrading your plan 🤗')
 
 @section('stripeJs')
 <!-- Load Stripe.js on your website. -->
@@ -9,37 +9,30 @@
 
 @section ('content')
 
-<div class="container my-1 bread">
-  <ol class="breadcrumb bg-white">
-    <li class="breadcrumb-item"><a href="http://dash.local.pmt/home">Your podcasts</a></li>
-    <li class="breadcrumb-item active">{!! __('plans.title_upgrade_your_plan') !!}</li>
-  </ol>
-</div>
+<div class="max-w-screen-lg mx-auto px-8 text-xl py-16">
 
-<div class="container py-5">
-  <div class="card-deck mb-3 text-center">
-    @foreach ($plans as $plan)
-    <div class="card mb-4 shadow-sm">
-      <div class="card-header">
-        <h4 class="my-0 font-weight-normal">{!! __('plans.'.$plan->name) !!}</h4>
-      </div>
-      <div class="card-body">
-        <h1 class="card-title pricing-card-title">{!! __('plans.price_monthly', ['price' => $plan->price]) !!}</h1>
-        <ul class="list-unstyled my-4">
-          {!! __('plans.episodes_per_month', ['nb' => $plan->nb_episodes_per_month]) !!}
-          {!! __('plans.standard_paying_features') !!}
-        </ul>
+    <h1 class="text-center text-3xl pb-6 md:text-5xl text-white font-semibold">Upgrade your plan</h1>
+    
+    <div class="flex rounded-lg shadow-lg p-8 bg-white text-gray-100 ">
 
-        @include("partials.stripeButton", [
-        "buttonId" => $plan->name,
-        "checkout_session_id" => $plan->stripeSession->id,
-        ])
+                    @foreach ($plans as $plan)
+                    <div class="flex-auto bg-gray-900">
+                        <h4 class="my-0 font-weight-normal">{!! __('plans.'.$plan->name) !!}</h4>
+                        <h1 class="card-title pricing-card-title">{!! __('plans.price_monthly', ['price' => $plan->price]) !!}</h1>
+                        <ul class="">
+                          {!! __('plans.episodes_per_month', ['nb' => $plan->nb_episodes_per_month]) !!}
+                          {!! __('plans.standard_paying_features') !!}
+                        </ul>
 
-      </div>
+                        @include("partials.stripeButton", [
+                        "buttonId" => $plan->name,
+                        "checkout_session_id" => $plan->stripeSession->id,
+                        ])
+
+                      </div>
+
+                    @endforeach
     </div>
-
-    @endforeach
-  </div>
 </div>
 
 @endsection
