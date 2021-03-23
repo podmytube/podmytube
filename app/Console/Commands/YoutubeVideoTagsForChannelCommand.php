@@ -30,7 +30,7 @@ class YoutubeVideoTagsForChannelCommand extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         $channel = Channel::byChannelId($this->argument('channelId'));
 
@@ -52,7 +52,7 @@ class YoutubeVideoTagsForChannelCommand extends Command
         }
 
         $tagToLookFor = $this->option('tag');
-        $results = $medias->map(function ($media) use ($tagToLookFor) {
+        $results = $medias->map(function (Media $media) use ($tagToLookFor) {
             $videoFactory = YoutubeVideo::forMedia($media->media_id);
             return [
                 'title' => $videoFactory->title(),
@@ -60,6 +60,7 @@ class YoutubeVideoTagsForChannelCommand extends Command
                 'published' => $media->published_at->format('Y-m-d'),
                 'tags' => implode(',', $videoFactory->tags()),
                 'isTagged' => in_array($tagToLookFor, $videoFactory->tags()),
+                'isGrabbed' => $media->isGrabbed(),
             ];
         });
 
@@ -68,6 +69,9 @@ class YoutubeVideoTagsForChannelCommand extends Command
         $results->map(
             function ($result) {
                 $message = "* {$result['published']} - {$result['title']} - {$result['media_id']} (tags: {$result['tags']})";
+                if ($result['isGrabbed']) {
+                    $message .= ' - ✅';
+                }
                 if ($result['isTagged']) {
                     $this->info($message);
                     return true;
@@ -77,5 +81,6 @@ class YoutubeVideoTagsForChannelCommand extends Command
             $results
         );
         $this->line('');
+        return 0;
     }
 }

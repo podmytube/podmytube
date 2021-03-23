@@ -153,6 +153,11 @@ class Media extends Model
         return $this->media_id;
     }
 
+    public function isGrabbed(): bool
+    {
+        return $this->grabbed_at !== null;
+    }
+
     /**
      * check if a media has already been grabbed
      */

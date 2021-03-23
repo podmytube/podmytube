@@ -42,15 +42,17 @@ class DownloadMediaFactory
             /**
              * getting media infos
              */
-            Log::notice("Getting informations for media {$this->media->media_id}");
+            Log::debug("Getting informations for media {$this->media->media_id}");
             $youtubeVideo = YoutubeVideo::forMedia($this->media->media_id);
 
             /**
              * check if media is eligible for download
              */
+            Log::debug("Should media {$this->media->media_id} being download.");
             ShouldMediaBeingDownloadedFactory::create($this->media)->check();
 
             /** download, convert and get its path */
+            Log::debug("About to download media {$this->media->media_id}.");
             $downloadedFilePath = DownloadYTMedia::init($this->media, Storage::disk('tmp')->path(''), false)
                 ->download()
                 ->downloadedFilePath();
@@ -58,17 +60,19 @@ class DownloadMediaFactory
             /**
              * if empty will throw exception
              */
-            Log::notice("Media {$this->media->media_id} has been download successfully from youtube. Analyzing.");
+            Log::debug("Media {$this->media->media_id} has been download successfully from youtube. Analyzing.");
             $mediaProperties = MediaProperties::analyzeFile($downloadedFilePath);
 
             /**
              * checking obtained file duration of result
              */
+            Log::debug("Checking media {$this->media->media_id} duration.");
             CheckingGrabbedFile::init($mediaProperties, $youtubeVideo->duration())->check();
 
             /**
              * upload it
              */
+            Log::debug("Uploading media {$this->media->media_id} duration.");
             SendFileBySFTP::dispatchNow($downloadedFilePath, $this->media->remoteFilePath(), $cleanAfter = true);
 
             /**
@@ -88,7 +92,7 @@ class DownloadMediaFactory
         /**
          * update infos
          */
-        Log::notice('Persisting media infos into DB.');
+        Log::debug("Persisting media {$this->media->media_id} infos into DB.");
         $this->media->update(
             [
                 'title' => isset($youtubeVideo) ? $youtubeVideo->title() : null,
@@ -100,6 +104,7 @@ class DownloadMediaFactory
             ]
         );
 
+        Log::debug("Processing media {$this->media->media_id} is finished.");
         ChannelUpdated::dispatch($this->media->channel);
         return true;
     }
