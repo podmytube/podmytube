@@ -58,15 +58,6 @@ class DownloadVideosByPeriodCommand extends Command
         $channels->map(function (Channel $channel) use ($period) {
             try {
                 /**
-                 * check if channnel has reached its quota
-                 */
-                if ($channel->hasReachedItslimit()) {
-                    $message = "Channel {$channel->nameWithId()} has reached its quota.";
-                    Log::notice($message);
-                    return;
-                }
-
-                /**
                  * getting all non grabbed episodes published during this period order by (with channel and subscription)
                  */
                 $medias = Media::with('channel')
@@ -80,7 +71,7 @@ class DownloadVideosByPeriodCommand extends Command
                 if ($nbMedias <= 0) {
                     $message = "There is no ungrabbed medias for {$channel->nameWithId()} between {$period->startDate()} and {$period->endDate()}.";
                     $this->comment($message, 'v');
-                    Log::notice($message);
+                    Log::debug($message);
                     return;
                 }
 

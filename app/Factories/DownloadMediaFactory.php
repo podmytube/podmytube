@@ -3,6 +3,7 @@
 namespace App\Factories;
 
 use App\Events\ChannelUpdated;
+use App\Exceptions\ChannelHasReachedItsQuotaException;
 use App\Exceptions\DownloadMediaTagException;
 use App\Exceptions\MediaIsTooOldException;
 use App\Exceptions\YoutubeMediaDoesNotExistException;
@@ -36,9 +37,15 @@ class DownloadMediaFactory
         return new static(...$params);
     }
 
-    public function run()
+    public function run(): bool
     {
         try {
+            if ($this->media->channel->hasReachedItslimit()) {
+                $message = "Channel {$this->media->channel->nameWithId()} has reached its quota. Media {$this->media->media_id} won't be downloaded .";
+                Log::debug($message);
+                throw new ChannelHasReachedItsQuotaException($message);
+            }
+
             /**
              * getting media infos
              */
@@ -83,22 +90,31 @@ class DownloadMediaFactory
             $status = Media::STATUS_TAG_FILTERED;
         } catch (MediaIsTooOldException $exception) {
             $status = Media::STATUS_AGE_FILTERED;
+        } catch (ChannelHasReachedItsQuotaException $exception) {
+            $status = Media::STATUS_EXHAUSTED_QUOTA;
         }
 
         /**
          * update infos
          */
         Log::notice('Persisting media infos into DB.');
-        $this->media->update(
-            [
-                'title' => isset($youtubeVideo) ? $youtubeVideo->title() : null,
-                'description' => isset($youtubeVideo) ? $youtubeVideo->description() : null,
-                'grabbed_at' => $status === Media::STATUS_DOWNLOADED ? Carbon::now() : null,
-                'length' => isset($mediaProperties) ? $mediaProperties->filesize() : 0,
-                'duration' => isset($mediaProperties) ? $mediaProperties->duration() : 0,
-                'status' => $status,
-            ]
-        );
+
+        $updateParams = [
+            'grabbed_at' => $status === Media::STATUS_DOWNLOADED ? Carbon::now() : null,
+            'status' => $status,
+        ];
+        if (isset($youtubeVideo)) {
+            $updateParams = array_merge($updateParams, ['title' => $youtubeVideo->title(), 'description' => $youtubeVideo->description(), ]);
+        }
+        if (isset($mediaProperties)) {
+            $updateParams = array_merge($updateParams, [
+                'length' => $mediaProperties->filesize(),
+                'duration' => $mediaProperties->duration(),
+            ]);
+        }
+
+        dump($updateParams);
+        $this->media->update($updateParams);
 
         ChannelUpdated::dispatch($this->media->channel);
         return true;
