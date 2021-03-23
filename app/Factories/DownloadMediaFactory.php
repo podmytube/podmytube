@@ -15,7 +15,6 @@ use App\Modules\DownloadYTMedia;
 use App\Modules\MediaProperties;
 use App\Youtube\YoutubeVideo;
 use Carbon\Carbon;
-use Exception;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -40,6 +39,15 @@ class DownloadMediaFactory
     public function run(): bool
     {
         try {
+            /**
+             * check if media is eligible for download
+             */
+            Log::debug("Should media {$this->media->media_id} being download.");
+            ShouldMediaBeingDownloadedFactory::create($this->media)->check();
+
+            /**
+             * exhausted quota ?
+             */
             if ($this->media->channel->hasReachedItslimit()) {
                 $message = "Channel {$this->media->channel->nameWithId()} has reached its quota. Media {$this->media->media_id} won't be downloaded .";
                 Log::debug($message);
@@ -49,15 +57,11 @@ class DownloadMediaFactory
             /**
              * getting media infos
              */
-            Log::notice("Getting informations for media {$this->media->media_id}");
+            Log::debug("Getting informations for media {$this->media->media_id}");
             $youtubeVideo = YoutubeVideo::forMedia($this->media->media_id);
 
-            /**
-             * check if media is eligible for download
-             */
-            ShouldMediaBeingDownloadedFactory::create($this->media)->check();
-
             /** download, convert and get its path */
+            Log::debug("About to download media {$this->media->media_id}.");
             $downloadedFilePath = DownloadYTMedia::init($this->media, Storage::disk('tmp')->path(''), false)
                 ->download()
                 ->downloadedFilePath();
@@ -65,17 +69,19 @@ class DownloadMediaFactory
             /**
              * if empty will throw exception
              */
-            Log::notice("Media {$this->media->media_id} has been download successfully from youtube. Analyzing.");
+            Log::debug("Media {$this->media->media_id} has been download successfully from youtube. Analyzing.");
             $mediaProperties = MediaProperties::analyzeFile($downloadedFilePath);
 
             /**
              * checking obtained file duration of result
              */
+            Log::debug("Checking media {$this->media->media_id} duration.");
             CheckingGrabbedFile::init($mediaProperties, $youtubeVideo->duration())->check();
 
             /**
              * upload it
              */
+            Log::debug("Uploading media {$this->media->media_id} duration.");
             SendFileBySFTP::dispatchNow($downloadedFilePath, $this->media->remoteFilePath(), $cleanAfter = true);
 
             /**
@@ -112,10 +118,9 @@ class DownloadMediaFactory
                 'duration' => $mediaProperties->duration(),
             ]);
         }
-
-        dump($updateParams);
         $this->media->update($updateParams);
 
+        Log::debug("Processing media {$this->media->media_id} is finished.");
         ChannelUpdated::dispatch($this->media->channel);
         return true;
     }

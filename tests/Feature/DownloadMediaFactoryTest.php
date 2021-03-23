@@ -51,7 +51,9 @@ class DownloadMediaFactoryTest extends TestCase
     {
         $this->media = factory(Media::class)->create([
             'channel_id' => $this->channel->channel_id,
-            'media_id' => 'absolutely-not-valid'
+            'media_id' => 'absolutely-not-valid',
+            'title' => null,
+            'description' => null,
         ]);
         DownloadMediaFactory::media($this->media)->run();
         $this->assertEquals(Media::STATUS_NOT_AVAILABLE_ON_YOUTUBE, $this->media->status);
