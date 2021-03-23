@@ -25,6 +25,7 @@ abstract class TestCase extends BaseTestCase
     protected const BEACH_VOLLEY_VIDEO_2 = '9pTBAkkTRbw';
     /** this video is the shortest I know */
     protected const MARIO_COIN_VIDEO = 'qfx6yf8pux4';
+    protected const MARIO_MUSHROOM_VIDEO = '6G-k4zxou7Y';
 
     /** some playlists */
     public const NOWTECH_LEMUG_YOUTUBE_PLAYLIST_ID = 'PLhQHoIKUR5vD0vq6Jwns89QAz9OZWTvpx';
