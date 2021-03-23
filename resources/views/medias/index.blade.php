@@ -21,7 +21,7 @@
                 @foreach ($medias as $media)
                 <tr>
                     <td class="px-2 py-2">
-                        {{ $media->title }} --- {{ $media->status}}
+                        {{ $media->title }}
                     </td>
                     <td class="text-center">
                         @include('svg.media_status_'.$media->status, [
