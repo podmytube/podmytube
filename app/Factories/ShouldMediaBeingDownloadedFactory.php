@@ -43,7 +43,7 @@ class ShouldMediaBeingDownloadedFactory
     public function check(): bool
     {
         /** if already grabbed return false */
-        if ($this->isMediaAlreadyGrabbed()) {
+        if ($this->media->isGrabbed()) {
             $message = "Media {$this->media->media_id} already grabbed for {$this->media->channel->nameWithId()}. No alert to send.";
             Log::notice($message);
             throw new MediaAlreadyGrabbedException($message);
@@ -74,10 +74,5 @@ class ShouldMediaBeingDownloadedFactory
         }
 
         return true;
-    }
-
-    public function isMediaAlreadyGrabbed(): bool
-    {
-        return $this->media->hasBeenGrabbed();
     }
 }
