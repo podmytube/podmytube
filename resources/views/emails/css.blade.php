@@ -95,7 +95,7 @@
             border-color: rgba(255, 255, 255, var(--border-opacity));
         }
         table {
-        width: 100%;
+            width: 100%;
         }
         td{
             padding: 0.5rem;

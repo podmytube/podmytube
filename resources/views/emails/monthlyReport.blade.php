@@ -9,10 +9,8 @@
 </p>
 
 <p>
-    Here is your <span class="bold">{{ $period }}</span> report for <strong>{{ $channel->channel_name }}</strong>
+    Here is your <span class="bold">{{ $formattedPeriod }}</span> report for <strong>{{ $channel->channel_name }}</strong>
 </p>
-
-
 
 <p>
     To know what's coming next on Podmytube, you should take a look (and vote) on 
@@ -75,7 +73,10 @@
 @if ($shouldChannelBeUpgraded)
 <div style="text-align:center;">
     <p>
-        {{ __('emails.monthlyReport_channelShouldUpgrade_callToAction') }}
+        <strong>
+            To take advantage of all of Podmytube's features and get all of your episodes included for an unlimited period of time, 
+            please consider upgrading your account. 🤗
+        </strong>
     </p>
     <a href="{{ route('plans.index', $channel) }}" class="button">
         Upgrade
