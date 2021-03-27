@@ -4,6 +4,7 @@ namespace App\Mail;
 
 use App\Channel;
 use App\Plan;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -17,20 +18,27 @@ class MonthlyReportMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    /** @var App\Channel $channel */
+    /** @var \App\Channel $channel */
     protected $channel;
 
-    /** @var Illuminate\Support\Collection $publishedMedias */
+    /** @var \Carbon\Carbon $wantedMonth */
+    protected $wantedMonth;
+
+    /** @var \Illuminate\Support\Collection $publishedMedias */
     protected $publishedMedias = [];
 
     /**
-     * Create a new message instance.
+     * Create a monthly report email.
+     *
+     * @param \App\Channel $channel
+     * @param \Carbon\Carbon wanted month (start of month)
      *
      * @return void
      */
-    public function __construct(Channel $channel)
+    public function __construct(Channel $channel, Carbon $wantedMonth)
     {
         $this->channel = $channel;
+        $this->wantedMonth = $wantedMonth;
     }
 
     /**
@@ -40,26 +48,28 @@ class MonthlyReportMail extends Mailable
      */
     public function build()
     {
-        $period = date(__('config.monthPeriodFormat'));
+        /** formatted period is Month Year (IE : march 2021) */
+        $formattedPeriod = $this->wantedMonth->format(__('config.monthPeriodFormat'));
         $subject = __('emails.monthlyReport_subject', [
-            'period' => $period,
+            'period' => $formattedPeriod,
             'channel_name' => $this->channel->channel_name,
         ]);
+        $endOfMonth = (clone $this->wantedMonth)->endOfMonth();
+        $this->wantedMonth->startOfMonth()->subDay();
 
         $this->publishedMedias = $this->channel->medias()
-            ->publishedLastMonth()
+            ->publishedBetween($this->wantedMonth, $endOfMonth)
+            ->orderBy('published_at', 'desc')
             ->get();
-
-        $lastMonth = now()->subMonth();
 
         return $this->subject($subject)
             ->view('emails.monthlyReport')
             ->with([
                 'mailTitle' => $subject,
-                'period' => $period,
+                'formattedPeriod' => $formattedPeriod,
                 'channel' => $this->channel,
                 'publishedMedias' => $this->publishedMedias,
-                'shouldChannelBeUpgraded' => $this->channel->shouldChannelBeUpgraded($lastMonth->month, $lastMonth->year),
+                'shouldChannelBeUpgraded' => $this->channel->shouldChannelBeUpgraded($this->wantedMonth->month, $this->wantedMonth->year),
             ]);
     }
 }

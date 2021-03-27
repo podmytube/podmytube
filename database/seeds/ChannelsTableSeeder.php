@@ -10,8 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 class ChannelsTableSeeder extends Seeder
 {
-    public const PERSONAL_CHANNEL_ID = 'UCw6bU9JT_Lihb2pbtqAUGQw';
-    public const NOWTECH_LIVE_CHANNEL_ID = 'UCRU38zigLJNtMIh7oRm2hIg';
+    public const JEANVIET_CHANNEL_ID = 'UCu0tUATmSnMMCbCRRYXmVlQ';
 
     /**
      * Run the database seeds.
@@ -28,7 +27,7 @@ class ChannelsTableSeeder extends Seeder
 
         /** create channel */
         $channel = factory(Channel::class)->create([
-            'channel_id' => self::NOWTECH_LIVE_CHANNEL_ID,
+            'channel_id' => self::JEANVIET_CHANNEL_ID,
             'category_id' => 4, //education
             'user_id' => User::byEmail('frederick@podmytube.com')->user_id,
         ]);
@@ -36,7 +35,7 @@ class ChannelsTableSeeder extends Seeder
         factory(Subscription::class)->create(
             [
                 'channel_id' => $channel->channel_id,
-                'plan_id' => Plan::bySlug('weekly_youtuber')->id,
+                'plan_id' => Plan::bySlug('forever_free')->id,
             ]
         );
     }
