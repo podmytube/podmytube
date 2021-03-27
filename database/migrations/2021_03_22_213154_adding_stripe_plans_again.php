@@ -19,6 +19,7 @@ class AddingStripePlansAgain extends Migration
             $table->boolean('is_yearly')->default(false);
             $table->string('stripe_live_id', 30); // the stripe price live id (ie "plan_EfubS6xkc5amyO")
             $table->string('stripe_test_id', 30)->nullable(); // the stripe price test id
+            $table->string('comment')->nullable();
 
             $table->foreign('plan_id')
                 ->references('id')->on('plans')

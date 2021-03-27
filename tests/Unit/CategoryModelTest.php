@@ -44,4 +44,36 @@ class CategoryModelTest extends TestCase
             $category->feedValue()
         );
     }
+
+    /** @test */
+    public function by_slug_is_null_when_invalid_slug()
+    {
+        $this->assertNull(Category::bySlug('not-valid-category-slug'));
+    }
+
+    /** @test */
+    public function by_slug_is_ok_with_non_parent_category()
+    {
+        factory(Category::class)->create(['slug' => 'find-me']);
+        $result = Category::bySlug('find-me');
+        $this->assertNotNull($result);
+        $this->assertInstanceOf(Category::class, $result);
+    }
+
+    /** @test */
+    public function by_slug_is_ok_with_parent_category()
+    {
+        $category = factory(Category::class)->create(['slug' => 'find-me']);
+        /** creating sub category */
+        factory(Category::class)->create(['parent_id' => $category->id, 'slug' => 'sub-cat']);
+        $result = Category::bySlug('find-me');
+        $this->assertNotNull($result);
+        $this->assertInstanceOf(Category::class, $result);
+        $this->assertEquals('find-me', $result->slug);
+
+        $result = Category::bySlug('sub-cat');
+        $this->assertNotNull($result);
+        $this->assertInstanceOf(Category::class, $result);
+        $this->assertEquals('sub-cat', $result->slug);
+    }
 }

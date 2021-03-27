@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
             StripePlansTableSeeder::class,
             ApiKeysTableSeeder::class,
             LanguagesTableSeeder::class,
-            //ChannelsTableSeeder::class,
+            ChannelsTableSeeder::class,
         ]);
 
         Model::reguard();

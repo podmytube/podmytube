@@ -10,6 +10,7 @@ use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
+use PlansTableSeeder;
 
 class ChannelModelTest extends TestCase
 {
@@ -21,7 +22,7 @@ class ChannelModelTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Artisan::call('db:seed', ['--class' => 'PlansTableSeeder']);
+        Artisan::call('db:seed', ['--class' => PlansTableSeeder::class]);
         $this->channel = $this->createChannelWithPlan(Plan::find(Plan::FREE_PLAN_ID));
     }
 
@@ -90,12 +91,12 @@ class ChannelModelTest extends TestCase
         $this->assertTrue($this->channel->shouldChannelBeUpgraded());
 
         /** with a paying one */
-        $channelWithEnoughQuota = $this->createChannelWithPlan(Plan::find(Plan::WEEKLY_PLAN_ID));
+        $channelWithEnoughQuota = $this->createChannelWithPlan(Plan::bySlug('weekly_youtuber'));
         $this->addMediasToChannel($channelWithEnoughQuota, 2, true);
         $this->assertFalse($channelWithEnoughQuota->shouldChannelBeUpgraded());
 
         /** with not paying enough channel */
-        $channelWhichIsNotPayingEnough = $this->createChannelWithPlan(Plan::find(Plan::WEEKLY_PLAN_ID));
+        $channelWhichIsNotPayingEnough = $this->createChannelWithPlan(Plan::bySlug('weekly_youtuber'));
         factory(Media::class, 10)->create(
             [
                 'channel_id' => $channelWhichIsNotPayingEnough->channel_id,
