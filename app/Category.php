@@ -46,9 +46,7 @@ class Category extends Model
 
     public static function bySlug(string $slug): ?Category
     {
-        return self::where('slug', $slug)
-            ->with('children')
-            ->first();
+        return self::where('slug', $slug)->first();
     }
 
     /**

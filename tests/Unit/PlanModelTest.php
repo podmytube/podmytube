@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use App\Plan;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
+use PlansTableSeeder;
 use Tests\TestCase;
 
 class PlanModelTest extends TestCase
@@ -14,43 +15,25 @@ class PlanModelTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Artisan::call('db:seed');
+        Artisan::call('db:seed', ['--class' => PlansTableSeeder::class]);
     }
 
-    public function testFreePlansShouldWorkFine()
+    /** @test */
+    public function free_plan_should_exist_still()
     {
-        $expectedPlanIds = [
-            Plan::FREE_PLAN_ID
-        ];
-
-        $this->assertEqualsCanonicalizing(
-            $expectedPlanIds,
-            Plan::free()->get()->pluck('id')->toArray()
-        );
+        $freePlan = Plan::bySlug('forever_free');
+        $this->assertNotNull($freePlan);
+        $this->assertInstanceOf(Plan::class, $freePlan);
     }
 
-    public function testPayingPlansShouldWorkFine()
+    /** @test */
+    public function paying_plans_should_exist()
     {
-        $expectedPlanIds = [
-            Plan::PROMO_MONTHLY_PLAN_ID,
-            Plan::PROMO_YEARLY_PLAN_ID,
-            Plan::WEEKLY_PLAN_ID,
-            Plan::DAILY_PLAN_ID,
-            Plan::ACCROPOLIS_PLAN_ID,
-        ];
-
-        $this->assertEqualsCanonicalizing(
-            $expectedPlanIds,
-            Plan::paying()->get()->pluck('id')->toArray()
-        );
-    }
-
-    public function testPlanBySlugIsRunningFine()
-    {
-        $plan = Plan::bySlug('this_will_never_exists');
-        $this->assertNull($plan);
-
-        $plan = Plan::bySlug('forever_free');
-        $this->assertEquals(1, $plan->id);
+        $planSlugs = ['promo', 'weekly_youtuber', 'daily_youtuber', 'starter', 'professional', 'business'];
+        array_map(function ($payingSlug) {
+            $plan = Plan::bySlug($payingSlug);
+            $this->assertNotNull($plan);
+            $this->assertInstanceOf(Plan::class, $plan);
+        }, $planSlugs);
     }
 }
