@@ -132,7 +132,7 @@ class NiceSSH
         if ($result === false) {
             throw new SftpMakeDirectoryFailureException("Folder creation of {$absoluteRemoteDirectory} has failed.");
         }
-        Log::debug("folder created : $absoluteRemoteDirectory");
+        Log::debug("--NiceSSH folder created : $absoluteRemoteDirectory");
         return true;
     }
 
@@ -160,7 +160,7 @@ class NiceSSH
         }
 
         $absoluteRemoteFilePath = $this->absolutePath($relativeRemoteFilePath);
-        Log::debug("file copied : $absoluteRemoteFilePath");
+        Log::debug("--NiceSSH file copied : $absoluteRemoteFilePath");
         return $this->sftp->put($absoluteRemoteFilePath, $absoluteLocalFilePath, SFTP::SOURCE_LOCAL_FILE);
     }
 
@@ -170,16 +170,28 @@ class NiceSSH
             $this->sftpConnect();
         }
 
-        if ($folderToDelete[0] !== '/') {
-            $folderToDelete = $this->absolutePath($folderToDelete);
-        }
+        $folderToDelete = $this->absolutePath($folderToDelete);
 
-        Log::debug("folder deleted : $folderToDelete");
+        Log::debug("--NiceSSH folder deleted : $folderToDelete");
         return $this->sftp->rmdir($folderToDelete);
     }
 
-    public function absolutePath($relativePath)
+    public function absolutePath($path)
     {
-        return "{$this->rootPath}/{$relativePath}";
+        if ($path[0] === '/') {
+            return $path;
+        }
+        return "{$this->rootPath}/{$path}";
+    }
+
+    public function fileExists($filePath)
+    {
+        if (!isset($this->sftp)) {
+            $this->sftpConnect();
+        }
+
+        $filePath = $this->absolutePath($filePath);
+
+        return $this->sftp->is_file($filePath);
     }
 }

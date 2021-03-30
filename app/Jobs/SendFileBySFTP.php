@@ -3,13 +3,13 @@
 namespace App\Jobs;
 
 use App\Exceptions\FileUploadFailureException;
+use App\Modules\NiceSSH;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 
 class SendFileBySFTP implements ShouldQueue
 {
@@ -17,11 +17,13 @@ class SendFileBySFTP implements ShouldQueue
 
     public const REMOTE_DISK = 'remote';
 
-    /** @var string $localFilePath */
-    public $localFilePath;
+    protected string $host;
+    protected string $user;
+    protected string $privateKeyPath;
+    protected string $rootPath;
 
-    /** @var string $remoteFilePath */
-    public $remoteFilePath;
+    public string $localFilePath;
+    public string $remoteFilePath;
 
     /** @var bool $cleanAfter clean local file if true */
     public $cleanAfter = false;
@@ -34,6 +36,11 @@ class SendFileBySFTP implements ShouldQueue
         $this->localFilePath = $localFilePath;
         $this->remoteFilePath = $remoteFilePath;
         $this->cleanAfter = $cleanAfter;
+
+        $this->host = config('filesystems.disks.' . self::REMOTE_DISK . '.host');
+        $this->user = config('filesystems.disks.' . self::REMOTE_DISK . '.username');
+        $this->privateKeyPath = config('filesystems.disks.' . self::REMOTE_DISK . '.privateKey');
+        $this->rootPath = config('filesystems.disks.' . self::REMOTE_DISK . '.root');
     }
 
     /**
@@ -43,34 +50,8 @@ class SendFileBySFTP implements ShouldQueue
      */
     public function handle()
     {
-        Log::debug(self::class . '::' . __FUNCTION__ . ' - start');
-        $destFolder = pathinfo($this->remoteFilePath, PATHINFO_DIRNAME);
-        $destFilename = pathinfo($this->remoteFilePath, PATHINFO_BASENAME);
-        Log::debug(
-            'About to copy file on ' . self::REMOTE_DISK,
-            [
-                'localFilePath' => $this->localFilePath,
-                'remoteFilePath' => $this->remoteFilePath,
-                'destFolder' => $destFolder,
-                'destFilename' => $destFilename,
-            ]
-        );
-
-        $result = Storage::disk(self::REMOTE_DISK)->putFileAs($destFolder, $this->localFilePath, $destFilename);
-
-        if ($result === false) {
-            throw new FileUploadFailureException(
-                "Uploading file from {$this->localFilePath} to {$this->remoteFilePath} has failed"
-            );
-        }
-        Log::debug("file {$destFilename} has been uploaded");
-
-        /** granting +x perms to folder */
-        $result = Storage::disk(self::REMOTE_DISK)->setVisibility($destFolder, 'public');
-        Log::debug("folder {$destFolder} is visible");
-
-        if ($result === false) {
-            throw new FileUploadFailureException("Setting visibility for {$destFolder} has failed");
+        if (!NiceSSH::init($this->host, $this->user, $this->privateKeyPath, $this->rootPath)->putFile($this->localFilePath, $this->remoteFilePath)) {
+            throw new FileUploadFailureException("Uploading file {$this->localFilePath} to {$this->remoteFilePath} has failed.");
         }
 
         if ($this->cleanAfter === true) {

@@ -17,7 +17,6 @@ class NiceSSHTest extends TestCase
     protected string $host;
     protected string $user;
     protected string $privateKeyPath;
-    protected string $publicKeyPath;
     protected string $rootPath;
 
     public function setUp():void
@@ -26,7 +25,6 @@ class NiceSSHTest extends TestCase
         $this->host = config('filesystems.disks.remote.host');
         $this->user = config('filesystems.disks.remote.username');
         $this->privateKeyPath = config('filesystems.disks.remote.privateKey');
-        $this->publicKeyPath = $this->privateKeyPath . '.pub';
         $this->rootPath = config('filesystems.disks.remote.root') . '/tests';
         $this->destFolder = $this->faker->word();
     }
@@ -181,5 +179,13 @@ class NiceSSHTest extends TestCase
     public function cannot_delete_write_protected_folder()
     {
         $this->assertFalse(NiceSSH::init($this->host, $this->user, $this->privateKeyPath, $this->rootPath)->rmDir('read-only'));
+    }
+
+    /** @test */
+    public function file_exists_is_ok()
+    {
+        $niceSSH = NiceSSH::init($this->host, $this->user, $this->privateKeyPath, $this->rootPath);
+        $this->assertTrue($niceSSH->fileExists('/etc/passwd'));
+        $this->assertFalse($niceSSH->fileExists('/this/file/does/not/exist.jpg'));
     }
 }
