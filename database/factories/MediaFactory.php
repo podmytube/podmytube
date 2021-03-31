@@ -8,11 +8,6 @@ use Carbon\Carbon;
 use Faker\Generator as Faker;
 
 $factory->define(Media::class, function (Faker $faker, $attributes) {
-    /** preparing published and grabbed at period */
-    $publishedAt =
-        $attributes['published_at'] ??
-        $faker->dateTimeBetween(Carbon::now()->startOfMonth(), Carbon::now());
-
     $grabbedAt = null;
     $length = 0;
     $duration = 0;
@@ -36,7 +31,7 @@ Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliqu
 EOT,
         'length' => $length,
         'duration' => $duration,
-        'published_at' => $publishedAt,
+        'published_at' => $attributes['published_at'] ?? Carbon::now(),
         'grabbed_at' => $grabbedAt,
         'status' => $attributes['status'] ?? Media::STATUS_NOT_DOWNLOADED,
     ];

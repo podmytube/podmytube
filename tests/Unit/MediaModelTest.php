@@ -52,9 +52,7 @@ class MediaModelTest extends TestCase
         factory(Media::class, $expectedNbMedias)->create([
             'channel_id' => $this->channel->channel_id,
             'grabbed_at' => null,
-            'published_at' => Carbon::now()
-                ->startOfDay()
-                ->subMonth(),
+            'published_at' => now()->startOfMonth()->subMonth(),
         ]);
 
         $this->assertCount(
