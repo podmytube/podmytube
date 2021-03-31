@@ -30,13 +30,9 @@ class UploadPodcastFactory
         $renderedPodcast = PodcastBuilder::create($this->podcastable->toPodcast())->render();
 
         /** saving it in /tmp */
-        $localPath = "/tmp/{$this->podcastable->relativeFeedPath()}";
-        $dirname = pathinfo($localPath, PATHINFO_DIRNAME);
-        if (!is_dir($dirname)) {
-            if (!mkdir($dirname)) {
-                throw new PodcastSavingFailureException("mkdir {$dirname} has failed, cannot save it locally.");
-            }
-        }
+        $localPath = $this->localPath();
+
+        $this->checkLocalPath();
 
         $status = file_put_contents($localPath, $renderedPodcast);
         if ($status === false) {
@@ -49,6 +45,22 @@ class UploadPodcastFactory
         Log::debug("Podcast {$podcastable->podcastTitle()} has been successfully updated.");
         Log::debug("You can check it here : {$podcastable->podcastUrl()}");
         return $this;
+    }
+
+    public function localPath()
+    {
+        return "/tmp/{$this->podcastable->relativeFeedPath()}";
+    }
+
+    public function checkLocalPath()
+    {
+        $dirname = pathinfo($this->localPath(), PATHINFO_DIRNAME);
+        if (!is_dir($dirname)) {
+            if (!mkdir($dirname)) {
+                throw new PodcastSavingFailureException("mkdir {$dirname} has failed, cannot save it locally.");
+            }
+        }
+        return true;
     }
 
     public function remotePath(): string

@@ -30,7 +30,7 @@ class UploadPodcastFactoryTest extends TestCase
         $factory = UploadPodcastFactory::init()->for($this->channel);
 
         $this->assertEquals(
-            '/app/tmp/' . $this->channel->relativeFeedPath(),
+            '/tmp/' . $this->channel->relativeFeedPath(),
             $factory->localPath()
         );
         $this->assertEquals($this->channel->remoteFilePath(), $factory->remotePath());
@@ -48,7 +48,7 @@ class UploadPodcastFactoryTest extends TestCase
         $factory = UploadPodcastFactory::init()->for($this->playlist);
 
         $this->assertEquals(
-            '/app/tmp/' . $this->playlist->relativeFeedPath(),
+            '/tmp/' . $this->playlist->relativeFeedPath(),
             $factory->localPath()
         );
         $this->assertEquals($this->playlist->remoteFilePath(), $factory->remotePath());
