@@ -18,6 +18,7 @@ abstract class TestCase extends BaseTestCase
     public const PERSONAL_CHANNEL_ID = 'UCw6bU9JT_Lihb2pbtqAUGQw';
     public const NOWTECH_CHANNEL_ID = 'UCVwG9JHqGLfEO-4TkF-lf2g';
     public const NOWTECH_LIVE_CHANNEL_ID = 'UCRU38zigLJNtMIh7oRm2hIg';
+    public const JEANVIET_CHANNEL_ID = 'UCu0tUATmSnMMCbCRRYXmVlQ';
 
     /** this video does exist and has two tags ['dev', 'podmytube'] */
     protected const BEACH_VOLLEY_VIDEO_1 = 'EePwbhMqEh0';

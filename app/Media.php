@@ -127,8 +127,8 @@ class Media extends Model
     {
         return $query
             ->publishedBetween(
-                now()->startOfDay()->startOfMonth()->subMonth()->subDay(),
-                now()->startOfDay()->startOfMonth()->subMonth()->endOfMonth()
+                now()->startOfMonth()->subMonth()->subDay(),
+                now()->startOfMonth()->subMonth()->endOfMonth()
             )
             ->orderBy('published_at', 'desc');
     }
