@@ -1,7 +1,7 @@
 To be able to push on thumb repository you should run
 
 ```
-ssh-keygen -t rsa -b 4096 -C "kimUpload from msi-laptop" -f .ssh/kimUpload -P ""
+ssh-keygen -m PEM -t rsa -b 4096 -C "kimUpload from $(uname -n)" -f .ssh/kimUpload -P ""
 ```
 
 then
