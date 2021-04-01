@@ -3,13 +3,17 @@
 namespace App;
 
 use App\Traits\BelongsToPlan;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class StripePlan extends Model
 {
-    public $timestamps = false;
-
     use BelongsToPlan;
+
+    public $timestamps = false;
+    public $casts = [
+        'is_yearly' => 'boolean',
+    ];
 
     public const PROMO_MONTHLY_PLAN_TEST = 'plan_EfYDgsuNMdj8Sb'; // old 6€/month
     public const PROMO_MONTHLY_PLAN_PROD = 'plan_EcuGg9SyUBw97i'; // old 6€/month
@@ -31,4 +35,19 @@ class StripePlan extends Model
 
     public const PROMO_DAILY_PLAN_TEST = 'price_1Gu1yVLrQ8vSqYZESNvD0bK7'; // 29€ => 25€/month
     public const PROMO_DAILY_PLAN_PROD = 'price_1Gu1nTLrQ8vSqYZEBRGDkeky'; // 29€ => 25€/month
+
+    public function scopePeriod(Builder $query, bool $yearly)
+    {
+        return $query->where('is_yearly', '=', $yearly);
+    }
+
+    public static function yearly()
+    {
+        return (new static())->period(true)->get();
+    }
+
+    public static function monthly()
+    {
+        return (new static())->period(false)->get();
+    }
 }
