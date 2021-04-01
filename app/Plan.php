@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 class Plan extends Model
@@ -65,8 +66,27 @@ class Plan extends Model
             ->get();
     }
 
+    public function scopeSlug(Builder $query, string $slug)
+    {
+        return $query->where('slug', '=', $slug);
+    }
+
     public static function bySlug(string $slug)
     {
-        return self::where('slug', '=', strtolower($slug))->first();
+        return (new static())->slug($slug)->first();
+    }
+
+    public function scopeSlugs(Builder $query, array $slugs)
+    {
+        return $query->whereIn('slug', $slugs);
+    }
+
+    public static function bySlugs(array $slugs): ?Collection
+    {
+        $results = (new static())->slugs($slugs)->get();
+        if (!$results->count()) {
+            return null;
+        }
+        return $results;
     }
 }

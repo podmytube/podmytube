@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\Plan;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use PlansTableSeeder;
@@ -35,5 +36,31 @@ class PlanModelTest extends TestCase
             $this->assertNotNull($plan);
             $this->assertInstanceOf(Plan::class, $plan);
         }, $planSlugs);
+    }
+
+    /** @test */
+    public function by_Slug_is_ok()
+    {
+        $this->assertNull(Plan::bySlug('unknown'));
+
+        $plan = Plan::bySlug('forever_free');
+        $this->assertInstanceOf(Plan::class, $plan);
+        $this->assertEquals('forever_free', $plan->slug);
+    }
+
+    /** @test */
+    public function by_slugs_is_ok()
+    {
+        $this->assertNull(Plan::bySlugs(['unknown', 'cat', 'dog']));
+
+        $planSlugs = ['promo', 'weekly_youtuber', 'daily_youtuber', 'starter', 'professional', 'business'];
+
+        $plans = Plan::bySlugs($planSlugs);
+        $this->assertCount(count($planSlugs), $plans);
+        $this->assertInstanceOf(Collection::class, $plans);
+        $plans->map(function ($plan) use ($planSlugs) {
+            $this->assertInstanceOf(Plan::class, $plan);
+            $this->assertTrue(in_array($plan->slug, $planSlugs));
+        });
     }
 }

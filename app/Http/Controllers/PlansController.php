@@ -18,7 +18,8 @@ class PlansController extends Controller
     {
         Stripe::setApiKey(env('STRIPE_SECRET'));
 
-        $plans = Plan::byIds([Plan::WEEKLY_PLAN_ID, Plan::DAILY_PLAN_ID]);
+        $plans = Plan::bySlugs(['starter', 'profesional', 'business']);
+        dd($plans);
 
         /**
          * foreach plan create a session id that will be associated with plan
