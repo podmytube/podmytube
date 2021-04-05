@@ -19,22 +19,27 @@ class StripePlanModelTest extends TestCase
     /** @test */
     public function by_period_is_ok()
     {
+        /** creating one yearly */
         $yearlyStripePlan = factory(StripePlan::class)->create(['is_yearly' => true]);
+
+        /** and 2 monthly */
         $expectedMonthlyPlans = 2;
         $monthlyStripePlans = factory(StripePlan::class, $expectedMonthlyPlans)->create(['is_yearly' => false]);
 
+        /** getting yearly */
         $result = StripePlan::yearly();
         $this->assertInstanceOf(Collection::class, $result);
         $this->assertCount(1, $result);
         $this->assertEquals($yearlyStripePlan->id, $result->first()->id);
 
+        /** getting monthly */
         $results = StripePlan::monthly();
         $this->assertInstanceOf(Collection::class, $results);
         $this->assertCount($expectedMonthlyPlans, $results);
 
+        /** checking I really have the monthly plans */
         $results->map(function ($stripePlan) use ($monthlyStripePlans) {
             $this->assertTrue($monthlyStripePlans->pluck('id')->contains($stripePlan->id));
         });
-        $this->assertEquals($yearlyStripePlan->id, $result->first()->id);
     }
 }

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Channel;
 use App\Plan;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Stripe\Checkout\Session;
 use Stripe\Stripe;
 
@@ -14,29 +16,35 @@ class PlansController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Channel $channel)
+    public function index(Request $request, Channel $channel)
     {
         Stripe::setApiKey(env('STRIPE_SECRET'));
 
-        $plans = Plan::bySlugs(['starter', 'profesional', 'business']);
-        dd($plans);
+        $plans = Plan::bySlugs(['starter', 'professional', 'business']);
+
+        $isYearly = false;
+
+        $stripeIdColumn = App::environment('production') ? 'stripe_live_id' : 'stripe_test_id';
 
         /**
          * foreach plan create a session id that will be associated with plan
          */
-        $plans->map(function ($plan) use ($channel) {
+        $plans->map(function ($plan) use ($channel, $isYearly, $stripeIdColumn) {
+            $stripePlan = $plan->stripePlan->filter(function ($stripePlan) use ($isYearly) {return $stripePlan->is_yearly === $isYearly;})->first();
+
             $stripeSessionParams = [
                 'payment_method_types' => ['card'],
                 'line_items' => [
                     [
-                        'price' => $plan->stripe_id,
+                        'price' => $stripePlan->$stripeIdColumn,
                         'quantity' => 1,
-                        'trial_period_days' => 30,
                     ],
                 ],
+                'subscription_data' => [
+                    'trial_period_days' => 30,
+                ],
                 'mode' => 'subscription',
-                'success_url' => config('app.url') .
-                    '/success?session_id={CHECKOUT_SESSION_ID}',
+                'success_url' => config('app.url') . '/success?session_id={CHECKOUT_SESSION_ID}',
                 'cancel_url' => config('app.url') . '/cancel',
                 'metadata' => ['channel_id' => $channel->channel_id],
             ];

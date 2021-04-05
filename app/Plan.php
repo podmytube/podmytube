@@ -89,4 +89,20 @@ class Plan extends Model
         }
         return $results;
     }
+
+    public function scopeWithYearlyStripePlans(Builder $query)
+    {
+        return $query->whereHas('stripePlan', function (Builder $query) {
+            return $query->where('is_yearly', '=', true);
+        });
+    }
+
+    public static function onlyYearly(): ?Collection
+    {
+        $results = (new static())->withYearlyStripePlans()->get();
+        if (!$results->count()) {
+            return null;
+        }
+        return $results;
+    }
 }
