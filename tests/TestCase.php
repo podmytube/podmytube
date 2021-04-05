@@ -5,10 +5,12 @@ namespace Tests;
 use App\Channel;
 use App\Media;
 use App\Plan;
+use App\StripePlan;
 use App\Subscription;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Collection;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -19,6 +21,11 @@ abstract class TestCase extends BaseTestCase
     public const NOWTECH_CHANNEL_ID = 'UCVwG9JHqGLfEO-4TkF-lf2g';
     public const NOWTECH_LIVE_CHANNEL_ID = 'UCRU38zigLJNtMIh7oRm2hIg';
     public const JEANVIET_CHANNEL_ID = 'UCu0tUATmSnMMCbCRRYXmVlQ';
+
+    /** billing */
+    public const BILLING_ONLY_MONTHLY = 0;
+    public const BILLING_ONLY_YEARLY = 1;
+    public const BILLING_BOTH = 2;
 
     /** this video does exist and has two tags ['dev', 'podmytube'] */
     protected const BEACH_VOLLEY_VIDEO_1 = 'EePwbhMqEh0';
@@ -60,10 +67,11 @@ abstract class TestCase extends BaseTestCase
     /**
      * Laravel is encoding.
      * So i'm encoding the same way to be sure tests will stay green.
-     * By example "d'angelo" => "d&#039;angelo"
+     * IE "d'angelo" => "d&#039;angelo"
      */
     public function stringEncodingLikeLaravel(string $str): string
     {
         return htmlspecialchars($str, ENT_QUOTES | ENT_HTML401);
     }
+
 }

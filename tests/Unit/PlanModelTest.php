@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\Plan;
+use App\StripePlan;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
@@ -62,5 +63,14 @@ class PlanModelTest extends TestCase
             $this->assertInstanceOf(Plan::class, $plan);
             $this->assertTrue(in_array($plan->slug, $planSlugs));
         });
+    }
+
+    /** @test */
+    public function only_yearly_stripe()
+    {
+        $plan = factory(Plan::class)->create();
+        factory(StripePlan::class)->create(['plan_id' => $plan->id, 'is_yearly' => true]);
+        factory(StripePlan::class)->create(['plan_id' => $plan->id, 'is_yearly' => false]);
+        dd(Plan::onlyYearly());
     }
 }
