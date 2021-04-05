@@ -20,9 +20,9 @@ class PlansController extends Controller
     {
         Stripe::setApiKey(env('STRIPE_SECRET'));
 
-        $plans = Plan::bySlugs(['starter', 'professional', 'business']);
+        $plans = Plan::with('stripePlan')->slugs(['starter', 'professional', 'business'])->get();
 
-        $isYearly = false;
+        $isYearly = $request->get('yearly') == 1 ?? false;
 
         $stripeIdColumn = App::environment('production') ? 'stripe_live_id' : 'stripe_test_id';
 
