@@ -36,9 +36,9 @@ class StripePlan extends Model
     public const PROMO_DAILY_PLAN_TEST = 'price_1Gu1yVLrQ8vSqYZESNvD0bK7'; // 29€ => 25€/month
     public const PROMO_DAILY_PLAN_PROD = 'price_1Gu1nTLrQ8vSqYZEBRGDkeky'; // 29€ => 25€/month
 
-    public function scopePeriod(Builder $query, bool $yearly)
+    public function scopeIsYearly(Builder $query)
     {
-        return $query->where('is_yearly', '=', $yearly);
+        return $query->where('is_yearly', '=', true);
     }
 
     public static function yearly()

@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function(event) {
+document.addEventListener("DOMContentLoaded", function (event) {
 
     const MONTHLY = 0;
     const YEARLY = 1;
@@ -6,9 +6,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
     const PER_MONTH_LABEL = '/mo';
 
     var currentPeriod = MONTHLY;
+    var withYearlyPrices = document.getElementById("withYearlyPrices");
     var monthlyButton = document.getElementById("monthly-button");
     var yearlyButton = document.getElementById("yearly-button");
-    if (monthlyButton && yearlyButton) {
+    if (monthlyButton && yearlyButton && withYearlyPrices) {
         monthlyButton.addEventListener("click", monthlyPricing);
         yearlyButton.addEventListener("click", yearlyPricing);
     }

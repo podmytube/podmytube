@@ -17,13 +17,16 @@
         </h1>
         <div class="my-4 text-center">
             <div class="inline-flex">
-                
+                <a href="{{ route('plans.index', ['channel' => $channel, 'yearly' => false]) }}">
                     <button id="monthly-button" class="rounded-l-lg border-gray-700 border-2 @if($isYearly===false)bg-gray-700 text-white @else text-gray-700 @endif focus:outline-none text-sm font-semibold py-1 px-4">
                         Monthly
                     </button>
+                </a>
+                <a href="{{ route('plans.index', ['channel' => $channel, 'yearly' => true]) }}">
                     <button id="yearly-button" class="rounded-r-lg border-gray-700 border-2 @if($isYearly===true)bg-gray-700 text-white @else text-gray-700 @endif focus:outline-none text-sm font-semibold py-1 px-4">
                         Yearly
                     </button>
+                </a>
             </div>
             <div class="text-sm text-gray-600 leading-tight text-center mt-2">
                 Subscribe yearly and get two monthes free.
@@ -47,11 +50,11 @@
                             class="inline-flex items-center font-display text-4xl md:text-5xl font-bold text-black mr-2 sm:mr-3">
                             <span class="text-xl text-gray-600 md:text-2xl mr-2">&euro;</span>
                             <span class="billing-price">
-                                {{ $plan->price }}
+                                @if($isYearly) {{ $plan->price * 10}} @else {{ $plan->price }} @endif
                             </span>
                         </span>
                         <span class="text-gray-600 billing-period">
-                                /mo
+                            @if($isYearly) /yr @else /mo @endif
                         </span>
                     </div>
                     <!-- core features -->

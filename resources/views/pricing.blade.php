@@ -8,7 +8,7 @@
     
     @include('partials.pricing_header')
 
-    <div class="md:flex content-center flex-wrap -mx-2 p-3 bg-grey rounded shadow-lg">
+    <div id="withYearlyPrices" class="md:flex content-center flex-wrap -mx-2 p-3 bg-grey rounded shadow-lg">
         @foreach ($plans as $plan)
         <div class="md:flex md:w-1/2 lg:w-1/4 px-2 py-2">
             @include ('partials.pricing_single_plan', ['plan' => $plan])
