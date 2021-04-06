@@ -36,6 +36,7 @@ class PlansController extends Controller
                 'payment_method_types' => ['card'],
                 'line_items' => [
                     [
+                        // it s a price ID not the price in €
                         'price' => $stripePlan->$stripeIdColumn,
                         'quantity' => 1,
                     ],
@@ -58,6 +59,6 @@ class PlansController extends Controller
             $plan->stripeSession = Session::create($stripeSessionParams);
         });
 
-        return view('plans.index', compact('channel', 'plans'));
+        return view('plans.index', compact('channel', 'plans', 'isYearly'));
     }
 }

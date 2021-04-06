@@ -17,16 +17,13 @@
         </h1>
         <div class="my-4 text-center">
             <div class="inline-flex">
-                <a href="{{ route('plans.index', ['channel' => $channel , 'yearly'=>0] ) }}">
-                    <button id="monthly-button" class="rounded-l-lg border-gray-700 border-2 bg-gray-700 text-white focus:outline-none text-sm font-semibold py-1 px-4">
+                
+                    <button id="monthly-button" class="rounded-l-lg border-gray-700 border-2 @if($isYearly===false)bg-gray-700 text-white @else text-gray-700 @endif focus:outline-none text-sm font-semibold py-1 px-4">
                         Monthly
                     </button>
-                </a>
-                <a href="{{ route('plans.index', ['channel' => $channel , 'yearly'=>1] ) }}">
-                    <button id="yearly-button" class="rounded-r-lg border-gray-700 border-2 text-gray-700 focus:outline-none text-sm font-semibold py-1 px-4">
+                    <button id="yearly-button" class="rounded-r-lg border-gray-700 border-2 @if($isYearly===true)bg-gray-700 text-white @else text-gray-700 @endif focus:outline-none text-sm font-semibold py-1 px-4">
                         Yearly
                     </button>
-                </a>
             </div>
             <div class="text-sm text-gray-600 leading-tight text-center mt-2">
                 Subscribe yearly and get two monthes free.
@@ -49,35 +46,105 @@
                         <span
                             class="inline-flex items-center font-display text-4xl md:text-5xl font-bold text-black mr-2 sm:mr-3">
                             <span class="text-xl text-gray-600 md:text-2xl mr-2">&euro;</span>
-                            <span class="billing-price">{{ $plan->price }}</span>
+                            <span class="billing-price">
+                                {{ $plan->price }}
+                            </span>
                         </span>
-                        <span class="text-gray-600 billing-period">/mo</span>
+                        <span class="text-gray-600 billing-period">
+                                /mo
+                        </span>
                     </div>
                     <!-- core features -->
                     <div>
                         <ul class="">
                             <li class="flex items-baseline mb-4">
-                                <span class="ml-2 mr-6 mt-1"> @include('svg.true',['cssClass'=>'h-5 w-5 block']) </span>
+                                <span class="ml-2 mr-6 mt-1">
+                                    <svg class="h-5 w-5 block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                        <g fill="none" fill-rule="evenodd">
+                                            <circle cx="10" cy="10" r="10" fill="#9CE2B6"></circle>
+                                            <polyline stroke="#126D34" stroke-linecap="round" stroke-linejoin="round"
+                                                stroke-width="2" points="6 10 8.667 12.667 14 7.333"></polyline>
+                                        </g>
+                                    </svg>
+                                </span>
                                 <span>Adding up to <strong>{{ $plan->nb_episodes_per_month }}</strong> episodes per month</span>
                             </li>
                             <li class="flex items-baseline mb-4">
-                                <span class="ml-2 mr-6 mt-1"> @include('svg.true',['cssClass'=>'h-5 w-5 block']) </span>
+                                <span class="ml-2 mr-6 mt-1">
+                                    <svg class="h-5 w-5 block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                        <g fill="none" fill-rule="evenodd">
+                                            <circle cx="10" cy="10" r="10" fill="#9CE2B6"></circle>
+                                            <polyline stroke="#126D34" stroke-linecap="round" stroke-linejoin="round"
+                                                stroke-width="2" points="6 10 8.667 12.667 14 7.333"></polyline>
+                                        </g>
+                                    </svg>
+                                </span>
                                 <span>Your podcast begin with your last {{ $plan->nb_episodes_per_month }} episodes</span>
                             </li>
                             <li class="flex items-baseline mb-4">
-                                <span class="ml-2 mr-6 mt-1"> @include('svg.true',['cssClass'=>'h-5 w-5 block']) </span>
+                                <span class="ml-2 mr-6 mt-1">
+                                    <svg class="h-5 w-5 block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                        <g fill="none" fill-rule="evenodd">
+                                            <circle cx="10" cy="10" r="10" fill="#9CE2B6"></circle>
+                                            <polyline stroke="#126D34" stroke-linecap="round" stroke-linejoin="round"
+                                                stroke-width="2" points="6 10 8.667 12.667 14 7.333"></polyline>
+                                        </g>
+                                    </svg>
+                                </span>
+                                <span>Unlimited bandwidth</span>
+                            </li>
+                            <li class="flex items-baseline mb-4">
+                                <span class="ml-2 mr-6 mt-1">
+                                    <svg class="h-5 w-5 block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                        <g fill="none" fill-rule="evenodd">
+                                            <circle cx="10" cy="10" r="10" fill="#9CE2B6"></circle>
+                                            <polyline stroke="#126D34" stroke-linecap="round" stroke-linejoin="round"
+                                                stroke-width="2" points="6 10 8.667 12.667 14 7.333"></polyline>
+                                        </g>
+                                    </svg>
+                                </span>
+                                <span>Friendly and reactive support</span>
+                            </li>
+                            <li class="flex items-baseline mb-4">
+                                <span class="ml-2 mr-6 mt-1">
+                                    <svg class="h-5 w-5 block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                        <g fill="none" fill-rule="evenodd">
+                                            <circle cx="10" cy="10" r="10" fill="#9CE2B6"></circle>
+                                            <polyline stroke="#126D34" stroke-linecap="round" stroke-linejoin="round"
+                                                stroke-width="2" points="6 10 8.667 12.667 14 7.333"></polyline>
+                                        </g>
+                                    </svg>
+                                </span>
                                 <span>Add exclusive content (coming soon)</span>
                             </li>
                         </ul>
 
                         
-                    <div class="text-center mt-12 align-bottom">
-                        @include("partials.stripeButton", [
-                            "buttonId" => $plan->name,
-                            "checkout_session_id" => $plan->stripeSession->id,
-                            "label" => "Upgrade",
-                            ])
-                    </div>
+                        <div class="text-center mt-12 align-bottom">
+                            <button id="{{ $plan->name }}" role="link"
+                                class="w-full text-lg sm:text-xl block rounded-lg text-white focus:outline-none bg-gray-900 focus:bg-gray-700 hover:bg-gray-700 font-semibold px-6 py-3 sm:py-4">
+                                upgrade
+                            </button>
+
+                            <script>
+                            var stripe = Stripe('{{ config("services.stripe.key") }}');
+
+                            var checkoutButton = document.getElementById('{{ $plan->name }}');
+                            checkoutButton.addEventListener('click', function() {
+                                stripe.redirectToCheckout({
+                                    sessionId: '{{ $plan->stripeSession->id }}'
+                                })
+                                .then(function(result) {
+                                    if (result.error) {
+                                    // If `redirectToCheckout` fails due to a browser or network
+                                    // error, display the localized error message to your customer.
+                                    var displayError = document.getElementById('error-message');
+                                    displayError.textContent = result.error.message;
+                                    }
+                                });
+                            });
+                            </script>
+                        </div>
                     </div>
                 </div>
             </div>

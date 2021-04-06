@@ -1,11 +1,10 @@
-<!-- Create a button that your customers click to complete their purchase. -->
 <button id="{{ $buttonId }}" role="link"
     class="w-full text-lg sm:text-xl block rounded-lg text-white focus:outline-none bg-gray-900 focus:bg-gray-700 hover:bg-gray-700 font-semibold px-6 py-3 sm:py-4">
     {{ $label  }}
 </button>
 
 <script>
-  var stripe = Stripe('{{ env("STRIPE_KEY") }}');
+  var stripe = Stripe('{{ config("services.stripe.key") }}');
 
   var checkoutButton = document.getElementById('{{ $buttonId }}');
   checkoutButton.addEventListener('click', function() {
