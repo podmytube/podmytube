@@ -5,6 +5,9 @@ namespace Tests\Unit;
 use App\StripePlan;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
+use PlansTableSeeder;
+use StripePlansTableSeeder;
 use Tests\TestCase;
 
 class StripePlanModelTest extends TestCase
@@ -41,5 +44,14 @@ class StripePlanModelTest extends TestCase
         $results->map(function ($stripePlan) use ($monthlyStripePlans) {
             $this->assertTrue($monthlyStripePlans->pluck('id')->contains($stripePlan->id));
         });
+    }
+
+    /** @test */
+    public function yearly_with_slug()
+    {
+        Artisan::call('db:seed', ['--class' => PlansTableSeeder::class]);
+        Artisan::call('db:seed', ['--class' => StripePlansTableSeeder::class]);
+        $results = StripePlan::isYearly()->with(['plan' => function ($query) {$query->whereIn('slug', ['starter', 'business']);}])->get();
+        dd($results);
     }
 }

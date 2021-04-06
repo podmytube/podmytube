@@ -18,11 +18,11 @@ class PlansController extends Controller
      */
     public function index(Request $request, Channel $channel)
     {
-        Stripe::setApiKey(env('STRIPE_SECRET'));
+        $isYearly = $request->get('yearly') == 1 ? true : false;
 
-        $plans = Plan::with('stripePlan')->slugs(['starter', 'professional', 'business'])->get();
+        Stripe::setApiKey(config('services.stripe.secret'));
 
-        $isYearly = $request->get('yearly') == 1 ?? false;
+        $plans = Plan::bySlugsAndBillingFrequency(['starter', 'professional', 'business'], $isYearly);
 
         $stripeIdColumn = App::environment('production') ? 'stripe_live_id' : 'stripe_test_id';
 
@@ -30,14 +30,12 @@ class PlansController extends Controller
          * foreach plan create a session id that will be associated with plan
          */
         $plans->map(function ($plan) use ($channel, $isYearly, $stripeIdColumn) {
-            $stripePlan = $plan->stripePlan->filter(function ($stripePlan) use ($isYearly) {return $stripePlan->is_yearly === $isYearly;})->first();
-
             $stripeSessionParams = [
                 'payment_method_types' => ['card'],
                 'line_items' => [
                     [
                         // it s a price ID not the price in €
-                        'price' => $stripePlan->$stripeIdColumn,
+                        'price' => $plan->stripePlan->first()->$stripeIdColumn,
                         'quantity' => 1,
                     ],
                 ],

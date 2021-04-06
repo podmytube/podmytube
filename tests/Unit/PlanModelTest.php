@@ -7,6 +7,7 @@ use App\StripePlan;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
+use InvalidArgumentException;
 use PlansTableSeeder;
 use Tests\TestCase;
 
@@ -66,11 +67,30 @@ class PlanModelTest extends TestCase
     }
 
     /** @test */
-    public function only_yearly_stripe()
+    public function by_slugs_and_billing_frequency_should_fail()
     {
-        $plan = factory(Plan::class)->create();
-        factory(StripePlan::class)->create(['plan_id' => $plan->id, 'is_yearly' => true]);
-        factory(StripePlan::class)->create(['plan_id' => $plan->id, 'is_yearly' => false]);
-        dd(Plan::onlyYearly());
+        $this->expectException(InvalidArgumentException::class);
+        Plan::bySlugsAndBillingFrequency([]);
+    }
+
+    /** @test */
+    public function by_slugs_and_billing_frequency_is_ok()
+    {
+        $catPlan = factory(Plan::class)->create(['slug' => 'cat']);
+        $catYearlyBillingIWant = factory(StripePlan::class)->create(['plan_id' => $catPlan->id, 'is_yearly' => true]);
+        factory(StripePlan::class)->create(['plan_id' => $catPlan->id, 'is_yearly' => false]);
+
+        $result = Plan::bySlugsAndBillingFrequency(['cat', true]);
+        $this->assertEquals($catPlan->id, $result->first()->id);
+        $this->assertCount(1, $result->first()->stripePlan);
+        $this->assertEquals($catYearlyBillingIWant->id, $result->first()->stripePlan->first()->id);
+
+        /** adding another */
+        $anotherCatYearlyBillingIWant = factory(StripePlan::class)->create(['plan_id' => $catPlan->id, 'is_yearly' => true]);
+        $this->assertCount(2, $result->first()->stripePlan);
+        $this->assertEqualsCanonicalizing(
+            [$catYearlyBillingIWant->id, $anotherCatYearlyBillingIWant->id],
+            $result->first()->stripePlan->pluck('id')->toArray()
+        );
     }
 }
