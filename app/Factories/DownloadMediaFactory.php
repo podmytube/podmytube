@@ -16,7 +16,6 @@ use App\Modules\MediaProperties;
 use App\Youtube\YoutubeVideo;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 
 class DownloadMediaFactory
 {
@@ -62,7 +61,7 @@ class DownloadMediaFactory
 
             /** download, convert and get its path */
             Log::debug("About to download media {$this->media->media_id}.");
-            $downloadedFilePath = DownloadYTMedia::init($this->media, Storage::disk('tmp')->path(''), false)
+            $downloadedFilePath = DownloadYTMedia::init($this->media, '/tmp/', false)
                 ->download()
                 ->downloadedFilePath();
 

@@ -20,7 +20,7 @@ class DownloadYTMedia
     /** @var bool $verbose */
     protected $verbose = false;
 
-    /** @var string $destinationFolder */
+    /** @var string $destinationFolder (IE : /tmp/ ) */
     protected $destinationFolder;
 
     /** Will contain the path to the youtube-dl app */
@@ -37,8 +37,9 @@ class DownloadYTMedia
     /**
      * Constructor, will check if youtube-dl is installed.
      *
-     * @param string mediaToObtain the id of the video to download
-     * @param string $audioFile where to store (locally) the audioFile
+     * @param \App\Media $mediaToObtain     the id of the video to download
+     * @param string     $destinationFolder where to store (locally) the audioFile
+     * @param bool       $verbose
      */
     public function __construct(Media $mediaToObtain, string $destinationFolder, bool $verbose = false)
     {
