@@ -47,7 +47,7 @@ class PlansTableSeeder extends Seeder
              */
             [
                 'name' => 'Promo',
-                'slug' => 'promo',
+                'slug' => 'monthly_6',
                 'price' => 6,
                 'nb_episodes_per_month' => 5,
                 'created_at' => Carbon::createFromDate(2017, 1, 1),
