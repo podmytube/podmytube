@@ -18,7 +18,7 @@ class StripePlansTableSeeder extends Seeder
 
         $freePlan = Plan::bySlug('forever_free');
         $earlyPlan = Plan::bySlug('early_bird');
-        $promoPlan = Plan::bySlug('promo');
+        $promoPlan = Plan::bySlug('monthly_6');
         $weeklyPlan9 = Plan::bySlug('weekly_youtuber');
         $dailyPlan29 = Plan::bySlug('daily_youtuber');
         $starterPlan = Plan::bySlug('starter');
