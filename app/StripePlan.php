@@ -40,14 +40,4 @@ class StripePlan extends Model
     {
         return $query->where('is_yearly', '=', true);
     }
-
-    public static function yearly()
-    {
-        return (new static())->period(true)->get();
-    }
-
-    public static function monthly()
-    {
-        return (new static())->period(false)->get();
-    }
 }

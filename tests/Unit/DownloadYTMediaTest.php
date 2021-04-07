@@ -6,7 +6,6 @@ use App\Exceptions\DownloadMediaFailureException;
 use App\Media;
 use App\Modules\DownloadYTMedia;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Storage;
 use InvalidArgumentException;
 use Tests\TestCase;
 
@@ -51,8 +50,8 @@ class DownloadYTMediaTest extends TestCase
     {
         parent::setUp();
         $this->media = factory(Media::class)->create(['media_id' => self::MARIO_COIN_VIDEO]);
-        $this->expectedVideoFile = Storage::disk('tmp')->path(self::MARIO_COIN_VIDEO . self::AUDIO_FILE_EXTENSION);
-        $this->destinationFolder = Storage::disk('tmp')->path('');
+        $this->destinationFolder = '/tmp/';
+        $this->expectedVideoFile = $this->destinationFolder . self::MARIO_COIN_VIDEO . self::AUDIO_FILE_EXTENSION;
         if (file_exists($this->expectedVideoFile)) {
             unlink($this->expectedVideoFile);
         }

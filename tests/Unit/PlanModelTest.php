@@ -80,13 +80,14 @@ class PlanModelTest extends TestCase
         $catYearlyBillingIWant = factory(StripePlan::class)->create(['plan_id' => $catPlan->id, 'is_yearly' => true]);
         factory(StripePlan::class)->create(['plan_id' => $catPlan->id, 'is_yearly' => false]);
 
-        $result = Plan::bySlugsAndBillingFrequency(['cat', true]);
+        $result = Plan::bySlugsAndBillingFrequency(['cat'], true);
         $this->assertEquals($catPlan->id, $result->first()->id);
         $this->assertCount(1, $result->first()->stripePlan);
         $this->assertEquals($catYearlyBillingIWant->id, $result->first()->stripePlan->first()->id);
 
         /** adding another */
         $anotherCatYearlyBillingIWant = factory(StripePlan::class)->create(['plan_id' => $catPlan->id, 'is_yearly' => true]);
+        $result = Plan::bySlugsAndBillingFrequency(['cat'], true);
         $this->assertCount(2, $result->first()->stripePlan);
         $this->assertEqualsCanonicalizing(
             [$catYearlyBillingIWant->id, $anotherCatYearlyBillingIWant->id],
