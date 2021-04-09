@@ -35,7 +35,7 @@ class YoutubeVideoCommand extends Command
         $factory = YoutubeVideo::forMedia($this->argument('videoId'));
 
         if ($this->option('raw')) {
-            dump($factory->item());
+            print_r($factory->item());
             return 0;
         }
 

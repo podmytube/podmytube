@@ -9,7 +9,7 @@ class ItunesCategory implements IsRenderableInterface
     protected $name;
     protected $parentName;
 
-    private function __construct(Category $category = null)
+    private function __construct(?Category $category = null)
     {
         if ($category) {
             $this->name = $category->feedValue();
