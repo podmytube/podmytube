@@ -132,7 +132,7 @@ class ThumbService
         /**
          * If channel has no thumb => returning default one
          */
-        if (empty($channel->thumb)) {
+        if ($channel->thumb === null) {
             return self::getDefaultThumbUrl();
         }
 
