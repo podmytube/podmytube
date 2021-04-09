@@ -20,8 +20,8 @@ trait HasLimits
     }
 
     public function numberOfEpisodesGrabbed(
-        int $month = null,
-        int $year = null
+        ?int $month = null,
+        ?int $year = null
     ): int {
         $month = $month ?? date('m');
         $year = $year ?? date('Y');
@@ -41,8 +41,8 @@ trait HasLimits
      * @return bool
      */
     public function hasReachedItslimit(
-        int $month = null,
-        int $year = null
+        ?int $month = null,
+        ?int $year = null
     ): bool {
         return $this->numberOfEpisodesGrabbed($month, $year) >=
             $this->numberOfEpisodesAllowed();

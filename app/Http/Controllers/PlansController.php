@@ -29,7 +29,7 @@ class PlansController extends Controller
         /**
          * foreach plan create a session id that will be associated with plan
          */
-        $plans->map(function ($plan) use ($channel, $isYearly, $stripeIdColumn) {
+        $plans->map(function ($plan) use ($channel, $stripeIdColumn) {
             $stripeSessionParams = [
                 'payment_method_types' => ['card'],
                 'line_items' => [

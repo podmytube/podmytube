@@ -21,17 +21,7 @@ class CreateChannelCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
+    protected $description = 'Create channel from one valid channel_id.';
 
     /**
      * Execute the console command.

@@ -27,7 +27,7 @@ class DownloadVideosByChannelCommand extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         $channelId = $this->argument('channel_id');
         /**
@@ -51,7 +51,7 @@ class DownloadVideosByChannelCommand extends Command
             $message = "There is no ungrabbed medias for this period {$period->startDate()} and {$period->endDate()}.";
             $this->comment($message, 'v');
             Log::notice($message);
-            return;
+            return 1;
         }
 
         if ($this->getOutput()->isVerbose()) {
@@ -78,6 +78,7 @@ class DownloadVideosByChannelCommand extends Command
             $this->progressBar->finish();
             $this->line('');
         }
+        return 0;
     }
 
     public function defaultPeriod()

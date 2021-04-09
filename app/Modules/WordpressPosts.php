@@ -82,7 +82,9 @@ class WordpressPosts
     public function update(): self
     {
         if (!count($this->posts())) {
-            throw new NoPostsObtainedException('No post has been obtained yet. You should use getPostsFromRemote/getPostsFromFile before.');
+            throw new NoPostsObtainedException(
+                'No post has been obtained yet. You should use getPostsFromRemote/getPostsFromFile before.'
+            );
         }
 
         array_map(

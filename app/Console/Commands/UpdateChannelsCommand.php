@@ -32,10 +32,10 @@ class UpdateChannelsCommand extends Command
     /** @var \App\Youtube\YoutubeCore $youtubeCore */
     protected $youtubeCore;
 
-    /** @var App\Channel[] $channels list of channel models */
+    /** @var array $channels list of channel models */
     protected $channels = [];
 
-    /** @var string[] $errors list of errors that occured */
+    /** @var array $errors list of errors that occured */
     protected $errors = [];
 
     /** @var int $mediasAdded nb medias added during process */

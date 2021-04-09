@@ -110,7 +110,7 @@ class DownloadYTMedia
     public function download(): self
     {
         passthru($this->commandLine, $err);
-        if ($err != 0) {
+        if ($err !== 0) {
             $message = "Downloading media '{$this->media->id()}' for channel {$this->media->channel->nameWithId()} has failed.";
             Log::error($message, ['err' => $err, 'cmd' => $this->commandLine]);
             throw new DownloadMediaFailureException($message);

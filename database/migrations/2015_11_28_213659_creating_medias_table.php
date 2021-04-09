@@ -1,6 +1,5 @@
 <?php
 
-use App\Modules\ForeignKeys;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -46,14 +45,5 @@ class CreatingMediasTable extends Migration
      */
     public function down()
     {
-        $foreignKeys = ForeignKeys::create('medias')->get();
-        if ($foreignKeys->count()) {
-            foreach ($foreignKeys as $foreignKey) {
-                Schema::table($foreignKey->TABLE_NAME, function (Blueprint $table) use ($foreignKeyName) {
-                    $table->dropForeign($foreignKeyName);
-                });
-            }
-        }
-        Schema::dropIfExists('medias');
     }
 }

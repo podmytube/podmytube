@@ -59,10 +59,10 @@ class SendTestEmail extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): int
     {
         if (!$this->askUserWhatMailToSend()) {
-            return;
+            return 1;
         }
 
         // handle user with email
@@ -99,6 +99,7 @@ class SendTestEmail extends Command
                 $this->availableEmails[$this->emailIdToSend]['label'] .
                 "\" has been queued to be sent to {{$this->user->email}}."
         );
+        return 0;
     }
 
     protected function fakeUser()

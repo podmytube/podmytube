@@ -29,14 +29,14 @@ class PodcastCover implements IsRenderableInterface
         return new static(...$params);
     }
 
-    public function setUrl(string $url = null)
+    public function setUrl(?string $url = null)
     {
         if ($this->isValidUrl($url)) {
             $this->url = $url;
         }
     }
 
-    public function setLink(string $link = null)
+    public function setLink(?string $link = null)
     {
         if ($this->isValidUrl($link)) {
             $this->link = $link;
