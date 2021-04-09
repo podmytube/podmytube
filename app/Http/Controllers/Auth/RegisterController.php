@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Mail\WelcomeToPodmytube;
 use App\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
@@ -94,7 +93,7 @@ class RegisterController extends Controller
      *
      * @return mixed
      */
-    protected function registered(Request $request, $user)
+    protected function registered($user)
     {
         Mail::to($user)->send(new WelcomeToPodmytube($user));
     }

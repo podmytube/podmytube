@@ -32,7 +32,7 @@ class PlanModelTest extends TestCase
     /** @test */
     public function paying_plans_should_exist()
     {
-        $planSlugs = ['promo', 'weekly_youtuber', 'daily_youtuber', 'starter', 'professional', 'business'];
+        $planSlugs = ['monthly_6', 'weekly_youtuber', 'daily_youtuber', 'starter', 'professional', 'business'];
         array_map(function ($payingSlug) {
             $plan = Plan::bySlug($payingSlug);
             $this->assertNotNull($plan);
@@ -55,7 +55,7 @@ class PlanModelTest extends TestCase
     {
         $this->assertNull(Plan::bySlugs(['unknown', 'cat', 'dog']));
 
-        $planSlugs = ['promo', 'weekly_youtuber', 'daily_youtuber', 'starter', 'professional', 'business'];
+        $planSlugs = ['monthly_6', 'weekly_youtuber', 'daily_youtuber', 'starter', 'professional', 'business'];
 
         $plans = Plan::bySlugs($planSlugs);
         $this->assertCount(count($planSlugs), $plans);

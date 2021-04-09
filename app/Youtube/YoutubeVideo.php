@@ -3,6 +3,7 @@
 namespace App\Youtube;
 
 use App\Exceptions\YoutubeMediaDoesNotExistException;
+use Carbon\Carbon;
 use DateInterval;
 
 class YoutubeVideo extends YoutubeCore
@@ -61,6 +62,16 @@ class YoutubeVideo extends YoutubeCore
         return ($interval->d * 24 * 60 * 60) + ($interval->h * 60 * 60) + ($interval->i * 60) + $interval->s;
     }
 
+    public function publishedAt(): string
+    {
+        return $this->item['snippet']['publishedAt'];
+    }
+
+    public function publishedAtForHumans(): string
+    {
+        return Carbon::parse($this->publishedAt())->diffForhumans();
+    }
+
     public function title(): ?string
     {
         return $this->item['snippet']['title'];
@@ -74,5 +85,10 @@ class YoutubeVideo extends YoutubeCore
     public function description(): ?string
     {
         return $this->item['snippet']['description'];
+    }
+
+    public function item()
+    {
+        return $this->item;
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Exceptions;
 
 use App\Mail\ExceptionEmail;
-use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -35,8 +34,6 @@ class Handler extends ExceptionHandler
      * @param \Throwable $exception
      *
      * @return void
-     *
-     * @throws \Exception
      */
     public function report(Throwable $exception)
     {

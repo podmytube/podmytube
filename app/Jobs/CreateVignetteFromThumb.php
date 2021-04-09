@@ -6,6 +6,7 @@ use App\Exceptions\ThumbDoesNotExistsException;
 use App\Exceptions\VignetteCreationFromThumbException;
 use App\Modules\Vignette;
 use App\Thumb;
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -45,7 +46,7 @@ class CreateVignetteFromThumb implements ShouldQueue
         try {
             /** chaining vignette creation and upload */
             Vignette::fromThumb($this->srcThumb)->makeIt()->saveLocally();
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             $message = "Creation of vignette from thumb {{$this->srcThumb}} for channel {{$this->srcThumb->channel_id}} has failed with message :" .
                     $exception->getMessage();
             throw new VignetteCreationFromThumbException($message);

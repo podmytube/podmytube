@@ -3,7 +3,6 @@
 namespace App\Mail;
 
 use App\Channel;
-use App\Plan;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;

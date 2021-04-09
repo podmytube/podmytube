@@ -30,10 +30,10 @@ class UpdateChannelCommand extends Command
     /** @var \App\Youtube\YoutubeCore $youtubeCore */
     protected $youtubeCore;
 
-    /** @var App\Channel[] $channels list of channel models */
+    /** @var array $channels list of channel models */
     protected $channels = [];
 
-    /** @var string[] $errors list of errors that occured */
+    /** @var array $errors list of errors that occured */
     protected $errors = [];
 
     /** @var \Symfony\Component\Console\Helper\ProgressBar $bar */
@@ -44,7 +44,7 @@ class UpdateChannelCommand extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): int
     {
         $channelToUpdate = Channel::byChannelId($this->argument('channel_id'));
 
@@ -54,7 +54,7 @@ class UpdateChannelCommand extends Command
             throw new RuntimeException($message);
             $this->error($message);
             Log::debug($message);
-            return;
+            return 1;
         }
 
         $this->info('channel to update ' . $channelToUpdate->channel_id, 'v');
@@ -63,7 +63,7 @@ class UpdateChannelCommand extends Command
         $nbVideos = count($factory->videos());
         if ($nbVideos <= 0) {
             $this->error("This channel ({$this->argument('channel_id')}) seems to have no videos.");
-            return;
+            return 1;
         }
 
         $this->prologue($nbVideos);
@@ -76,9 +76,7 @@ class UpdateChannelCommand extends Command
                 $media = new Media();
                 $media->media_id = $video['media_id'];
                 $media->channel_id = $channelToUpdate->channel_id;
-                info(
-                    "Media {{$video['title']}} has been registered for channel {{$channelToUpdate->channel_name}}."
-                );
+                info("Media {{$video['title']}} has been registered for channel {{$channelToUpdate->channel_name}}.");
             }
             // update it
             $media->title = $video['title'];
@@ -93,27 +91,33 @@ class UpdateChannelCommand extends Command
 
         $apikeysAndQuotas = YoutubeQuotas::forUrls($factory->queriesUsed())->quotaConsumed();
         Quota::saveScriptConsumption(pathinfo(__FILE__, PATHINFO_BASENAME), $apikeysAndQuotas);
+        return 0;
     }
 
     protected function prologue(int $nbItems)
     {
-        if ($this->getOutput()->isVerbose()) {
-            $this->bar = $this->output->createProgressBar($nbItems);
-            $this->bar->start();
+        if (!$this->getOutput()->isVerbose()) {
+            return false;
         }
+
+        $this->bar = $this->output->createProgressBar($nbItems);
+        $this->bar->start();
+        return true;
     }
 
     protected function epilogue()
     {
-        if ($this->getOutput()->isVerbose()) {
-            $this->bar->finish();
+        if (!$this->getOutput()->isVerbose()) {
+            return false;
         }
+        $this->bar->finish();
     }
 
     protected function makeProgressBarProgress()
     {
-        if ($this->getOutput()->isVerbose()) {
-            $this->bar->advance();
+        if (!$this->getOutput()->isVerbose()) {
+            return false;
         }
+        $this->bar->advance();
     }
 }

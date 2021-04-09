@@ -17,7 +17,7 @@ class CheckingGrabbedFile
 
     protected $youtubeMediaDuration;
 
-    private function __construct(MediaProperties $mediaProperties, int $youtubeMediaDuration = null)
+    private function __construct(MediaProperties $mediaProperties, ?int $youtubeMediaDuration = null)
     {
         $this->mediaProperties = $mediaProperties;
         $this->youtubeMediaDuration = $youtubeMediaDuration;

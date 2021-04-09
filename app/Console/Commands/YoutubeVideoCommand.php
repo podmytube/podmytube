@@ -13,7 +13,7 @@ class YoutubeVideoCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'youtube:video {videoId}';
+    protected $signature = 'youtube:video {videoId} {--raw}';
 
     /**
      * The console command description.
@@ -27,16 +27,22 @@ class YoutubeVideoCommand extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         $this->info('===========================================');
         $this->info("Getting details on video {$this->argument('videoId')}");
         $this->info('===========================================');
         $factory = YoutubeVideo::forMedia($this->argument('videoId'));
 
+        if ($this->option('raw')) {
+            dump($factory->item());
+            return 0;
+        }
+
         $this->line("Title : {$factory->title()}");
         //$this->line("Description : {$factory->description()}");
         $this->line("Duration : {$factory->duration()}");
+        $this->line("Published : {$factory->publishedAtForHumans()} ({$factory->publishedAt()})");
 
         if ($factory->isAvailable()) {
             $this->info('This video is available !');
@@ -50,5 +56,6 @@ class YoutubeVideoCommand extends Command
             $this->comment('This video has no tag.');
         }
         $this->info('Url : ' . Media::YoutubeUrl($this->argument('videoId')));
+        return 0;
     }
 }

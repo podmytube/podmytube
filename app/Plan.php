@@ -117,7 +117,7 @@ class Plan extends Model
             [
                 'stripePlan' => function ($query) use ($isYearly) {
                     $query->where('is_yearly', '=', $isYearly);
-                }
+                },
             ]
         )
             ->slugs($slugs)

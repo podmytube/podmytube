@@ -109,7 +109,13 @@ class DownloadMediaFactory
             'status' => $status,
         ];
         if (isset($youtubeVideo)) {
-            $updateParams = array_merge($updateParams, ['title' => $youtubeVideo->title(), 'description' => $youtubeVideo->description(), ]);
+            $updateParams = array_merge(
+                $updateParams,
+                [
+                    'title' => $youtubeVideo->title(),
+                    'description' => $youtubeVideo->description(),
+                ]
+            );
         }
         if (isset($mediaProperties)) {
             $updateParams = array_merge($updateParams, [
