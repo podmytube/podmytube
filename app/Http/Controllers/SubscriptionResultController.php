@@ -14,7 +14,7 @@ class SubscriptionResultController extends Controller
         return view('subscription.success');
     }
 
-    public function failure(Request $request)
+    public function failure()
     {
         return view('subscription.failure');
     }

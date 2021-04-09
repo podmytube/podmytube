@@ -66,12 +66,6 @@ class NiceSSH
         $this->loadedKey = true;
     }
 
-    public function checkHost()
-    {
-        $ssh = new SSH2($this->host, 22);
-        dump($ssh->getServerPublicHostKey());
-    }
-
     public function sshConnect()
     {
         $this->ssh = new SSH2($this->host, $this->port);
