@@ -29,13 +29,7 @@ class PodcastItem
             $this->$property = $itemData[$property];
         }, array_keys(get_object_vars($this)));
 
-        if (!$this->isValid()) {
-            $message = 'Podcast item is not valid.';
-            $message .= "title received : ({$itemData['title']})";
-            $message .= "enclosureUrl received ({$itemData['enclosureUrl']}). ";
-            $message .= "mediaLength received ({$itemData['mediaLength']}). ";
-            throw new PodcastItemNotValidException($message);
-        }
+        $this->check();
     }
 
     public static function with(array $itemData)
@@ -43,15 +37,16 @@ class PodcastItem
         return new static($itemData);
     }
 
-    public function isValid()
+    public function check()
     {
-        foreach (['title', 'enclosureUrl'] as $requiredField) {
+        array_map(function ($requiredField) {
             if ($this->$requiredField === null || strlen($this->$requiredField) <= 0) {
-                return false;
+                throw new PodcastItemNotValidException("{$requiredField} is required for one podcast item to be valid.");
             }
-        }
-        if ($this->mediaLength === null || $this->mediaLength <= 0) {
-            return false;
+        }, ['title', 'enclosureUrl']);
+
+        if ($this->mediaLength <= 0 || $this->mediaLength === null) {
+            throw new PodcastItemNotValidException('Podcastitem mediaLength must be set and greater than 0.');
         }
         return true;
     }

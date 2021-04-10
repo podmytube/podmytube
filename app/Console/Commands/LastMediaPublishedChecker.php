@@ -69,10 +69,12 @@ class LastMediaPublishedChecker extends Command
             try {
                 $factory = LastMediaChecker::forChannel($channelToCheck);
                 if ($factory->shouldMediaBeingGrabbed()) {
-                    $this->channelInTroubleMessages[] = "Channel {$channelToCheck->channel_name} ({$channelToCheck->channel_id}) last video has not been grabbed.";
+                    $this->channelInTroubleMessages[] = "Channel {$channelToCheck->channel_name} ({$channelToCheck->channel_id}) "
+                        . 'last video has not been grabbed.';
                 }
             } catch (YoutubeNoResultsException $exception) {
-                $this->channelInTroubleMessages[] = "Channel {$channelToCheck->channel_name} ({$channelToCheck->channel_id}) has no video. It is strange.";
+                $this->channelInTroubleMessages[] = "Channel {$channelToCheck->channel_name} ({$channelToCheck->channel_id}) "
+                    . 'has no video. It is strange.';
             }
         });
 
@@ -105,10 +107,7 @@ class LastMediaPublishedChecker extends Command
     protected function removeChannel(string $channelIdToRemove)
     {
         $this->channelsToCheck->filter(function ($channel) use ($channelIdToRemove) {
-            if ($channel->channel_id == $channelIdToRemove) {
-                return false;
-            }
-            return true;
+            return $channel->channel_id === $channelIdToRemove;
         });
     }
 }

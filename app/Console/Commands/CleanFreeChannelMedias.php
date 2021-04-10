@@ -17,7 +17,8 @@ class CleanFreeChannelMedias extends Command
     protected $signature = 'medias:clean';
 
     /** @var string $description The console command description. */
-    protected $description = 'This command is cleaning free channel medias that are older than ' . self::RETENTION_PERIOD_IN_MONTH . ' monthes';
+    protected $description = 'This command is cleaning free channel medias that are older than '
+        . self::RETENTION_PERIOD_IN_MONTH . ' monthes';
 
     /**
      * Execute the console command.
