@@ -90,10 +90,7 @@ class PostFactory
     {
         $postCategories = array_values(
             array_filter($this->postData['_embedded']['wp:term'][0], function ($item) {
-                if ($item['taxonomy'] === 'category') {
-                    return true;
-                }
-                return false;
+                return $item['taxonomy'] === 'category';
             })
         );
 

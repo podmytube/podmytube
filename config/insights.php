@@ -100,8 +100,8 @@ return [
             'title' => 'The usage of private methods is not idiomatic in Laravel.',
         ],
         LineLengthSniff::class => [
-            'lineLimit' => 120,
-            'absoluteLineLimit' => 160
+            'lineLimit' => 140,
+            'absoluteLineLimit' => 170
         ],
         ForbiddenPublicPropertySniff::class => [
             'exclude' => [
@@ -112,6 +112,7 @@ return [
                 'app/Mail',
                 'app/Media.php',
                 'app/Podcast',
+                'app/StripePlan.php',
             ],
         ],
         MethodPerClassLimitSniff::class => [

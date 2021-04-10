@@ -146,10 +146,7 @@ abstract class YoutubeCore implements QuotasConsumer
             return false;
         }
 
-        if (!isset($this->jsonDecoded['nextPageToken'])) {
-            return false;
-        }
-        return true;
+        return isset($this->jsonDecoded['nextPageToken']);
     }
 
     protected function nbItemsGrabbed()

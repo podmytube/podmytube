@@ -32,17 +32,18 @@ class PodcastItemTest extends TestCase
 
     public function testNoEnclosureUrlShouldThrowException()
     {
-        $this->expectException(PodcastItemNotValidException::class);
         $itemData = $this->media->toPodcastItem();
         $itemData['enclosureUrl'] = null;
+        $this->expectException(PodcastItemNotValidException::class);
         PodcastItem::with($itemData)->render();
     }
 
-    public function testNegativeMediaLengthShouldThrowException()
+    /** @test */
+    public function negative_media_length_should_throw_exception()
     {
-        $this->expectException(PodcastItemNotValidException::class);
         $itemData = $this->media->toPodcastItem();
         $itemData['mediaLength'] = -12;
+        $this->expectException(PodcastItemNotValidException::class);
         PodcastItem::with($itemData)->render();
     }
 

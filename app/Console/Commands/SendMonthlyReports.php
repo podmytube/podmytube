@@ -23,7 +23,9 @@ class SendMonthlyReports extends Command
      */
     public function handle()
     {
-        $wantedMonth = $this->option('period') !== null ? Carbon::createFromFormat('Y-m', $this->option('period'))->startOfMonth() : Carbon::now()->startOfMonth()->subMonth();
+        $wantedMonth = $this->option('period') !== null ?
+            Carbon::createFromFormat('Y-m', $this->option('period'))->startOfMonth() :
+            Carbon::now()->startOfMonth()->subMonth();
 
         /**
          * get channels list

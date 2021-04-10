@@ -34,9 +34,9 @@ class YoutubeQuotas implements QuotasCalculator
      */
     public function __construct(array $urls)
     {
-        foreach ($urls as $url) {
+        array_map(function ($url) {
             $this->calculateQuotaConsumed($url);
-        }
+        }, $urls);
     }
 
     public static function forUrls(...$params)
@@ -72,18 +72,16 @@ class YoutubeQuotas implements QuotasCalculator
     protected function partsParamsCosts()
     {
         if (!isset($this->queryParams['part'])) {
-            throw new YoutubeNoPartParamException(
-                'No part params have been set for this query.'
-            );
+            throw new YoutubeNoPartParamException('No part params have been set for this query.');
         }
 
         $partParams = explode(',', $this->queryParams['part']);
-        foreach ($partParams as $partParam) {
+        array_map(function ($partParam) {
             $this->quotaConsumed[$this->apikeyUsed] += $this->partQuotaCost(
                 $this->endpoint,
                 $partParam
             );
-        }
+        }, $partParams);
     }
 
     protected function checkApikey()

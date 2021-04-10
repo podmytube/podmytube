@@ -11,15 +11,15 @@ class ItunesCategory implements IsRenderableInterface
 
     private function __construct(?Category $category = null)
     {
-        if ($category) {
+        if ($category !== null) {
             $this->name = $category->feedValue();
             $this->parentName = $category->parentFeedValue();
         }
     }
 
-    public static function prepare(...$params)
+    public static function prepare(?Category $category)
     {
-        return new static(...$params);
+        return new static($category);
     }
 
     public function name()

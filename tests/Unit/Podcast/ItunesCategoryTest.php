@@ -42,7 +42,7 @@ class ItunesCategoryTest extends TestCase
 
     public function testingNoCategorySet()
     {
-        $renderedText = ItunesCategory::prepare()->render();
+        $renderedText = ItunesCategory::prepare(null)->render();
         $this->assertEmpty($renderedText);
     }
 }

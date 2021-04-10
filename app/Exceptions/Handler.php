@@ -41,6 +41,7 @@ class Handler extends ExceptionHandler
             /**
              * send email alert to me
              */
+            Log::error($exception->getMessage());
             $this->sendExceptionEmail($exception);
 
             if (app()->bound('sentry')) {

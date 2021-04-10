@@ -46,7 +46,7 @@ class UpdateChannelsCommand extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): int
     {
         // update all channels
         $this->channels = Channel::active()->get();
@@ -57,7 +57,7 @@ class UpdateChannelsCommand extends Command
             throw new RuntimeException($message);
             $this->error($message);
             Log::debug($message);
-            return;
+            return 1;
         }
 
         $this->prologue($this->channels->count());
@@ -104,6 +104,7 @@ class UpdateChannelsCommand extends Command
         });
 
         $this->epilogue();
+        return 0;
     }
 
     protected function prologue(int $prograssBarNbItems)

@@ -69,9 +69,7 @@ class YoutubeVideoTagsForChannelCommand extends Command
         $results->map(
             function ($result) {
                 $message = "* {$result['published']} - {$result['title']} - {$result['media_id']} (tags: {$result['tags']})";
-                if ($result['isGrabbed']) {
-                    $message .= ' - ✅';
-                }
+                $message .= $result['isGrabbed'] ? ' - ✅' : '';
                 if ($result['isTagged']) {
                     $this->info($message);
                     return true;

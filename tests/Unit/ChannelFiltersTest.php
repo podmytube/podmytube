@@ -155,35 +155,23 @@ class ChannelFiltersTest extends TestCase
         $this->assertFalse($this->channel->areTagsAccepted(['window', 'house']), 'neither window nor house is in the list of allowed tags so it should be rejected.');
     }
 
-    public function testChannelDoesNotCareOfOldVideos()
+    /** @test */
+    public function is_date_accepted_is_ok()
     {
         /**
          * channel does not care about video too old
          * all should be accepted
          */
-        $this->channel = factory(Channel::class)->create();
+        $this->channel->update(['reject_video_too_old' => null]);
         $this->assertTrue(
             $this->channel->isDateAccepted(Carbon::parse('first day of 2009')),
             'Channel is accepting all videos even the old ones. This date should be accepted'
         );
-        $this->assertTrue(
-            $this->channel->isDateAccepted(Carbon::now()),
-            'Channel is accepting all videos even the old ones. This date should be accepted'
-        );
-    }
 
-    public function testChannelDoesNotWantOldestVideos()
-    {
-        $this->channel = factory(Channel::class)->create([
-            'reject_video_too_old' => Carbon::parse('last day of december 2008'),
-        ]);
-        $this->assertTrue(
-            $this->channel->isDateAccepted(Carbon::now()),
-            'Channel wants only videos since 2009, now should be accepted.'
-        );
+        $this->channel->update(['reject_video_too_old' => now()]);
         $this->assertFalse(
-            $this->channel->isDateAccepted(Carbon::parse('first day of february 2008')),
-            'Channel wants only videos since 2009, this one should be rejected.'
+            $this->channel->isDateAccepted(now()->subDay()),
+            'Channel is accepting videos from now only. Yesterday should be rejected'
         );
     }
 }

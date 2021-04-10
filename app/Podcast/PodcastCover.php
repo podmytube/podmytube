@@ -2,6 +2,8 @@
 
 namespace App\Podcast;
 
+use InvalidArgumentException;
+
 class PodcastCover implements IsRenderableInterface
 {
     /** @var string url*/
@@ -16,12 +18,11 @@ class PodcastCover implements IsRenderableInterface
     private function __construct(array $attributes = [])
     {
         $this->title = $attributes['title'] ?? null;
-        if (isset($attributes['url'])) {
-            $this->setUrl($attributes['url']);
-        }
-        if (isset($attributes['link'])) {
-            $this->setLink($attributes['link']);
-        }
+        $this->url = $attributes['url'] ?? null;
+        $this->link = $attributes['link'] ?? null;
+
+        $this->isValidUrl($this->url);
+        $this->isValidUrl($this->link);
     }
 
     public static function prepare(...$params)
@@ -29,24 +30,13 @@ class PodcastCover implements IsRenderableInterface
         return new static(...$params);
     }
 
-    public function setUrl(?string $url = null)
+    public function isValidUrl(?string $urlToCheck)
     {
-        if ($this->isValidUrl($url)) {
-            $this->url = $url;
+        if ($urlToCheck === null) {
+            return true;
         }
-    }
-
-    public function setLink(?string $link = null)
-    {
-        if ($this->isValidUrl($link)) {
-            $this->link = $link;
-        }
-    }
-
-    public function isValidUrl(string $urlToCheck)
-    {
         if (filter_var($urlToCheck, FILTER_VALIDATE_URL) === false) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 "Url/link {{$urlToCheck}} is not valid."
             );
         }
@@ -73,10 +63,7 @@ class PodcastCover implements IsRenderableInterface
         $dataToRender = array_filter(get_object_vars($this), function (
             $property
         ) {
-            if (isset($property)) {
-                return true;
-            }
-            return false;
+            return isset($property);
         });
         if (!$dataToRender) {
             return '';

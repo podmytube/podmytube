@@ -2,7 +2,6 @@
 
 namespace App\Podcast;
 
-use App\Category;
 use InvalidArgumentException;
 
 class ItunesHeader implements IsRenderableInterface
@@ -16,6 +15,8 @@ class ItunesHeader implements IsRenderableInterface
     public $author;
     /** @var string $email */
     public $email;
+    /** @var ?\App\Category $category */
+    public $category;
     /** @var string $explicit */
     public $explicit = 'false';
     /** @var string $type (episodic or serial) */
@@ -32,10 +33,12 @@ class ItunesHeader implements IsRenderableInterface
         $this->title = $attributes['title'] ?? null;
         $this->author = $attributes['author'] ?? null;
         $this->email = $attributes['email'] ?? null;
+        $this->category = $attributes['category'] ?? null;
 
         if (isset($attributes['explicit'])) {
             $this->explicit = self::checkExplicit($attributes['explicit']);
         }
+
         if (isset($attributes['imageUrl'])) {
             $this->setImageUrl($attributes['imageUrl']);
         }
@@ -44,14 +47,10 @@ class ItunesHeader implements IsRenderableInterface
             $this->setType($attributes['type']);
         }
 
-        if (isset($attributes['category']) && $attributes['category'] instanceof Category) {
-            $this->itunesCategory = ItunesCategory::prepare($attributes['category'])->render();
-        }
+        $this->itunesCategory = ItunesCategory::prepare($this->category)->render();
 
-        if ($this->author || $this->email) {
-            $this->itunesOwner = ItunesOwner::prepare(['itunesOwnerName' => $this->author, 'itunesOwnerEmail' => $this->email])
-                ->render();
-        }
+        $this->itunesOwner = ItunesOwner::prepare(['itunesOwnerName' => $this->author, 'itunesOwnerEmail' => $this->email])
+            ->render();
     }
 
     public static function prepare(...$params)
@@ -62,10 +61,7 @@ class ItunesHeader implements IsRenderableInterface
     public function render(): string
     {
         if (array_filter(get_object_vars($this), function ($property) {
-            if (isset($property)) {
-                return true;
-            }
-            return false;
+            return isset($property);
         }) === false) {
             return '';
         }
@@ -89,7 +85,7 @@ class ItunesHeader implements IsRenderableInterface
         $this->imageUrl = $imageUrl;
     }
 
-    public static function checkExplicit($explicit)
+    public static function checkExplicit($explicit): string
     {
         if (is_bool($explicit)) {
             return $explicit === true ? 'true' : 'false';

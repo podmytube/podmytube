@@ -4,6 +4,7 @@ namespace Tests\Unit\Podcast;
 
 use Tests\TestCase;
 use App\Podcast\PodcastCover;
+use InvalidArgumentException;
 
 class PodcastCoverTest extends TestCase
 {
@@ -62,10 +63,20 @@ class PodcastCoverTest extends TestCase
 
     public function testingInvalidUrlShouldThrowException()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         PodcastCover::prepare([
             'title' => 'Lorem ipsum',
             'url' => 'Invalid url.'
+        ]);
+    }
+
+    /** @test */
+    public function invalid_link_should_throw_exception()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        PodcastCover::prepare([
+            'title' => 'Lorem ipsum',
+            'link' => 'Invalid link.'
         ]);
     }
 }
