@@ -122,6 +122,7 @@ return [
             'timeout' => 20,
             'visibility' => 'public',
             'permPublic' => 0755,
+            'directoryPerm' => 0755,
         ],
 
         'tmp' => [
