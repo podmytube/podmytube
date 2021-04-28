@@ -4,6 +4,8 @@ namespace Tests\Unit;
 
 use App\Jobs\SendFileBySFTP;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class SendFileBySFTPTest extends TestCase
@@ -20,9 +22,25 @@ class SendFileBySFTPTest extends TestCase
 
     public function testingFileUpdloadIsOk()
     {
-        $localFile = __DIR__ . '/../fixtures/images/sampleVig.jpg';
-        $remoteFile = $this->destFolder . '/testVig.jpg';
-        $result = SendFileBySFTP::dispatchNow($localFile, $remoteFile, false);
-        $this->assertTrue($result);
+        $sourceDisk = 'tmp';
+
+        /** creating file to be transferred */
+        $fileName = Str::random(4) . '.txt';
+        $sourceRelativeFilePath = "chat/$fileName";
+        $destinationRelativeFilePath = "tests/foo/{$fileName}";
+        Storage::disk($sourceDisk)->put($sourceRelativeFilePath, 'chat');
+
+        /* $remotefolder = pathinfo($destinationRelativeFilePath, PATHINFO_DIRNAME);
+        if (!Storage::disk('remote')->exists($remotefolder)) {
+            Storage::disk('remote')->makeDirectory($remotefolder);
+        } */
+        /** transferring */
+        Storage::disk('remote')->put(
+            $destinationRelativeFilePath,
+            Storage::disk($sourceDisk)->get($sourceRelativeFilePath)
+        );
+
+        //$result = SendFileBySFTP::dispatchNow(localFile, $remoteFile, false);
+        //$this->assertTrue($result);
     }
 }
