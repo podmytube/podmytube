@@ -121,7 +121,7 @@ return [
             'root' => '/home/www',
             'timeout' => 20,
             'visibility' => 'public',
-            'permPublic' => 0755,
+            'permPublic' => 0644,
             'directoryPerm' => 0755,
         ],
 
