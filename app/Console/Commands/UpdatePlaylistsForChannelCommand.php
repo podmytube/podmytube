@@ -40,14 +40,14 @@ class UpdatePlaylistsForChannelCommand extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): int
     {
         $channelToUpdate = Channel::byChannelId($this->argument('channel_id'));
 
         // no channel to refresh => nothing to do
         if ($channelToUpdate === null) {
             $this->error("There is no channel with this channel_id ({$this->argument('channel_id')})");
-            return;
+            return 1;
         }
 
         $this->info('channel to update ' . $channelToUpdate->channel_id, 'v');
@@ -58,7 +58,7 @@ class UpdatePlaylistsForChannelCommand extends Command
         $playlists = $channelToUpdate->playlists()->where('active', '=', 1)->get();
         if ($playlists->count() <= 0) {
             $this->error("This channel ({$this->argument('channel_id')}) has no active playlists.");
-            return;
+            return 1;
         }
 
         $playlists->map(function (Playlist $playlist) {
@@ -67,5 +67,7 @@ class UpdatePlaylistsForChannelCommand extends Command
             $this->comment("Playlist {$playlist->podcastTitle()} has been successfully updated.", 'v');
             $this->info("You can check it here : {$playlist->podcastUrl()}", 'v');
         });
+
+        return 0;
     }
 }
