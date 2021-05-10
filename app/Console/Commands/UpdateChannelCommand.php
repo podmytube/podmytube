@@ -18,7 +18,7 @@ class UpdateChannelCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'update:channel {channel_id} {limit=50}';
+    protected $signature = 'update:channel {channel_id} {--limit=50}';
 
     /**
      * The console command description.
@@ -51,14 +51,14 @@ class UpdateChannelCommand extends Command
         // no channel to refresh => nothing to do
         if ($channelToUpdate === null) {
             $message = "There is no channel with this channel_id ({$this->argument('channel_id')})";
-            throw new RuntimeException($message);
             $this->error($message);
             Log::debug($message);
+            //throw new RuntimeException($message);
             return 1;
         }
 
-        $this->info('channel to update ' . $channelToUpdate->channel_id, 'v');
-        $factory = YoutubeChannelVideos::forChannel($channelToUpdate->channel_id, $this->argument('limit'));
+        $this->info("Channel to update {$channelToUpdate->channel_id} - limit {$this->option('limit')}", 'v');
+        $factory = YoutubeChannelVideos::forChannel($channelToUpdate->channel_id, $this->option('limit'));
 
         $nbVideos = count($factory->videos());
         if ($nbVideos <= 0) {
