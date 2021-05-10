@@ -12,6 +12,9 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use RuntimeException;
 
+/**
+ * get all new episodes for every active channels.
+ */
 class UpdateChannelsCommand extends Command
 {
     /**

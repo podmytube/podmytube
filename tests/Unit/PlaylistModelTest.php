@@ -22,7 +22,6 @@ class PlaylistModelTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
         $this->playlist = factory(Playlist::class)->create();
     }
 
@@ -36,6 +35,7 @@ class PlaylistModelTest extends TestCase
 
     public function testMediasToPublishShouldBeFine()
     {
+        Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
         $expectedMediasToPublish = 2;
 
         factory(Media::class)->create(['media_id' => 'GJzweq_VbVc', 'grabbed_at' => now()->subday()]);
@@ -90,6 +90,7 @@ class PlaylistModelTest extends TestCase
 
     public function testPlaylistToPodcastIsRunningFine()
     {
+        Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
         $expectedItems = 2;
         factory(Media::class)->create(['media_id' => 'GJzweq_VbVc', 'grabbed_at' => now()->subday()]);
         factory(Media::class)->create(['media_id' => 'AyU4u-iQqJ4', 'grabbed_at' => now()->subWeek()]);
@@ -118,5 +119,25 @@ class PlaylistModelTest extends TestCase
             config('app.playlists_path') . $this->playlist->channel->channelId() . '/' . $this->playlist->youtube_playlist_id . '.xml',
             $this->playlist->remoteFilePath()
         );
+    }
+
+    /** @test */
+    public function scope_active_is_ok()
+    {
+        factory(Playlist::class)->create(['active' => false]);
+        $this->playlist->update(['active' => true]);
+
+        /** getting all active playlist (should be only one) */
+        $activePlaylists = Playlist::active()->get();
+        $this->assertCount(1, $activePlaylists);
+
+        /** filtering on the one I set as active */
+        $activePlaylists->filter(function ($activePlaylist) {
+            return $activePlaylist->id === $this->playlist->id;
+        });
+
+        /** if filtered playlist has only 1 item and the right one it's good */
+        $this->assertCount(1, $activePlaylists);
+        $this->assertEquals($this->playlist->id, $activePlaylists->first()->id);
     }
 }

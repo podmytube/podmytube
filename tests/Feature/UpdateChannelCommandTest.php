@@ -26,8 +26,7 @@ class UpdateChannelCommandTest extends TestCase
 
     public function testShouldFailOnInvalidChannel()
     {
-        $this->expectException(RuntimeException::class);
-        $this->artisan('update:channel', ['channel_id' => 'invalid-channel-id']);
+        $this->artisan('update:channel', ['channel_id' => 'invalid-channel-id'])->assertExitCode(1);
     }
 
     public function testShouldAddNewMediasOnValidChannelId()

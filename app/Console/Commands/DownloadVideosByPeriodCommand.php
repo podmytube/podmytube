@@ -12,6 +12,9 @@ use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * will download non episodes for every active channels.
+ */
 class DownloadVideosByPeriodCommand extends Command
 {
     /** @var string $signature */

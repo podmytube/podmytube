@@ -19,5 +19,6 @@ $factory->define(Playlist::class, function (Faker $faker, $attributes) {
         Donec ultricies magna odio, eget vulputate ligula molestie vitae. 
         Duis quis velit dictum mauris lobortis porta et sollicitudin ante.
         EOD,
+        'active' => $attributes['active'] ?? false,
     ];
 });

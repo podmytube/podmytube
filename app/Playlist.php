@@ -17,6 +17,7 @@ use App\Interfaces\Podcastable;
 use App\Podcast\PodcastItem;
 use App\Traits\BelongsToChannel;
 use App\Youtube\YoutubePlaylistItems;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection as SupportCollection;
@@ -29,6 +30,10 @@ class Playlist extends Model implements Podcastable
     use BelongsToChannel;
 
     protected $guarded = [];
+
+    protected $casts = [
+        'active' => 'boolean',
+    ];
 
     public function mediasToPublish(): Collection
     {
@@ -171,5 +176,10 @@ class Playlist extends Model implements Podcastable
     public function remoteFilePath(): string
     {
         return config('app.playlists_path') . $this->relativeFeedPath();
+    }
+
+    public function scopeActive(Builder $query)
+    {
+        return $query->where('active', '=', 1);
     }
 }

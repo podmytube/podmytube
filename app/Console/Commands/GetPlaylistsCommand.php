@@ -52,14 +52,6 @@ class GetPlaylistsCommand extends Command
         }
 
         /**
-         * add now tech
-         */
-        $nowtech = Channel::find('UCRU38zigLJNtMIh7oRm2hIg');
-        if ($nowtech !== null) {
-            $channels->push($nowtech);
-        }
-
-        /**
          * get playlists from youtube
          */
         $nbPlaylists = 0;

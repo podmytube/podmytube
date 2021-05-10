@@ -105,4 +105,6 @@ class ChannelModelTest extends TestCase
         );
         $this->assertTrue($channelWhichIsNotPayingEnough->shouldChannelBeUpgraded());
     }
+
+    
 }
