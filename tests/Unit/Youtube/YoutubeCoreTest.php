@@ -5,13 +5,16 @@ namespace Tests\Unit\Youtube;
 use App\Exceptions\YoutubeInvalidEndpointException;
 use App\Exceptions\YoutubeNoResultsException;
 use App\Youtube\YoutubeCore;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use InvalidArgumentException;
 use Tests\TestCase;
 
 class YoutubeCoreTest extends TestCase
 {
-    /** @var App\Youtube\YoutubeCore $youtubeCore*/
+    use RefreshDatabase;
+
+    /** @var \App\Youtube\YoutubeCore $youtubeCore*/
     protected $abstractCore;
 
     public const PERSONAL_UPLOADS_PLAYLIST_ID = 'UUw6bU9JT_Lihb2pbtqAUGQw';

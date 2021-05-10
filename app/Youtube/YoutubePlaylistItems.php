@@ -42,7 +42,6 @@ class YoutubePlaylistItems extends YoutubeCore
             }
             return true;
         });
-
         $this->videos = array_map(function ($videoItem) {
             return [
                 'media_id' => $videoItem['contentDetails']['videoId'],
@@ -52,6 +51,7 @@ class YoutubePlaylistItems extends YoutubeCore
                 'published_at' => Carbon::parse($videoItem['contentDetails']['videoPublishedAt'])->setTimezone('UTC'),
             ];
         }, $onlyValidVideos);
+
         return $this;
     }
 

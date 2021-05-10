@@ -14,7 +14,7 @@ class CreateChannelCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'create:channel {channel_id} {user_id=1} {plan_id=1}';
+    protected $signature = 'create:channel {channel_id} {--userId=1} {--planId=1}';
 
     /**
      * The console command description.
@@ -31,7 +31,7 @@ class CreateChannelCommand extends Command
     public function handle()
     {
         $this->line('');
-        $userId = $this->argument('user_id');
+        $userId = $this->option('userId');
         $user = User::find($userId);
         if ($user === null) {
             $this->error("This user id {$userId} is unknown in database.");
@@ -39,7 +39,7 @@ class CreateChannelCommand extends Command
         }
         $youtubeUrl = 'https://www.youtube.com/channel/' . $this->argument('channel_id');
 
-        $planId = $this->argument('plan_id');
+        $planId = $this->option('planId');
         $plan = Plan::find($planId);
         if ($plan === null) {
             $this->error("This plan id {$planId} does not exists.");

@@ -63,7 +63,6 @@ class UpdatePlaylistsForChannelCommand extends Command
 
         $playlists->map(function (Playlist $playlist) {
             UploadPodcastFactory::init()->for($playlist);
-
             $this->comment("Playlist {$playlist->podcastTitle()} has been successfully updated.", 'v');
             $this->info("You can check it here : {$playlist->podcastUrl()}", 'v');
         });

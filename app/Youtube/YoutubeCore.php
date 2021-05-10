@@ -173,6 +173,7 @@ abstract class YoutubeCore implements QuotasConsumer
      */
     protected function getRawResults(): string
     {
+        Log::debug($this->url());
         // get it from cache (if any)
         if (Cache::has($this->cacheKey())) {
             return Cache::get($this->cacheKey());

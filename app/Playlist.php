@@ -35,6 +35,7 @@ class Playlist extends Model implements Podcastable
         /**
          * get all items from youtube playlist
          */
+
         $videos = (new YoutubePlaylistItems())->forPlaylist($this->youtube_playlist_id)->videos();
 
         if (!count($videos)) {
