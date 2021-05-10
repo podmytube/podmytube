@@ -35,17 +35,31 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        /** refresh media list from youtube api for channels*/
+        $schedule->command(UpdateChannelsCommand::class, ['all'])->hourlyAt(1);
+
+        /** refresh media list from youtube api for playlists */
+        $schedule->command(GetPlaylistMediasCommand::class)->hourlyAt(6);
+
+        /** grabbing non grabbed videos */
+        $schedule->command(DownloadVideosByPeriodCommand::class)->hourlyAt(12);
+
+        /** Building podcasts */
+        $schedule->command(UpdatePodcastsCommand::class, ['all'])->hourlyAt(30);
+
+        /** get playlists from paying channels */
+        $schedule->command(GetPlaylistsCommand::class)->hourlyAt(35);
+
+        /** build playlists feeds */
+        $schedule->command(UpdatePlaylistsForPayingChannelsCommand::class)->hourlyAt(45);
+
+        /**
+         * ===============================================================
+         * Specials
+         * ===============================================================
+         */
         /** generating sitemap */
         $schedule->command(UpdateSitemapCommand::class)->daily();
-
-        /** grabbing videos */
-        $schedule->command(DownloadVideosByPeriodCommand::class)->hourlyAt(32);
-
-        /** cleaning free medias old episodes - 12h */
-        $schedule->command(CleanFreeChannelMedias::class)->monthlyOn($day = 1, $time = '12:0');
-
-        /** updating channels - 2h */
-        $schedule->command(UpdateChannelsCommand::class, ['all'])->hourlyAt(2);
 
         /** Check media */
         $schedule->command(LastMediaPublishedChecker::class)->everySixHours();
@@ -53,17 +67,16 @@ class Kernel extends ConsoleKernel
         /** Check blog post */
         $schedule->command(UpdateBlogPostsCommand::class)->dailyAt('23h27');
 
-        /** Building podcasts */
-        $schedule->command(UpdatePodcastsCommand::class, ['all'])->hourlyAt(50);
+        /**
+         * ===============================================================
+         * Monthly
+         * ===============================================================
+         */
+        /** cleaning free medias old episodes - 12h */
+        $schedule->command(CleanFreeChannelMedias::class)->monthlyOn($day = 1, $time = '12:0');
 
         /** monthly report on first monday */
         $schedule->command(SendMonthlyReports::class)->monthly()->days([1])->at('11:00');
-
-        /** get active playlists */
-        $schedule->command(GetPlaylistsCommand::class)->hourlyAt(50);
-
-        /** generate playlists */
-        $schedule->command(UpdatePlaylistsForPayingChannelsCommand::class)->hourlyAt(45);
     }
 
     /**

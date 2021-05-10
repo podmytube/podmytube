@@ -9,6 +9,9 @@ use App\Playlist;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * will update playlists feeds for every active playlist.
+ */
 class UpdatePlaylistsForPayingChannelsCommand extends Command
 {
     /**

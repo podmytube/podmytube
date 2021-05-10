@@ -6,6 +6,9 @@ use App\Channel;
 use App\Factories\UploadPodcastFactory;
 use Illuminate\Console\Command;
 
+/**
+ * will update podcast feeds.
+ */
 class UpdatePodcastsCommand extends Command
 {
     public const FAILURE = 0;

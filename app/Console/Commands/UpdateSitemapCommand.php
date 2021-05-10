@@ -5,6 +5,9 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Spatie\Sitemap\SitemapGenerator;
 
+/**
+ * will update website sitemap.
+ */
 class UpdateSitemapCommand extends Command
 {
     /**
