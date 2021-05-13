@@ -4,6 +4,7 @@ namespace App\Console;
 
 use App\Console\Commands\CleanFreeChannelMedias;
 use App\Console\Commands\DownloadVideosByPeriodCommand;
+use App\Console\Commands\GetPlaylistMediasCommand;
 use App\Console\Commands\GetPlaylistsCommand;
 use App\Console\Commands\LastMediaPublishedChecker;
 use App\Console\Commands\SendMonthlyReports;
