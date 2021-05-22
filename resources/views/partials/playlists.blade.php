@@ -8,7 +8,7 @@
     @foreach ($playlists as $playlist)
         <li>
             {{ $playlist->channelId() }} - {{ $playlist->title }} 
-            <a href="{{ route('cover.edit', $playlist) }}" class="underline">Update cover</a> 
+            <a href="{{ route('playlist.cover.edit', $playlist) }}" class="underline">Update cover</a> 
             @if ($playlist->active) ✅ @endif
         </li>
     @endforeach

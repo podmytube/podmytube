@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Exceptions\ThumbUploadHasFailedException;
+use App\Interfaces\Coverable;
 use App\Traits\BelongsToChannel;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
@@ -17,6 +18,11 @@ class Thumb extends Model
     public const DEFAULT_THUMB_FILE = 'default_thumb.jpg';
 
     protected $fillable = ['channel_id', 'file_name', 'file_disk', 'file_size'];
+
+    public function coverable()
+    {
+        return $this->morphTo();
+    }
 
     /**
      * extra attribute relativePath.
@@ -138,5 +144,30 @@ class Thumb extends Model
     public function remoteFilePath()
     {
         return config('app.thumbs_path') . $this->relativePath();
+    }
+
+    public function attachUploadedFileTo(
+        UploadedFile $uploadedFile,
+        Coverable $coverable
+    ): Thumb {
+        try {
+            $thumb = $this->updateOrCreate(
+                [
+                    'coverable_type' => get_class($coverable),
+                    'coverable_type' => $coverable->id(),
+                ],
+                [
+                    'file_size' => $uploadedFile->getSize(),
+                    /** get filename of the stored file */
+                    'file_name' => basename($uploadedFile->store($coverable->channelId(), self::LOCAL_STORAGE_DISK)),
+                    'file_disk' => self::LOCAL_STORAGE_DISK,
+                ]
+            );
+        } catch (Exception $exception) {
+            throw new ThumbUploadHasFailedException(
+                "Attaching cover to {$coverable->channelId()} has failed {$exception->getMessage()}"
+            );
+        }
+        return $thumb;
     }
 }

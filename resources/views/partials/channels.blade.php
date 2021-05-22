@@ -61,7 +61,7 @@
                             Podcast 
                         </button>
                     </a>
-                    <a href="{{ route('channel.thumbs.edit', $channel) }}">
+                    <a href="{{ route('channel.cover.edit', $channel) }}">
                         <button class="flex-1 bg-gray-200 shadow hover:bg-gray-400 text-gray-800 font-bold py-2 px-2"> 
                             <svg class="h-6 w-auto inline fill-current"
                                 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 419.2 419.2" xml:space="preserve">

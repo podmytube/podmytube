@@ -13,9 +13,11 @@ namespace App;
 
 use App\Exceptions\PlaylistWithNoMediaWeKnowAboutException;
 use App\Exceptions\PlaylistWithNoVideosException;
+use App\Interfaces\Coverable;
 use App\Interfaces\Podcastable;
 use App\Podcast\PodcastItem;
 use App\Traits\BelongsToChannel;
+use App\Traits\HasCover;
 use App\Youtube\YoutubePlaylistItems;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -25,9 +27,9 @@ use Illuminate\Support\Collection as SupportCollection;
 /**
  * the Playlist class and its functions
  */
-class Playlist extends Model implements Podcastable
+class Playlist extends Model implements Podcastable, Coverable
 {
-    use BelongsToChannel;
+    use BelongsToChannel, HasCover;
 
     protected $guarded = [];
 
@@ -203,5 +205,20 @@ class Playlist extends Model implements Podcastable
         });
 
         return $playlists;
+    }
+
+    public function title(): string
+    {
+        return $this->title;
+    }
+
+    public function youtubeId(): string
+    {
+        return $this->youtube_playlist_id;
+    }
+
+    public function id()
+    {
+        return $this->id;
     }
 }

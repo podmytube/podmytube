@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\Events\ThumbUpdated;
-use App\Listeners\UploadPodcast;
 use App\Modules\Vignette;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -31,7 +30,6 @@ class ThumbAccessTest extends TestCase
                 route('login')
             );
         }, [
-            'channel.thumbs.index',
             'channel.thumbs.edit',
             'channel.thumbs.store',
             'channel.thumbs.update',
@@ -54,7 +52,7 @@ class ThumbAccessTest extends TestCase
                     ->get(route($routeToCheck, $this->channel))
                     ->assertSuccessful();
             },
-            ['channel.thumbs.index', 'channel.thumbs.edit']
+            ['channel.thumbs.edit']
         );
     }
 
@@ -72,6 +70,4 @@ class ThumbAccessTest extends TestCase
 
         Event::assertDispatched(ThumbUpdated::class);
     }
-
-    
 }

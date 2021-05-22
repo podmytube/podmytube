@@ -63,8 +63,7 @@ class MediasAccessTest extends TestCase
                     ->assertSuccessful();
             },
             [
-                'channel.thumbs.index',
-                'channel.thumbs.edit'
+                'channel.thumbs.edit',
             ]
         );
     }
