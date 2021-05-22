@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use App\Channel;
 use App\Plan;
 use App\Subscription;
