@@ -10,10 +10,12 @@
 
 namespace App;
 
+use App\Interfaces\Coverable;
 use App\Interfaces\Podcastable;
 use App\Podcast\PodcastItem;
 use App\Traits\BelongsToCategory;
 use App\Traits\BelongsToUser;
+use App\Traits\HasCover;
 use App\Traits\HasLimits;
 use App\Traits\HasManyMedias;
 use App\Traits\HasManyPlaylists;
@@ -33,7 +35,7 @@ use Illuminate\Support\Str;
 /**
  * the channel model and its functions
  */
-class Channel extends Model implements Podcastable
+class Channel extends Model implements Podcastable, Coverable
 {
     use BelongsToCategory,
         BelongsToUser,
@@ -42,7 +44,8 @@ class Channel extends Model implements Podcastable
         HasManyPlaylists,
         HasOneSubscription,
         HasOneThumb,
-        HasOneLanguage;
+        HasOneLanguage,
+        HasCover;
 
     public const CREATED_AT = 'channel_createdAt';
     public const UPDATED_AT = 'channel_updatedAt';
@@ -305,7 +308,7 @@ class Channel extends Model implements Podcastable
      */
     public function id(): string
     {
-        return $this->channel_id;
+        return $this->channelId();
     }
 
     public function isFree(): bool
@@ -446,5 +449,10 @@ class Channel extends Model implements Podcastable
     public static function userChannels(User $user)
     {
         return self::where('user_id', '=', $user->user_id)->get();
+    }
+
+    public function youtubeId(): string
+    {
+        return $this->channelId();
     }
 }

@@ -14,7 +14,7 @@ class PlaylistPolicy
     {
         return $playlist->channel->user->is($user);
     }
-
+    
     public function view(User $user, Playlist $playlist): bool
     {
         return $playlist->channel->user->is($user);

@@ -8,6 +8,8 @@
  * @author Frederick Tyteca <fred@podmytube.com>
  */
 
+use App\Http\Controllers\ThumbsController;
+
 Route::get('test', function () {
     return view('test');
 })->name('terms');
@@ -90,19 +92,12 @@ Route::domain('dashboard.' . config('app.domain'))->group(function () {
             ->only(['edit', 'update']);
 
         /**
-         * Thumb
+         * Cover
          */
-        Route::get('/channel/{channel}/thumbs', 'ThumbsController@index')
-            ->name('channel.thumbs.index');
-
-        Route::get('/channel/{channel}/thumbs/edit', 'ThumbsController@edit')
-            ->name('channel.thumbs.edit');
-
-        Route::post('/channel/{channel}/thumbs', 'ThumbsController@store')
-            ->name('channel.thumbs.store');
-
-        Route::patch('/channel/{channel}/thumbs', 'ThumbsController@update')
-            ->name('channel.thumbs.update');
+        Route::get('playlist/{playlist}/cover/edit', [ThumbsController::class, 'playlistCoverEdit'])->name('playlist.cover.edit');
+        Route::patch('playlist/{playlist}/cover/update', [ThumbsController::class, 'playlistCoverUpdate'])->name('playlist.cover.update');
+        Route::get('channel/{channel}/cover/edit', [ThumbsController::class, 'channelCoverEdit'])->name('channel.cover.edit');
+        Route::patch('channel/{channel}/cover/update', [ThumbsController::class, 'channelCoverUpdate'])->name('channel.cover.update');
 
         /**
          * User profile
