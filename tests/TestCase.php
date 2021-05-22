@@ -5,12 +5,11 @@ namespace Tests;
 use App\Channel;
 use App\Media;
 use App\Plan;
-use App\StripePlan;
 use App\Subscription;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Collection;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -74,4 +73,12 @@ abstract class TestCase extends BaseTestCase
         return htmlspecialchars($str, ENT_QUOTES | ENT_HTML401);
     }
 
+    public function createChannelForUser(?User $user = null): Channel
+    {
+        $createContext = [];
+        if ($user !== null) {
+            $createContext = ['user_id' => $user->user_id];
+        }
+        return factory(Channel::class)->create($createContext);
+    }
 }

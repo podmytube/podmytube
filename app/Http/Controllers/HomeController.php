@@ -12,6 +12,7 @@ namespace App\Http\Controllers;
 
 use App\Channel;
 use App\Modules\Vignette;
+use App\Playlist;
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -40,6 +41,8 @@ class HomeController extends Controller
             return $channel;
         });
 
-        return view('home', compact('channels'));
+        $playlists = Playlist::userPlaylists(Auth::user());
+
+        return view('home', compact('channels', 'playlists'));
     }
 }
