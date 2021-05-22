@@ -182,4 +182,26 @@ class Playlist extends Model implements Podcastable
     {
         return $query->where('active', '=', 1);
     }
+
+    public static function userPlaylists(User $user)
+    {
+        $playlists = new Collection();
+
+        /** get user channels */
+        $channels = Channel::userChannels($user);
+        if (!$channels->count()) {
+            return $playlists;
+        }
+
+        /** get playlist associated with each channel */
+        $channels->map(function (Channel $channel) use (&$playlists) {
+            Playlist::where('channel_id', '=', $channel->channel_id)
+                ->get()
+                ->map(function (Playlist $playlist) use (&$playlists) {
+                    $playlists->push($playlist);
+                });
+        });
+
+        return $playlists;
+    }
 }

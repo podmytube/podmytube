@@ -86,6 +86,9 @@ Route::domain('dashboard.' . config('app.domain'))->group(function () {
         Route::resource('channel.medias', 'MediasController')
             ->only(['index', 'create', 'edit', 'store']);
 
+        Route::resource('playlist', 'PlaylistController')
+            ->only(['edit', 'update']);
+
         /**
          * Thumb
          */

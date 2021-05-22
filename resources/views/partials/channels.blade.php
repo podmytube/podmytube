@@ -3,12 +3,7 @@
 
 @if (count($channels))
     <h2 class="text-3xl md:text-5xl text-white font-semibold">
-    
-    @if($channels->count()>1)
-        Your podcasts
-    @else
-        Your podcast
-    @endif
+        Your @if($channels->count()>1)podcasts @else podcast @endif
     </h2>
     
     <div class="flex flex-col sm:flex-row">

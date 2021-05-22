@@ -442,4 +442,9 @@ class Channel extends Model implements Podcastable
 
         return $this->hasReachedItslimit($month, $year);
     }
+
+    public static function userChannels(User $user)
+    {
+        return self::where('user_id', '=', $user->user_id)->get();
+    }
 }

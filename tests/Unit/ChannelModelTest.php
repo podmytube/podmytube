@@ -106,5 +106,16 @@ class ChannelModelTest extends TestCase
         $this->assertTrue($channelWhichIsNotPayingEnough->shouldChannelBeUpgraded());
     }
 
-    
+    /** @test */
+    public function user_channels_is_ok()
+    {
+        $user = factory(User::class)->create();
+        $this->assertCount(0, Channel::userChannels($user));
+
+        $this->channel->update(['user_id' => $user->user_id]);
+        $this->assertCount(1, Channel::userChannels($user));
+
+        factory(Channel::class, 5)->create(['user_id' => $user->user_id]);
+        $this->assertCount(6, Channel::userChannels($user));
+    }
 }
