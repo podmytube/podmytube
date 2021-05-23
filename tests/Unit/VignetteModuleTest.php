@@ -13,7 +13,6 @@ use Tests\TestCase;
 
 class VignetteModuleTest extends TestCase
 {
-    /** used to remove every created data in database */
     use RefreshDatabase;
 
     /** @var \App\Thumb $thumb */
@@ -30,7 +29,8 @@ class VignetteModuleTest extends TestCase
         parent::setUp();
         $this->channel = factory(Channel::class)->create();
         $this->thumb = factory(Thumb::class)->create([
-            'channel_id' => $this->channel->channel_id,
+            'coverable_type' => get_class($this->channel),
+            'coverable_id' => $this->channel->id(),
         ]);
         $this->vignette = Vignette::fromThumb($this->thumb);
     }

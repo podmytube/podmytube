@@ -15,12 +15,17 @@ class HasCoverTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var Object $someClass */
-    protected $object;
+    /** @var App\Channel $channel */
+    protected $channel;
+
+    /** @var App\Playlist $playlist */
+    protected $playlist;
 
     public function setUp(): void
     {
         parent::setup();
+        $this->playlist = factory(Playlist::class)->create();
+        $this->channel = factory(Channel::class)->create();
         $this->object = new class extends Model {
             use HasCover;
             public $id = 1;
@@ -30,57 +35,65 @@ class HasCoverTest extends TestCase
     /** @test */
     public function playlist_cover_should_be_null()
     {
-        $playlist = factory(Playlist::class)->create();
-        $this->assertNull($playlist->cover);
+        $this->assertNull($this->playlist->cover);
     }
 
     /** @test */
     public function playlist_cover_should_be_ok()
     {
-        $playlist = factory(Playlist::class)->create();
-        $thumb = factory(Thumb::class)->create(
+        factory(Thumb::class)->create(
             [
-                'coverable_type' => get_class($playlist),
-                'coverable_id' => $playlist->id,
+                'coverable_type' => get_class($this->playlist),
+                'coverable_id' => $this->playlist->id,
             ]
         );
-        $this->assertNotNull($playlist->cover);
-        $this->assertInstanceOf(Thumb::class, $playlist->cover);
+        $this->assertNotNull($this->playlist->cover);
+        $this->assertInstanceOf(Thumb::class, $this->playlist->cover);
     }
 
     /** @test */
     public function channel_cover_should_be_null()
     {
-        $channel = factory(Channel::class)->create();
-        $this->assertNull($channel->cover);
+        $this->assertNull($this->channel->cover);
     }
 
     /** @test */
     public function channel_cover_should_be_ok()
     {
-        $channel = factory(Channel::class)->create();
-        $thumb = factory(Thumb::class)->create(
+        factory(Thumb::class)->create(
             [
-                'coverable_type' => get_class($channel),
-                'coverable_id' => $channel->channelId(),
+                'coverable_type' => get_class($this->channel),
+                'coverable_id' => $this->channel->channelId(),
             ]
         );
-        $this->assertNotNull($channel->cover);
-        $this->assertInstanceOf(Thumb::class, $channel->cover);
+        $this->assertNotNull($this->channel->cover);
+        $this->assertInstanceOf(Thumb::class, $this->channel->cover);
     }
 
     /** @test */
-    public function set_cover_is_fine()
+    public function set_channel_cover_is_fine()
     {
         /** faking uploaded file */
-        $file = UploadedFile::fake()->image('photo1.jpg');
+        $uploadedFile = UploadedFile::fake()->image('photo1.jpg');
 
         /** setting cover */
-        $channel = factory(Channel::class)->create();
-        $result = $channel->setCover($file);
+        $result = $this->channel->setCover($uploadedFile);
         $this->assertInstanceOf(Thumb::class, $result);
-        $this->assertNotNull($channel->cover);
-        $this->assertInstanceOf(Thumb::class, $channel->cover);
+        $this->assertNotNull($this->channel->cover);
+        $this->assertInstanceOf(Thumb::class, $this->channel->cover);
+    }
+
+    /** @test */
+    public function set_playlist_cover_is_fine()
+    {
+        /** faking uploaded file */
+        $uploadedFile = UploadedFile::fake()->image('photo1.jpg');
+
+        /** setting cover */
+        $result = $this->playlist->setCover($uploadedFile);
+        $this->assertInstanceOf(Thumb::class, $result);
+        $this->assertNotNull($this->playlist->cover);
+        $this->assertInstanceOf(Thumb::class, $this->playlist->cover);
     }
 
     /**

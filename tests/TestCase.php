@@ -6,10 +6,12 @@ use App\Channel;
 use App\Media;
 use App\Plan;
 use App\Subscription;
+use App\Thumb;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Storage;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -80,5 +82,19 @@ abstract class TestCase extends BaseTestCase
             $createContext = ['user_id' => $user->user_id];
         }
         return factory(Channel::class)->create($createContext);
+    }
+
+    /** will create a cover from existing fixture and return filesize */
+    public function createFakeCoverFor(Thumb $thumb): int
+    {
+        /** create channel folder */
+        $fileName = $thumb->file_name;
+        $filePath = $thumb->coverable->channelId() . '/' . $fileName;
+        Storage::disk(Thumb::LOCAL_STORAGE_DISK)
+            ->put(
+                $filePath,
+                file_get_contents(base_path('tests/fixtures/images/sampleThumb.jpg'))
+            );
+        return Storage::disk(Thumb::LOCAL_STORAGE_DISK)->size($filePath);
     }
 }
