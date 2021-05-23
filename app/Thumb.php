@@ -17,27 +17,22 @@ class Thumb extends Model
     public const LOCAL_STORAGE_DISK = 'thumbs';
     public const DEFAULT_THUMB_FILE = 'default_thumb.jpg';
 
-    protected $fillable = ['channel_id', 'file_name', 'file_disk', 'file_size'];
+    protected $guarded = [];
 
     public function coverable()
     {
         return $this->morphTo();
     }
 
-    /**
-     * extra attribute relativePath.
-     */
-    public function getRelativePathAttribute()
-    {
-        return $this->channel_id . '/' . $this->file_name;
-    }
-
     /*
      * alias for getRelativePathAttribute
      */
-    public function relativePath()
+    public function relativePath(): ?string
     {
-        return $this->getRelativePathAttribute();
+        if ($this->coverable) {
+            return $this->coverable->channelId() . '/' . $this->file_name;
+        }
+        return null;
     }
 
     /**
@@ -47,7 +42,7 @@ class Thumb extends Model
      */
     public function getData()
     {
-        return Storage::disk($this->file_disk)->get($this->relativePath);
+        return Storage::disk($this->file_disk)->get($this->relativePath());
     }
 
     /**
@@ -59,21 +54,13 @@ class Thumb extends Model
     }
 
     /**
-     * getter channel_id function
-     */
-    public function channelId()
-    {
-        return $this->channel_id;
-    }
-
-    /**
      * Check if thumbnail exists
      *
      * @return bool true if thumb present false else.
      */
     public function exists()
     {
-        return Storage::disk($this->file_disk)->exists($this->relativePath);
+        return Storage::disk($this->file_disk)->exists($this->relativePath());
     }
 
     /**
@@ -83,7 +70,7 @@ class Thumb extends Model
      */
     public function podcastUrl()
     {
-        return config('app.thumbs_url') . '/' . $this->relativePath;
+        return config('app.thumbs_url') . '/' . $this->relativePath();
     }
 
     /**
@@ -93,7 +80,7 @@ class Thumb extends Model
      */
     public function dashboardUrl()
     {
-        return Storage::disk($this->file_disk)->url($this->relativePath);
+        return Storage::disk($this->file_disk)->url($this->relativePath());
     }
 
     /**
@@ -169,5 +156,15 @@ class Thumb extends Model
             );
         }
         return $thumb;
+    }
+
+    public function setCoverable(Coverable $coverable)
+    {
+        return $this->update(
+            [
+                'coverable_type' => get_class($coverable),
+                'coverable_id' => $coverable->id(),
+            ]
+        );
     }
 }
