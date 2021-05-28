@@ -17,7 +17,7 @@ trait HasCover
         return Thumb::updateOrCreate(
             [
                 'coverable_type' => get_class($this),
-                'coverable_type' => $this->id(),
+                'coverable_id' => $this->id(),
             ],
             [
                 'file_size' => $uploadedFile->getSize(),
