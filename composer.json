@@ -13,6 +13,7 @@
         "brianium/paratest": "^6.3",
         "doctrine/dbal": "^2.10",
         "facade/ignition": "^2.3.6",
+        "fakerphp/faker": "^1.14",
         "fideloper/proxy": "~4.2",
         "guzzlehttp/guzzle": "^7.0.1",
         "intervention/image": "^2.4",
@@ -27,6 +28,7 @@
         "nunomaduro/collision": "^5.0",
         "php-parallel-lint/php-console-color": "^0.2",
         "php-parallel-lint/php-console-highlighter": "^0.5.0",
+        "phpstan/phpstan": "^0.12.88",
         "sebastian/version": "^3.0",
         "sentry/sentry-laravel": "^2.3",
         "spatie/laravel-sitemap": "^5.8",
@@ -41,7 +43,6 @@
         "barryvdh/laravel-debugbar": "^3.1",
         "barryvdh/laravel-ide-helper": "^2.6",
         "filp/whoops": "~2.0",
-        "fzaninotto/faker": "~1.4",
         "mockery/mockery": "^1.4",
         "nunomaduro/phpinsights": "^1.14",
         "phpunit/phpunit": "^9.0"
