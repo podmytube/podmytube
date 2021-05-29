@@ -110,4 +110,12 @@ class ThumbModelTest extends TestCase
             $this->thumb->remoteFilePath()
         );
     }
+
+    /** @test */
+    public function coverable_label_is_fine()
+    {
+        $this->thumb->setCoverable($this->channel);
+        $expectedLabel = get_class($this->channel) . "::find({$this->channel->id()})";
+        $this->assertEquals($expectedLabel, $this->thumb->coverableLabel());
+    }
 }

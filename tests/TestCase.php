@@ -3,6 +3,7 @@
 namespace Tests;
 
 use App\Channel;
+use App\Interfaces\Coverable;
 use App\Media;
 use App\Plan;
 use App\Subscription;
@@ -82,6 +83,16 @@ abstract class TestCase extends BaseTestCase
             $createContext = ['user_id' => $user->user_id];
         }
         return factory(Channel::class)->create($createContext);
+    }
+
+    public function createRealThumbFileFor(Coverable $coverable):  Thumb
+    {
+        $thumb = factory(Thumb::class)->create([
+            'coverable_type' => get_class($coverable),
+            'coverable_id' => $coverable->id(),
+        ]);
+        $this->createFakeCoverFor($thumb);
+        return $thumb;
     }
 
     /** will create a cover from existing fixture and return filesize */

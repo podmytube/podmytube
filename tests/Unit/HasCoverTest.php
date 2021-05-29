@@ -15,10 +15,10 @@ class HasCoverTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var App\Channel $channel */
+    /** @var \App\Channel $channel */
     protected $channel;
 
-    /** @var App\Playlist $playlist */
+    /** @var \App\Playlist $playlist */
     protected $playlist;
 
     public function setUp(): void
@@ -55,6 +55,7 @@ class HasCoverTest extends TestCase
     public function channel_cover_should_be_null()
     {
         $this->assertNull($this->channel->cover);
+        $this->assertFalse($this->channel->hasCover());
     }
 
     /** @test */
@@ -67,6 +68,7 @@ class HasCoverTest extends TestCase
             ]
         );
         $this->assertNotNull($this->channel->cover);
+        $this->assertTrue($this->channel->hasCover());
         $this->assertInstanceOf(Thumb::class, $this->channel->cover);
     }
 
@@ -77,7 +79,7 @@ class HasCoverTest extends TestCase
         $uploadedFile = UploadedFile::fake()->image('photo1.jpg');
 
         /** setting cover */
-        $result = $this->channel->setCover($uploadedFile);
+        $result = $this->channel->setCoverFromUploadedFile($uploadedFile);
         $this->assertInstanceOf(Thumb::class, $result);
         $this->assertNotNull($this->channel->cover);
         $this->assertInstanceOf(Thumb::class, $this->channel->cover);
@@ -90,8 +92,17 @@ class HasCoverTest extends TestCase
         $uploadedFile = UploadedFile::fake()->image('photo1.jpg');
 
         /** setting cover */
-        $result = $this->playlist->setCover($uploadedFile);
+        $result = $this->playlist->setCoverFromUploadedFile($uploadedFile);
         $this->assertInstanceOf(Thumb::class, $result);
+        $this->assertNotNull($this->playlist->cover);
+        $this->assertInstanceOf(Thumb::class, $this->playlist->cover);
+    }
+
+    /** @test */
+    public function set_cover_from_thumb_is_fine()
+    {
+        $thumb = factory(Thumb::class)->create();
+        $this->playlist->setCoverFromThumb($thumb);
         $this->assertNotNull($this->playlist->cover);
         $this->assertInstanceOf(Thumb::class, $this->playlist->cover);
     }

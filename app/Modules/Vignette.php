@@ -46,7 +46,7 @@ class Vignette
      */
     public function relativePath(): string
     {
-        return $this->thumb->channel->channel_id . '/' . $this->fileName();
+        return $this->thumb->coverable->channelId() . '/' . $this->fileName();
     }
 
     /**
@@ -89,9 +89,10 @@ class Vignette
         /** Verifying thumb file exists */
         if (!$this->thumb->exists()) {
             throw new VignetteCreationFromMissingThumbException(
-                "Thumb file {$this->thumb->relativePath()} for channel {$this->thumb->channel->channel_id} is missing."
+                "Thumb file {$this->thumb->relativePath()} for coverable {$this->thumb->coverableLabel()} is missing."
             );
         }
+
         /** getting data and convert it to an image object */
         $this->image = Image::make($this->thumb->getData());
 
