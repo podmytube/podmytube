@@ -89,7 +89,7 @@ trait IsAbleToTestPodcast
         $this->assertStringContainsString('<title>' . $podcastable->title() . '</title>', $renderedPodcast);
         $this->assertStringContainsString('<description><![CDATA[' . $podcastable->description . ']]></description>', $renderedPodcast);
         $this->assertStringContainsString('<image>', $renderedPodcast);
-        $this->assertStringContainsString('<url>' . $podcastable->thumb->podcastUrl() . '</url>', $renderedPodcast);
+        $this->assertStringContainsString('<url>' . $podcastable->cover->podcastUrl() . '</url>', $renderedPodcast);
         $this->assertStringContainsString('<title>' . $podcastable->podcastTitle() . '</title>', $renderedPodcast);
         $this->assertStringContainsString('<link>' . $podcastable->podcastLink() . '</link>', $renderedPodcast);
         $this->assertStringContainsString('</image>', $renderedPodcast);

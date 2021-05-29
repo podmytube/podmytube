@@ -354,10 +354,10 @@ class Channel extends Model implements Podcastable, Coverable
 
     public function podcastCoverUrl(): string
     {
-        if (!$this->thumb) {
+        if (!$this->hasCover()) {
             return Thumb::defaultUrl();
         }
-        return $this->thumb->podcastUrl();
+        return $this->cover->podcastUrl();
     }
 
     /**

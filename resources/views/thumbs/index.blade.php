@@ -9,7 +9,7 @@
 	</h2>
 
     <p>
-    <a href="{{ route('channel.thumbs.edit', $channel) }}">
+    <a href="{{ route('channel.cover.edit', $channel) }}">
         <button type="button" class="btn btn-primary">
             {{ __("messages.button_update_thumbs_label") }}
         </button>

@@ -54,7 +54,7 @@ class Thumb extends Model
     }
 
     /**
-     * Check if thumbnail exists
+     * Check if thumb file exists
      *
      * @return bool true if thumb present false else.
      */
@@ -166,5 +166,13 @@ class Thumb extends Model
                 'coverable_id' => $coverable->id(),
             ]
         );
+    }
+
+    /**
+     * Label to be used in error logs/message
+     */
+    public function coverableLabel(): string
+    {
+        return get_class($this->coverable)."::find({$this->coverable->id()})";
     }
 }

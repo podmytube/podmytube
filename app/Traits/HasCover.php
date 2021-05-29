@@ -12,7 +12,12 @@ trait HasCover
         return $this->morphOne(Thumb::class, 'coverable');
     }
 
-    public function setCover(UploadedFile $uploadedFile)
+    public function hasCover(): bool
+    {
+        return $this->cover !== null;
+    }
+
+    public function setCoverFromUploadedFile(UploadedFile $uploadedFile): Thumb
     {
         return Thumb::updateOrCreate(
             [
@@ -26,5 +31,13 @@ trait HasCover
                 'file_disk' => Thumb::LOCAL_STORAGE_DISK,
             ]
         );
+    }
+
+    public function setCoverFromThumb(Thumb $thumb): bool
+    {
+        return $thumb->update([
+            'coverable_type' => get_class($this),
+            'coverable_id' => $this->id(),
+        ]);
     }
 }

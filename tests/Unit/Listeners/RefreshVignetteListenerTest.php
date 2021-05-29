@@ -21,7 +21,8 @@ class RefreshVignetteListenerTest extends TestCase
     {
         parent::setUp();
         $this->channel = $this->createChannelWithPlan();
-        factory(Thumb::class)->create(['channel_id' => $this->channel->channelId()]);
+        $thumb = factory(Thumb::class)->create();
+        $this->channel->setCoverFromThumb($thumb);
         Bus::fake();
     }
 

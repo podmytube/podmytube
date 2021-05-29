@@ -30,13 +30,13 @@ class HomeController extends Controller
         /**
          * Get user's channel(s)
          */
-        $channels = Channel::with(['subscription.plan', 'thumb'])
+        $channels = Channel::with(['subscription.plan', 'cover'])
             ->where('user_id', '=', Auth::id())
             ->get();
         $channels = $channels->map(function ($channel) {
             $channel->vignetteUrl = Vignette::defaultUrl();
-            if ($channel->thumb) {
-                $channel->vignetteUrl = Vignette::fromThumb($channel->thumb)->url();
+            if ($channel->cover) {
+                $channel->vignetteUrl = Vignette::fromThumb($channel->cover)->url();
             }
             return $channel;
         });
