@@ -221,4 +221,12 @@ class Playlist extends Model implements Podcastable, Coverable
     {
         return $this->id;
     }
+
+    /**
+     * I'm using this kind of information everywhere.
+     */
+    public function nameWithId(): string
+    {
+        return "{$this->title()} ({$this->id()})";
+    }
 }

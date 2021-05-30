@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Events\ThumbUpdated;
 use App\Modules\Vignette;
+use App\Playlist;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -17,43 +18,75 @@ class ThumbAccessTest extends TestCase
     /** @var \App\Channel $channel */
     protected $channel;
 
+    /** @var \App\Playlist $playlist */
+    protected $playlist;
+
     public function setUp(): void
     {
         parent::setUp();
         $this->channel = $this->createChannelWithPlan();
+        $this->playlist = factory(Playlist::class)->create();
     }
 
-    public function testThumbAreForbidenForGuests()
+    /** @test */
+    public function editing_cover_is_denied_to_guests()
     {
         array_map(function ($routeToCheck) {
-            $this->get(route($routeToCheck, $this->channel))->assertRedirect(
-                route('login')
-            );
+            $this->get(route($routeToCheck, $this->channel))
+                ->assertRedirect(route('login'));
         }, [
-            'channel.thumbs.edit',
-            'channel.thumbs.store',
-            'channel.thumbs.update',
+            'channel.cover.edit',
+            'playlist.cover.edit',
         ]);
     }
 
-    public function testEditThumbIsRefusedToAnotherUser()
+    /** @test */
+    public function updating_cover_is_denied_to_guests()
+    {
+        array_map(function ($routeToCheck) {
+            $this->patch(route($routeToCheck, $this->channel))
+                ->assertRedirect(route('login'));
+        }, [
+            'channel.cover.update',
+            'playlist.cover.update',
+        ]);
+    }
+
+    /** @test */
+    public function editing_channel_cover_is_denied_to_another_user()
     {
         $notTheOwner = factory(User::class)->create();
         $this->actingAs($notTheOwner)
-            ->get(route('channel.thumbs.edit', $this->channel))
+            ->get(route('channel.cover.edit', $this->channel))
             ->assertForbidden();
     }
 
-    public function testEditIndexAreAllowedForOwner()
+    /** @test */
+    public function editing_playlist_cover_is_denied_to_another_user()
     {
-        array_map(
-            function ($routeToCheck) {
-                $this->actingAs($this->channel->user)
-                    ->get(route($routeToCheck, $this->channel))
-                    ->assertSuccessful();
-            },
-            ['channel.thumbs.edit']
-        );
+        $notTheOwner = factory(User::class)->create();
+        $this->actingAs($notTheOwner)
+            ->get(route('playlist.cover.edit', $this->playlist))
+            ->assertForbidden();
+    }
+
+    /** @test */
+    public function updating_channel_cover_is_denied_to_another_user()
+    {
+        $notTheOwner = factory(User::class)->create();
+        $this->actingAs($notTheOwner)
+            ->patch(route('channel.cover.update', $this->channel))
+            ->dump()
+            ->assertForbidden();
+    }
+
+    /** @test */
+    public function updating_playlist_cover_is_denied_to_another_user()
+    {
+        $notTheOwner = factory(User::class)->create();
+        $this->actingAs($notTheOwner)
+            ->patch(route('playlist.cover.update', $this->playlist))
+            ->assertForbidden();
     }
 
     public function testThumpIsUpdated()
@@ -62,7 +95,7 @@ class ThumbAccessTest extends TestCase
 
         $this->followingRedirects()
             ->actingAs($this->channel->user)
-            ->post(route('channel.thumbs.store', $this->channel), [
+            ->post(route('channel.cover.update', $this->channel), [
                 'new_thumb_file' => UploadedFile::fake()->image('photo1.jpg', 1400, 1400)
             ])
             ->assertSuccessful()

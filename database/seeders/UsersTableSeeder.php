@@ -16,7 +16,6 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        
         DB::table('users')->delete();
 
         $data = [
@@ -28,7 +27,7 @@ class UsersTableSeeder extends Seeder
             [
                 'firstname' => 'another fred',
                 'email' => 'frederick@tyteca.net',
-                'password' => '$2y$10$/6YHjNFwNuvXqq7023c3NedYMIi1vcjMj8r1UzIYmrBl5y.zVI.m2',
+                'password' => '$2y$10$pDoZavewGcqHU93YwOR3zOOzDKICchCQtirhhKHCV/FVxY55yFNA.',
             ],
         ];
         $index = 1;
