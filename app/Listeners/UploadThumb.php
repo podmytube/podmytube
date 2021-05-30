@@ -21,8 +21,8 @@ class UploadThumb implements ShouldQueue
         Log::debug(self::class . '::' . __FUNCTION__ . ' - start');
         $this->podcastable = $event->podcastable;
 
-        $localPath = $this->podcastable->thumb->localFilePath();
-        $remotePath = $this->podcastable->thumb->remoteFilePath();
+        $localPath = $this->podcastable->cover->localFilePath();
+        $remotePath = $this->podcastable->cover->remoteFilePath();
 
         Log::debug("{$localPath} - {$remotePath}");
 
@@ -32,6 +32,6 @@ class UploadThumb implements ShouldQueue
             throw new InvalidArgumentException($message);
         }
 
-        SendFileBySFTP::dispatchNow($localPath, $remotePath);
+        SendFileBySFTP::dispatch($localPath, $remotePath);
     }
 }
