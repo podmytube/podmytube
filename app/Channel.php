@@ -21,7 +21,6 @@ use App\Traits\HasManyMedias;
 use App\Traits\HasManyPlaylists;
 use App\Traits\HasOneLanguage;
 use App\Traits\HasOneSubscription;
-use App\Traits\HasOneThumb;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
@@ -43,7 +42,6 @@ class Channel extends Model implements Podcastable, Coverable
         HasManyMedias,
         HasManyPlaylists,
         HasOneSubscription,
-        HasOneThumb,
         HasOneLanguage,
         HasCover;
 
@@ -275,25 +273,11 @@ class Channel extends Model implements Podcastable, Coverable
         return $query->where('active', '=', 1);
     }
 
-    /**
-     * get one channel by its id.
-     *
-     * @param string $channelId the channel_id you are looking for
-     *
-     * @return \App\Channel
-     */
     public static function byChannelId(string $channelId): ?self
     {
         return self::where('channel_id', '=', $channelId)->first();
     }
 
-    /**
-     * get user channels
-     *
-     * @param User $user
-     *
-     * @return \App\Channel
-     */
     public static function byUserId(Authenticatable $user): ?Collection
     {
         $channelsCollection = self::where('user_id', '=', $user->user_id)->get();
@@ -454,5 +438,13 @@ class Channel extends Model implements Podcastable, Coverable
     public function youtubeId(): string
     {
         return $this->channelId();
+    }
+
+    public function subscribeToPlan(Plan $plan): Subscription
+    {
+        return Subscription::updateOrCreate(
+            ['channel_id' => $this->channel_id],
+            ['plan_id' => $plan->id]
+        );
     }
 }

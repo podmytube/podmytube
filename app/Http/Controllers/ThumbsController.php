@@ -48,7 +48,6 @@ class ThumbsController extends Controller
             Log::error("A problem occurs during new thumb upload for {$coverable->nameWithId()}!");
             throw new Exception('A problem occurs during new thumb upload !');
         }
-
         $thumb = $coverable->setCoverFromUploadedFile($uploadedFile);
 
         ThumbUpdated::dispatch($thumb->coverable);

@@ -7,7 +7,9 @@
     colors="true" 
     executionOrder="defects"
     stopOnError="false" 
-    stopOnFailure="false">
+    stopOnFailure="false"
+    verbose="true"
+    >
     <coverage processUncoveredFiles="true">
         <include>
             <directory suffix=".php">./app</directory>

@@ -36,6 +36,7 @@ class HasCoverTest extends TestCase
     public function playlist_cover_should_be_null()
     {
         $this->assertNull($this->playlist->cover);
+        $this->assertFalse($this->playlist->hasCover());
     }
 
     /** @test */
@@ -59,7 +60,7 @@ class HasCoverTest extends TestCase
     }
 
     /** @test */
-    public function channel_cover_should_be_ok()
+    public function channel_cover_relationship_should_be_ok()
     {
         factory(Thumb::class)->create(
             [

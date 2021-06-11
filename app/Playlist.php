@@ -19,6 +19,7 @@ use App\Podcast\PodcastItem;
 use App\Traits\BelongsToChannel;
 use App\Traits\HasCover;
 use App\Youtube\YoutubePlaylistItems;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -228,5 +229,10 @@ class Playlist extends Model implements Podcastable, Coverable
     public function nameWithId(): string
     {
         return "{$this->title()} ({$this->id()})";
+    }
+
+    public function owner(): Authenticatable
+    {
+        return $this->channel->user;
     }
 }

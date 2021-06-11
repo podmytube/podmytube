@@ -108,4 +108,21 @@ abstract class TestCase extends BaseTestCase
             );
         return Storage::disk(Thumb::LOCAL_STORAGE_DISK)->size($filePath);
     }
+
+    public function createChannel(?User $user = null, ?Plan $plan = null): Channel
+    {
+        /** if owner specified */
+        if ($user !== null) {
+            $userContext = ['user_id' => $user->id()];
+        }
+        $channel = factory(Channel::class)->create($userContext);
+
+        /** if no plan, affecting a created one */
+        if ($plan === null) {
+            $plan = factory(Plan::class)->create();
+        }
+        $channel->subscribeToPlan($plan);
+        $channel->refresh();
+        return $channel;
+    }
 }
