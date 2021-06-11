@@ -128,7 +128,7 @@ class Vignette
     /**
      * This function will upload the vignette.
      */
-    public function upload()
+    /* public function upload()
     {
         try {
             Storage::disk(self::REMOTE_STORAGE_DISK)->put(
@@ -136,7 +136,7 @@ class Vignette
                 $this->getData()
             );
 
-            /** Once uploaded, we are setting the channel_path on the remote to public visibility  */
+            // Once uploaded, we are setting the channel_path on the remote to public visibility
             Storage::disk(self::REMOTE_STORAGE_DISK)->setVisibility(
                 $this->channelId(),
                 'public'
@@ -149,7 +149,7 @@ class Vignette
             throw new VignetteUploadException($message);
         }
         return true;
-    }
+    } */
 
     /**
      * Should be done within a queue.
