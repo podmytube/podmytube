@@ -5,15 +5,19 @@ namespace Tests\Feature;
 use App\Events\ThumbUpdated;
 use App\Modules\Vignette;
 use App\Playlist;
+use App\Thumb;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
-class ThumbAccessTest extends TestCase
+class ThumbControllerTest extends TestCase
 {
     use RefreshDatabase;
+
+    /** @var \App\User $user */
+    protected $user;
 
     /** @var \App\Channel $channel */
     protected $channel;
@@ -24,8 +28,9 @@ class ThumbAccessTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->channel = $this->createChannelWithPlan();
-        $this->playlist = factory(Playlist::class)->create();
+        $this->user = factory(User::class)->create();
+        $this->channel = $this->createChannel($this->user);
+        $this->playlist = factory(Playlist::class)->create(['channel_id' => $this->channel->channelId()]);
     }
 
     /** @test */
@@ -74,10 +79,13 @@ class ThumbAccessTest extends TestCase
     public function updating_channel_cover_is_denied_to_another_user()
     {
         $notTheOwner = factory(User::class)->create();
-        $this->actingAs($notTheOwner)
-            ->patch(route('channel.cover.update', $this->channel))
-            ->dump()
+        $this->followingRedirects()
+            ->actingAs($notTheOwner)
+            ->patch(route('channel.cover.update', $this->channel), [
+                'new_thumb_file' => UploadedFile::fake()->image('photo1.jpg', 1400, 1400)
+            ])
             ->assertForbidden();
+        //->assertRedirect(route(''));
     }
 
     /** @test */
@@ -85,22 +93,63 @@ class ThumbAccessTest extends TestCase
     {
         $notTheOwner = factory(User::class)->create();
         $this->actingAs($notTheOwner)
-            ->patch(route('playlist.cover.update', $this->playlist))
+            ->patch(route('playlist.cover.update', $this->playlist), [
+                'new_thumb_file' => UploadedFile::fake()->image('photo1.jpg', 1400, 1400)
+            ])
             ->assertForbidden();
     }
 
-    public function testThumpIsUpdated()
+    /** @test */
+    public function channel_thumb_should_be_updated()
     {
         Event::fake();
 
+        $this->assertNull($this->channel->cover);
+
+        /** updating cover should be ok and displayed on home */
         $this->followingRedirects()
             ->actingAs($this->channel->user)
-            ->post(route('channel.cover.update', $this->channel), [
+            ->from(route('home'))
+            ->patch(route('channel.cover.update', $this->channel), [
                 'new_thumb_file' => UploadedFile::fake()->image('photo1.jpg', 1400, 1400)
             ])
-            ->assertSuccessful()
-            ->assertSee(Vignette::fromThumb($this->channel->thumb)->url());
+            ->assertSuccessful();
 
         Event::assertDispatched(ThumbUpdated::class);
+
+        /** once updated, coverable should have a cover */
+        $this->channel->refresh();
+        $this->assertNotNull($this->channel->cover);
+        $this->assertInstanceOf(Thumb::class, $this->channel->cover);
+
+        /** and a vignette */
+        $this->markTestIncomplete('Should check the vignette is the new one');
+    }
+
+    /** @test */
+    public function playlist_thumb_should_be_updated()
+    {
+        Event::fake();
+
+        $this->assertNull($this->playlist->cover);
+
+        /** updating cover should be ok and displayed on home */
+        $this->followingRedirects()
+            ->actingAs($this->playlist->owner())
+            ->from(route('home'))
+            ->patch(route('playlist.cover.update', $this->playlist), [
+                'new_thumb_file' => UploadedFile::fake()->image('photo1.jpg', 1400, 1400)
+            ])
+            ->assertSuccessful();
+
+        Event::assertDispatched(ThumbUpdated::class);
+
+        /** once updated, coverable should have a cover */
+        $this->playlist->refresh();
+        $this->assertNotNull($this->playlist->cover);
+        $this->assertInstanceOf(Thumb::class, $this->playlist->cover);
+
+        /** and a vignette */
+        $this->markTestIncomplete('Should check the vignette is the new one');
     }
 }

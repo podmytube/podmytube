@@ -86,14 +86,16 @@ class VignetteModuleTest extends TestCase
         Vignette::fromThumb($this->thumb)->makeIt();
     }
 
-    public function testSaveLocally()
+    /** @test */
+    public function save_locally_should_be_good()
     {
         $this->assertFileDoesNotExist($this->vignette->localFilePath());
         $this->vignette->makeIt()->saveLocally();
         $this->assertFileExists($this->vignette->localFilePath());
     }
 
-    public function testUrlShouldBeGood()
+    /** @test */
+    public function url_should_be_good()
     {
         $this->assertEquals(
             Storage::disk(Vignette::LOCAL_STORAGE_DISK)->url($this->vignette->relativePath()),
