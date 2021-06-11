@@ -128,7 +128,7 @@ class Channel extends Model implements Podcastable, Coverable
             ->whereHas('subscription', function (Builder $query) {
                 $query->where('plan_id', '=', Plan::EARLY_PLAN_ID);
             })
-            ->with(['User', 'Category', 'Thumb', 'Subscription'])
+            ->with(['User', 'Category', 'cover', 'Subscription'])
             ->get();
     }
 
@@ -143,7 +143,7 @@ class Channel extends Model implements Podcastable, Coverable
             ->whereHas('subscription', function (Builder $query) {
                 $query->where('plan_id', '=', Plan::FREE_PLAN_ID);
             })
-            ->with(['User', 'Category', 'Thumb', 'Subscription'])
+            ->with(['User', 'Category', 'cover', 'Subscription'])
             ->get();
     }
 
@@ -159,7 +159,7 @@ class Channel extends Model implements Podcastable, Coverable
             ->whereHas('subscription', function (Builder $query) {
                 $query->where('plan_id', '>', Plan::EARLY_PLAN_ID);
             })
-            ->with(['User', 'Category', 'Thumb', 'Subscription'])
+            ->with(['User', 'Category', 'cover', 'Subscription'])
             ->get();
     }
 
