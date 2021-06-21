@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             ApiKeysTableSeeder::class,
             LanguagesTableSeeder::class,
             ChannelsTableSeeder::class,
+            PlaylistsTableSeeder::class,
         ]);
 
         Model::reguard();
