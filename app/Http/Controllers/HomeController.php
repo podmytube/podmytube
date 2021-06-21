@@ -32,14 +32,14 @@ class HomeController extends Controller
          */
         $channels = Channel::with(['subscription.plan', 'cover'])
             ->where('user_id', '=', Auth::id())
-            ->get();
-        $channels = $channels->map(function ($channel) {
-            $channel->vignetteUrl = Vignette::defaultUrl();
-            if ($channel->cover) {
-                $channel->vignetteUrl = Vignette::fromThumb($channel->cover)->url();
-            }
-            return $channel;
-        });
+            ->get()
+            ->map(function ($channel) {
+                $channel->vignetteUrl = Vignette::defaultUrl();
+                if ($channel->cover) {
+                    $channel->vignetteUrl = Vignette::fromThumb($channel->cover)->url();
+                }
+                return $channel;
+            });
 
         $playlists = Playlist::userPlaylists(Auth::user());
 

@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Channel;
+use App\Language;
 use App\Plan;
 use App\Subscription;
 use App\User;
@@ -28,13 +29,30 @@ class ChannelsTableSeeder extends Seeder
         DB::table('channels')->delete();
 
         /** create channel */
-        $channel = factory(Channel::class)->create([
+        $channel = Channel::create([
             'channel_id' => self::JEANVIET_CHANNEL_ID,
-            'category_id' => 4, //education
             'user_id' => User::byEmail('frederick@podmytube.com')->user_id,
+            'channel_name' => 'Jean Viet',
+            'podcast_title' => null,
+            'podcast_copyright' => '',
+            'authors' => 'Jean Baptiste Viet',
+            'email' => 'jeanviet@example.com',
+            'description' => 'lorem',
+            'link' => '',
+            'category_id' => 4, //education
+            'language_id' => Language::byCode('fr')->id,
+            'explicit' => false,
+            'active' => true,
+            'reject_video_too_old' => null,
+            'reject_video_by_keyword' => null,
+            'accept_video_by_tag' => null,
+
+            'channel_createdAt' => now(),
+            'channel_updatedAt' => now(),
+            'podcast_updatedAt' => now(),
         ]);
 
-        factory(Subscription::class)->create(
+        Subscription::create(
             [
                 'channel_id' => $channel->channel_id,
                 'plan_id' => Plan::bySlug('forever_free')->id,

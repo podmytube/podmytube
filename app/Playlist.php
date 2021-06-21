@@ -198,7 +198,8 @@ class Playlist extends Model implements Podcastable, Coverable
 
         /** get playlist associated with each channel */
         $channels->map(function (Channel $channel) use (&$playlists) {
-            Playlist::where('channel_id', '=', $channel->channel_id)
+            Playlist::active()
+                ->where('channel_id', '=', $channel->channel_id)
                 ->get()
                 ->map(function (Playlist $playlist) use (&$playlists) {
                     $playlists->push($playlist);
