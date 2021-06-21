@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\User;
-use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -35,8 +34,8 @@ class UsersTableSeeder extends Seeder
             function ($item) use (&$index) {
                 return array_merge($item, [
                     'user_id' => $index++,
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ]);
             },
             $data
