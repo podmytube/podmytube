@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Category;
 use App\Channel;
 use App\Language;
 use App\Plan;
@@ -39,14 +40,13 @@ class ChannelsTableSeeder extends Seeder
             'email' => 'jeanviet@example.com',
             'description' => 'lorem',
             'link' => '',
-            'category_id' => 4, //education
+            'category_id' => Category::bySlug('education')->id, //education
             'language_id' => Language::byCode('fr')->id,
             'explicit' => false,
             'active' => true,
             'reject_video_too_old' => null,
             'reject_video_by_keyword' => null,
             'accept_video_by_tag' => null,
-
             'channel_createdAt' => now(),
             'channel_updatedAt' => now(),
             'podcast_updatedAt' => now(),
