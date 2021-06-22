@@ -12,6 +12,7 @@
     },
     "devDependencies": {
         "axios": "^0.21.1",
+        "blade-formatter": "^1.11.8",
         "browser-sync": "^2.26.13",
         "browser-sync-webpack-plugin": "^2.2.2",
         "cross-env": "^7.0.3",

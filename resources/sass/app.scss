@@ -5,6 +5,14 @@
 @import "tailwindcss/utilities";
 
 @layer base {
+    .btn-podcast {
+        @apply bg-purple-800 hover:bg-purple-900 text-gray-100 font-bold py-2 px-4 rounded-lg;
+    }
+
+    .btn-upgrade {
+        @apply bg-green-800 hover:bg-green-900 text-white font-bold py-2 px-4 rounded-lg;
+    }
+
     .post-content {
         h2 {
             @apply text-white text-3xl font-semibold py-4;
