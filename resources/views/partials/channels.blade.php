@@ -8,7 +8,7 @@
                 class="border-b-2 border-gray-900">transform your channel into a podcast</a>.</p>
     </div>
 @else
-    <h2 class="text-3xl md:text-5xl text-white font-semibold">
+    <h2 class="h2">
         Your @if ($channels->count() > 1)podcasts @else podcast @endif
     </h2>
 

@@ -15,6 +15,7 @@ use App\Exceptions\PlaylistWithNoMediaWeKnowAboutException;
 use App\Exceptions\PlaylistWithNoVideosException;
 use App\Interfaces\Coverable;
 use App\Interfaces\Podcastable;
+use App\Modules\Vignette;
 use App\Podcast\PodcastItem;
 use App\Traits\BelongsToChannel;
 use App\Traits\HasCover;
@@ -186,6 +187,11 @@ class Playlist extends Model implements Podcastable, Coverable
         return $query->where('active', '=', 1);
     }
 
+    /**
+     * will return active playlist(s) for user.
+     *
+     * @param \App\User $user
+     */
     public static function userPlaylists(User $user)
     {
         $playlists = new Collection();
@@ -202,6 +208,10 @@ class Playlist extends Model implements Podcastable, Coverable
                 ->where('channel_id', '=', $channel->channel_id)
                 ->get()
                 ->map(function (Playlist $playlist) use (&$playlists) {
+                    $playlist->vignetteUrl = Vignette::defaultUrl();
+                    if ($playlist->cover) {
+                        $playlist->vignetteUrl = Vignette::fromThumb($playlist->cover)->url();
+                    }
                     $playlists->push($playlist);
                 });
         });
