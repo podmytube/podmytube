@@ -194,20 +194,24 @@ class Playlist extends Model implements Podcastable, Coverable
      */
     public static function userPlaylists(User $user)
     {
-        $playlists = new Collection();
-
         /** get user channels */
         $channels = Channel::userChannels($user);
         if (!$channels->count()) {
-            return $playlists;
+            return new Collection();
         }
 
-        /** get playlist associated with each channel */
-        $channels->map(function (Channel $channel) use (&$playlists) {
-            Playlist::active()
+        $playlists = new Collection();
+        /**
+         * get playlist associated with each channel
+         * I'm sending $playlist with the use because the double map is
+         * getting me a collection (per channel) of collection (per playlist).
+         * @todo I should update the database to add user_id into playlists table.
+         */
+        $channels->map(function (Channel $channel) use ($playlists) {
+            return Playlist::active()
                 ->where('channel_id', '=', $channel->channel_id)
                 ->get()
-                ->map(function (Playlist $playlist) use (&$playlists) {
+                ->map(function (Playlist $playlist) use ($playlists) {
                     $playlist->vignetteUrl = Vignette::defaultUrl();
                     if ($playlist->cover) {
                         $playlist->vignetteUrl = Vignette::fromThumb($playlist->cover)->url();
@@ -215,7 +219,6 @@ class Playlist extends Model implements Podcastable, Coverable
                     $playlists->push($playlist);
                 });
         });
-
         return $playlists;
     }
 
