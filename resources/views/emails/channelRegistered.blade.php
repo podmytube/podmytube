@@ -18,7 +18,7 @@
         {{ __('emails.registered_a_select_a_category') }}
     </a>
 
-    <a href="{{ route ('channel.thumbs.edit', $channel) }}" class="button bgsuccess">  
+    <a href="{{ route ('channel.cover.edit', $channel) }}" class="button bgsuccess">  
         @lang('emails.registered_a_add_an_illustration') 
     </a>
 </p>

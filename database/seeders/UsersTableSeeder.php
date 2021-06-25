@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\User;
-use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -16,7 +15,6 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        
         DB::table('users')->delete();
 
         $data = [
@@ -28,7 +26,7 @@ class UsersTableSeeder extends Seeder
             [
                 'firstname' => 'another fred',
                 'email' => 'frederick@tyteca.net',
-                'password' => '$2y$10$/6YHjNFwNuvXqq7023c3NedYMIi1vcjMj8r1UzIYmrBl5y.zVI.m2',
+                'password' => '$2y$10$pDoZavewGcqHU93YwOR3zOOzDKICchCQtirhhKHCV/FVxY55yFNA.',
             ],
         ];
         $index = 1;
@@ -36,8 +34,8 @@ class UsersTableSeeder extends Seeder
             function ($item) use (&$index) {
                 return array_merge($item, [
                     'user_id' => $index++,
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ]);
             },
             $data

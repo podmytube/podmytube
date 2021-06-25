@@ -6,6 +6,8 @@ use App\Channel;
 use App\Media;
 use App\Playlist;
 use App\Thumb;
+use App\User;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Collection;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -22,7 +24,9 @@ class PlaylistModelTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->playlist = factory(Playlist::class)->create();
+        $this->user = factory(User::class)->create();
+        $this->channel = $this->createChannel($this->user);
+        $this->playlist = factory(Playlist::class)->create(['channel_id' => $this->channel->channelId()]);
     }
 
     public function testPodcastUrlIsFine()
@@ -59,10 +63,15 @@ class PlaylistModelTest extends TestCase
 
         /** channel set a thumb, will be the same for playlist (for the moment) */
         $channelWithThumb = factory(Channel::class)->create();
-        $thumb = factory(Thumb::class)->create(['channel_id' => $channelWithThumb->channel_id]);
+        $thumb = factory(Thumb::class)->create(
+            [
+                'coverable_type' => get_class($channelWithThumb),
+                'coverable_id' => $channelWithThumb->id()
+            ]
+        );
         $playlistWithThumb = factory(Playlist::class)->create(['channel_id' => $channelWithThumb->channel_id]);
         $this->assertEquals(
-            config('app.thumbs_url') . '/' . $thumb->relativePath,
+            config('app.thumbs_url') . '/' . $thumb->relativePath(),
             $playlistWithThumb->podcastCoverUrl()
         );
     }
@@ -139,5 +148,48 @@ class PlaylistModelTest extends TestCase
         /** if filtered playlist has only 1 item and the right one it's good */
         $this->assertCount(1, $activePlaylists);
         $this->assertEquals($this->playlist->id, $activePlaylists->first()->id);
+    }
+
+    /** @test */
+    public function user_has_no_playlists_should_return_zero()
+    {
+        $expectedNumberOfPlaylists = 0;
+        $user = factory(User::class)->create();
+        /** user has no playlist yet */
+        $this->assertCount($expectedNumberOfPlaylists, Playlist::userPlaylists($user));
+    }
+
+    /** @test */
+    public function user_playlists_should_be_fine()
+    {
+        $this->playlist->update(['active' => true]);
+
+        /** user should have one playlist now */
+        $expectedNumberOfPlaylists = 1;
+        $this->assertCount($expectedNumberOfPlaylists, Playlist::userPlaylists($this->user));
+
+        /** creating some playlists on same channel */
+        $numberOfPlaylistsToAdd = 5;
+        factory(Playlist::class, $numberOfPlaylistsToAdd)->create(['channel_id' => $this->channel->channelId(), 'active' => true]);
+        $expectedNumberOfPlaylists += $numberOfPlaylistsToAdd;
+
+        $this->assertCount($expectedNumberOfPlaylists, Playlist::userPlaylists($this->user));
+
+        /** associating another channel with some playlists */
+        $anotherChannel = $this->createChannelForUser($this->user);
+        $numberOfPlaylistsToAdd = 3;
+        factory(Playlist::class, $numberOfPlaylistsToAdd)->create(['channel_id' => $anotherChannel->channelId(), 'active' => true]);
+
+        $expectedNumberOfPlaylists += $numberOfPlaylistsToAdd;
+        $this->assertCount($expectedNumberOfPlaylists, Playlist::userPlaylists($this->user));
+    }
+
+    /** @test */
+    public function owner_is_fine()
+    {
+        $owner = $this->playlist->owner();
+        $this->assertNotNull($owner);
+        $this->assertInstanceOf(Authenticatable::class, $owner);
+        $this->assertEquals($this->user->lastname, $owner->lastname);
     }
 }

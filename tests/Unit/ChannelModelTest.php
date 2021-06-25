@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use App\Channel;
 use App\Media;
 use App\Plan;
+use App\Subscription;
 use Tests\TestCase;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -106,5 +107,37 @@ class ChannelModelTest extends TestCase
         $this->assertTrue($channelWhichIsNotPayingEnough->shouldChannelBeUpgraded());
     }
 
-    
+    /** @test */
+    public function user_channels_is_ok()
+    {
+        $user = factory(User::class)->create();
+        $this->assertCount(0, Channel::userChannels($user));
+
+        $this->channel->update(['user_id' => $user->user_id]);
+        $this->assertCount(1, Channel::userChannels($user));
+
+        factory(Channel::class, 5)->create(['user_id' => $user->user_id]);
+        $this->assertCount(6, Channel::userChannels($user));
+    }
+
+    /** @test */
+    public function subscribe_to_plan_should_be_ok()
+    {
+        $channel = factory(Channel::class)->create();
+        $this->assertNull($channel->subscription);
+
+        $plan = factory(Plan::class)->create();
+        $subscription = $channel->subscribeToPlan($plan);
+        $channel->refresh();
+        $this->assertNotNull($subscription);
+        $this->assertInstanceOf(Subscription::class, $subscription);
+
+        $this->assertNotNull($channel->subscription);
+        $this->assertInstanceOf(Subscription::class, $channel->subscription);
+
+        /** checking plan subscription */
+        $this->assertNotNull($channel->subscription->plan);
+        $this->assertInstanceOf(Plan::class, $channel->subscription->plan);
+        $this->assertEquals($plan->name, $channel->subscription->plan->name);
+    }
 }

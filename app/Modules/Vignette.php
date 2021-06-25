@@ -46,7 +46,7 @@ class Vignette
      */
     public function relativePath(): string
     {
-        return $this->thumb->channel->channel_id . '/' . $this->fileName();
+        return $this->thumb->coverable->channelId() . '/' . $this->fileName();
     }
 
     /**
@@ -89,9 +89,10 @@ class Vignette
         /** Verifying thumb file exists */
         if (!$this->thumb->exists()) {
             throw new VignetteCreationFromMissingThumbException(
-                "Thumb file {$this->thumb->relativePath()} for channel {$this->thumb->channel->channel_id} is missing."
+                "Thumb file {$this->thumb->relativePath()} for coverable {$this->thumb->coverableLabel()} is missing."
             );
         }
+
         /** getting data and convert it to an image object */
         $this->image = Image::make($this->thumb->getData());
 
@@ -127,7 +128,7 @@ class Vignette
     /**
      * This function will upload the vignette.
      */
-    public function upload()
+    /* public function upload()
     {
         try {
             Storage::disk(self::REMOTE_STORAGE_DISK)->put(
@@ -135,7 +136,7 @@ class Vignette
                 $this->getData()
             );
 
-            /** Once uploaded, we are setting the channel_path on the remote to public visibility  */
+            // Once uploaded, we are setting the channel_path on the remote to public visibility
             Storage::disk(self::REMOTE_STORAGE_DISK)->setVisibility(
                 $this->channelId(),
                 'public'
@@ -148,7 +149,7 @@ class Vignette
             throw new VignetteUploadException($message);
         }
         return true;
-    }
+    } */
 
     /**
      * Should be done within a queue.

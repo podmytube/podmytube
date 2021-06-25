@@ -13,7 +13,6 @@ use Tests\TestCase;
 
 class VignetteModuleTest extends TestCase
 {
-    /** used to remove every created data in database */
     use RefreshDatabase;
 
     /** @var \App\Thumb $thumb */
@@ -25,17 +24,15 @@ class VignetteModuleTest extends TestCase
     /** @var \App\Modules\Vignette $vignette */
     protected $vignette;
 
-    public function setUp():void
+    public function setUp(): void
     {
         parent::setUp();
         $this->channel = factory(Channel::class)->create();
-        $this->thumb = factory(Thumb::class)->create([
-            'channel_id' => $this->channel->channel_id,
-        ]);
+        $this->thumb = $this->createRealThumbFileFor($this->channel);
         $this->vignette = Vignette::fromThumb($this->thumb);
     }
 
-    public function tearDown():void
+    public function tearDown(): void
     {
         Storage::disk(Thumb::LOCAL_STORAGE_DISK)->deleteDirectory($this->channel->channel_id);
         Storage::disk(Vignette::LOCAL_STORAGE_DISK)->deleteDirectory($this->channel->channel_id);
@@ -83,21 +80,22 @@ class VignetteModuleTest extends TestCase
 
     public function testGetDataFromInvalidThumbThrowException()
     {
-        $thumb = factory(Thumb::class)->create();
-        unlink($thumb->localFilePath());
+        unlink($this->thumb->localFilePath());
 
         $this->expectException(VignetteCreationFromMissingThumbException::class);
-        Vignette::fromThumb($thumb)->makeIt();
+        Vignette::fromThumb($this->thumb)->makeIt();
     }
 
-    public function testSaveLocally()
+    /** @test */
+    public function save_locally_should_be_good()
     {
         $this->assertFileDoesNotExist($this->vignette->localFilePath());
         $this->vignette->makeIt()->saveLocally();
         $this->assertFileExists($this->vignette->localFilePath());
     }
 
-    public function testUrlShouldBeGood()
+    /** @test */
+    public function url_should_be_good()
     {
         $this->assertEquals(
             Storage::disk(Vignette::LOCAL_STORAGE_DISK)->url($this->vignette->relativePath()),
