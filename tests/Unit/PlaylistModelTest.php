@@ -162,17 +162,15 @@ class PlaylistModelTest extends TestCase
     /** @test */
     public function user_playlists_should_be_fine()
     {
-        /** associating one new channel to this user */
-        $channel = $this->createChannelForUser($this->user);
-        $this->playlist->update(['channel_id' => $channel->channelId()]);
+        $this->playlist->update(['active' => true]);
 
         /** user should have one playlist now */
         $expectedNumberOfPlaylists = 1;
-        $this->assertCount(1, Playlist::userPlaylists($this->user));
+        $this->assertCount($expectedNumberOfPlaylists, Playlist::userPlaylists($this->user));
 
         /** creating some playlists on same channel */
         $numberOfPlaylistsToAdd = 5;
-        factory(Playlist::class, $numberOfPlaylistsToAdd)->create(['channel_id' => $channel->channelId()]);
+        factory(Playlist::class, $numberOfPlaylistsToAdd)->create(['channel_id' => $this->channel->channelId(), 'active' => true]);
         $expectedNumberOfPlaylists += $numberOfPlaylistsToAdd;
 
         $this->assertCount($expectedNumberOfPlaylists, Playlist::userPlaylists($this->user));
@@ -180,7 +178,7 @@ class PlaylistModelTest extends TestCase
         /** associating another channel with some playlists */
         $anotherChannel = $this->createChannelForUser($this->user);
         $numberOfPlaylistsToAdd = 3;
-        factory(Playlist::class, $numberOfPlaylistsToAdd)->create(['channel_id' => $anotherChannel->channelId()]);
+        factory(Playlist::class, $numberOfPlaylistsToAdd)->create(['channel_id' => $anotherChannel->channelId(), 'active' => true]);
 
         $expectedNumberOfPlaylists += $numberOfPlaylistsToAdd;
         $this->assertCount($expectedNumberOfPlaylists, Playlist::userPlaylists($this->user));
