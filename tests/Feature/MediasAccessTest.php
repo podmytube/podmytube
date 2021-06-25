@@ -45,27 +45,10 @@ class MediasAccessTest extends TestCase
             ->assertForbidden();
     }
 
-    /* public function testMediaShowForbiddenToAnotherUser()
-    {
-        $this->markTestIncomplete('channel.medias.show route does not exist at this time.');
-        $notTheOwner = factory(User::class)->create();
-        $this->actingAs($notTheOwner)
-            ->get(route('channel.medias.show', [$this->channel, $this->media]))
-            ->assertForbidden();
-    } */
-
     public function testAllowedForOwner()
     {
-        array_map(
-            function ($routeToCheck) {
-                $this->actingAs($this->channel->user)
-                    ->get(route($routeToCheck, $this->channel))
-                    ->assertSuccessful();
-            },
-            [
-                'channel.thumbs.index',
-                'channel.thumbs.edit'
-            ]
-        );
+        $this->actingAs($this->channel->user)
+            ->get(route('channel.cover.edit', $this->channel))
+            ->assertSuccessful();
     }
 }

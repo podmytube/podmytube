@@ -10,16 +10,17 @@
 
 namespace App;
 
+use App\Interfaces\Coverable;
 use App\Interfaces\Podcastable;
 use App\Podcast\PodcastItem;
 use App\Traits\BelongsToCategory;
 use App\Traits\BelongsToUser;
+use App\Traits\HasCover;
 use App\Traits\HasLimits;
 use App\Traits\HasManyMedias;
 use App\Traits\HasManyPlaylists;
 use App\Traits\HasOneLanguage;
 use App\Traits\HasOneSubscription;
-use App\Traits\HasOneThumb;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
@@ -33,7 +34,7 @@ use Illuminate\Support\Str;
 /**
  * the channel model and its functions
  */
-class Channel extends Model implements Podcastable
+class Channel extends Model implements Podcastable, Coverable
 {
     use BelongsToCategory,
         BelongsToUser,
@@ -41,8 +42,8 @@ class Channel extends Model implements Podcastable
         HasManyMedias,
         HasManyPlaylists,
         HasOneSubscription,
-        HasOneThumb,
-        HasOneLanguage;
+        HasOneLanguage,
+        HasCover;
 
     public const CREATED_AT = 'channel_createdAt';
     public const UPDATED_AT = 'channel_updatedAt';
@@ -127,7 +128,7 @@ class Channel extends Model implements Podcastable
             ->whereHas('subscription', function (Builder $query) {
                 $query->where('plan_id', '=', Plan::EARLY_PLAN_ID);
             })
-            ->with(['User', 'Category', 'Thumb', 'Subscription'])
+            ->with(['User', 'Category', 'cover', 'Subscription'])
             ->get();
     }
 
@@ -142,7 +143,7 @@ class Channel extends Model implements Podcastable
             ->whereHas('subscription', function (Builder $query) {
                 $query->where('plan_id', '=', Plan::FREE_PLAN_ID);
             })
-            ->with(['User', 'Category', 'Thumb', 'Subscription'])
+            ->with(['User', 'Category', 'cover', 'Subscription'])
             ->get();
     }
 
@@ -158,7 +159,7 @@ class Channel extends Model implements Podcastable
             ->whereHas('subscription', function (Builder $query) {
                 $query->where('plan_id', '>', Plan::EARLY_PLAN_ID);
             })
-            ->with(['User', 'Category', 'Thumb', 'Subscription'])
+            ->with(['User', 'Category', 'cover', 'Subscription'])
             ->get();
     }
 
@@ -272,25 +273,11 @@ class Channel extends Model implements Podcastable
         return $query->where('active', '=', 1);
     }
 
-    /**
-     * get one channel by its id.
-     *
-     * @param string $channelId the channel_id you are looking for
-     *
-     * @return \App\Channel
-     */
     public static function byChannelId(string $channelId): ?self
     {
         return self::where('channel_id', '=', $channelId)->first();
     }
 
-    /**
-     * get user channels
-     *
-     * @param User $user
-     *
-     * @return \App\Channel
-     */
     public static function byUserId(Authenticatable $user): ?Collection
     {
         $channelsCollection = self::where('user_id', '=', $user->user_id)->get();
@@ -305,7 +292,7 @@ class Channel extends Model implements Podcastable
      */
     public function id(): string
     {
-        return $this->channel_id;
+        return $this->channelId();
     }
 
     public function isFree(): bool
@@ -351,10 +338,10 @@ class Channel extends Model implements Podcastable
 
     public function podcastCoverUrl(): string
     {
-        if (!$this->thumb) {
+        if (!$this->hasCover()) {
             return Thumb::defaultUrl();
         }
-        return $this->thumb->podcastUrl();
+        return $this->cover->podcastUrl();
     }
 
     /**
@@ -441,5 +428,23 @@ class Channel extends Model implements Podcastable
         }
 
         return $this->hasReachedItslimit($month, $year);
+    }
+
+    public static function userChannels(User $user)
+    {
+        return self::where('user_id', '=', $user->user_id)->get();
+    }
+
+    public function youtubeId(): string
+    {
+        return $this->channelId();
+    }
+
+    public function subscribeToPlan(Plan $plan): Subscription
+    {
+        return Subscription::updateOrCreate(
+            ['channel_id' => $this->channel_id],
+            ['plan_id' => $plan->id]
+        );
     }
 }

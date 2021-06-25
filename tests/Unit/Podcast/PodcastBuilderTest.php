@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Podcast;
 
-use App\Thumb;
 use App\Podcast\PodcastBuilder;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -28,7 +27,7 @@ class PodcastBuilderTest extends TestCase
     {
         parent::setUp();
         $this->channel = $this->createChannelWithPlan();
-        factory(Thumb::class)->create(['channel_id' => $this->channel->channel_id, ]);
+        $this->createRealThumbFileFor($this->channel);
     }
 
     public function testRenderingPodcastWithoutItemsShouldBeGood()

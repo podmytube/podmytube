@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\App;
 
 class DatabaseSeeder extends Seeder
 {
@@ -19,16 +20,26 @@ class DatabaseSeeder extends Seeder
          */
         Model::unguard();
 
-        $this->call([
-            UsersTableSeeder::class,
+        $requiredSeeders = [
+            ApiKeysTableSeeder::class,
             PlansTableSeeder::class,
             CategoriesTableSeeder::class,
             StripePlansTableSeeder::class,
-            ApiKeysTableSeeder::class,
             LanguagesTableSeeder::class,
-            ChannelsTableSeeder::class,
-        ]);
+        ];
 
+        $additionalSeeders = [];
+        if (App::environment(['local'])) {
+            $additionalSeeders = [
+                UsersTableSeeder::class,
+                ChannelsTableSeeder::class,
+                PlaylistsTableSeeder::class,
+                
+            ];
+        }
+
+        $seeders = array_merge($requiredSeeders, $additionalSeeders);
+        $this->call($seeders);
         Model::reguard();
     }
 }

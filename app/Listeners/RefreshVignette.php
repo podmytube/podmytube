@@ -15,7 +15,7 @@ class RefreshVignette
      */
     public function handle($event)
     {
-        CreateVignetteFromThumb::dispatchNow($event->podcastable->thumb);
+        CreateVignetteFromThumb::dispatch($event->podcastable->cover);
         return true; // for test only
     }
 }

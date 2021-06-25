@@ -28,7 +28,7 @@
 				<a href="{{ route('channel.edit', $channel->channel_id) }}" class="btn btn-primary" role="button">
 					<i class="far fa-edit"></i> {{ __('messages.button_edit_channel_label') }}
 				</a>
-				<a href="{{ route('channel.thumbs.edit', $channel) }}" class="btn btn-primary" role="button">
+				<a href="{{ route('channel.cover.edit', $channel) }}" class="btn btn-primary" role="button">
 					<i class="fas fa-image"></i> {{ __('messages.button_edit_thumb_label') }}
 				</a>
 			</div>

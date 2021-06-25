@@ -22,7 +22,7 @@ class YoutubeCoreTest extends TestCase
     public const PEWDIEPIE_CHANNEL_ID = 'UC-lHJZR3Gqxm24_Vd_AJ5Yw';
     public const PEWDIEPIE_UPLOADS_PLAYLIST_ID = 'UU-lHJZR3Gqxm24_Vd_AJ5Yw';
     public const NOWTECH_UPLOADS_PLAYLIST_ID = 'UUVwG9JHqGLfEO-4TkF-lf2g';
-    public const NOWTECH_PLAYLIST_ID = 'PL5SLXKZQtnH8CdXkD8NIdIV-w13VMq1f5';
+    public const NOWTECH_PLAYLIST_ID = 'PLhQHoIKUR5vD0vq6Jwns89QAz9OZWTvpx';
 
     public function setUp(): void
     {

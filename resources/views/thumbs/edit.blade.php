@@ -5,12 +5,15 @@
 @section ('content')
 <div class="max-w-screen-xl mx-auto py-6 md:py-12 px-4 text-gray-900">
     <h2 class="text-3xl md:text-5xl text-white font-semibold">
-        Update cover for {{ $channel->title() }}
+        Update cover for {{ $coverable->title() }}
     </h2>
 
     <div class="bg-gray-100 mt-6 px-4 py-4 rounded-lg">
-        <form class="max-w-5xl" id="edit-cover-form" method="POST" action="{{ route('channel.thumbs.store', $channel) }}" enctype="multipart/form-data">
-            {{ csrf_field() }}
+        <form class="max-w-5xl" id="edit-cover-form" method="POST" enctype="multipart/form-data"
+            action="{{ route($objectType.'.cover.update', $coverable) }}" 
+        >
+            @csrf
+            @method('PATCH')
             <p>
                 <b>Image should meet iTunes requirements !</b> 
                 <ul class="list-disc py-4">
@@ -22,7 +25,7 @@
             </p>
             
             <div class="text-center">
-                <label for="new_thumb_file">{{__('messages.thumbs_edit_new_thumb_form_label')}}</label><br />
+                <label for="new_thumb_file">Feel free to change your cover.</label><br />
                 <input type="file" name="new_thumb_file" id="new_thumb_file" class="" />
             </div>
 

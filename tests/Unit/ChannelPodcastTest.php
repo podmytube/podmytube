@@ -25,12 +25,19 @@ class ChannelPodcastTest extends TestCase
         $this->channel = $this->createChannelWithPlan();
     }
 
-    public function testPodcastCoverUrlIsFine()
+    /** @test */
+    public function podcast_cover_url_should_be_default_one()
     {
+        /** channel has no cover yet should be default url */
         $this->assertEquals(Thumb::defaultUrl(), $this->channel->podcastCoverUrl());
-        $channelWithThumb = factory(Channel::class)->create();
-        $thumb = factory(Thumb::class)->create(['channel_id' => $channelWithThumb->channel_id]);
-        $this->assertEquals($thumb->podcastUrl(), $channelWithThumb->podcastCoverUrl());
+    }
+
+    /** @test */
+    public function podcast_cover_url_should_be_good()
+    {
+        $thumb = factory(Thumb::class)->create();
+        $this->channel->setCoverFromThumb($thumb);
+        $this->assertEquals($thumb->podcastUrl(), $this->channel->podcastCoverUrl());
     }
 
     public function testingToPodcastHeaderIsFineWithAllInformations()

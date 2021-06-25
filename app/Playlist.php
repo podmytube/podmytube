@@ -13,10 +13,14 @@ namespace App;
 
 use App\Exceptions\PlaylistWithNoMediaWeKnowAboutException;
 use App\Exceptions\PlaylistWithNoVideosException;
+use App\Interfaces\Coverable;
 use App\Interfaces\Podcastable;
+use App\Modules\Vignette;
 use App\Podcast\PodcastItem;
 use App\Traits\BelongsToChannel;
+use App\Traits\HasCover;
 use App\Youtube\YoutubePlaylistItems;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -25,9 +29,9 @@ use Illuminate\Support\Collection as SupportCollection;
 /**
  * the Playlist class and its functions
  */
-class Playlist extends Model implements Podcastable
+class Playlist extends Model implements Podcastable, Coverable
 {
-    use BelongsToChannel;
+    use BelongsToChannel, HasCover;
 
     protected $guarded = [];
 
@@ -181,5 +185,68 @@ class Playlist extends Model implements Podcastable
     public function scopeActive(Builder $query)
     {
         return $query->where('active', '=', 1);
+    }
+
+    /**
+     * will return active playlist(s) for user.
+     *
+     * @param \App\User $user
+     */
+    public static function userPlaylists(User $user)
+    {
+        /** get user channels */
+        $channels = Channel::userChannels($user);
+        if (!$channels->count()) {
+            return new Collection();
+        }
+
+        $playlists = new Collection();
+        /**
+         * get playlist associated with each channel
+         * I'm sending $playlist with the use because the double map is
+         * getting me a collection (per channel) of collection (per playlist).
+         * @todo I should update the database to add user_id into playlists table.
+         */
+        $channels->map(function (Channel $channel) use ($playlists) {
+            return Playlist::active()
+                ->where('channel_id', '=', $channel->channel_id)
+                ->get()
+                ->map(function (Playlist $playlist) use ($playlists) {
+                    $playlist->vignetteUrl = Vignette::defaultUrl();
+                    if ($playlist->cover) {
+                        $playlist->vignetteUrl = Vignette::fromThumb($playlist->cover)->url();
+                    }
+                    $playlists->push($playlist);
+                });
+        });
+        return $playlists;
+    }
+
+    public function title(): string
+    {
+        return $this->title;
+    }
+
+    public function youtubeId(): string
+    {
+        return $this->youtube_playlist_id;
+    }
+
+    public function id()
+    {
+        return $this->id;
+    }
+
+    /**
+     * I'm using this kind of information everywhere.
+     */
+    public function nameWithId(): string
+    {
+        return "{$this->title()} ({$this->id()})";
+    }
+
+    public function owner(): Authenticatable
+    {
+        return $this->channel->user;
     }
 }

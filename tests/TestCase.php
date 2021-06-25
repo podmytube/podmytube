@@ -3,14 +3,16 @@
 namespace Tests;
 
 use App\Channel;
+use App\Interfaces\Coverable;
 use App\Media;
 use App\Plan;
-use App\StripePlan;
 use App\Subscription;
+use App\Thumb;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -74,4 +76,53 @@ abstract class TestCase extends BaseTestCase
         return htmlspecialchars($str, ENT_QUOTES | ENT_HTML401);
     }
 
+    public function createChannelForUser(?User $user = null): Channel
+    {
+        $createContext = [];
+        if ($user !== null) {
+            $createContext = ['user_id' => $user->user_id];
+        }
+        return factory(Channel::class)->create($createContext);
+    }
+
+    public function createRealThumbFileFor(Coverable $coverable):  Thumb
+    {
+        $thumb = factory(Thumb::class)->create([
+            'coverable_type' => get_class($coverable),
+            'coverable_id' => $coverable->id(),
+        ]);
+        $this->createFakeCoverFor($thumb);
+        return $thumb;
+    }
+
+    /** will create a cover from existing fixture and return filesize */
+    public function createFakeCoverFor(Thumb $thumb): int
+    {
+        /** create channel folder */
+        $fileName = $thumb->file_name;
+        $filePath = $thumb->coverable->channelId() . '/' . $fileName;
+        Storage::disk(Thumb::LOCAL_STORAGE_DISK)
+            ->put(
+                $filePath,
+                file_get_contents(base_path('tests/fixtures/images/sampleThumb.jpg'))
+            );
+        return Storage::disk(Thumb::LOCAL_STORAGE_DISK)->size($filePath);
+    }
+
+    public function createChannel(?User $user = null, ?Plan $plan = null): Channel
+    {
+        /** if owner specified */
+        if ($user !== null) {
+            $userContext = ['user_id' => $user->id()];
+        }
+        $channel = factory(Channel::class)->create($userContext);
+
+        /** if no plan, affecting a created one */
+        if ($plan === null) {
+            $plan = factory(Plan::class)->create();
+        }
+        $channel->subscribeToPlan($plan);
+        $channel->refresh();
+        return $channel;
+    }
 }
