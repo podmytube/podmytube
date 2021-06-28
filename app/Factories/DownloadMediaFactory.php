@@ -81,7 +81,7 @@ class DownloadMediaFactory
              * upload it
              */
             Log::debug("Uploading media {$this->media->media_id} duration.");
-            SendFileBySFTP::dispatchNow($downloadedFilePath, $this->media->remoteFilePath(), $cleanAfter = true);
+            SendFileBySFTP::dispatchSync($downloadedFilePath, $this->media->remoteFilePath(), $cleanAfter = true);
 
             /**
              * setting status

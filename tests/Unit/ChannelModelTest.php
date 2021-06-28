@@ -9,6 +9,8 @@ use App\Subscription;
 use Tests\TestCase;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
 use PlansTableSeeder;
@@ -140,4 +142,34 @@ class ChannelModelTest extends TestCase
         $this->assertInstanceOf(Plan::class, $channel->subscription->plan);
         $this->assertEquals($plan->name, $channel->subscription->plan->name);
     }
+    
+    /** @test */
+    public function all_active_channels_should_be_empty ()
+    {
+        $this->channel->update(['active'=>false]);
+        $results = Channel::allActiveChannels();
+        $this->assertInstanceOf(Collection::class,$results);
+        $this->assertCount(0,$results);
+    }
+
+     /** @test */
+     public function all_active_channels_should_be_fine ()
+     {
+         /** faking uploaded file */
+         $uploadedFile = UploadedFile::fake()->image('photo1.jpg');
+         
+         /** adding cover to channel */
+        $this->channel->setCoverFromUploadedFile($uploadedFile);
+
+         $inactiveChannel = factory(Channel::class)->create(['active'=>false]);
+         $results = Channel::allActiveChannels();
+         $this->assertInstanceOf(Collection::class,$results);
+         $this->assertCount(1,$results);
+         $this->assertTrue($results->first()->hasCover());
+         
+        $onlyChannelIds = $results->pluck('channel_id')->toArray();
+        $this->assertContains($this->channel->channel_id, $onlyChannelIds);
+        $this->assertNotContains($inactiveChannel, $onlyChannelIds);
+
+     }
 }

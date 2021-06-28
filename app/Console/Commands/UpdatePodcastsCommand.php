@@ -4,7 +4,9 @@ namespace App\Console\Commands;
 
 use App\Channel;
 use App\Factories\UploadPodcastFactory;
+use Exception;
 use Illuminate\Console\Command;
+use RuntimeException;
 
 /**
  * will update podcast feeds.
@@ -48,7 +50,7 @@ class UpdatePodcastsCommand extends Command
         ];
         $optionTyped = $this->argument('batchToProcess');
         if (!isset($optionAndMethods[$optionTyped])) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 "Option {$optionTyped} is not a valid one. Options available : free/paying/early/all."
             );
         }
@@ -74,7 +76,7 @@ class UpdatePodcastsCommand extends Command
             try {
                 UploadPodcastFactory::init()->for($channel);
                 $this->recordSuccess($channel);
-            } catch (\Exception $exception) {
+            } catch (Exception $exception) {
                 $this->recordFailure($channel, $exception);
             }
             if ($this->getOutput()->isVerbose()) {

@@ -37,6 +37,8 @@ class ChannelPodcastTest extends TestCase
     {
         $thumb = factory(Thumb::class)->create();
         $this->channel->setCoverFromThumb($thumb);
+        $this->assertNotNull($thumb->podcastUrl());
+        $this->assertInstanceOf(Thumb::class, $thumb);
         $this->assertEquals($thumb->podcastUrl(), $this->channel->podcastCoverUrl());
     }
 
