@@ -39,7 +39,7 @@ class ChannelsTableSeeder extends Seeder
             'authors' => 'Jean Baptiste Viet',
             'email' => 'jeanviet@example.com',
             'description' => 'lorem',
-            'link' => '',
+            'link' => 'https://www.youtube.com/channel/UCu0tUATmSnMMCbCRRYXmVlQ',
             'category_id' => Category::bySlug('education')->id, //education
             'language_id' => Language::byCode('fr')->id,
             'explicit' => false,
