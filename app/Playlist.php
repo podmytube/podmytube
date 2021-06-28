@@ -1,10 +1,10 @@
 <?php
+
+declare(strict_types=1);
 /**
- * the playlist model to access database same table name
+ * the playlist model to access database same table name.
  *
  * Mainly redefine the primary key and the relationship between one channel and its playlist
- *
- * @package PodMyTube
  *
  * @author Frederick Tyteca <fred@podmytube.com>
  */
@@ -27,11 +27,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection as SupportCollection;
 
 /**
- * the Playlist class and its functions
+ * the Playlist class and its functions.
  */
 class Playlist extends Model implements Podcastable, Coverable
 {
-    use BelongsToChannel, HasCover;
+    use BelongsToChannel;
+    use HasCover;
 
     protected $guarded = [];
 
@@ -42,9 +43,8 @@ class Playlist extends Model implements Podcastable, Coverable
     public function mediasToPublish(): Collection
     {
         /**
-         * get all items from youtube playlist
+         * get all items from youtube playlist.
          */
-
         $videos = (new YoutubePlaylistItems())->forPlaylist($this->youtube_playlist_id)->videos();
 
         if (!count($videos)) {
@@ -56,12 +56,13 @@ class Playlist extends Model implements Podcastable, Coverable
         }, $videos);
 
         /**
-         * get the ones that I know about
+         * get the ones that I know about.
          */
         $medias = Media::grabbedAt()
             ->whereIn('media_id', $mediaIds)
             ->orderBy('published_at', 'desc')
-            ->get();
+            ->get()
+        ;
 
         if (!$medias->count()) {
             throw new PlaylistWithNoMediaWeKnowAboutException(
@@ -77,7 +78,8 @@ class Playlist extends Model implements Podcastable, Coverable
         return $this->mediasToPublish()
             ->map(function (Media $media) {
                 return PodcastItem::with($media->toPodcastItem());
-            });
+            })
+        ;
     }
 
     public function podcastCoverUrl(): string
@@ -159,12 +161,12 @@ class Playlist extends Model implements Podcastable, Coverable
 
     public function podcastUrl(): string
     {
-        return config('app.playlists_url') . '/' . $this->relativeFeedPath();
+        return config('app.playlists_url').'/'.$this->relativeFeedPath();
     }
 
     public function relativeFeedPath(): string
     {
-        return $this->channel->channelId() . '/' . $this->youtube_playlist_id . '.xml';
+        return $this->channel->channelId().'/'.$this->youtube_playlist_id.'.xml';
     }
 
     public function channelId(): string
@@ -179,7 +181,7 @@ class Playlist extends Model implements Podcastable, Coverable
      */
     public function remoteFilePath(): string
     {
-        return config('app.playlists_path') . $this->relativeFeedPath();
+        return config('app.playlists_path').$this->relativeFeedPath();
     }
 
     public function scopeActive(Builder $query)
@@ -201,7 +203,7 @@ class Playlist extends Model implements Podcastable, Coverable
         }
 
         $playlists = new Collection();
-        /**
+        /*
          * get playlist associated with each channel
          * I'm sending $playlist with the use because the double map is
          * getting me a collection (per channel) of collection (per playlist).
@@ -211,14 +213,16 @@ class Playlist extends Model implements Podcastable, Coverable
             return Playlist::active()
                 ->where('channel_id', '=', $channel->channel_id)
                 ->get()
-                ->map(function (Playlist $playlist) use ($playlists) {
+                ->map(function (Playlist $playlist) use ($playlists): void {
                     $playlist->vignetteUrl = Vignette::defaultUrl();
                     if ($playlist->cover) {
                         $playlist->vignetteUrl = Vignette::fromThumb($playlist->cover)->url();
                     }
                     $playlists->push($playlist);
-                });
+                })
+            ;
         });
+
         return $playlists;
     }
 

@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Modules;
 
 use App\Exceptions\VignetteCreationFromMissingThumbException;
-use App\Exceptions\VignetteUploadException;
 use App\Thumb;
 use Exception;
 use Illuminate\Support\Facades\Log;
@@ -16,11 +17,19 @@ class Vignette
     public const VIGNETTE_SUFFIX = '_vig';
     public const DEFAULT_VIGNETTE_FILE = 'default_vignette.jpg';
 
-    /** @var \App\Thumb $thumb used to create vignette */
+    /** @var \App\Thumb used to create vignette */
     protected $thumb;
 
-    /** @var \Intervention\Image\Image $image */
+    /** @var \Intervention\Image\Image */
     protected $image;
+
+    /**
+     * private constructor.
+     */
+    private function __construct(Thumb $thumb)
+    {
+        $this->thumb = $thumb;
+    }
 
     /**
      * This function will instantiate vignette object from the thumb one.
@@ -31,14 +40,6 @@ class Vignette
     }
 
     /**
-     * private constructor
-     */
-    private function __construct(Thumb $thumb)
-    {
-        $this->thumb = $thumb;
-    }
-
-    /**
      * This function will return the relative path to access the vignette.
      * Relative path is defined from the root path of the Storage(object) root.
      *
@@ -46,7 +47,7 @@ class Vignette
      */
     public function relativePath(): string
     {
-        return $this->thumb->coverable->channelId() . '/' . $this->fileName();
+        return $this->thumb->coverable->channelId().'/'.$this->fileName();
     }
 
     /**
@@ -57,7 +58,8 @@ class Vignette
     public function fileName(): string
     {
         $pathParts = pathinfo($this->thumb->fileName());
-        return $pathParts['filename'] . self::VIGNETTE_SUFFIX . '.' . $pathParts['extension'];
+
+        return $pathParts['filename'].self::VIGNETTE_SUFFIX.'.'.$pathParts['extension'];
     }
 
     /**
@@ -68,7 +70,8 @@ class Vignette
     public function exists()
     {
         return Storage::disk(self::LOCAL_STORAGE_DISK)
-            ->exists($this->relativePath());
+            ->exists($this->relativePath())
+        ;
     }
 
     /**
@@ -86,21 +89,21 @@ class Vignette
      */
     public function makeIt()
     {
-        /** Verifying thumb file exists */
+        // Verifying thumb file exists
         if (!$this->thumb->exists()) {
             throw new VignetteCreationFromMissingThumbException(
                 "Thumb file {$this->thumb->relativePath()} for coverable {$this->thumb->coverableLabel()} is missing."
             );
         }
 
-        /** getting data and convert it to an image object */
+        // getting data and convert it to an image object
         $this->image = Image::make($this->thumb->getData());
 
-        /** creating vignette */
+        // creating vignette
         $this->image->fit(
             config('app.vignette_width'),
             config('app.vignette_height'),
-            function ($constraint) {
+            function ($constraint): void {
                 $constraint->aspectRatio();
             }
         );
@@ -111,14 +114,16 @@ class Vignette
     public function saveLocally()
     {
         Storage::disk(self::LOCAL_STORAGE_DISK)
-            ->put($this->relativePath(), (string) $this->image->encode());
+            ->put($this->relativePath(), (string) $this->image->encode())
+        ;
+
         return $this;
     }
 
     /**
      * This function is returning the data of the vignette.
      *
-     * @return string content of the file.
+     * @return string content of the file
      */
     public function getData()
     {
@@ -126,53 +131,29 @@ class Vignette
     }
 
     /**
-     * This function will upload the vignette.
-     */
-    /* public function upload()
-    {
-        try {
-            Storage::disk(self::REMOTE_STORAGE_DISK)->put(
-                $this->relativePath(),
-                $this->getData()
-            );
-
-            // Once uploaded, we are setting the channel_path on the remote to public visibility
-            Storage::disk(self::REMOTE_STORAGE_DISK)->setVisibility(
-                $this->channelId(),
-                'public'
-            );
-        } catch (\Exception $exception) {
-            $message =
-                "Uploading vignette {{$this->fileName()}} to remote has failed with message : " .
-                $exception->getMessage();
-            Log::alert($message);
-            throw new VignetteUploadException($message);
-        }
-        return true;
-    } */
-
-    /**
      * Should be done within a queue.
      */
     public function delete()
     {
         try {
-            /** removing local vig */
+            // removing local vig
             Storage::disk($this->thumb->fileDisk())->delete(
                 $this->relativePath()
             );
-            /** removing local vig */
+            // removing local vig
             Storage::disk(self::REMOTE_STORAGE_DISK)->delete(
                 $this->relativePath()
             );
         } catch (Exception $exception) {
             Log::alert(
-                'Deleting vignette ' .
-                    $this->relativePath() .
+                'Deleting vignette '.
+                    $this->relativePath().
                     " has failed with message {{$exception->getMessage()}}."
             );
+
             throw $exception;
         }
+
         return true;
     }
 
@@ -183,7 +164,7 @@ class Vignette
      */
     public static function defaultUrl()
     {
-        return env('THUMBS_URL') . '/' . self::DEFAULT_VIGNETTE_FILE;
+        return env('THUMBS_URL').'/'.self::DEFAULT_VIGNETTE_FILE;
     }
 
     public function localFilePath()
@@ -193,6 +174,6 @@ class Vignette
 
     public function remoteFilePath()
     {
-        return config('app.thumbs_path') . $this->relativePath();
+        return config('app.thumbs_path').$this->relativePath();
     }
 }

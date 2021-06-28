@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Jobs;
 
 use App\Exceptions\FileUploadFailureException;
@@ -13,17 +15,20 @@ use Illuminate\Support\Facades\Storage;
 
 class SendFileBySFTP implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     public const REMOTE_DISK = 'remote';
 
-    /** @var string $localFilePath */
+    /** @var string */
     public $localFilePath;
 
-    /** @var string $remoteFilePath */
+    /** @var string */
     public $remoteFilePath;
 
-    /** @var bool $cleanAfter clean local file if true */
+    /** @var bool clean local file if true */
     public $cleanAfter = false;
 
     public function __construct(
@@ -38,16 +43,14 @@ class SendFileBySFTP implements ShouldQueue
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
     public function handle()
     {
-        Log::debug(self::class . '::' . __FUNCTION__ . ' - start');
+        Log::debug(self::class.'::'.__FUNCTION__.' - start');
         $destFolder = pathinfo($this->remoteFilePath, PATHINFO_DIRNAME);
         $destFilename = pathinfo($this->remoteFilePath, PATHINFO_BASENAME);
         Log::debug(
-            'About to copy file on ' . self::REMOTE_DISK,
+            'About to copy file on '.self::REMOTE_DISK,
             [
                 'localFilePath' => $this->localFilePath,
                 'remoteFilePath' => $this->remoteFilePath,
@@ -56,7 +59,6 @@ class SendFileBySFTP implements ShouldQueue
             ]
         );
 
-       
         $result = Storage::disk(self::REMOTE_DISK)->putFileAs($destFolder, $this->localFilePath, $destFilename);
 
         if ($result === false) {
@@ -66,7 +68,7 @@ class SendFileBySFTP implements ShouldQueue
         }
         Log::debug("file {$destFilename} has been uploaded");
 
-        /** granting +x perms to folder */
+        // granting +x perms to folder
         //$result = Storage::disk(self::REMOTE_DISK)->setVisibility($destFolder, 'public');
         //Log::debug("folder {$destFolder} is visible");
 

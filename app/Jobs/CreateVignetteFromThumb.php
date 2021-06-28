@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Jobs;
 
 use App\Exceptions\ThumbDoesNotExistsException;
@@ -16,14 +18,15 @@ use Illuminate\Support\Facades\Log;
 
 class CreateVignetteFromThumb implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     protected $srcThumb;
 
     /**
      * Create a new job instance.
-     *
-     * @return void
      */
     public function __construct(Thumb $srcThumb)
     {
@@ -32,10 +35,8 @@ class CreateVignetteFromThumb implements ShouldQueue
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         if (!$this->srcThumb->exists()) {
             throw new ThumbDoesNotExistsException(
@@ -44,11 +45,13 @@ class CreateVignetteFromThumb implements ShouldQueue
         }
 
         try {
-            /** chaining vignette creation and upload */
+            // chaining vignette creation and upload
             Vignette::fromThumb($this->srcThumb)->makeIt()->saveLocally();
         } catch (Exception $exception) {
-            $message = "Creation of vignette from thumb {{$this->srcThumb}} for coverable {$this->srcThumb->coverableLabel()} has failed with message :" .
+            $message = "Creation of vignette from thumb {{$this->srcThumb}} \\
+                    for coverable {$this->srcThumb->coverableLabel()} has failed with message :".
                     $exception->getMessage();
+
             throw new VignetteCreationFromThumbException($message);
             Log::debug($message);
         }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Jobs\StripeWebhooks;
 
 use App\Channel;
@@ -23,7 +25,12 @@ use Spatie\WebhookClient\Models\WebhookCall;
 
 class HandleCheckoutSessionCompleted implements ShouldQueue
 {
-    use InteractsWithQueue, Queueable, SerializesModels;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
+
+    /** @var \Spatie\WebhookClient\Models\WebhookCall */
+    public $webhookCall;
 
     /** var \App\User $user */
     protected $user;
@@ -37,40 +44,31 @@ class HandleCheckoutSessionCompleted implements ShouldQueue
     /** var int $endsAt contain a timestamp returned by stripe for subscription ending */
     protected $endsAt;
 
-    /** @var \Spatie\WebhookClient\Models\WebhookCall */
-    public $webhookCall;
-
     public function __construct(WebhookCall $webhookCall)
     {
         $this->webhookCall = $webhookCall;
     }
 
-    public function handle()
+    public function handle(): void
     {
         Log::info('checkout session completed');
         Log::debug(print_r($this->webhookCall->payload, true));
 
         /**
-         * checking user received from stripe
+         * checking user received from stripe.
          */
         $userFound = $this->checkStripeUser();
         if ($userFound === false) {
-            throw new CannotIdentifyUserFromStripeException('User not found. customer id : ' . $this->customerId() . '--- email : ' . $this->customerEmail());
+            throw new CannotIdentifyUserFromStripeException('User not found. customer id : '.$this->customerId().'--- email : '.$this->customerEmail());
         }
 
-        /**
-         * checking channel id received
-         */
+        // checking channel id received
         $this->checkStripeChannelId();
 
-        /**
-         * check subscription received from stripe
-         */
+        // check subscription received from stripe
         $this->checkSubscription();
 
-        /**
-         * update subscription on Pod side
-         */
+        // update subscription on Pod side
         $this->updateSubscription();
     }
 
@@ -97,19 +95,16 @@ class HandleCheckoutSessionCompleted implements ShouldQueue
         $customerEmail = $this->customerEmail();
         $customerStripeId = $this->customerId();
 
-        /**
-         * getting user from his email address
-         */
+        // getting user from his email address
         $this->user = User::where('email', '=', $customerEmail)->first();
         if ($this->user === null) {
             throw new UnknownEmailReceivedFromStripeException("Email address {$customerEmail} is unknown.");
         }
 
-        /**
-         * associating stripe id
-         */
+        // associating stripe id
         $this->user->stripe_id = $customerStripeId;
         $this->user->save();
+
         return true;
     }
 
@@ -120,6 +115,7 @@ class HandleCheckoutSessionCompleted implements ShouldQueue
         if ($this->user === null) {
             return false;
         }
+
         return true;
     }
 
@@ -142,24 +138,20 @@ class HandleCheckoutSessionCompleted implements ShouldQueue
     /**
      * will check channel id is valid.
      */
-    protected function checkStripeChannelId()
+    protected function checkStripeChannelId(): void
     {
         /**
-         * channel id should be returned within stripe metadata
+         * channel id should be returned within stripe metadata.
          */
         $channelId = $this->webhookCall->payload['data']['object']['metadata']['channel_id'] ?? null;
         if ($channelId === null) {
             throw new EmptyChannelIdReceivedFromStripeException('Channel id received from stripe is empty.');
         }
 
-        /**
-         * channel id should exists
-         */
+        // channel id should exists
         $this->channel = Channel::findOrFail($channelId);
 
-        /**
-         * channel should belongs to the user
-         */
+        // channel should belongs to the user
         if ($this->channel->user->id() !== $this->user->id()) {
             throw new ChannelOwnerMismatchingStripeException("Channel {$this->channel->channel_name} do not belongs to {$this->user->id()}.");
         }
@@ -198,7 +190,7 @@ class HandleCheckoutSessionCompleted implements ShouldQueue
         return true;
     }
 
-    protected function updateSubscription()
+    protected function updateSubscription(): void
     {
         $actualSubscription = Subscription::where('channel_id', '=', $this->channel->channel_id)->first();
         $actualSubscription->plan_id = $this->stripePlan->plan_id;

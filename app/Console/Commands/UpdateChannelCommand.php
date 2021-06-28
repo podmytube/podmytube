@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
 use App\Channel;
@@ -9,7 +11,6 @@ use App\Youtube\YoutubeChannelVideos;
 use App\Youtube\YoutubeQuotas;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
-use RuntimeException;
 
 class UpdateChannelCommand extends Command
 {
@@ -27,16 +28,16 @@ class UpdateChannelCommand extends Command
      */
     protected $description = 'This will update list of episodes for specific channel';
 
-    /** @var \App\Youtube\YoutubeCore $youtubeCore */
+    /** @var \App\Youtube\YoutubeCore */
     protected $youtubeCore;
 
-    /** @var array $channels list of channel models */
+    /** @var array list of channel models */
     protected $channels = [];
 
-    /** @var array $errors list of errors that occured */
+    /** @var array list of errors that occured */
     protected $errors = [];
 
-    /** @var \Symfony\Component\Console\Helper\ProgressBar $bar */
+    /** @var \Symfony\Component\Console\Helper\ProgressBar */
     protected $bar;
 
     /**
@@ -53,7 +54,7 @@ class UpdateChannelCommand extends Command
             $message = "There is no channel with this channel_id ({$this->argument('channel_id')})";
             $this->error($message);
             Log::debug($message);
-            //throw new RuntimeException($message);
+
             return 1;
         }
 
@@ -63,13 +64,14 @@ class UpdateChannelCommand extends Command
         $nbVideos = count($factory->videos());
         if ($nbVideos <= 0) {
             $this->error("This channel ({$this->argument('channel_id')}) seems to have no videos.");
+
             return 1;
         }
 
         $this->prologue($nbVideos);
 
-        /** for each channel video */
-        array_map(function ($video) use ($channelToUpdate) {
+        // for each channel video
+        array_map(function ($video) use ($channelToUpdate): void {
             /** check if the video already exist in database */
             $media = Media::byMediaId($video['media_id']);
             if ($media === null) {
@@ -83,7 +85,7 @@ class UpdateChannelCommand extends Command
             $media->description = $video['description'];
             $media->published_at = $video['published_at'];
 
-            /** save it */
+            // save it
             $media->save();
 
             $this->makeProgressBarProgress();
@@ -91,6 +93,7 @@ class UpdateChannelCommand extends Command
 
         $apikeysAndQuotas = YoutubeQuotas::forUrls($factory->queriesUsed())->quotaConsumed();
         Quota::saveScriptConsumption(pathinfo(__FILE__, PATHINFO_BASENAME), $apikeysAndQuotas);
+
         return 0;
     }
 
@@ -102,6 +105,7 @@ class UpdateChannelCommand extends Command
 
         $this->bar = $this->output->createProgressBar($nbItems);
         $this->bar->start();
+
         return true;
     }
 
