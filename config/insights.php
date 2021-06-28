@@ -9,11 +9,8 @@ use NunoMaduro\PhpInsights\Domain\Insights\ForbiddenPrivateMethods;
 use NunoMaduro\PhpInsights\Domain\Insights\ForbiddenSecurityIssues;
 use NunoMaduro\PhpInsights\Domain\Insights\ForbiddenTraits;
 use NunoMaduro\PhpInsights\Domain\Metrics\Architecture\Classes;
-use ObjectCalisthenics\Sniffs\Classes\ForbiddenPublicPropertySniff;
-use ObjectCalisthenics\Sniffs\Files\ClassTraitAndInterfaceLengthSniff;
-use ObjectCalisthenics\Sniffs\Files\FunctionLengthSniff;
-use ObjectCalisthenics\Sniffs\Metrics\MethodPerClassLimitSniff;
 use PHP_CodeSniffer\Standards\Generic\Sniffs\Files\LineLengthSniff;
+use SlevomatCodingStandard\Sniffs\Classes\ForbiddenPublicPropertySniff;
 use SlevomatCodingStandard\Sniffs\Commenting\UselessFunctionDocCommentSniff;
 use SlevomatCodingStandard\Sniffs\Namespaces\AlphabeticallySortedUsesSniff;
 use SlevomatCodingStandard\Sniffs\TypeHints\DeclareStrictTypesSniff;
@@ -101,7 +98,7 @@ return [
         ],
         LineLengthSniff::class => [
             'lineLimit' => 140,
-            'absoluteLineLimit' => 170
+            'absoluteLineLimit' => 170,
         ],
         ForbiddenPublicPropertySniff::class => [
             'exclude' => [
@@ -115,15 +112,6 @@ return [
                 'app/StripePlan.php',
             ],
         ],
-        MethodPerClassLimitSniff::class => [
-            'maxCount' => 20,
-        ],
-        FunctionLengthSniff::class => [
-            'maxLength' => 30,
-        ],
-        ClassTraitAndInterfaceLengthSniff::class => [
-            'maxLength' => 300,
-        ]
     ],
 
     /*

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
 use App\Exceptions\DownloadMediaTagException;
@@ -14,25 +16,22 @@ use Illuminate\Support\Facades\Log;
 
 class DownloadVideosByChannelCommand extends Command
 {
-    /** @var string $signature */
+    /** @var string */
     protected $signature = 'download:channel {channel_id} {period?}';
 
-    /** @var string $description */
-    protected $description = 'This command will get all ungrabbed videos from specified channel '
-        . 'on specified period. Current period by default.';
+    /** @var string */
+    protected $description = 'This command will get all ungrabbed videos from specified channel on specified period. Current period by default.';
 
     protected $progressBar;
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
     public function handle(): int
     {
         $channelId = $this->argument('channel_id');
         /**
-         * no period set => using current month
+         * no period set => using current month.
          */
         $periodArgument = $this->argument('period') ? Carbon::createFromFormat('Y-m', $this->argument('period')) : Carbon::now();
 
@@ -40,7 +39,7 @@ class DownloadVideosByChannelCommand extends Command
 
         Log::notice("Downloading ungrabbed medias for channel {$channelId} during period {$period->startDate()} and {$period->endDate()}");
         /**
-         * getting all non grabbed episodes published during this period order by (with channel and subscription)
+         * getting all non grabbed episodes published during this period order by (with channel and subscription).
          */
         $medias = Media::with('channel')
             ->publishedBetween($period->startDate(), $period->endDate())
@@ -52,6 +51,7 @@ class DownloadVideosByChannelCommand extends Command
             $message = "There is no ungrabbed medias for this period {$period->startDate()} and {$period->endDate()}.";
             $this->comment($message, 'v');
             Log::notice($message);
+
             return 1;
         }
 
@@ -60,9 +60,7 @@ class DownloadVideosByChannelCommand extends Command
             $this->progressBar->start();
         }
 
-        /**
-         * for every medias in db
-         */
+        // for every medias in db
         foreach ($medias as $media) {
             try {
                 DownloadMediaFactory::media($media, $this->getOutput()->isVerbose())->run();
@@ -79,11 +77,12 @@ class DownloadVideosByChannelCommand extends Command
             $this->progressBar->finish();
             $this->line('');
         }
+
         return 0;
     }
 
     public function defaultPeriod()
     {
-        return date('Y') . '-' . date('n');
+        return date('Y').'-'.date('n');
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
 use App\Media;
@@ -33,7 +35,7 @@ class GetPlaylistMediasCommand extends Command
     public function handle(): int
     {
         /**
-         * get active playlists
+         * get active playlists.
          */
         $playlists = Playlist::active()->get();
 
@@ -42,14 +44,16 @@ class GetPlaylistMediasCommand extends Command
             $message = 'There is no active playlist to refresh.';
             $this->error($message);
             Log::notice($message);
+
             return 1;
         }
 
-        $playlists->map(function ($playlist) {
+        $playlists->map(function ($playlist): void {
             /** for each playlist, get the media to obtain */
             $factory = YoutubePlaylistItems::init()
                 ->forPlaylist($playlist->youtube_playlist_id)
-                ->run();
+                ->run()
+            ;
             $channelToUpdate = $playlist->channelId();
 
             /** keeping only channel own videos */
@@ -59,10 +63,10 @@ class GetPlaylistMediasCommand extends Command
 
             /** for each playlist item */
             $nbVideosToKeep = count($onlyThisChannelVideos);
-            array_map(function ($video) use ($channelToUpdate) {
+            array_map(function ($video) use ($channelToUpdate): void {
                 Media::updateOrCreate(
                     [
-                        'media_id' => $video['snippet']['resourceId']['videoId']
+                        'media_id' => $video['snippet']['resourceId']['videoId'],
                     ],
                     [
                         'channel_id' => $channelToUpdate,

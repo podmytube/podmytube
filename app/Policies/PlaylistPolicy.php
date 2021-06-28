@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
 use App\Playlist;
@@ -14,7 +16,7 @@ class PlaylistPolicy
     {
         return $playlist->channel->user->is($user);
     }
-    
+
     public function view(User $user, Playlist $playlist): bool
     {
         return $playlist->channel->user->is($user);
