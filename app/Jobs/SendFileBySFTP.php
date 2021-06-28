@@ -79,6 +79,6 @@ class SendFileBySFTP implements ShouldQueue
             unlink($this->localFilePath);
         }
 
-        return true;
+        return 0;
     }
 }

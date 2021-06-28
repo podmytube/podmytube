@@ -166,7 +166,7 @@ class Channel extends Model implements Podcastable, Coverable
     public static function allActiveChannels()
     {
         return self::active()
-            ->with(['User', 'Category', 'Thumb', 'Subscription'])
+            ->with(['User', 'Category', 'cover', 'Subscription'])
             ->get();
     }
 

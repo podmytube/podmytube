@@ -4,6 +4,8 @@ namespace Tests\Unit;
 
 use App\Jobs\SendFileBySFTP;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class SendFileBySFTPTest extends TestCase
@@ -22,7 +24,7 @@ class SendFileBySFTPTest extends TestCase
     {
         $localFile = __DIR__ . '/../fixtures/images/sampleVig.jpg';
         $remoteFile = $this->destFolder . '/testVig.jpg';
-        $result = SendFileBySFTP::dispatchNow($localFile, $remoteFile, false);
-        $this->assertTrue($result);
+        SendFileBySFTP::dispatchSync($localFile, $remoteFile, false);
+        $this->assertTrue(Storage::disk('remote')->exists($remoteFile));
     }
 }

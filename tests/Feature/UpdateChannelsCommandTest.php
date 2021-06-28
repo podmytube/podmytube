@@ -22,7 +22,7 @@ class UpdateChannelsCommandTest extends TestCase
     public function testNoActiveChannelsShouldThrowException()
     {
         $this->expectException(RuntimeException::class);
-        $this->artisan('update:channels');
+        $this->artisan('update:channels')->assertExitCode(1);
     }
 
     public function testShouldAddNewMediasOnlyOnActiveChannels()
@@ -34,5 +34,6 @@ class UpdateChannelsCommandTest extends TestCase
         $this->artisan('update:channels')
             ->assertExitCode(0);
         $this->assertCount($expectedNumberOfMedias, Media::all());
-    }
+        
+    }   
 }
