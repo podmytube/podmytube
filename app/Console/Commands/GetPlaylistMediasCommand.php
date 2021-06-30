@@ -57,9 +57,12 @@ class GetPlaylistMediasCommand extends Command
             $channelToUpdate = $playlist->channelId();
 
             /** keeping only channel own videos */
-            $onlyThisChannelVideos = array_filter($factory->items(), function ($video) use ($channelToUpdate) {
-                return $video['snippet']['channelId'] === $channelToUpdate;
-            });
+            $onlyThisChannelVideos = array_filter(
+                $factory->items(),
+                function ($video) use ($channelToUpdate) {
+                    return $video['snippet']['channelId'] === $channelToUpdate;
+                }
+            );
 
             /** for each playlist item */
             $nbVideosToKeep = count($onlyThisChannelVideos);

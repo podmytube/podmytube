@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Traits;
 
 use App\Thumb;
@@ -26,7 +28,7 @@ trait HasCover
             ],
             [
                 'file_size' => $uploadedFile->getSize(),
-                /** get filename of the stored file */
+                // get filename of the stored file
                 'file_name' => basename($uploadedFile->store($this->channelId(), Thumb::LOCAL_STORAGE_DISK)),
                 'file_disk' => Thumb::LOCAL_STORAGE_DISK,
             ]

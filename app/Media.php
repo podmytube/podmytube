@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App;
 
 use App\Exceptions\InvalidStartDateException;
@@ -13,7 +15,8 @@ use Illuminate\Support\Facades\Storage;
 
 class Media extends Model
 {
-    use BelongsToChannel, SoftDeletes;
+    use BelongsToChannel;
+    use SoftDeletes;
 
     public const UPLOADED_BY_USER_DISK = 'uploadedMedias';
     public const REMOTE_DISK = 'medias';
@@ -27,18 +30,18 @@ class Media extends Model
     public const STATUS_NOT_AVAILABLE_ON_YOUTUBE = 21; // should not be possible unless deleted after being registered in pod
     public const STATUS_EXHAUSTED_QUOTA = 99; // user has more episode to be converted but is not paying enough for
 
-    /** @var string $table medias table name - without it fails */
+    /** @var bool come with my fucking legacy media_id */
+    public $incrementing = false;
+
+    /** @var string medias table name - without it fails */
     protected $table = 'medias';
 
-    /** @var string $primaryKey if only I had set id as prim key */
+    /** @var string if only I had set id as prim key */
     protected $primaryKey = 'media_id';
-
-    /** @var bool $incrementing come with my fucking legacy media_id */
-    public $incrementing = false;
 
     protected $guarded = ['id'];
     /**
-     * those fields are converted into Carbon mutator
+     * those fields are converted into Carbon mutator.
      */
     protected $dates = [
         'published_at',
@@ -47,8 +50,12 @@ class Media extends Model
         'updated_at',
     ];
 
+    protected $casts = [
+        'duration' => 'integer',
+    ];
+
     /**
-     * get media url with trait HasFile
+     * get media url with trait HasFile.
      */
     public function mediaUrl(): string
     {
@@ -57,12 +64,12 @@ class Media extends Model
 
     public function mediaFileName(): string
     {
-        return $this->media_id . self::FILE_EXTENSION;
+        return $this->media_id.self::FILE_EXTENSION;
     }
 
     public function relativePath(): string
     {
-        return $this->mediaFolder() . '/' . $this->mediaFileName();
+        return $this->mediaFolder().'/'.$this->mediaFileName();
     }
 
     public function mediaFolder(): string
@@ -75,6 +82,7 @@ class Media extends Model
      *
      * @param object query is the query object
      * @param array value should have 2 date in it [0] is the startDate, [1] is the endDate
+     * @param mixed $query
      */
     public function scopeGrabbedBetween($query, Carbon $startDate, Carbon $endDate): Builder
     {
@@ -130,7 +138,8 @@ class Media extends Model
                 now()->startOfMonth()->subMonth()->subDay(),
                 now()->startOfMonth()->subMonth()->endOfMonth()
             )
-            ->orderBy('published_at', 'desc');
+            ->orderBy('published_at', 'desc')
+        ;
     }
 
     public function enclosureUrl(): string
@@ -159,7 +168,7 @@ class Media extends Model
     }
 
     /**
-     * check if a media has already been grabbed
+     * check if a media has already been grabbed.
      */
     public function hasBeenGrabbed(): bool
     {
@@ -168,7 +177,7 @@ class Media extends Model
 
     public function url(): string
     {
-        return config('app.mp3_url') . '/' . $this->remoteFilePath();
+        return config('app.mp3_url').'/'.$this->remoteFilePath();
     }
 
     public function scopeGrabbedBefore(Builder $query, Carbon $date): Builder
@@ -188,7 +197,7 @@ class Media extends Model
 
     public function remoteFilePath(): string
     {
-        return config('app.mp3_path') . $this->relativePath();
+        return config('app.mp3_path').$this->relativePath();
     }
 
     public function toPodcastItem()
@@ -207,7 +216,7 @@ class Media extends Model
 
     public static function youtubeUrl(string $mediaId)
     {
-        return 'https://www.youtube.com/watch?v=' . $mediaId;
+        return 'https://www.youtube.com/watch?v='.$mediaId;
     }
 
     public function youtubeWatchUrl()
@@ -231,6 +240,16 @@ class Media extends Model
             self::STATUS_NOT_AVAILABLE_ON_YOUTUBE => "Episode {$this->title} is unknow on Youtube. Did you remove it ?",
             self::STATUS_EXHAUSTED_QUOTA => 'Your quota has been exhausted this month. What about upgrading ?',
         ];
+
         return $comments[$this->status];
+    }
+
+    public function publishedAt(): string
+    {
+        if ($this->published_at === null) {
+            return '---';
+        }
+
+        return $this->published_at->format('Y-m-d');
     }
 }

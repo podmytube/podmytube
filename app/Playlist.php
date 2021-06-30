@@ -84,7 +84,11 @@ class Playlist extends Model implements Podcastable, Coverable
 
     public function podcastCoverUrl(): string
     {
-        return $this->channel->podcastCoverUrl();
+        if (!$this->hasCover()) {
+            return Thumb::defaultUrl();
+        }
+
+        return $this->cover->podcastUrl();
     }
 
     /**
