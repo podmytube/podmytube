@@ -20,7 +20,8 @@ class DownloadVideosByChannelCommand extends Command
     protected $signature = 'download:channel {channel_id} {period?}';
 
     /** @var string */
-    protected $description = 'This command will get all ungrabbed videos from specified channel on specified period. Current period by default.';
+    protected $description = 'This command will get all ungrabbed videos from specified channel \\
+        on specified period. Current period by default.';
 
     protected $progressBar;
 

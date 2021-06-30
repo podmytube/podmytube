@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Channel;
@@ -12,13 +14,13 @@ use Stripe\Stripe;
 class PlansController extends Controller
 {
     /**
-     * Show the available plans
+     * Show the available plans.
      *
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request, Channel $channel)
     {
-        $isYearly = $request->get('yearly') == 1 ? true : false;
+        $isYearly = $request->get('yearly') === 1 ? true : false;
 
         Stripe::setApiKey(config('services.stripe.secret'));
 
@@ -26,16 +28,14 @@ class PlansController extends Controller
 
         $stripeIdColumn = App::environment('production') ? 'stripe_live_id' : 'stripe_test_id';
 
-        /**
-         * foreach plan create a session id that will be associated with plan
-         */
-        $plans->map(function ($plan) use ($channel, $stripeIdColumn) {
+        // foreach plan create a session id that will be associated with plan
+        $plans->map(function ($plan) use ($channel, $stripeIdColumn): void {
             $stripeSessionParams = [
                 'payment_method_types' => ['card'],
                 'line_items' => [
                     [
                         // it s a price ID not the price in €
-                        'price' => $plan->stripePlan->first()->$stripeIdColumn,
+                        'price' => $plan->stripePlan->first()->{$stripeIdColumn},
                         'quantity' => 1,
                     ],
                 ],
@@ -43,8 +43,8 @@ class PlansController extends Controller
                     'trial_period_days' => 30,
                 ],
                 'mode' => 'subscription',
-                'success_url' => config('app.url') . '/success?session_id={CHECKOUT_SESSION_ID}',
-                'cancel_url' => config('app.url') . '/cancel',
+                'success_url' => config('app.url').'/success?session_id={CHECKOUT_SESSION_ID}',
+                'cancel_url' => config('app.url').'/cancel',
                 'metadata' => ['channel_id' => $channel->channel_id],
             ];
 
