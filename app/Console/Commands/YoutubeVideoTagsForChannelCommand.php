@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
 use App\Channel;
@@ -23,12 +25,11 @@ class YoutubeVideoTagsForChannelCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Get all the video that are tagged with the specified tag (podcast by default) example : artisan youtube:tags UCMnHkvrh_1fMWTJA_ru9ATQ --tag=podcast --period=2021-01';
+    protected $description = 'Get all the video that are tagged with the specified tag (podcast by default) \
+                        example : artisan youtube:tags UCMnHkvrh_1fMWTJA_ru9ATQ --tag=podcast --period=2021-01';
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
     public function handle(): int
     {
@@ -44,16 +45,19 @@ class YoutubeVideoTagsForChannelCommand extends Command
         $medias = Media::where('channel_id', '=', $this->argument('channelId'))
             ->whereBetween('published_at', [$periodHelper->startDate(), $periodHelper->endDate()])
             ->orderBy('published_at', 'asc')
-            ->get();
+            ->get()
+        ;
 
         if (!$medias->count()) {
             $this->error("There is no medias during this period for {$channel->nameWithId()}.");
+
             return 1;
         }
 
         $tagToLookFor = $this->option('tag');
         $results = $medias->map(function (Media $media) use ($tagToLookFor) {
             $videoFactory = YoutubeVideo::forMedia($media->media_id);
+
             return [
                 'title' => $videoFactory->title(),
                 'media_id' => $videoFactory->videoId(),
@@ -72,6 +76,7 @@ class YoutubeVideoTagsForChannelCommand extends Command
                 $message .= $result['isGrabbed'] ? ' - ✅' : '';
                 if ($result['isTagged']) {
                     $this->info($message);
+
                     return true;
                 }
                 $this->line($message);
@@ -79,6 +84,7 @@ class YoutubeVideoTagsForChannelCommand extends Command
             $results
         );
         $this->line('');
+
         return 0;
     }
 }

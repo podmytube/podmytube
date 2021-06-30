@@ -49,7 +49,7 @@ class LastMediaChecker
      */
     public function shouldMediaBeingGrabbed(): bool
     {
-        if (true === $this->hasMediaBeenPublishedRecently()) {
+        if ($this->hasMediaBeenPublishedRecently() === true) {
             // media is too recent to be already processed
             Log::notice(
                 "Last media {$this->lastMediaFromYoutube['media_id']} has been published recently for {$this->channel->nameWithId()}. \\
@@ -59,7 +59,7 @@ class LastMediaChecker
             return false;
         }
 
-        if (null === $this->media) {
+        if ($this->media === true) {
             Log::notice(
                 "Media {$this->lastMediaFromYoutube['media_id']} published more than ".self::NB_HOURS_AGO." hours ago is still unknown \\
                 for {$this->channel->nameWithId()}. Sending alert !"

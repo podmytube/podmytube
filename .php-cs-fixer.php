@@ -37,6 +37,7 @@ $config
         '@PhpCsFixer:risky' => false,
         'yoda_style' => false,
         'general_phpdoc_annotation_remove' => ['annotations' => ['expectedDeprecation']],
+        'php_unit_method_casing' => ['case' => 'snake_case'],
         //'header_comment' => ['header' => $header],
     ])
     ->setFinder($finder)
