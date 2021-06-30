@@ -42,29 +42,23 @@ class Playlist extends Model implements Podcastable, Coverable
 
     public function mediasToPublish(): Collection
     {
-        /**
-         * get all items from youtube playlist.
-         */
+        /** get all items from youtube playlist. */
         $videos = (new YoutubePlaylistItems())->forPlaylist($this->youtube_playlist_id)->videos();
 
         if (!count($videos)) {
             throw new PlaylistWithNoVideosException("This playlist {$this->youtube_playlist_id} has no video.");
         }
 
-        $mediaIds = array_map(function ($video) {
-            return $video['media_id'];
-        }, $videos);
+        $mediaIds = array_map(function ($video) { return $video['media_id']; }, $videos);
 
-        /**
-         * get the ones that I know about.
-         */
+        /** get the ones that I know about. */
         $medias = Media::grabbedAt()
             ->whereIn('media_id', $mediaIds)
             ->orderBy('published_at', 'desc')
             ->get()
         ;
 
-        if (!$medias->count()) {
+        if ($medias->count()) {
             throw new PlaylistWithNoMediaWeKnowAboutException(
                 "This playlist {$this->youtube_playlist_id} has no video we know about."
             );
