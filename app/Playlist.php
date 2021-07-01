@@ -50,7 +50,9 @@ class Playlist extends Model implements Podcastable, Coverable
         }
 
         /** keeping only id */
-        $mediaIds = array_map(function ($video) { return $video['media_id']; }, $videos);
+        $mediaIds = array_map(function ($video) {
+            return $video['media_id'];
+        }, $videos);
 
         /** get the ones that I know about. */
         $medias = Media::grabbedAt()
