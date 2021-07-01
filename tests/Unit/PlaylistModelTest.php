@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use App\Channel;
 use App\Media;
 use App\Playlist;
 use App\Thumb;
@@ -18,7 +17,7 @@ use Tests\Traits\IsAbleToTestPodcast;
 
 /**
  * @internal
- * @coversNothing
+ * @covers \App\Playlist
  */
 class PlaylistModelTest extends TestCase
 {
@@ -55,6 +54,7 @@ class PlaylistModelTest extends TestCase
         factory(Media::class)->create(['media_id' => 'AyU4u-iQqJ4', 'grabbed_at' => now()->subWeek()]);
         factory(Media::class)->create(['media_id' => 'hb0Fo1Jqxkc']);
 
+        dump('media we know about', Media::grabbedAt()->get()->pluck('media_id'));
         $this->playlist = factory(Playlist::class)->create(['youtube_playlist_id' => self::PODMYTUBE_TEST_PLAYLIST_ID]);
 
         $mediasToPublish = $this->playlist->mediasToPublish();
