@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/zsh
 containerName=dashboard.podmytube.com
 
 # updating code
