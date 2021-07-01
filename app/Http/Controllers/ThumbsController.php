@@ -8,6 +8,7 @@ use App\Channel;
 use App\Events\ThumbUpdated;
 use App\Http\Requests\ThumbRequest;
 use App\Interfaces\Coverable;
+use App\Modules\Vignette;
 use App\Playlist;
 use Exception;
 use Illuminate\Http\UploadedFile;
@@ -55,6 +56,8 @@ class ThumbsController extends Controller
             throw new Exception('A problem occurs during new thumb upload !');
         }
         $thumb = $coverable->setCoverFromUploadedFile($uploadedFile);
+
+        Vignette::fromThumb($thumb)->makeIt()->saveLocally();
 
         ThumbUpdated::dispatch($thumb->coverable);
 

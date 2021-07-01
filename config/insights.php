@@ -12,6 +12,7 @@ use NunoMaduro\PhpInsights\Domain\Metrics\Architecture\Classes;
 use PHP_CodeSniffer\Standards\Generic\Sniffs\Files\LineLengthSniff;
 use SlevomatCodingStandard\Sniffs\Classes\ForbiddenPublicPropertySniff;
 use SlevomatCodingStandard\Sniffs\Commenting\UselessFunctionDocCommentSniff;
+use SlevomatCodingStandard\Sniffs\Functions\FunctionLengthSniff;
 use SlevomatCodingStandard\Sniffs\Namespaces\AlphabeticallySortedUsesSniff;
 use SlevomatCodingStandard\Sniffs\TypeHints\DeclareStrictTypesSniff;
 use SlevomatCodingStandard\Sniffs\TypeHints\DisallowMixedTypeHintSniff;
@@ -99,6 +100,9 @@ return [
         LineLengthSniff::class => [
             'lineLimit' => 140,
             'absoluteLineLimit' => 170,
+        ],
+        FunctionLengthSniff::class => [
+            'maxLinesLength' => 30,
         ],
         ForbiddenPublicPropertySniff::class => [
             'exclude' => [

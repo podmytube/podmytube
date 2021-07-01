@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Exceptions;
 
 use App\Mail\ExceptionEmail;
@@ -18,7 +20,6 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
-        //
     ];
 
     /**
@@ -30,24 +31,16 @@ class Handler extends ExceptionHandler
 
     /**
      * Report or log an exception.
-     *
-     * @param \Throwable $exception
-     *
-     * @return void
      */
-    public function report(Throwable $exception)
+    public function report(Throwable $exception): void
     {
         if ($this->shouldReport($exception)) {
-            /**
-             * send email alert to me
-             */
+            // send email alert to me
             Log::error($exception->getMessage());
             //$this->sendExceptionEmail($exception);
 
             if (app()->bound('sentry')) {
-                /**
-                 * if sentry send it to sentry
-                 */
+                // if sentry send it to sentry
                 app('sentry')->captureException($exception);
             }
         }
@@ -55,35 +48,19 @@ class Handler extends ExceptionHandler
     }
 
     /**
-     * Render an exception into an HTTP response.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param \Throwable               $exception
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     *
-     * @throws \Throwable
-     */
-    public function render($request, Throwable $exception)
-    {
-        return parent::render($request, $exception);
-    }
-
-    /**
      * Sends an email to the developer about the exception.
-     *
-     * @return void
      */
-    public function sendExceptionEmail(Throwable $exceptionReceived)
+    public function sendExceptionEmail(Throwable $exceptionReceived): void
     {
         try {
             $exception = FlattenException::create($exceptionReceived);
             $handler = new HtmlErrorRenderer(true); // boolean, true raises debug flag...
             $css = $handler->getStylesheet();
             $content = $handler->getBody($exception);
-            Log::debug('Queueing mail for : ' . config('mail.email_to_warn'));
+            Log::debug('Queueing mail for : '.config('mail.email_to_warn'));
             Mail::to(config('mail.email_to_warn'))
-                ->queue(new ExceptionEmail(compact('css', 'content')));
+                ->queue(new ExceptionEmail(compact('css', 'content')))
+            ;
         } catch (Throwable $exception) {
             Log::error($exception);
         }
