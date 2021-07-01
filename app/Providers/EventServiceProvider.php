@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -23,13 +25,13 @@ class EventServiceProvider extends ServiceProvider
             \App\Listeners\UploadMedia::class,
             \App\Listeners\UploadPodcast::class,
         ],
-        /** thumb has been updated */
+        // thumb has been updated
         \App\Events\ThumbUpdated::class => [
             \App\Listeners\UploadThumb::class,
             \App\Listeners\UploadPodcast::class,
-            \App\Listeners\RefreshVignette::class,
+            // \App\Listeners\RefreshVignette::class, // vignette is created immediately now
         ],
-        /** feed has been updated */
+        // feed has been updated
         \App\Events\PodcastUpdated::class => [
             \App\Listeners\UploadPodcast::class,
         ],

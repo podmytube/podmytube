@@ -44,7 +44,7 @@
         "barryvdh/laravel-ide-helper": "^2.6",
         "filp/whoops": "~2.0",
         "mockery/mockery": "^1.4",
-        "nunomaduro/phpinsights": "^1.14",
+        "nunomaduro/phpinsights": "^2.0",
         "phpunit/phpunit": "^9.0"
     },
     "autoload": {
