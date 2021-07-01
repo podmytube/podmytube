@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Listeners;
 
 use App\Events\ThumbUpdated;
@@ -12,14 +14,18 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Bus;
 use Tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class UploadPodcastListenerTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var \App\Channel $channel */
+    /** @var \App\Channel */
     protected $channel;
 
-    /** @var \App\Playlist $playlist */
+    /** @var \App\Playlist */
     protected $playlist;
 
     public function setUp(): void
@@ -37,22 +43,24 @@ class UploadPodcastListenerTest extends TestCase
         Bus::fake();
     }
 
-    public function testUploadPodcastListenerForChannel()
+    /** @test */
+    public function upload_podcast_listener_for_channel(): void
     {
         $thumbUpdatedEvent = new ThumbUpdated($this->channel);
         $this->assertTrue((new UploadPodcast())->handle($thumbUpdatedEvent));
         Bus::assertDispatched(function (SendFileBySFTP $job) {
-            return config('app.feed_path') . $this->channel->channelId() . '/' . config('app.feed_filename') === $job->remoteFilePath;
+            return config('app.feed_path').$this->channel->channelId().'/'.config('app.feed_filename') === $job->remoteFilePath;
         });
     }
 
-    public function testUploadPodcastListenerForPlaylist()
+    /** @test */
+    public function upload_podcast_listener_for_playlist(): void
     {
         $thumbUpdatedEvent = new ThumbUpdated($this->playlist);
-        $this->assertTrue((new UploadPodcast)->handle($thumbUpdatedEvent));
+        $this->assertTrue((new UploadPodcast())->handle($thumbUpdatedEvent));
         // Bus::assertDispatched(SendFileBySFTP::class); // useless
         Bus::assertDispatched(function (SendFileBySFTP $job) {
-            return config('app.playlists_path') . $this->playlist->channelId() . '/' . $this->playlist->youtube_playlist_id . '.xml' === $job->remoteFilePath;
+            return config('app.playlists_path').$this->playlist->channelId().'/'.$this->playlist->youtube_playlist_id.'.xml' === $job->remoteFilePath;
         });
     }
 }

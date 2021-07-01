@@ -49,6 +49,7 @@ class Playlist extends Model implements Podcastable, Coverable
             throw new PlaylistWithNoVideosException("This playlist {$this->youtube_playlist_id} has no video.");
         }
 
+        /** keeping only id */
         $mediaIds = array_map(function ($video) { return $video['media_id']; }, $videos);
 
         /** get the ones that I know about. */
@@ -58,7 +59,7 @@ class Playlist extends Model implements Podcastable, Coverable
             ->get()
         ;
 
-        if ($medias->count()) {
+        if (!$medias->count()) {
             throw new PlaylistWithNoMediaWeKnowAboutException(
                 "This playlist {$this->youtube_playlist_id} has no video we know about."
             );
