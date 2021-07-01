@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console;
 
 use App\Console\Commands\CleanFreeChannelMedias;
@@ -24,66 +26,59 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
     ];
 
     /**
      * Define the application's command schedule.
-     *
-     * @param \Illuminate\Console\Scheduling\Schedule $schedule
-     *
-     * @return void
      */
-    protected function schedule(Schedule $schedule)
+    protected function schedule(Schedule $schedule): void
     {
-        /** refresh media list from youtube api for channels*/
+        // refresh media list from youtube api for channels
         $schedule->command(UpdateChannelsCommand::class, ['all'])->hourlyAt(1);
 
-        /** refresh media list from youtube api for playlists */
+        // refresh media list from youtube api for playlists
         $schedule->command(GetPlaylistMediasCommand::class)->hourlyAt(6);
 
-        /** grabbing non grabbed videos */
+        // grabbing non grabbed videos
         $schedule->command(DownloadVideosByPeriodCommand::class)->hourlyAt(12);
 
-        /** Building podcasts */
+        // Building podcasts
         $schedule->command(UpdatePodcastsCommand::class, ['all'])->hourlyAt(30);
 
-        /** get playlists from paying channels */
+        // get playlists from paying channels
         $schedule->command(GetPlaylistsCommand::class)->hourlyAt(35);
 
-        /** build playlists feeds */
+        // build playlists feeds
         $schedule->command(UpdatePlaylistsForPayingChannelsCommand::class)->hourlyAt(45);
 
-        /**
+        /*
          * ===============================================================
          * Specials
          * ===============================================================
          */
-        /** generating sitemap */
+        // generating sitemap
         $schedule->command(UpdateSitemapCommand::class)->daily();
 
-        /** Check media */
+        // Check media
         $schedule->command(LastMediaPublishedChecker::class)->everySixHours();
 
-        /** Check blog post */
+        // Check blog post
         $schedule->command(UpdateBlogPostsCommand::class)->dailyAt('23h27');
 
-        /**
+        /*
          * ===============================================================
          * Monthly
          * ===============================================================
          */
-        /** cleaning free medias old episodes - 12h */
+        // cleaning free medias old episodes - 12h
         $schedule->command(CleanFreeChannelMedias::class)->monthlyOn($day = 1, $time = '12:0');
 
-        /** monthly report on first monday */
-        $schedule->command(SendMonthlyReports::class)->monthly()->days([1])->at('11:00');
+        // monthly report on first monday
+        $schedule->command(SendMonthlyReports::class)->monthlyOn($day = 1, $time = '11:0');
     }
 
     /**
      * Get the timezone that should be used by default for scheduled events.
-     *
-     * @return string
      */
     protected function scheduleTimezone(): string
     {
@@ -92,12 +87,10 @@ class Kernel extends ConsoleKernel
 
     /**
      * Register the commands for the application.
-     *
-     * @return void
      */
-    protected function commands()
+    protected function commands(): void
     {
-        $this->load(__DIR__ . '/Commands');
+        $this->load(__DIR__.'/Commands');
 
         require base_path('routes/console.php');
     }
