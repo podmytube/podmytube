@@ -1,32 +1,34 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Podcast;
 
 use App\Exceptions\PodcastItemNotValidException;
 
 class PodcastItem
 {
-    /** @var string $guid */
+    /** @var string */
     public $guid;
-    /** @var string $title */
+    /** @var string */
     public $title;
-    /** @var string $enclosureUrl */
+    /** @var string */
     public $enclosureUrl;
-    /** @var string $mediaLength */
+    /** @var string */
     public $mediaLength;
-    /** @var string $pubDate */
+    /** @var string */
     public $pubDate;
-    /** @var string $description */
+    /** @var string */
     public $description;
-    /** @var string $duration */
+    /** @var string */
     public $duration;
-    /** @var string $explicit */
+    /** @var string */
     public $explicit;
 
     private function __construct(array $itemData)
     {
-        array_map(function ($property) use ($itemData) {
-            $this->$property = $itemData[$property];
+        array_map(function ($property) use ($itemData): void {
+            $this->{$property} = $itemData[$property];
         }, array_keys(get_object_vars($this)));
 
         $this->check();
@@ -39,8 +41,8 @@ class PodcastItem
 
     public function check()
     {
-        array_map(function ($requiredField) {
-            if ($this->$requiredField === null || strlen($this->$requiredField) <= 0) {
+        array_map(function ($requiredField): void {
+            if ($this->{$requiredField} === null || strlen($this->{$requiredField}) <= 0) {
                 throw new PodcastItemNotValidException("{$requiredField} is required for one podcast item to be valid.");
             }
         }, ['title', 'enclosureUrl']);
@@ -48,18 +50,20 @@ class PodcastItem
         if ($this->mediaLength <= 0 || $this->mediaLength === null) {
             throw new PodcastItemNotValidException('Podcastitem mediaLength must be set and greater than 0.');
         }
+
         return true;
     }
 
     /**
      * this function will render items in podcast feed.
      *
-     * @return string xml data for feed items.
+     * @return string xml data for feed items
      */
     public function render()
     {
         return view('podcast.item')
             ->with(['item' => $this])
-            ->render();
+            ->render()
+        ;
     }
 }

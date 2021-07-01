@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Playlist;
-use Illuminate\Http\Request;
 
 class PlaylistController extends Controller
 {
-    public function edit(Request $request, Playlist $playlist)
+    public function edit(Playlist $playlist)
     {
         $this->authorize($playlist);
+
         return view('playlist.edit', compact('playlist'));
     }
 }

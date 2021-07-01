@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Modules;
 
 use App\Channel;
@@ -17,16 +19,16 @@ class LastMediaChecker
 {
     public const NB_HOURS_AGO = 6;
 
-    /** @var \App\Channel $channel */
+    /** @var \App\Channel */
     protected $channel;
 
-    /** @var \App\Media $media */
+    /** @var \App\Media */
     protected $media;
 
-    /** @var Carbon\Carbon $someHoursAgo some hours ago */
+    /** @var Carbon\Carbon some hours ago */
     protected $someHoursAgo;
 
-    /** @var array $lastMediaFromYoutube */
+    /** @var array */
     protected $lastMediaFromYoutube;
 
     private function __construct(Channel $channel)
@@ -43,18 +45,26 @@ class LastMediaChecker
     }
 
     /**
-     * determine if last media should be grabbed
+     * determine if last media should be grabbed.
      */
     public function shouldMediaBeingGrabbed(): bool
     {
         if ($this->hasMediaBeenPublishedRecently() === true) {
-            /** media is too recent to be already processed */
-            Log::notice("Last media {$this->lastMediaFromYoutube['media_id']} has been published recently for {$this->channel->nameWithId()}. No alert to send.");
+            // media is too recent to be already processed
+            Log::notice(
+                "Last media {$this->lastMediaFromYoutube['media_id']} has been published recently for {$this->channel->nameWithId()}. \\
+                No alert to send."
+            );
+
             return false;
         }
 
         if ($this->media === null) {
-            Log::notice("Media {$this->lastMediaFromYoutube['media_id']} published more than " . self::NB_HOURS_AGO . " hours ago is still unknown for {$this->channel->nameWithId()}. Sending alert !");
+            Log::notice(
+                "Media {$this->lastMediaFromYoutube['media_id']} published more than ".self::NB_HOURS_AGO." hours ago is still unknown \\
+                for {$this->channel->nameWithId()}. Sending alert !"
+            );
+
             return true;
         }
 
@@ -74,8 +84,6 @@ class LastMediaChecker
 
     /**
      * check if media has been published recently.
-     *
-     * @return bool
      */
     public function hasMediaBeenPublishedRecently(): bool
     {

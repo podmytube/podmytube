@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Modules;
 
 use App\Exceptions\YoutubeAndLocalDurationException;
@@ -32,13 +34,14 @@ class CheckingGrabbedFile
     {
         $acceptableSpread = $this->minimalSpreadAccepted();
 
-        /**
+        /*
          * if difference between youtube duration and mp3 dration is more than 5 sec => exception
          * yt duration is one integer, duration returned by mp3 is seconds.microseconds.
          */
         if (abs($this->mediaProperties->duration() - $this->youtubeMediaDuration) > $acceptableSpread) {
             throw new YoutubeAndLocalDurationException(
-                "Spread between Youtube duration {$this->youtubeMediaDuration} and audio file generated {$this->mediaProperties->duration()} is more than {{$acceptableSpread}} seconds !"
+                "Spread between Youtube duration {$this->youtubeMediaDuration} and \\
+                audio file generated {$this->mediaProperties->duration()} is more than {{$acceptableSpread}} seconds !"
             );
         }
 
@@ -58,6 +61,7 @@ class CheckingGrabbedFile
         if ($acceptableSpread < self::MINIMAL_SPREAD_BETWEEN_DURATION) {
             return self::MINIMAL_SPREAD_BETWEEN_DURATION;
         }
+
         return $acceptableSpread;
     }
 }
