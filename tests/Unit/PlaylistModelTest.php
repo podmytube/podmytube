@@ -54,7 +54,6 @@ class PlaylistModelTest extends TestCase
         factory(Media::class)->create(['media_id' => 'AyU4u-iQqJ4', 'grabbed_at' => now()->subWeek()]);
         factory(Media::class)->create(['media_id' => 'hb0Fo1Jqxkc']);
 
-        dump('media we know about', Media::grabbedAt()->get()->pluck('media_id'));
         $this->playlist = factory(Playlist::class)->create(['youtube_playlist_id' => self::PODMYTUBE_TEST_PLAYLIST_ID]);
 
         $mediasToPublish = $this->playlist->mediasToPublish();
@@ -205,5 +204,32 @@ class PlaylistModelTest extends TestCase
         $this->assertNotNull($owner);
         $this->assertInstanceOf(Authenticatable::class, $owner);
         $this->assertEquals($this->user->lastname, $owner->lastname);
+    }
+
+    /** @test */
+    public function associated_medias_is_fine(): void
+    {
+        Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
+
+        $this->playlist->update(['youtube_playlist_id' => self::PODMYTUBE_TEST_PLAYLIST_ID]);
+        $this->playlist->refresh();
+        /** no medias */
+        $medias = $this->playlist->associatedMedias();
+        $this->assertNotNull($medias);
+        $this->assertInstanceOf(Collection::class, $medias);
+        $this->assertCount(0, $medias);
+
+        Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
+
+        // with some medias
+        factory(Media::class)->create(['media_id' => 'GJzweq_VbVc', 'grabbed_at' => now()->subday()]);
+        factory(Media::class)->create(['media_id' => 'AyU4u-iQqJ4', 'grabbed_at' => now()->subWeek()]);
+        factory(Media::class)->create(['media_id' => 'hb0Fo1Jqxkc']);
+        $this->playlist->refresh();
+
+        $medias = $this->playlist->associatedMedias();
+        $this->assertNotNull($medias);
+        $this->assertInstanceOf(Collection::class, $medias);
+        $this->assertCount(2, $medias);
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Interfaces;
 
 use App\Category;
@@ -43,4 +45,8 @@ interface Podcastable
     public function toPodcast(): array;
 
     public function channelId(): string;
+
+    public function associatedMedias(): Collection;
+
+    public function delete();
 }

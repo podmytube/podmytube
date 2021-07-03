@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests;
 
 use App\Channel;
@@ -12,11 +14,13 @@ use App\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 
 abstract class TestCase extends BaseTestCase
 {
-    use CreatesApplication, WithFaker;
+    use CreatesApplication;
+    use WithFaker;
 
     /** some channels */
     public const PERSONAL_CHANNEL_ID = 'UCw6bU9JT_Lihb2pbtqAUGQw';
@@ -29,6 +33,11 @@ abstract class TestCase extends BaseTestCase
     public const BILLING_ONLY_YEARLY = 1;
     public const BILLING_BOTH = 2;
 
+    /** some playlists */
+    public const NOWTECH_LEMUG_YOUTUBE_PLAYLIST_ID = 'PLhQHoIKUR5vD0vq6Jwns89QAz9OZWTvpx';
+
+    public const PODMYTUBE_TEST_PLAYLIST_ID = 'PLyeI3mV1fCpovDzuc8gRaWh2HysiVaoBQ'; // to be removed this one is on my second born channel (MISTAKE)
+
     /** this video does exist and has two tags ['dev', 'podmytube'] */
     protected const BEACH_VOLLEY_VIDEO_1 = 'EePwbhMqEh0';
     /** this video does exist and has no tag */
@@ -37,10 +46,90 @@ abstract class TestCase extends BaseTestCase
     protected const MARIO_COIN_VIDEO = 'qfx6yf8pux4';
     protected const MARIO_MUSHROOM_VIDEO = '6G-k4zxou7Y';
 
-    /** some playlists */
-    public const NOWTECH_LEMUG_YOUTUBE_PLAYLIST_ID = 'PLhQHoIKUR5vD0vq6Jwns89QAz9OZWTvpx';
+    /**
+     * Laravel is encoding.
+     * So i'm encoding the same way to be sure tests will stay green.
+     * IE "d'angelo" => "d&#039;angelo".
+     */
+    public function stringEncodingLikeLaravel(string $str): string
+    {
+        return htmlspecialchars($str, ENT_QUOTES | ENT_HTML401);
+    }
 
-    public const PODMYTUBE_TEST_PLAYLIST_ID = 'PLyeI3mV1fCpovDzuc8gRaWh2HysiVaoBQ'; // to be removed this one is on my second born channel (MISTAKE)
+    public function createChannelForUser(?User $user = null): Channel
+    {
+        $createContext = [];
+        if ($user !== null) {
+            $createContext = ['user_id' => $user->user_id];
+        }
+
+        return factory(Channel::class)->create($createContext);
+    }
+
+    public function createRealThumbFileFor(Coverable $coverable): Thumb
+    {
+        $thumb = factory(Thumb::class)->create([
+            'coverable_type' => get_class($coverable),
+            'coverable_id' => $coverable->id(),
+        ]);
+        $this->createFakeCoverFor($thumb);
+
+        return $thumb;
+    }
+
+    /** will create a cover from existing fixture and return filesize */
+    public function createFakeCoverFor(Thumb $thumb): int
+    {
+        /** create channel folder */
+        $fileName = $thumb->file_name;
+        $filePath = $thumb->coverable->channelId().'/'.$fileName;
+        Storage::disk(Thumb::LOCAL_STORAGE_DISK)
+            ->put(
+                $filePath,
+                file_get_contents(base_path('tests/fixtures/images/sampleThumb.jpg'))
+            )
+        ;
+
+        return Storage::disk(Thumb::LOCAL_STORAGE_DISK)->size($filePath);
+    }
+
+    public function createChannel(?User $user = null, ?Plan $plan = null): Channel
+    {
+        // if owner specified
+        if ($user !== null) {
+            $userContext = ['user_id' => $user->id()];
+        }
+        $channel = factory(Channel::class)->create($userContext);
+
+        // if no plan, affecting a created one
+        if ($plan === null) {
+            $plan = factory(Plan::class)->create();
+        }
+        $channel->subscribeToPlan($plan);
+        $channel->refresh();
+
+        return $channel;
+    }
+
+    /**
+     * Associate media (with file uploaded) to channel.
+     * This function is creating medias for specified channel.
+     * WARNING : each media created is getting one media file uploaded on remote.
+     */
+    public function createMediaWithFileForChannel(Channel $channel, int $nbMediasToCreate = 1): Collection
+    {
+        return factory(Media::class, $nbMediasToCreate)
+            ->create(['channel_id' => $channel->channelId()])
+            ->map(function ($media): Media {
+                Storage::put(
+                    $media->remoteFilePath(),
+                    file_get_contents(base_path('tests/fixtures/Audio/l8i4O7_btaA.mp3'))
+                );
+
+                return $media;
+            })
+        ;
+    }
 
     protected function addMediasToChannel(Channel $channel, int $numberOfMediasToAdd = 1, bool $grabbed = false)
     {
@@ -55,7 +144,7 @@ abstract class TestCase extends BaseTestCase
     }
 
     /**
-     * create one channel
+     * create one channel.
      */
     protected function createChannelWithPlan(Plan $plan = null): Channel
     {
@@ -63,66 +152,7 @@ abstract class TestCase extends BaseTestCase
         if ($plan) {
             $createContext = ['plan_id' => $plan->id];
         }
+
         return factory(Subscription::class)->create($createContext)->channel;
-    }
-
-    /**
-     * Laravel is encoding.
-     * So i'm encoding the same way to be sure tests will stay green.
-     * IE "d'angelo" => "d&#039;angelo"
-     */
-    public function stringEncodingLikeLaravel(string $str): string
-    {
-        return htmlspecialchars($str, ENT_QUOTES | ENT_HTML401);
-    }
-
-    public function createChannelForUser(?User $user = null): Channel
-    {
-        $createContext = [];
-        if ($user !== null) {
-            $createContext = ['user_id' => $user->user_id];
-        }
-        return factory(Channel::class)->create($createContext);
-    }
-
-    public function createRealThumbFileFor(Coverable $coverable):  Thumb
-    {
-        $thumb = factory(Thumb::class)->create([
-            'coverable_type' => get_class($coverable),
-            'coverable_id' => $coverable->id(),
-        ]);
-        $this->createFakeCoverFor($thumb);
-        return $thumb;
-    }
-
-    /** will create a cover from existing fixture and return filesize */
-    public function createFakeCoverFor(Thumb $thumb): int
-    {
-        /** create channel folder */
-        $fileName = $thumb->file_name;
-        $filePath = $thumb->coverable->channelId() . '/' . $fileName;
-        Storage::disk(Thumb::LOCAL_STORAGE_DISK)
-            ->put(
-                $filePath,
-                file_get_contents(base_path('tests/fixtures/images/sampleThumb.jpg'))
-            );
-        return Storage::disk(Thumb::LOCAL_STORAGE_DISK)->size($filePath);
-    }
-
-    public function createChannel(?User $user = null, ?Plan $plan = null): Channel
-    {
-        /** if owner specified */
-        if ($user !== null) {
-            $userContext = ['user_id' => $user->id()];
-        }
-        $channel = factory(Channel::class)->create($userContext);
-
-        /** if no plan, affecting a created one */
-        if ($plan === null) {
-            $plan = factory(Plan::class)->create();
-        }
-        $channel->subscribeToPlan($plan);
-        $channel->refresh();
-        return $channel;
     }
 }
