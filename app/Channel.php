@@ -1,9 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 /**
- * the channel model to access database same table name
- *
- * @package PodMyTube
+ * the channel model to access database same table name.
  *
  * @author Frederick Tyteca <fred@podmytube.com>
  */
@@ -32,31 +32,31 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 /**
- * the channel model and its functions
+ * the channel model and its functions.
  */
 class Channel extends Model implements Podcastable, Coverable
 {
-    use BelongsToCategory,
-        BelongsToUser,
-        HasLimits,
-        HasManyMedias,
-        HasManyPlaylists,
-        HasOneSubscription,
-        HasOneLanguage,
-        HasCover;
+    use BelongsToCategory;
+    use BelongsToUser;
+    use HasLimits;
+    use HasManyMedias;
+    use HasManyPlaylists;
+    use HasOneSubscription;
+    use HasOneLanguage;
+    use HasCover;
 
     public const CREATED_AT = 'channel_createdAt';
     public const UPDATED_AT = 'channel_updatedAt';
+    /** the channel_id is not one auto_increment integer */
+    public $incrementing = false;
 
     /** I didn't know about the convention and I bite my hand everytime */
     protected $primaryKey = 'channel_id';
-    /** the channel_id is not one auto_increment integer */
-    public $incrementing = false;
     /** and it's a string */
     protected $keyType = 'string';
 
     /**
-     * those fields are converted into Carbon mutator
+     * those fields are converted into Carbon mutator.
      */
     protected $dates = [
         'channel_createdAt',
@@ -70,7 +70,7 @@ class Channel extends Model implements Podcastable, Coverable
     ];
 
     /**
-     * the field that are guarded
+     * the field that are guarded.
      */
     protected $guarded = [];
 
@@ -96,7 +96,7 @@ class Channel extends Model implements Podcastable, Coverable
 
     public function relativeFeedPath(): string
     {
-        return $this->channelId() . '/' . config('app.feed_filename');
+        return $this->channelId().'/'.config('app.feed_filename');
     }
 
     /**
@@ -106,7 +106,7 @@ class Channel extends Model implements Podcastable, Coverable
      */
     public function remoteFilePath(): string
     {
-        return config('app.feed_path') . $this->relativeFeedPath();
+        return config('app.feed_path').$this->relativeFeedPath();
     }
 
     /**
@@ -114,67 +114,65 @@ class Channel extends Model implements Podcastable, Coverable
      */
     public function podcastUrl(): string
     {
-        return config('app.podcasts_url') . '/' . $this->relativeFeedPath();
+        return config('app.podcasts_url').'/'.$this->relativeFeedPath();
     }
 
     /**
      * return all early birds channels.
-     *
-     * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function earlyBirdsChannels(): Collection
     {
         return static::active()
-            ->whereHas('subscription', function (Builder $query) {
+            ->whereHas('subscription', function (Builder $query): void {
                 $query->where('plan_id', '=', Plan::EARLY_PLAN_ID);
             })
             ->with(['User', 'Category', 'cover', 'Subscription'])
-            ->get();
+            ->get()
+        ;
     }
 
     /**
      * return all free channels.
-     *
-     * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function freeChannels(): Collection
     {
         return static::active()
-            ->whereHas('subscription', function (Builder $query) {
+            ->whereHas('subscription', function (Builder $query): void {
                 $query->where('plan_id', '=', Plan::FREE_PLAN_ID);
             })
             ->with(['User', 'Category', 'cover', 'Subscription'])
-            ->get();
+            ->get()
+        ;
     }
 
     /**
      * return all paying customers channels.
      * Paying customers only.
-     *
-     * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function payingChannels(): Collection
     {
         return static::active()
-            ->whereHas('subscription', function (Builder $query) {
+            ->whereHas('subscription', function (Builder $query): void {
                 $query->where('plan_id', '>', Plan::EARLY_PLAN_ID);
             })
             ->with(['User', 'Category', 'cover', 'Subscription'])
-            ->get();
+            ->get()
+        ;
     }
 
     public static function allActiveChannels()
     {
         return self::active()
             ->with(['User', 'Category', 'cover', 'Subscription'])
-            ->get();
+            ->get()
+        ;
     }
 
     public function hasFilter(): bool
     {
-        return $this->accept_video_by_tag !== null ||
-            $this->reject_video_by_keyword !== null ||
-            $this->reject_video_too_old !== null;
+        return $this->accept_video_by_tag !== null
+            || $this->reject_video_by_keyword !== null
+            || $this->reject_video_too_old !== null;
     }
 
     public function hasAcceptOnlyTags(): bool
@@ -183,23 +181,26 @@ class Channel extends Model implements Podcastable, Coverable
     }
 
     /**
-     * check if tag is in the allowed tags
+     * check if tag is in the allowed tags.
      */
     public function isTagAccepted(?string $tag = null): bool
     {
-        /** if channel has no accept only tag */
+        // if channel has no accept only tag
         if (!$this->hasAcceptOnlyTags()) {
             Log::debug('Channel has no accept only filter => accept');
+
             return true;
         }
 
-        /** tag is empty or null => rejected */
+        // tag is empty or null => rejected
         if (strlen($tag) <= 0 || $tag === null) {
             if ($this->hasAcceptOnlyTags()) {
                 Log::debug("Tag ---{$tag}--- is empty BUT owner accept only ---{$this->accept_video_by_tag}~~~ => rejected.");
+
                 return false;
             }
             Log::debug("Tag ---{$tag}--- is empty BUT owner accept all tags => accepted.");
+
             return true;
         }
 
@@ -211,9 +212,10 @@ class Channel extends Model implements Podcastable, Coverable
 
     public function areTagsAccepted(array $tags = []): bool
     {
-        /** no filter set all medias accepted */
+        // no filter set all medias accepted
         if (!$this->hasFilter()) {
             Log::debug('Channel has no filters => accepted');
+
             return true;
         }
 
@@ -224,12 +226,12 @@ class Channel extends Model implements Podcastable, Coverable
             }
         }
 
-        /** arriving here means there is no tag */
+        // arriving here means there is no tag
         if ($this->hasAcceptOnlyTags()) {
-            /** No tag specified BUT owner accept only some TAG => rejected. */
+            // No tag specified BUT owner accept only some TAG => rejected.
             return false;
         }
-        /** No tag specified but no filtering => accepted */
+        // No tag specified but no filtering => accepted
         return true;
     }
 
@@ -238,6 +240,7 @@ class Channel extends Model implements Podcastable, Coverable
         if ($this->reject_video_too_old === null) {
             return true;
         }
+
         return $date->isAfter($this->reject_video_too_old);
     }
 
@@ -265,6 +268,7 @@ class Channel extends Model implements Podcastable, Coverable
                 ),
             ]);
         }
+
         return $results;
     }
 
@@ -284,6 +288,7 @@ class Channel extends Model implements Podcastable, Coverable
         if ($channelsCollection->count()) {
             return $channelsCollection;
         }
+
         return null;
     }
 
@@ -302,7 +307,7 @@ class Channel extends Model implements Podcastable, Coverable
 
     public function nextMediaId()
     {
-        return substr(Str::slug($this->channel_name), 0, 20) . '-' . ($this->medias->count() + 1);
+        return substr(Str::slug($this->channel_name), 0, 20).'-'.($this->medias->count() + 1);
     }
 
     /**
@@ -315,16 +320,18 @@ class Channel extends Model implements Podcastable, Coverable
 
     /**
      * Will return the medias to be published.
-     * Medias should have been grabbed
+     * Medias should have been grabbed.
      */
     public function mediasToPublish(): Collection
     {
         $query = $this->medias()
             ->whereNotNull('grabbed_at')
-            ->orderBy('published_at', 'desc');
+            ->orderBy('published_at', 'desc')
+        ;
         if ($this->isFree()) {
             $query->take(3);
         }
+
         return $query->get();
     }
 
@@ -333,7 +340,8 @@ class Channel extends Model implements Podcastable, Coverable
         return $this->mediasToPublish()
             ->map(function (Media $media) {
                 return PodcastItem::with($media->toPodcastItem());
-            });
+            })
+        ;
     }
 
     public function podcastCoverUrl(): string
@@ -341,6 +349,7 @@ class Channel extends Model implements Podcastable, Coverable
         if (!$this->hasCover()) {
             return Thumb::defaultUrl();
         }
+
         return $this->cover->podcastUrl();
     }
 
@@ -446,5 +455,10 @@ class Channel extends Model implements Podcastable, Coverable
             ['channel_id' => $this->channel_id],
             ['plan_id' => $plan->id]
         );
+    }
+
+    public function associatedMedias(): Collection
+    {
+        return $this->medias;
     }
 }

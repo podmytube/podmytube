@@ -20,6 +20,7 @@ use App\Podcast\PodcastItem;
 use App\Traits\BelongsToChannel;
 use App\Traits\HasCover;
 use App\Youtube\YoutubePlaylistItems;
+use Exception;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -253,5 +254,14 @@ class Playlist extends Model implements Podcastable, Coverable
     public function owner(): Authenticatable
     {
         return $this->channel->user;
+    }
+
+    public function associatedMedias(): Collection
+    {
+        try {
+            return $this->mediasToPublish();
+        } catch (Exception $expection) {
+            return new Collection();
+        }
     }
 }

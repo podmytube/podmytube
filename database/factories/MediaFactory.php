@@ -21,10 +21,9 @@ $factory->define(Media::class, function (Faker $faker, $attributes) {
     // returning our nice new media
     return [
         'media_id' => $attributes['media_id'] ?? $faker->regexify('[a-zA-Z0-9-_]{4}'),
-        'channel_id' => $attributes['channel_id'] ??
-            function () {
-                return factory(Channel::class)->create()->channel_id;
-            },
+        'channel_id' => $attributes['channel_id'] ?? function () {
+            return factory(Channel::class)->create()->channel_id;
+        },
         'title' => $attributes['title'] ?? $faker->words(2, true),
         'description' => $attributes['description'] ?? <<<'EOT'
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor. 

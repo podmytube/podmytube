@@ -40,7 +40,7 @@ class MediaCleaningTest extends TestCase
         /**
          * dispatching media deletion
          */
-        MediaCleaning::dispatchNow($media);
+        MediaCleaning::dispatch($media);
 
         /**
          * checking all has been soft deleted
