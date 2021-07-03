@@ -1,8 +1,10 @@
 <div class="flex items-center max-w-screen-xl mx-auto px-4 xl:py-20">
     <div class="flex md:p-4 mx-auto">
         <div class="text-center pt-8 md:flex-shrink-0 md:flex-grow-0 md:w-1/2 md:text-left md:pt-8">
-            <h1 class="text-5xl text-white tracking-normal font-extrabold leading-none lg:font-extrabold lg:tracking-tighter xl:tracking-wide xl:pt-12">
-                Your channel <span class="block text-red-400 sm:inline md:block lg:inline">in podcast</span>
+            <h1
+                class="text-5xl text-white tracking-normal font-extrabold leading-none lg:font-extrabold lg:tracking-tighter xl:tracking-wide xl:pt-12 text-center">
+                Podcast hosting for <span class="block text-red-400 sm:inline md:block lg:inline">youtube
+                    channels</span> made easy
             </h1>
             <p class="text-gray-300 leading-loose pt-8 lg:text-lg">
                 Upload your videos on youtube <strong>(as usual)</strong>.<br class="xl:hidden">

@@ -1,9 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * routes for PodMyTube web application (for now its dashboard).
- *
- * @package PodMyTube Dashboard
  *
  * @author Frederick Tyteca <fred@podmytube.com>
  */
@@ -20,7 +20,7 @@ Route::get('privacy', function () {
     return view('privacy');
 })->name('privacy');
 
-Route::domain('www.' . config('app.domain'))->group(function () {
+Route::domain('www.'.config('app.domain'))->group(function (): void {
     Route::get('/', 'IndexController@index')->name('www.index');
     Route::get('pricing', 'PricingController@index')->name('pricing');
     Route::get('faq', function () {
@@ -38,7 +38,7 @@ Route::domain('www.' . config('app.domain'))->group(function () {
     })->name('test');
 });
 
-Route::domain('dashboard.' . config('app.domain'))->group(function () {
+Route::domain('dashboard.'.config('app.domain'))->group(function (): void {
     Auth::routes();
     // ================================================
     // Dash homepage is the login screen
@@ -46,63 +46,58 @@ Route::domain('dashboard.' . config('app.domain'))->group(function () {
         return view('auth.login');
     })->name('root');
 
-    /**
-     * not a user interaction
-     */
+    // not a user interaction
     Route::stripeWebhooks('/stripe/webhooks');
 
-    Route::middleware(['auth'])->group(function () {
+    Route::middleware(['auth'])->group(function (): void {
         Route::get('/home', 'HomeController@index')->name('home');
 
         Route::post('/channel/', 'ChannelCreateController@store')
-            ->name('channel.store');
+            ->name('channel.store')
+        ;
 
         Route::get('/channel/create', 'ChannelCreateController@create')
-            ->name('channel.create');
+            ->name('channel.create')
+        ;
 
         Route::resource('channel', 'ChannelsController')
-            ->only(['index', 'show', 'edit', 'update']);
+            ->only(['index', 'show', 'edit', 'update'])
+        ;
 
         Route::get('/change-password', 'Auth\UpdatePasswordController@index')
-            ->name('password.form');
+            ->name('password.form')
+        ;
 
         Route::post('/change-password', 'Auth\UpdatePasswordController@update')
-            ->name('password.update');
+            ->name('password.update')
+        ;
 
-        /**
-         * Plans
-         */
+        // Plans
         Route::get('/plans/{channel}', 'PlansController@index')
-            ->name('plans.index');
+            ->name('plans.index')
+        ;
         Route::get('/success', 'SubscriptionResultController@success');
         Route::get('/canceled', 'SubscriptionResultController@failure');
 
-        /**
-         * Subscription
-         */
+        // Subscription
         Route::post('/subscribe', 'SubscribeController@store');
 
-        /**
-         * Medias
-         */
+        // Medias
         Route::resource('channel.medias', 'MediasController')
-            ->only(['index', 'create', 'edit', 'store']);
+            ->only(['index', 'create', 'edit', 'store'])
+        ;
 
         Route::resource('playlist', 'PlaylistController')
-            ->only(['edit', 'update']);
+            ->only(['edit', 'update'])
+        ;
 
-        /**
-         * Cover
-         */
+        // Cover
         Route::get('channel/{channel}/cover/edit', [ThumbsController::class, 'channelCoverEdit'])->name('channel.cover.edit');
         Route::patch('channel/{channel}/cover/update', [ThumbsController::class, 'channelCoverUpdate'])->name('channel.cover.update');
         Route::get('playlist/{playlist}/cover/edit', [ThumbsController::class, 'playlistCoverEdit'])->name('playlist.cover.edit');
         Route::patch('playlist/{playlist}/cover/update', [ThumbsController::class, 'playlistCoverUpdate'])->name('playlist.cover.update');
 
-        /**
-         * User profile
-         */
-        Route::resource('user', 'UsersController')
-            ->only(['show', 'edit', 'update']);
+        // User profile
+        Route::resource('user', 'UsersController')->only(['index', 'update']);
     });
 });

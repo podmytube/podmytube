@@ -1,11 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /**
- * the channel create controller
+ * the channel create controller.
  *
  * this controller is handling the new channel form part.
- *
- * @package PodMyTube
  *
  * @author Frederick Tyteca <fred@podmytube.com>
  */
@@ -20,13 +20,11 @@ use Illuminate\Support\Facades\Auth;
 
 class ChannelCreateController extends Controller
 {
-    /** @var App\Youtube\YoutubeChannel $youtubeChannelObj */
+    /** @var App\Youtube\YoutubeChannel */
     protected $youtubeChannelObj;
 
     /**
-     * Display the form channel creation
-     *
-     * @return void
+     * Display the form channel creation.
      */
     public function create()
     {
@@ -35,24 +33,29 @@ class ChannelCreateController extends Controller
             'weekly' => Plan::WEEKLY_PLAN_ID,
             'daily' => Plan::DAILY_PLAN_ID,
         ];
+
         return view('channel.create', compact('plans'));
     }
 
     /**
-     * create one channel from the form received
-     *
-     * @return void
+     * create one channel from the form received.
      */
     public function store(ChannelCreationRequest $request)
     {
         $validatedParams = $request->validated();
+
         try {
             $factory = ChannelCreationFactory::create(Auth::user(), $validatedParams['channel_url'], Plan::bySlug('forever_free'));
+
+            return redirect()
+                ->route('home')
+                ->with('success', "Channel {$factory->channel()->channel_name} has been successfully registered.")
+            ;
         } catch (Exception $exception) {
             return redirect()
                 ->back()
-                ->withErrors(['danger' => $exception->getMessage()]);
+                ->withErrors(['danger' => $exception->getMessage()])
+            ;
         }
-        return redirect()->route('home')->with('success', "Channel {$factory->channel()->channel_name} has been successfully registered.");
     }
 }

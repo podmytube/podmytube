@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit;
 
 use App\Exceptions\DownloadMediaFailureException;
@@ -9,49 +11,41 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use InvalidArgumentException;
 use Tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class DownloadYTMediaTest extends TestCase
 {
     use RefreshDatabase;
 
-    const AUDIO_FILE_EXTENSION = '.mp3';
-    const MARIO_COIN_DURATION = 6;
+    public const AUDIO_FILE_EXTENSION = '.mp3';
+    public const MARIO_COIN_DURATION = 6;
 
-    /**
-     * Full path of the downloaded video
-     */
+    /** @var string */
     protected $expectedVideoFile;
 
-    /**
-     * The standard command line expected
-     */
+    /** @var string */
     protected $expectedCmdLineQuiet;
 
-    /**
-     * The verbose command line expected
-     */
+    /** @var string */
     protected $expectedCmdLineVerbose;
 
-    /**
-     * Instance of the object to test
-     */
+    /** @var string */
     protected $downloadVideo;
 
-    /** @var string $destinationFolder */
+    /** @var string */
     protected $destinationFolder;
 
-    /** @var \App\Media $media */
+    /** @var \App\Media */
     protected $media;
 
-    /**
-     * first things to do before launching tests
-     * @return void
-     */
     protected function setUp(): void
     {
         parent::setUp();
         $this->media = factory(Media::class)->create(['media_id' => self::MARIO_COIN_VIDEO]);
         $this->destinationFolder = '/tmp/';
-        $this->expectedVideoFile = $this->destinationFolder . self::MARIO_COIN_VIDEO . self::AUDIO_FILE_EXTENSION;
+        $this->expectedVideoFile = $this->destinationFolder.self::MARIO_COIN_VIDEO.self::AUDIO_FILE_EXTENSION;
         if (file_exists($this->expectedVideoFile)) {
             unlink($this->expectedVideoFile);
         }
@@ -65,32 +59,29 @@ class DownloadYTMediaTest extends TestCase
         parent::tearDown();
     }
 
-    public function testDownloadedFilePathShouldBeGood()
+    public function test_downloaded_file_path_should_be_good(): void
     {
         $this->assertEquals(
             $this->expectedVideoFile,
             DownloadYTMedia::init($this->media, $this->destinationFolder, false)->downloadedFilePath(),
-            'expected file {' . $this->expectedVideoFile . '} should be there'
+            'expected file {'.$this->expectedVideoFile.'} should be there'
         );
     }
 
-    /**
-     * This will test if download is working well.
-     * @return void
-     */
-    public function testDownloadShouldBeGood()
+    /** @test */
+    public function command_line_should_be_good(): void
     {
-        DownloadYTMedia::init($this->media, $this->destinationFolder, false)->download();
-        $this->assertFileExists(
-            $this->expectedVideoFile,
-            'expected file {' . $this->expectedVideoFile . '} should be there'
+        $expectedCommandLine = "/usr/local/bin/youtube-dl --no-warnings --extract-audio --audio-format mp3 --format 'bestaudio[ext=mp3]/best[ext=webm]/best' --output '/tmp/%(id)s.%(ext)s' --quiet https://www.youtube.com/watch?v=qfx6yf8pux4 >/dev/null 2>&1";
+        $this->assertEquals(
+            $expectedCommandLine,
+            DownloadYTMedia::init($this->media, $this->destinationFolder, false)->commandLine()
         );
     }
 
-    public function testExistingFileShouldBeRemovedBeforeDownload()
+    public function test_existing_file_should_be_removed_before_download(): void
     {
-        $expectedFileToBeRemovedBefore = $this->destinationFolder . '/' . self::MARIO_COIN_VIDEO . '.mp4';
-        /** creating fake file */
+        $expectedFileToBeRemovedBefore = $this->destinationFolder.'/'.self::MARIO_COIN_VIDEO.'.mp4';
+        // creating fake file
         touch($expectedFileToBeRemovedBefore);
         $this->assertFileExists($expectedFileToBeRemovedBefore);
         DownloadYTMedia::init($this->media, $this->destinationFolder, false);
@@ -101,18 +92,18 @@ class DownloadYTMediaTest extends TestCase
     }
 
     /**
-     * This will test that we throw an exception destination folder is not valid (writable and exists)
+     * This will test that we throw an exception destination folder is not valid (writable and exists).
      */
-    public function testThatWeFailIfDestinationPathIsInvalid()
+    public function test_that_we_fail_if_destination_path_is_invalid(): void
     {
         $this->expectException(InvalidArgumentException::class);
         DownloadYTMedia::init($this->media, '/path/that/does/not/exists');
     }
 
     /**
-     * This will test that we throw an exception if mediaid is not valid
+     * This will test that we throw an exception if mediaid is not valid.
      */
-    public function testThatWeFailIfMediaIsInvalid()
+    public function test_that_we_fail_if_media_is_invalid(): void
     {
         $foolishMedia = factory(Media::class)->create(['media_id' => 'invalid-media-forever']);
         $this->expectException(DownloadMediaFailureException::class);

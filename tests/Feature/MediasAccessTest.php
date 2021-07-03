@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature;
 
 use App\Channel;
@@ -8,14 +10,18 @@ use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class MediasAccessTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var \App\Channel $channel */
+    /** @var \App\Channel */
     protected $channel;
 
-    /** @var \App\Media $media */
+    /** @var \App\Media */
     protected $media;
 
     public function setUp(): void
@@ -25,9 +31,9 @@ class MediasAccessTest extends TestCase
         $this->media = factory(Media::class)->create(['channel_id' => $this->channel->channel_id]);
     }
 
-    public function testForbidenForGuests()
+    public function test_forbiden_for_guests(): void
     {
-        array_map(function ($routeToCheck) {
+        array_map(function ($routeToCheck): void {
             $this->get(route($routeToCheck, $this->channel))->assertRedirect(
                 route('login')
             );
@@ -37,18 +43,20 @@ class MediasAccessTest extends TestCase
         ]);
     }
 
-    public function testMediaEditForbiddenToAnotherUser()
+    public function test_media_edit_forbidden_to_another_user(): void
     {
         $notTheOwner = factory(User::class)->create();
         $this->actingAs($notTheOwner)
             ->get(route('channel.medias.edit', ['channel' => $this->channel, 'media' => $this->media]))
-            ->assertForbidden();
+            ->assertForbidden()
+        ;
     }
 
-    public function testAllowedForOwner()
+    public function test_allowed_for_owner(): void
     {
         $this->actingAs($this->channel->user)
             ->get(route('channel.cover.edit', $this->channel))
-            ->assertSuccessful();
+            ->assertSuccessful()
+        ;
     }
 }

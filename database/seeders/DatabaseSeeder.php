@@ -1,23 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\App;
 
 class DatabaseSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
-    public function run()
+    public function run(): void
     {
-        /**
-         * These seeders are used every time
-         */
+        // These seeders are used every time
         Model::unguard();
 
         $requiredSeeders = [
@@ -34,7 +32,6 @@ class DatabaseSeeder extends Seeder
                 UsersTableSeeder::class,
                 ChannelsTableSeeder::class,
                 PlaylistsTableSeeder::class,
-                
             ];
         }
 

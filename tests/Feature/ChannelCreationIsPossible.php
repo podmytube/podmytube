@@ -1,13 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature;
 
 use App\Channel;
 use App\User;
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
+use Tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class ChannelCreationIsPossible extends TestCase
 {
     use RefreshDatabase;
@@ -19,54 +25,51 @@ class ChannelCreationIsPossible extends TestCase
     {
         parent::setUp();
         Artisan::call('db:seed');
-        $this->user = factory(User::class)->create(
-            [
-                'password' => bcrypt('i-love-laravel')
-            ]
-        );
+        $this->user = factory(User::class)->create();
     }
 
-    public function testChannelCreationIsFine()
+    /** @test */
+    public function channel_creation_is_fine(): void
     {
+        $expectedChannelId = 'UCw6bU9JT_Lihb2pbtqAUGQw';
         $this->followingRedirects()
             ->actingAs($this->user)
             ->from(route('channel.create'))
             ->post(route('channel.store'), [
-                "channel_url" => "https://www.youtube.com/channel/UCw6bU9JT_Lihb2pbtqAUGQw",
+                'channel_url' => 'https://www.youtube.com/channel/'.$expectedChannelId,
+                'owner' => 1,
             ])
             ->assertSuccessful()
-            ->assertViewIs("home")
+            ->assertViewIs('home')
             ->assertSessionHasNoErrors()
-            ->assertSeeText('has been successfully registered');
-        $this->assertCount(1, Channel::all());
+            ->assertSeeText('has been successfully registered')
+        ;
+        $channel = Channel::byChannelId($expectedChannelId);
+        $this->assertNotNull($channel);
+        $this->assertInstanceOf(Channel::class, $channel);
+        $this->assertEquals($expectedChannelId, $channel->channelId());
     }
 
-    public function testTryCreatingWithInvalidChannelIdWillFail()
+    /** @test */
+    public function try_creating_a_non_existing_channel_id_will_fail(): void
     {
-        $this->followingRedirects()
-            ->actingAs($this->user)
-            ->from(route('channel.create'))
-            ->post(route('channel.store'), [
-                "channel_url" => "https://www.youtube.com/channel/This-Will^never~exist",
-            ])
-            ->assertViewIs('channel.create')
-            ->assertSessionHasNoErrors()
-            ->assertSeeText('This channel url is invalid.');
-        $this->assertCount(0, Channel::all());
-    }
-
-    public function testTryCreatingANonExistingChannelIdWillFail()
-    {
-        $invalidChannelId = 'invalidChannelId';
-        $this->followingRedirects()
-            ->actingAs($this->user)
-            ->from(route('channel.create'))
-            ->post(route('channel.store'), [
-                "channel_url" => "https://www.youtube.com/channel/{$invalidChannelId}",
-            ])
-            ->assertViewIs('channel.create')
-            ->assertSessionHasNoErrors()
-            ->assertSeeText("This channel id {$invalidChannelId} does not exists on youtube.");
-        $this->assertCount(0, Channel::all());
+        array_map(
+            function ($invalidChannelId): void {
+                $this->followingRedirects()
+                    ->actingAs($this->user)
+                    ->from(route('channel.create'))
+                    ->post(route('channel.store'), [
+                        'channel_url' => "https://www.youtube.com/channel/{$invalidChannelId}",
+                        'owner' => 1,
+                    ])
+                    ->assertViewIs('channel.create')
+            ;
+                $this->assertNull(Channel::byChannelId($invalidChannelId));
+            },
+            [
+                'This-Will^never~exist',
+                'invalidChannelId',
+            ]
+        );
     }
 }

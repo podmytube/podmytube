@@ -1,7 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 /**
- *   this class is the model class for the User table
+ *   this class is the model class for the User table.
  */
 
 namespace App;
@@ -11,18 +13,23 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 /**
- * User Model Class
+ * User Model Class.
  */
 class User extends Authenticatable
 {
-    use Notifiable, SoftDeletes;
+    use Notifiable;
+    use SoftDeletes;
 
     /**
-     * the way to specify users.user_id is the key (and not users.id)
+     * the way to specify users.user_id is the key (and not users.id).
      */
     protected $primaryKey = 'user_id';
 
     protected $guarded = [];
+
+    protected $casts = [
+        'newsletter' => 'boolean',
+    ];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -32,7 +39,7 @@ class User extends Authenticatable
     protected $hidden = ['password', 'remember_token'];
 
     /**
-     * this function define the relationship between one User and his channels
+     * this function define the relationship between one User and his channels.
      */
     public function channels()
     {

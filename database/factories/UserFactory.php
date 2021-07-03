@@ -1,7 +1,10 @@
 <?php
 
-use Illuminate\Support\Str;
+declare(strict_types=1);
+
 use Faker\Generator as Faker;
+use Illuminate\Support\Str;
+
 /*
 |--------------------------------------------------------------------------
 | Model Factories
@@ -15,10 +18,10 @@ use Faker\Generator as Faker;
 
 $factory->define(App\User::class, function (Faker $faker, array $attributes = []) {
     return [
-        'firstname' => $faker->firstname,
-        'lastname' => $faker->lastname,
-        'email' => $attributes['email'] ?? $faker->safeEmail,
-        'password' => $attributes['password'] ?? bcrypt('secret'),
+        'firstname' => $attributes['firstname'] ?? $faker->firstname(),
+        'lastname' => $attributes['lastname'] ?? $faker->lastname(),
+        'email' => $attributes['email'] ?? $faker->email(),
+        'password' => $attributes['password'] ?? '$2y$10$rIo.zLS88CNtH66fSa4DOOYkzPIq8RGkS.DqyG/AoYOUI272HD5Sa', //secret
         'remember_token' => Str::random(10),
     ];
 });
