@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
-@section('pageTitle', "Get a podcast from your youtube channel")
+@section('pageTitle', 'Podcast hosting for your youtube channel.')
 
 @section('content')
 
-@include('partials.hero')
+    @include('partials.hero')
 
-@include('partials.promise')
+    @include('partials.promise')
 
 @endsection

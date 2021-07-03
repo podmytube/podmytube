@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
 use App\Channel;
@@ -10,10 +12,10 @@ use Illuminate\Support\Facades\Mail;
 
 class SendMonthlyReports extends Command
 {
-    /** @var string $signature The name and signature of the console command. */
+    /** @var string The name and signature of the console command. */
     protected $signature = 'email:monthlyReport {--period=}';
 
-    /** @var string $description The console command description. */
+    /** @var string The console command description. */
     protected $description = 'This command is sending monthly report to every registered channel.';
 
     /**
@@ -28,15 +30,15 @@ class SendMonthlyReports extends Command
             Carbon::now()->startOfMonth()->subMonth();
 
         /**
-         * get channels list
+         * get channels list.
          */
         $channels = Channel::allActiveChannels();
 
-        /**
-         * dispatch
-         */
-        $channels->map(function ($channel) use ($wantedMonth) {
-            Mail::to($channel->user)->queue(new MonthlyReportMail($channel, $wantedMonth));
+        // dispatch
+        $channels->map(function ($channel) use ($wantedMonth): void {
+            if ($channel->user->newsletter) {
+                Mail::to($channel->user)->queue(new MonthlyReportMail($channel, $wantedMonth));
+            }
         });
 
         $this->comment(

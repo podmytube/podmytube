@@ -1,13 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Youtube;
 
 use App\Youtube\YoutubeQuotas;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class YoutubeQuotasTest extends TestCase
 {
-    public function testSimpleUrlQuotaCostShouldBeOk()
+    use RefreshDatabase;
+
+    public function test_simple_url_quota_cost_should_be_ok(): void
     {
         $expectedResult = ['AIzaSyDu5_d6Etu8N0biP6zfDN4FNe675FcgRkk' => 7];
         $queries = [
@@ -19,7 +28,7 @@ class YoutubeQuotasTest extends TestCase
         );
     }
 
-    public function testManyUrlsShouldBeOk()
+    public function test_many_urls_should_be_ok(): void
     {
         $expectedResult = ['AIzaSyDu5_d6Etu8N0biP6zfDN4FNe675FcgRkk' => 16];
         $queries = [
@@ -34,7 +43,7 @@ class YoutubeQuotasTest extends TestCase
         );
     }
 
-    public function testUsingManyKeyShouldBeOk()
+    public function test_using_many_key_should_be_ok(): void
     {
         $expectedResult = ['key1' => 8, 'key2' => 3];
         $queries = [
@@ -48,7 +57,7 @@ class YoutubeQuotasTest extends TestCase
         );
     }
 
-    public function testInvalidEndPointShouldThrowAnException()
+    public function test_invalid_end_point_should_throw_an_exception(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         YoutubeQuotas::forUrls([
@@ -56,7 +65,7 @@ class YoutubeQuotasTest extends TestCase
         ])->quotaConsumed();
     }
 
-    public function testInvalidEndpointShouldStillReturnSomeResults()
+    public function test_invalid_endpoint_should_still_return_some_results(): void
     {
         $expectedResult = ['key1' => 3];
         $queries = [

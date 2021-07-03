@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit;
 
 use App\Category;
@@ -16,29 +18,36 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class ChannelCreationFactoryTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+    use RefreshDatabase;
+    use WithFaker;
 
-    /** @var \App\User $user */
+    /** @var \App\User */
     protected $user;
 
-    /** @var \App\Category $defaultCategory */
+    /** @var \App\Category */
     protected $defaultCategory;
 
     public function setUp(): void
     {
         parent::setUp();
         $this->user = factory(User::class)->create();
-        Artisan::call('db:seed');
+        Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
+        Artisan::call('db:seed', ['--class' => 'CategoriesTableSeeder']);
+        Artisan::call('db:seed', ['--class' => 'PlansTableSeeder']);
         $this->defaultCategory = Category::bySlug(ChannelCreationFactory::DEFAULT_CATEGORY_SLUG);
     }
 
     /** @todo check for ChannelRegistered Event */
-    public function testCreationWithDefaultFreePlanShouldBeOk()
+    public function test_creation_with_default_free_plan_should_be_ok(): void
     {
         Event::fake();
-        $validYoutubeUrl = 'https://www.youtube.com/channel/' . self::PERSONAL_CHANNEL_ID . '?view_as=subscriber';
+        $validYoutubeUrl = 'https://www.youtube.com/channel/'.self::PERSONAL_CHANNEL_ID.'?view_as=subscriber';
         $channelFactory = ChannelCreationFactory::create(
             $this->user,
             $validYoutubeUrl,
@@ -59,11 +68,11 @@ class ChannelCreationFactoryTest extends TestCase
         Event::assertDispatched(ChannelRegistered::class);
     }
 
-    public function testCreationWithSpecificPlanShouldBeOk()
+    public function test_creation_with_specific_plan_should_be_ok(): void
     {
         Event::fake();
 
-        $validYoutubeUrl = 'https://www.youtube.com/channel/' . self::PERSONAL_CHANNEL_ID . '?view_as=subscriber';
+        $validYoutubeUrl = 'https://www.youtube.com/channel/'.self::PERSONAL_CHANNEL_ID.'?view_as=subscriber';
         $weeklyYoutuberPlan = Plan::bySlug('weekly_youtuber');
         $channelFactory = ChannelCreationFactory::create(
             $this->user,
@@ -84,7 +93,7 @@ class ChannelCreationFactoryTest extends TestCase
         Event::assertDispatched(ChannelRegistered::class);
     }
 
-    public function testCreationWithInvalidYoutubeChannelShouldThrowException()
+    public function test_creation_with_invalid_youtube_channel_should_throw_exception(): void
     {
         $this->expectException(YoutubeChannelIdDoesNotExistException::class);
         ChannelCreationFactory::create(
@@ -94,7 +103,7 @@ class ChannelCreationFactoryTest extends TestCase
         );
     }
 
-    public function testTryingToRegisterSameChannelShouldThrowException()
+    public function test_trying_to_register_same_channel_should_throw_exception(): void
     {
         factory(Channel::class)->create(['channel_id' => self::PERSONAL_CHANNEL_ID]);
         $this->expectException(ChannelAlreadyRegisteredException::class);

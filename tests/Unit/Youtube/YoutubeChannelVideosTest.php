@@ -1,31 +1,40 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Youtube;
 
 use App\Exceptions\YoutubeNoResultsException;
 use App\Youtube\YoutubeChannelVideos;
 use App\Youtube\YoutubeQuotas;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class YoutubeChannelVideosTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function setUp(): void
     {
         parent::setUp();
         Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
     }
 
-    public function testHavingTheRightNumberOfVideos()
+    public function test_having_the_right_number_of_videos(): void
     {
         $expectedConsumedQuota = 5;
         $factory = YoutubeChannelVideos::forChannel(YoutubeCoreTest::PERSONAL_CHANNEL_ID, 50);
         $this->assertCount(
             2,
             $videos = $factory->videos(),
-            'Expected number of videos for this channel was 2, obtained ' . count($videos)
+            'Expected number of videos for this channel was 2, obtained '.count($videos)
         );
-        /**
+        /*
          * quota usage
          * obtaining channel uploads playlistid => 3 -- cheated so 0
          * obtaining videos list for uploads => 5
@@ -37,7 +46,7 @@ class YoutubeChannelVideosTest extends TestCase
     }
 
     /** @test */
-    public function grabbing_max_results_videos_once_should_be_ok()
+    public function grabbing_max_results_videos_once_should_be_ok(): void
     {
         /**
          * actually when querying youtube I ask for maxresults (50)
@@ -55,7 +64,7 @@ class YoutubeChannelVideosTest extends TestCase
     }
 
     /** @test */
-    public function grabbing_max_results_videos_many_times_should_be_ok()
+    public function grabbing_max_results_videos_many_times_should_be_ok(): void
     {
         $expectedNumberOfVideos = 150;
         $factory = YoutubeChannelVideos::forChannel(YoutubeCoreTest::PEWDIEPIE_CHANNEL_ID, $expectedNumberOfVideos);
@@ -67,7 +76,7 @@ class YoutubeChannelVideosTest extends TestCase
         );
     }
 
-    public function testingInvalidChannelShouldThrowException()
+    public function testing_invalid_channel_should_throw_exception(): void
     {
         $this->expectException(YoutubeNoResultsException::class);
         YoutubeChannelVideos::forChannel('ThisChannelWillNeverExists');
