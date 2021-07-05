@@ -43,6 +43,7 @@ class PodcastableCleaning implements ShouldQueue
 
         // delete medias
         $this->podcastableToDelete->associatedMedias()->map(function ($media): void {
+            dump("dispatching media cleaning for {$media->media_id}");
             MediaCleaning::dispatch($media);
         });
 
