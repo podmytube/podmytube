@@ -32,6 +32,7 @@ class MediaCleaningTest extends TestCase
             $media->remoteFilePath(),
             file_get_contents(base_path('tests/fixtures/Audio/l8i4O7_btaA.mp3'))
         );
+        
         /**
          * just to check media file exists
          */

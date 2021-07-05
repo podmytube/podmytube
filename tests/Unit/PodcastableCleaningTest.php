@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use App\Channel;
+use App\Jobs\MediaCleaning;
 use App\Jobs\PodcastableCleaning;
 use App\Jobs\SendFileBySFTP;
 use App\Media;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
@@ -28,12 +29,13 @@ class PodcastableCleaningTest extends TestCase
     {
         parent::setUp();
         Storage::fake(SendFileBySFTP::REMOTE_DISK);
-        Event::fake();
     }
 
     /** @test */
     public function channel_cleaning_is_working_fine(): void
     {
+        Bus::fake();
+        $nbMediasForPodcastable = 2;
         $podcastableToDelete = factory(Channel::class)->create();
         // creating fake file with real file (storage disk is faked above).
         Storage::put(
@@ -42,15 +44,13 @@ class PodcastableCleaningTest extends TestCase
         );
 
         // associating some medias for channel
-        $mediasThatShouldBeDeleted = $this->createMediaWithFileForChannel($podcastableToDelete, 2);
+        $this->createMediaWithFileForChannel($podcastableToDelete, $nbMediasForPodcastable);
+        $podcastableToDelete->refresh();
 
         // dispatching media deletion
         PodcastableCleaning::dispatch($podcastableToDelete);
 
         // all media informations should be null
-        $mediasThatShouldBeDeleted->map(function (Media $media): void {
-            $this->assertFalse(Storage::exists($media->remoteFilePath()));
-            $this->assertTrue($media->trashed());
-        });
+        Bus::assertDispatched(MediaCleaning::class, $nbMediasForPodcastable);
     }
 }
