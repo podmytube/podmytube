@@ -49,4 +49,6 @@ interface Podcastable
     public function associatedMedias(): Collection;
 
     public function delete();
+
+    public static function byYoutubeId(string $youtubeId): ?Podcastable;
 }

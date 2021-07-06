@@ -461,4 +461,9 @@ class Channel extends Model implements Podcastable, Coverable
     {
         return $this->medias;
     }
+
+    public static function byYoutubeId(string $youtubeId): ?self
+    {
+        return self::byChannelId($youtubeId);
+    }
 }
