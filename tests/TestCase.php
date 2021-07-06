@@ -6,8 +6,10 @@ namespace Tests;
 
 use App\Channel;
 use App\Interfaces\Coverable;
+use App\Interfaces\Podcastable;
 use App\Media;
 use App\Plan;
+use App\Playlist;
 use App\Subscription;
 use App\Thumb;
 use App\User;
@@ -129,6 +131,43 @@ abstract class TestCase extends BaseTestCase
                 return $media;
             })
         ;
+    }
+
+    /**
+     * will create fake playlist and associate two wedias with it.
+     * this playlist has only some medias in ('GJzweq_VbVc', 'AyU4u-iQqJ4', 'hb0Fo1Jqxkc').
+     * so I only need to create these ones and set their state to grabbed or not.
+     * That's not finished !
+     * If I want to get the medias for this playlist
+     * - I need to seed api_keys table
+     * - I need to use Podcastable::mediasToPublish() or Podcastable::associatedMedias().
+     */
+    public function createPlaylistWithMedia(): Playlist
+    {
+        $playlist = factory(Playlist::class)->create(['youtube_playlist_id' => self::PODMYTUBE_TEST_PLAYLIST_ID]);
+
+        // with some medias
+        factory(Media::class)->create(['media_id' => 'GJzweq_VbVc', 'grabbed_at' => now()->subday()]);
+        factory(Media::class)->create(['media_id' => 'AyU4u-iQqJ4', 'grabbed_at' => now()->subWeek()]);
+        factory(Media::class)->create(['media_id' => 'hb0Fo1Jqxkc']);
+
+        return $playlist;
+    }
+
+    public function createFakeRemoteFileForMedia(Media $media): void
+    {
+        Storage::put(
+            $media->remoteFilePath(),
+            file_get_contents(base_path('tests/fixtures/Audio/l8i4O7_btaA.mp3'))
+        );
+    }
+
+    public function createFakeRemoteFileForPodcast(Podcastable $podcastable): void
+    {
+        Storage::put(
+            $podcastable->remoteFilePath(),
+            file_get_contents(base_path('tests/fixtures/lemug.xml'))
+        );
     }
 
     protected function addMediasToChannel(Channel $channel, int $numberOfMediasToAdd = 1, bool $grabbed = false)

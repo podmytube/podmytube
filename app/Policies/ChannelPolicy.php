@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
 use App\Channel;
@@ -31,6 +33,11 @@ class ChannelPolicy
     }
 
     public function updateMedia(User $user, Channel $channel): bool
+    {
+        return $channel->user->is($user);
+    }
+
+    public function delete(User $user, Channel $channel): bool
     {
         return $channel->user->is($user);
     }

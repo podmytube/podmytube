@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Jobs\PodcastableCleaning;
 use App\Playlist;
 
 class PlaylistController extends Controller
@@ -13,5 +14,21 @@ class PlaylistController extends Controller
         $this->authorize($playlist);
 
         return view('playlist.edit', compact('playlist'));
+    }
+
+    public function destroy(Playlist $playlist)
+    {
+        $this->authorize($playlist);
+
+        $savedTitle = $playlist->podcastTitle();
+
+        PodcastableCleaning::dispatch($playlist);
+
+        return redirect(route('home'))
+            ->with(
+                'success',
+                "Your podcast {$savedTitle} is planned for deletion."
+            )
+        ;
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit;
 
 use App\Events\ChannelUpdated;
@@ -11,6 +13,10 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class MediaCleaningTest extends TestCase
 {
     use RefreshDatabase;
@@ -22,44 +28,37 @@ class MediaCleaningTest extends TestCase
         Event::fake();
     }
 
-    public function testMediaCleaningIsWorkingFine()
+    public function test_media_cleaning_is_working_fine(): void
     {
         /**
-         * creating fake media with real file (storage disk is faked above)
+         * creating fake media with real file (storage disk is faked above).
          */
         $media = factory(Media::class)->create();
         Storage::put(
             $media->remoteFilePath(),
             file_get_contents(base_path('tests/fixtures/Audio/l8i4O7_btaA.mp3'))
         );
-        
-        /**
-         * just to check media file exists
-         */
+
+        // just to check media file exists
         $this->assertTrue(Storage::exists($media->remoteFilePath()));
 
         /**
-         * dispatching media deletion
+         * dispatching media deletion.
          */
-        MediaCleaning::dispatch($media);
+        $job = new MediaCleaning($media);
+        $job->handle();
 
-        /**
-         * checking all has been soft deleted
-         */
+        // checking all has been soft deleted
         $this->assertFalse(Storage::exists($media->remoteFilePath()));
         $this->assertTrue($media->trashed());
 
-        /**
-         * all media informations should be null
-         */
+        // all media informations should be null
         $media->refresh();
         $this->assertNull($media->grabbed_at);
         $this->assertEquals(0, $media->length);
         $this->assertEquals(0, $media->duration);
 
-        /**
-         * an event should have been sent to rebuild podcast
-         */
+        // an event should have been sent to rebuild podcast
         Event::assertDispatched(ChannelUpdated::class);
     }
 }

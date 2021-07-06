@@ -41,6 +41,15 @@ class Playlist extends Model implements Podcastable, Coverable
         'active' => 'boolean',
     ];
 
+    /**
+     * mediasToPublish is getting medias that are grabbed.
+     * - get all the videos that are in the playlist.
+     * - keep only media ids.
+     * - using these media ids list to get the videos we are knowing about.
+     * - return it.
+     *
+     * @throws PlaylistWithNoMediaWeKnowAboutException
+     */
     public function mediasToPublish(): Collection
     {
         /** get all items from youtube playlist. */
@@ -171,6 +180,9 @@ class Playlist extends Model implements Podcastable, Coverable
         return $this->channel->channelId().'/'.$this->youtube_playlist_id.'.xml';
     }
 
+    /**
+     * will return playlist's channel youtube channel_id.
+     */
     public function channelId(): string
     {
         return $this->channel->channelId();
@@ -263,5 +275,10 @@ class Playlist extends Model implements Podcastable, Coverable
         } catch (Exception $expection) {
             return new Collection();
         }
+    }
+
+    public static function byYoutubeId(string $youtubeId): ?self
+    {
+        return self::where('youtube_playlist_id', '=', $youtubeId)->first();
     }
 }

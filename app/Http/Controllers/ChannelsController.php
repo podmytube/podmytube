@@ -1,9 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 /**
- * the channel controller
- *
- * @package PodMyTube
+ * the channel controller.
  *
  * @author Frederick Tyteca <fred@podmytube.com>
  */
@@ -14,6 +14,7 @@ use App\Category;
 use App\Channel;
 use App\Events\ChannelUpdated;
 use App\Http\Requests\ChannelRequest;
+use App\Jobs\PodcastableCleaning;
 use App\Language;
 
 /**
@@ -22,7 +23,7 @@ use App\Language;
 class ChannelsController extends Controller
 {
     /**
-     * display all informations about one channel
+     * display all informations about one channel.
      *
      * @param ChannelRequest $request
      *
@@ -31,14 +32,14 @@ class ChannelsController extends Controller
     public function show(Channel $channel)
     {
         $this->authorize($channel);
+
         return view('channel.show', compact('channel'));
     }
 
     /**
-     * display the channel form in order to edit channel data
+     * display the channel form in order to edit channel data.
      *
      * @param ChannelRequest $request
-     * @param Channel        $channel
      *
      * @return Response
      */
@@ -47,6 +48,7 @@ class ChannelsController extends Controller
         $this->authorize($channel);
         $categories = Category::list();
         $languages = Language::get();
+
         return view('channel.edit', compact(['channel', 'categories', 'languages']));
     }
 
@@ -66,10 +68,27 @@ class ChannelsController extends Controller
 
         ChannelUpdated::dispatch($channel);
 
-        return redirect(route('home', $channel))
+        return redirect(route('home'))
             ->with(
                 'success',
                 "Your podcast {$channel->title()} has been successfully updated !"
-            );
+            )
+        ;
+    }
+
+    public function destroy(Channel $channel)
+    {
+        $this->authorize($channel);
+
+        $savedTitle = $channel->podcastTitle();
+
+        PodcastableCleaning::dispatch($channel);
+
+        return redirect(route('home'))
+            ->with(
+                'success',
+                "Your podcast {$savedTitle} is planned for deletion."
+            )
+        ;
     }
 }

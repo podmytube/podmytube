@@ -61,7 +61,7 @@ Route::domain('dashboard.'.config('app.domain'))->group(function (): void {
         ;
 
         Route::resource('channel', 'ChannelsController')
-            ->only(['index', 'show', 'edit', 'update'])
+            ->only(['show', 'edit', 'update', 'destroy'])
         ;
 
         Route::get('/change-password', 'Auth\UpdatePasswordController@index')
