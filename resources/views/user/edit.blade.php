@@ -83,5 +83,34 @@
                 </div> --}}
             </form>
         </div>
+
+        <div class="mt-4 p-4">
+            <form method="POST" id="delete-user-form" action="{{ route('user.destroy', $user) }}">
+                @method('DELETE')
+                @csrf
+                <div class="w-3/4 mx-auto pb-6 px-6 rounded-lg border-8 border-red-700 bg-white text-center ">
+                    <div class="p-4 font-semibold border-2 border-red-700 rounded bg-red-200 mt-4">
+                        <strong>💀 DEAD zone ❌</strong><br>
+                    </div>
+
+                    <div class="p-4 text-red-800">
+                        So you want to delete your account ?<br>
+                        <span class="underline">Once clicked</span> on the button below, all of your data will <span
+                            class="underline">be permanently removed</span>.<br>
+                        <strong>Do. or do not. There is no try</strong>.<br>
+                        This action cannot be undone !
+                    </div>
+
+                    <div class="flex mt-4 justify-center items-center">
+                        <a href="#" onclick="event.preventDefault(); document.getElementById('delete-user-form').submit();">
+                            <button type="submit"
+                                class="flex-1 bg-red-800 text-gray-100 hover:bg-red-700 font-bold py-2 px-4 rounded-lg">Delete
+                                my account !</button>
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+
     </div>
 @endsection

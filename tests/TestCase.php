@@ -17,6 +17,7 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 
 abstract class TestCase extends BaseTestCase
@@ -88,7 +89,7 @@ abstract class TestCase extends BaseTestCase
         Storage::disk(Thumb::LOCAL_STORAGE_DISK)
             ->put(
                 $filePath,
-                file_get_contents(base_path('tests/fixtures/images/sampleThumb.jpg'))
+                file_get_contents(base_path('tests/Fixtures/images/sampleThumb.jpg'))
             )
         ;
 
@@ -125,7 +126,7 @@ abstract class TestCase extends BaseTestCase
             ->map(function ($media): Media {
                 Storage::put(
                     $media->remoteFilePath(),
-                    file_get_contents(base_path('tests/fixtures/Audio/l8i4O7_btaA.mp3'))
+                    file_get_contents(base_path('tests/Fixtures/Audio/l8i4O7_btaA.mp3'))
                 );
 
                 return $media;
@@ -158,7 +159,7 @@ abstract class TestCase extends BaseTestCase
     {
         Storage::put(
             $media->remoteFilePath(),
-            file_get_contents(base_path('tests/fixtures/Audio/l8i4O7_btaA.mp3'))
+            file_get_contents(base_path('tests/Fixtures/Audio/l8i4O7_btaA.mp3'))
         );
     }
 
@@ -166,8 +167,20 @@ abstract class TestCase extends BaseTestCase
     {
         Storage::put(
             $podcastable->remoteFilePath(),
-            file_get_contents(base_path('tests/fixtures/lemug.xml'))
+            file_get_contents(base_path('tests/Fixtures/lemug.xml'))
         );
+    }
+
+    public function getPlanBySlug(string $slug): ?Plan
+    {
+        Artisan::call('db:seed', ['--class' => 'PlansTableSeeder']);
+
+        return Plan::bySlug($slug);
+    }
+
+    public function getFreePlan()
+    {
+        return $this->getPlanBySlug('forever_free');
     }
 
     protected function addMediasToChannel(Channel $channel, int $numberOfMediasToAdd = 1, bool $grabbed = false)

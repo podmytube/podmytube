@@ -98,6 +98,6 @@ Route::domain('dashboard.'.config('app.domain'))->group(function (): void {
         Route::patch('playlist/{playlist}/cover/update', [ThumbsController::class, 'playlistCoverUpdate'])->name('playlist.cover.update');
 
         // User profile
-        Route::resource('user', 'UsersController')->only(['index', 'update']);
+        Route::resource('user', 'UsersController')->only(['index', 'update', 'destroy']);
     });
 });

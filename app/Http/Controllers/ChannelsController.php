@@ -14,7 +14,7 @@ use App\Category;
 use App\Channel;
 use App\Events\ChannelUpdated;
 use App\Http\Requests\ChannelRequest;
-use App\Jobs\PodcastableCleaning;
+use App\Jobs\ChannelCleaningJob;
 use App\Language;
 
 /**
@@ -82,7 +82,7 @@ class ChannelsController extends Controller
 
         $savedTitle = $channel->podcastTitle();
 
-        PodcastableCleaning::dispatch($channel);
+        ChannelCleaningJob::dispatch($channel);
 
         return redirect(route('home'))
             ->with(

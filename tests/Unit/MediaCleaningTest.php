@@ -36,7 +36,7 @@ class MediaCleaningTest extends TestCase
         $media = factory(Media::class)->create();
         Storage::put(
             $media->remoteFilePath(),
-            file_get_contents(base_path('tests/fixtures/Audio/l8i4O7_btaA.mp3'))
+            file_get_contents(base_path('tests/Fixtures/Audio/l8i4O7_btaA.mp3'))
         );
 
         // just to check media file exists

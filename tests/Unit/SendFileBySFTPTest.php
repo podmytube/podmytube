@@ -22,7 +22,7 @@ class SendFileBySFTPTest extends TestCase
 
     public function testingFileUpdloadIsOk()
     {
-        $localFile = __DIR__ . '/../fixtures/images/sampleVig.jpg';
+        $localFile = __DIR__ . '/../Fixtures/images/sampleVig.jpg';
         $remoteFile = $this->destFolder . '/testVig.jpg';
         SendFileBySFTP::dispatchSync($localFile, $remoteFile, false);
         $this->assertTrue(Storage::disk('remote')->exists($remoteFile));
