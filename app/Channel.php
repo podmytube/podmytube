@@ -21,6 +21,7 @@ use App\Traits\HasManyMedias;
 use App\Traits\HasManyPlaylists;
 use App\Traits\HasOneLanguage;
 use App\Traits\HasOneSubscription;
+use App\Traits\IsRelatedToOneChannel;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
@@ -44,6 +45,7 @@ class Channel extends Model implements Podcastable, Coverable
     use HasOneSubscription;
     use HasOneLanguage;
     use HasCover;
+    use IsRelatedToOneChannel;
 
     public const CREATED_AT = 'channel_createdAt';
     public const UPDATED_AT = 'channel_updatedAt';
@@ -52,6 +54,7 @@ class Channel extends Model implements Podcastable, Coverable
 
     /** I didn't know about the convention and I bite my hand everytime */
     protected $primaryKey = 'channel_id';
+
     /** and it's a string */
     protected $keyType = 'string';
 
@@ -277,11 +280,7 @@ class Channel extends Model implements Podcastable, Coverable
         return $query->where('active', '=', 1);
     }
 
-    public static function byChannelId(string $channelId): ?self
-    {
-        return self::where('channel_id', '=', $channelId)->first();
-    }
-
+    
     public static function byUserId(Authenticatable $user): ?Collection
     {
         $channelsCollection = self::where('user_id', '=', $user->user_id)->get();

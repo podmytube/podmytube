@@ -31,7 +31,7 @@ class ThumbsTableSeeder extends Seeder
          */
         Storage::disk(Thumb::LOCAL_STORAGE_DISK)->put(
             $filepath,
-            file_get_contents(base_path('tests/fixtures/images/jeanviet.jpg'))
+            file_get_contents(base_path('tests/Fixtures/images/jeanviet.jpg'))
         ) ;
         $filesize = Storage::disk(Thumb::LOCAL_STORAGE_DISK)->size($filepath);
 

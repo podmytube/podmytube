@@ -12,7 +12,7 @@ class CheckingGrabbedFileTest extends TestCase
     /**
      * diamonds from Rihanna, extracted from YT
      */
-    const audioFile = __DIR__ . '/../fixtures/Audio/lWA2pjMjpBs.mp3';
+    const audioFile = __DIR__ . '/../Fixtures/Audio/lWA2pjMjpBs.mp3';
 
     public function testCheckDurationIsWorkingFine()
     {

@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Jobs\RemoveAccountJob;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Bus;
 use Tests\TestCase;
 
 /**
@@ -112,5 +114,21 @@ EOT
             ])
             ->assertForbidden()
         ;
+    }
+
+    /** @test */
+    public function user_who_want_to_be_deleted_is_really_deleted(): void
+    {
+        Bus::fake();
+        $this->followingRedirects()
+            ->actingAs($this->user)
+            ->delete(route('user.destroy', $this->user))
+            ->assertSuccessful()
+        ;
+        // user should have been logged out
+        $this->assertGuest();
+
+        // media clening should have been dispatched twice.
+        Bus::assertDispatched(RemoveAccountJob::class, 1);
     }
 }

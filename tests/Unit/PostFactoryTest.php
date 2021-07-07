@@ -16,7 +16,7 @@ class PostFactoryTest extends TestCase
     public function testMinimalChecking()
     {
         $postFactory = PostFactory::create(
-            json_decode(file_get_contents(__DIR__ . '/../fixtures/wpbackendSinglePost.json'), true)
+            json_decode(file_get_contents(__DIR__ . '/../Fixtures/wpbackendSinglePost.json'), true)
         );
 
         $post = $postFactory->post();
@@ -59,14 +59,14 @@ class PostFactoryTest extends TestCase
     {
         $this->expectException(PostCategoryNotWantedHereException::class);
         PostFactory::create(
-            json_decode(file_get_contents(__DIR__ . '/../fixtures/wpbackendRejectedPost.json'), true)
+            json_decode(file_get_contents(__DIR__ . '/../Fixtures/wpbackendRejectedPost.json'), true)
         );
     }
 
     public function testPostIsOnlyInsertedOnce()
     {
-        PostFactory::create(json_decode(file_get_contents(__DIR__ . '/../fixtures/wpbackendSinglePost.json'), true));
-        PostFactory::create(json_decode(file_get_contents(__DIR__ . '/../fixtures/wpbackendSinglePostEdited.json'), true));
+        PostFactory::create(json_decode(file_get_contents(__DIR__ . '/../Fixtures/wpbackendSinglePost.json'), true));
+        PostFactory::create(json_decode(file_get_contents(__DIR__ . '/../Fixtures/wpbackendSinglePostEdited.json'), true));
         $this->assertEquals(1, Post::count());
         $this->assertEquals("featured image post modified", Post::first()->title);
         $this->assertEquals("featured-image-post", Post::first()->slug);

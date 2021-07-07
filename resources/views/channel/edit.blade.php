@@ -134,8 +134,9 @@
 
                     <div class="p-4 text-red-800">
                         So you want to remove your podcast ?<br>
-                        <span class="underline">Once clicked</span> on the button below all of your data will <span
-                            class="underline">be permanently removed</span>.<br>
+                        <span class="underline">Once clicked</span> on the button below, all of your podcast (and playlist
+                        related) will <span class="underline">be permanently removed</span>.<br>
+                        <strong>Do. or do not. There is no try</strong>.<br>
                         This action cannot be undone !
                     </div>
 

@@ -35,7 +35,7 @@ class WordpressPostsTest extends TestCase
 
     public function testInsertingFromFileShouldBeOkToo()
     {
-        WordpressPosts::init()->getPostsFromFile(__DIR__ . '/../fixtures/wpbackendSamplePosts.json')->update();
+        WordpressPosts::init()->getPostsFromFile(__DIR__ . '/../Fixtures/wpbackendSamplePosts.json')->update();
         $this->assertCount(1, Post::all());
     }
 }
