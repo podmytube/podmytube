@@ -8,6 +8,8 @@ declare(strict_types=1);
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -64,5 +66,15 @@ class User extends Authenticatable
     public static function byEmail(string $email): ?self
     {
         return self::where('email', '=', $email)->first();
+    }
+
+    public function scopeNewsletter(Builder $query)
+    {
+        return $query->where('newsletter', '=', 1);
+    }
+
+    public static function whoWantNewsletter(): Collection
+    {
+        return self::newsletter()->select('email', 'firstname', 'lastname')->get();
     }
 }
