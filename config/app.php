@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     /*
     |--------------------------------------------------------------------------
@@ -76,6 +78,8 @@ return [
 
     'vignette_width' => env('VIGNETTE_WIDTH', 300),
     'vignette_height' => env('VIGNETTE_HEIGHT', 300),
+
+    'google_spreadsheet_auth_file' => env('GOOGLE_SPREADSHEET_AUTH_FILE', null),
 
     /*
     |--------------------------------------------------------------------------
@@ -161,9 +165,7 @@ return [
     */
 
     'providers' => [
-        /*
-         * Laravel Framework Service Providers...
-         */
+        // Laravel Framework Service Providers...
         Illuminate\Auth\AuthServiceProvider::class,
         Illuminate\Broadcasting\BroadcastServiceProvider::class,
         Illuminate\Bus\BusServiceProvider::class,
@@ -190,13 +192,9 @@ return [
         Barryvdh\Debugbar\ServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
 
-        /*
-         * Package Service Providers...
-         */
+        // Package Service Providers...
 
-        /*
-         * Application Service Providers...
-         */
+        // Application Service Providers...
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
