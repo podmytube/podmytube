@@ -41,13 +41,27 @@ class UpdateEmailSpreadsheetCommand extends Command
          * get all user info
          * email, firstname, lastname
          */
-        $dataToWrite = [
+        $headers = [
             ['email', 'firstname', 'lastname'],
         ];
 
+        /** getting users that should receive newsletter */
+        $users = User::whoWantNewsletter()->toArray();
+
+        /** formatting as an array */
+        $content = array_map(function ($user) {
+            return [
+                $user['email'],
+                $user['firstname'],
+                $user['lastname'],
+            ];
+        }, $users);
+
+        $dataToWrite = array_merge($headers, $content);
+
         // overwrite user spreasheet
         GoogleSpreadsheetFactory::forSpreadsheetId(self::USERS_SPREADSHEET_ID)
-            ->updateRange('F1:I', $dataToWrite)
+            ->updateRange('A1:C', $dataToWrite)
         ;
 
         $this->comment('Spreadsheet updated with success.', 'v');
