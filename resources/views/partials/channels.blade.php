@@ -14,8 +14,7 @@
 
     <div class="flex flex-col sm:flex-row">
         @foreach ($channels as $channel)
-            <div
-                class="mx-auto md:mx-1 max-w-md rounded-lg overflow-hidden shadow-lg bg-gray-100 mt-4 pt-4 md:pt-10 pb-4 ">
+            <div class="mx-auto md:mx-1 max-w-md rounded-lg overflow-hidden shadow-lg bg-gray-100 mt-4 py-4 md:pt-10 ">
                 <img class="mx-auto shadow-lg rounded-lg" src="{{ $channel->vignetteUrl }}"
                     alt="Your best cover for {{ $channel->title() }}">
                 <div class="px-2 md:px-6 py-4 text-center">

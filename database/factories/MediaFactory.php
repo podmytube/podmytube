@@ -34,5 +34,6 @@ EOT,
         'published_at' => $attributes['published_at'] ?? now(),
         'grabbed_at' => $grabbedAt,
         'status' => $attributes['status'] ?? Media::STATUS_NOT_DOWNLOADED,
+        'deleted_at' => $attributes['deleted_at'] ?? null,
     ];
 });

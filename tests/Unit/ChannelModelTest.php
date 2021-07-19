@@ -39,7 +39,7 @@ class ChannelModelTest extends TestCase
     public function podcast_url_is_ok(): void
     {
         $this->assertEquals(
-            config('app.podcasts_url')."/{$this->channel->channelId()}/".config('app.feed_filename'),
+            config('app.podcasts_url') . "/{$this->channel->channelId()}/" . config('app.feed_filename'),
             $this->channel->podcastUrl()
         );
     }
@@ -60,14 +60,28 @@ class ChannelModelTest extends TestCase
         $this->assertFalse($payingChannel->isFree());
     }
 
-    public function testing_next_media_id_should_be_ok(): void
+    /** @test */
+    public function next_media_id_should_be_ok(): void
     {
-        $media = factory(Media::class, 10)->create(['channel_id' => $this->channel->channel_id]);
-        $expectedResult = substr(Str::slug($this->channel->channel_name), 0, 20).'-11';
+        /** with no media for this channel we are expecting jean-viet-1 */
+        $expectedResult = $this->channel->slugChannelName() . '-1';
+        $this->assertEquals($expectedResult, $this->channel->nextMediaId());
+
+        // with 2 medias for this channel we are expecting jean-viet-3
+        factory(Media::class, 2)->create(['channel_id' => $this->channel->channel_id]);
+        $this->channel->refresh();
+        $expectedResult = $this->channel->slugChannelName() . '-3';
+        $this->assertEquals($expectedResult, $this->channel->nextMediaId());
+
+        // with one trashed media we are expecting 4
+        $media = factory(Media::class)->create(['channel_id' => $this->channel->channel_id, 'deleted_at' => now()]);
+        $this->channel->refresh();
+        $expectedResult = $this->channel->slugChannelName() . '-4';
         $this->assertEquals($expectedResult, $this->channel->nextMediaId());
     }
 
-    public function testing_by_user_id_is_working_fine(): void
+    /** @test */
+    public function by_user_id_is_working_fine(): void
     {
         $user = factory(User::class)->create();
         $this->assertNull(Channel::byUserId($user));
@@ -77,18 +91,20 @@ class ChannelModelTest extends TestCase
         $this->assertCount($expectedChannels, Channel::byUserId($user));
     }
 
-    public function test_relative_feed_path(): void
+    /** @test */
+    public function relative_feed_path_is_fine(): void
     {
         $this->assertEquals(
-            "{$this->channel->channel_id}/".config('app.feed_filename'),
+            "{$this->channel->channel_id}/" . config('app.feed_filename'),
             $this->channel->relativeFeedPath()
         );
     }
 
-    public function test_remote_file_path(): void
+    /** @test */
+    public function remote_file_path_is_fine(): void
     {
         $this->assertEquals(
-            config('app.feed_path')."{$this->channel->channel_id}/".config('app.feed_filename'),
+            config('app.feed_path') . "{$this->channel->channel_id}/" . config('app.feed_filename'),
             $this->channel->remoteFilePath()
         );
     }
@@ -204,5 +220,12 @@ class ChannelModelTest extends TestCase
         $this->assertNotNull($medias);
         $this->assertInstanceOf(Collection::class, $medias);
         $this->assertCount(5, $medias);
+    }
+
+    /** @test */
+    public function slug_name_is_fine(): void
+    {
+        $expectedSlugChannelName = substr(Str::slug($this->channel->channel_name), 0, 20);
+        $this->assertEquals($expectedSlugChannelName, $this->channel->slugChannelName());
     }
 }

@@ -1,17 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Channel;
 use App\Events\MediaUploadedByUser;
 use App\Exceptions\NotImplementedException;
 use App\Http\Requests\MediaRequest;
+use App\Jobs\MediaCleaning;
 use App\Media;
 use App\Modules\MediaProperties;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\URL;
 
 class MediasController extends Controller
 {
@@ -26,14 +28,15 @@ class MediasController extends Controller
         $medias = $channel
             ->medias()
             ->orderBy('published_at', 'desc')
-            ->simplePaginate($nbItemsPerPage);
+            ->simplePaginate($nbItemsPerPage)
+        ;
 
         return view('medias.index', compact('channel', 'medias', 'nbItemsPerPage'));
     }
 
-    public function show(Channel $channel, Media $media)
+    public function show(Channel $channel, Media $media): void
     {
-        throw new NotImplementedException(self::class . '::' . __FUNCTION__ . ' is not implemented yet');
+        throw new NotImplementedException(self::class.'::'.__FUNCTION__.' is not implemented yet');
     }
 
     public function create(Channel $channel)
@@ -42,9 +45,9 @@ class MediasController extends Controller
 
         $pageTitle = 'Add an exclusive episode to your podcast.';
         $media = new Media();
-        $action = URL::route('channel.medias.store', $channel);
         $patch = false;
-        return view('medias.createOrEdit', compact('pageTitle', 'action', 'media', 'patch'));
+
+        return view('medias.createOrEdit', compact('pageTitle', 'media', 'channel', 'patch'));
     }
 
     public function edit(Channel $channel, Media $media)
@@ -52,9 +55,9 @@ class MediasController extends Controller
         $this->authorize('addMedia', $channel);
 
         $pageTitle = "Edit {$media->name} episode ";
-        $action = URL::route('channel.medias.update', ['channel' => $channel, 'media' => $media]);
         $patch = true;
-        return view('medias.createOrEdit', compact('pageTitle', 'action', 'media', 'patch'));
+
+        return view('medias.createOrEdit', compact('pageTitle', 'media', 'channel', 'patch'));
     }
 
     public function store(MediaRequest $request, Channel $channel)
@@ -69,8 +72,8 @@ class MediasController extends Controller
         /** getting media_id */
         $mediaId = $channel->nextMediaId();
 
-        /** moving file where we can find it  */
-        Storage::putFileAs('uploadedMedias', $request->file('media_file'), $mediaId . '.mp3');
+        // moving file where we can find it
+        Storage::putFileAs('uploadedMedias', $request->file('media_file'), $mediaId.'.mp3');
 
         /** save the information */
         $media = Media::create([
@@ -83,13 +86,45 @@ class MediasController extends Controller
             'uploaded_by_user' => true,
             'published_at' => Carbon::now(),
             'grabbed_at' => Carbon::now(),
+            'status' => Media::STATUS_UPLOADED_BY_USER,
         ]);
 
-        /** dispatching event */
+        // dispatching event
         MediaUploadedByUser::dispatch($media);
 
         return redirect()
             ->route('channel.medias.index', $channel)
-            ->with('success', "Your episode {$validatedParams['title']} has been successfully added.");
+            ->with('success', "Your episode {$validatedParams['title']} has been successfully added.")
+        ;
+    }
+
+    public function update(MediaRequest $request, Media $media)
+    {
+        $this->authorize('addMedia', $media->channel);
+
+        $validatedParams = $request->validated();
+
+        dd($validatedParams);
+
+        return redirect()
+            ->route('channel.medias.index', $media->channel)
+            ->with('success', "Your episode {$validatedParams['title']} has been successfully updated.")
+        ;
+    }
+
+    public function destroy(Channel $channel, Media $media)
+    {
+        $this->authorize('addMedia', $channel);
+
+        $savedTitle = $media->title;
+
+        MediaCleaning::dispatch($media);
+
+        return redirect(route('home'))
+            ->with(
+                'success',
+                "Your episode {$savedTitle} is planned for deletion."
+            )
+        ;
     }
 }

@@ -189,7 +189,7 @@ class PlaylistModelTest extends TestCase
         $this->assertCount($expectedNumberOfPlaylists, Playlist::userPlaylists($this->user));
 
         /** associating another channel with some playlists */
-        $anotherChannel = $this->createChannelForUser($this->user);
+        $anotherChannel = $this->createChannel($this->user);
         $numberOfPlaylistsToAdd = 3;
         factory(Playlist::class, $numberOfPlaylistsToAdd)->create(['channel_id' => $anotherChannel->channelId(), 'active' => true]);
 

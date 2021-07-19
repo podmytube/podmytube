@@ -59,16 +59,6 @@ abstract class TestCase extends BaseTestCase
         return htmlspecialchars($str, ENT_QUOTES | ENT_HTML401);
     }
 
-    public function createChannelForUser(?User $user = null): Channel
-    {
-        $createContext = [];
-        if ($user !== null) {
-            $createContext = ['user_id' => $user->user_id];
-        }
-
-        return factory(Channel::class)->create($createContext);
-    }
-
     public function createRealThumbFileFor(Coverable $coverable): Thumb
     {
         $thumb = factory(Thumb::class)->create([
@@ -85,7 +75,7 @@ abstract class TestCase extends BaseTestCase
     {
         /** create channel folder */
         $fileName = $thumb->file_name;
-        $filePath = $thumb->coverable->channelId().'/'.$fileName;
+        $filePath = $thumb->coverable->channelId() . '/' . $fileName;
         Storage::disk(Thumb::LOCAL_STORAGE_DISK)
             ->put(
                 $filePath,
@@ -99,6 +89,7 @@ abstract class TestCase extends BaseTestCase
     public function createChannel(?User $user = null, ?Plan $plan = null): Channel
     {
         // if owner specified
+        $userContext = [];
         if ($user !== null) {
             $userContext = ['user_id' => $user->id()];
         }
@@ -124,10 +115,7 @@ abstract class TestCase extends BaseTestCase
         return factory(Media::class, $nbMediasToCreate)
             ->create(['channel_id' => $channel->channelId()])
             ->map(function ($media): Media {
-                Storage::put(
-                    $media->remoteFilePath(),
-                    file_get_contents(base_path('tests/Fixtures/Audio/l8i4O7_btaA.mp3'))
-                );
+                $this->createFakeRemoteFileForMedia($media);
 
                 return $media;
             })
