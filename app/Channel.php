@@ -99,7 +99,7 @@ class Channel extends Model implements Podcastable, Coverable
 
     public function relativeFeedPath(): string
     {
-        return $this->channelId().'/'.config('app.feed_filename');
+        return $this->channelId() . '/' . config('app.feed_filename');
     }
 
     /**
@@ -109,7 +109,7 @@ class Channel extends Model implements Podcastable, Coverable
      */
     public function remoteFilePath(): string
     {
-        return config('app.feed_path').$this->relativeFeedPath();
+        return config('app.feed_path') . $this->relativeFeedPath();
     }
 
     /**
@@ -117,7 +117,7 @@ class Channel extends Model implements Podcastable, Coverable
      */
     public function podcastUrl(): string
     {
-        return config('app.podcasts_url').'/'.$this->relativeFeedPath();
+        return config('app.podcasts_url') . '/' . $this->relativeFeedPath();
     }
 
     /**
@@ -280,7 +280,6 @@ class Channel extends Model implements Podcastable, Coverable
         return $query->where('active', '=', 1);
     }
 
-    
     public static function byUserId(Authenticatable $user): ?Collection
     {
         $channelsCollection = self::where('user_id', '=', $user->user_id)->get();
@@ -304,9 +303,14 @@ class Channel extends Model implements Podcastable, Coverable
         return $this->subscription->plan_id === Plan::FREE_PLAN_ID;
     }
 
+    public function slugChannelName(): string
+    {
+        return substr(Str::slug($this->channel_name), 0, 20);
+    }
+
     public function nextMediaId()
     {
-        return substr(Str::slug($this->channel_name), 0, 20).'-'.($this->medias->count() + 1);
+        return $this->slugChannelName() . '-' . ($this->medias()->withTrashed()->count() + 1);
     }
 
     /**

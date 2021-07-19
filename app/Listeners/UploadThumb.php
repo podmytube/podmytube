@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Listeners;
 
-use App\Events\ThumbUpdated;
+use App\Interfaces\InteractsWithPodcastable;
 use App\Jobs\SendFileBySFTP;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -13,13 +15,13 @@ class UploadThumb implements ShouldQueue
 {
     use InteractsWithQueue;
 
-    /** @var \App\Interfaces\Podcastable $podcastable */
+    /** @var \App\Interfaces\Podcastable */
     protected $podcastable;
 
-    public function handle(ThumbUpdated $event)
+    public function handle(InteractsWithPodcastable $event): void
     {
-        Log::debug(self::class . '::' . __FUNCTION__ . ' - start');
-        $this->podcastable = $event->podcastable;
+        Log::debug(self::class.'::'.__FUNCTION__.' - start');
+        $this->podcastable = $event->podcastable();
 
         $localPath = $this->podcastable->cover->localFilePath();
         $remotePath = $this->podcastable->cover->remoteFilePath();
@@ -29,6 +31,7 @@ class UploadThumb implements ShouldQueue
         if (!file_exists($localPath)) {
             $message = "File on {$localPath} does not exists.";
             Log::error($message);
+
             throw new InvalidArgumentException($message);
         }
 

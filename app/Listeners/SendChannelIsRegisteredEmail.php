@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Listeners;
 
+use App\Interfaces\InteractsWithPodcastable;
 use App\Mail\ChannelIsRegistered;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -12,11 +15,11 @@ class SendChannelIsRegisteredEmail implements ShouldQueue
 {
     use InteractsWithQueue;
 
-    public function handle($event): void
+    public function handle(InteractsWithPodcastable $event): void
     {
-        /** Sending the podcastable registered mail within the queue */
+        // Sending the podcastable registered mail within the queue
         Mail::to($event->podcastable->user)->send(
-            new ChannelIsRegistered($event->podcastable)
+            new ChannelIsRegistered($event->podcastable())
         );
         Log::debug(
             'Newly registered podcastable email has been sent',

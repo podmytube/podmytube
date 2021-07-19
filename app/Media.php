@@ -24,6 +24,7 @@ class Media extends Model
 
     public const STATUS_NOT_DOWNLOADED = 0;
     public const STATUS_DOWNLOADED = 1;
+    public const STATUS_UPLOADED_BY_USER = 1;
     public const STATUS_TAG_FILTERED = 10; // filtered by tag
     public const STATUS_AGE_FILTERED = 11; // filtered too old
     public const STATUS_NOT_PROCESSED_ON_YOUTUBE = 20; // upcoming
