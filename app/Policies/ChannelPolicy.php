@@ -27,9 +27,12 @@ class ChannelPolicy
         return $channel->user->is($user);
     }
 
+    /**
+     * Add exclusive media is available only for paying channels.
+     */
     public function addMedia(User $user, Channel $channel): bool
     {
-        return $channel->user->is($user);
+        return $channel->user->is($user) && !$channel->isFree();
     }
 
     public function updateMedia(User $user, Channel $channel): bool

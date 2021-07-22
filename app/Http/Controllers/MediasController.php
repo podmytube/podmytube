@@ -8,6 +8,7 @@ use App\Channel;
 use App\Events\MediaUploadedByUser;
 use App\Exceptions\NotImplementedException;
 use App\Http\Requests\MediaRequest;
+use App\Http\Requests\UpdateMediaRequest;
 use App\Jobs\MediaCleaning;
 use App\Media;
 use App\Modules\MediaProperties;
@@ -36,7 +37,7 @@ class MediasController extends Controller
 
     public function show(Channel $channel, Media $media): void
     {
-        throw new NotImplementedException(self::class.'::'.__FUNCTION__.' is not implemented yet');
+        throw new NotImplementedException(self::class . '::' . __FUNCTION__ . ' is not implemented yet');
     }
 
     public function create(Channel $channel)
@@ -73,7 +74,7 @@ class MediasController extends Controller
         $mediaId = $channel->nextMediaId();
 
         // moving file where we can find it
-        Storage::putFileAs('uploadedMedias', $request->file('media_file'), $mediaId.'.mp3');
+        Storage::putFileAs('uploadedMedias', $request->file('media_file'), $mediaId . '.mp3');
 
         /** save the information */
         $media = Media::create([
@@ -98,16 +99,16 @@ class MediasController extends Controller
         ;
     }
 
-    public function update(MediaRequest $request, Media $media)
+    public function update(UpdateMediaRequest $request, CHannel $channel, Media $media)
     {
-        $this->authorize('addMedia', $media->channel);
+        $this->authorize('addMedia', $channel);
 
         $validatedParams = $request->validated();
 
         dd($validatedParams);
 
         return redirect()
-            ->route('channel.medias.index', $media->channel)
+            ->route('channel.medias.index', $channel)
             ->with('success', "Your episode {$validatedParams['title']} has been successfully updated.")
         ;
     }
