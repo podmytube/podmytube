@@ -36,9 +36,15 @@
             </div>
 
             <div class="pb-4">
-                <label class="block py-1" for="media_file">Episode file</label>
+                <label class="block py-1" for="media_file">
+                    Episode file
+                    @if ($patch === true)
+                        <small>If you set a new audio file, it will replace the current audio file.</small>
+                    @endif
+                </label>
                 <input type="file" id="media_file" name="media_file" placeholder="My full interview of Yoda"
                     aria-label="Episode file" class="w-full px-5 py-1 text-gray-900 bg-gray-200 rounded placeholder">
+
             </div>
 
             <div class="flex justify-center items-center">

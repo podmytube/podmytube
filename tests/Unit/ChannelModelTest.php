@@ -63,21 +63,7 @@ class ChannelModelTest extends TestCase
     /** @test */
     public function next_media_id_should_be_ok(): void
     {
-        /** with no media for this channel we are expecting jean-viet-1 */
-        $expectedResult = $this->channel->slugChannelName() . '-1';
-        $this->assertEquals($expectedResult, $this->channel->nextMediaId());
-
-        // with 2 medias for this channel we are expecting jean-viet-3
-        factory(Media::class, 2)->create(['channel_id' => $this->channel->channel_id]);
-        $this->channel->refresh();
-        $expectedResult = $this->channel->slugChannelName() . '-3';
-        $this->assertEquals($expectedResult, $this->channel->nextMediaId());
-
-        // with one trashed media we are expecting 4
-        $media = factory(Media::class)->create(['channel_id' => $this->channel->channel_id, 'deleted_at' => now()]);
-        $this->channel->refresh();
-        $expectedResult = $this->channel->slugChannelName() . '-4';
-        $this->assertEquals($expectedResult, $this->channel->nextMediaId());
+        $this->assertStringStartsWith($this->channel->slugChannelName(), $this->channel->nextMediaId());
     }
 
     /** @test */
