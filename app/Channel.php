@@ -310,7 +310,7 @@ class Channel extends Model implements Podcastable, Coverable
 
     public function nextMediaId()
     {
-        return $this->slugChannelName() . '-' . ($this->medias()->withTrashed()->count() + 1);
+        return uniqid($this->slugChannelName() . '-');
     }
 
     /**

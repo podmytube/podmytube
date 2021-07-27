@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Events\MediaUploadedByUser;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 /**
@@ -77,17 +79,6 @@ class MediasControllerTest extends TestCase
     }
 
     /** @test */
-    public function non_paying_channel_should_not_add_exclusive_content(): void
-    {
-        $plan = $this->getFreePlan();
-        $this->channel = $this->createChannelWithPlan($plan);
-        $this->actingAs($this->channel->user)
-            ->get(route('channel.medias.create', $this->channel))
-            ->assertForbidden()
-        ;
-    }
-
-    /** @test */
     public function paying_channel_may_add_exclusive_content(): void
     {
         $plan = $this->getPlanBySlug('daily_youtuber');
@@ -99,17 +90,6 @@ class MediasControllerTest extends TestCase
     }
 
     /** @test */
-    public function non_paying_channel_should_not_edit_exclusive_content(): void
-    {
-        $plan = $this->getFreePlan();
-        $this->channel = $this->createChannelWithPlan($plan);
-        $this->actingAs($this->channel->user)
-            ->get(route('channel.medias.edit', ['channel' => $this->channel, 'media' => $this->media]))
-            ->assertForbidden()
-        ;
-    }
-
-    /** @test */
     public function paying_channel_may_edit_exclusive_content(): void
     {
         $plan = $this->getPlanBySlug('daily_youtuber');
@@ -117,19 +97,6 @@ class MediasControllerTest extends TestCase
         $this->actingAs($this->channel->user)
             ->get(route('channel.medias.edit', ['channel' => $this->channel, 'media' => $this->media]))
             ->assertSuccessful()
-        ;
-    }
-
-    /** @test */
-    public function non_paying_channel_should_not_store_exclusive_content(): void
-    {
-        $plan = $this->getFreePlan();
-        $this->channel = $this->createChannelWithPlan($plan);
-
-        $this->followingRedirects()
-            ->actingAs($this->channel->user)
-            ->post(route('channel.medias.store', ['channel' => $this->channel]), $this->mediaCreateFields())
-            ->assertForbidden()
         ;
     }
 
@@ -147,24 +114,40 @@ class MediasControllerTest extends TestCase
     }
 
     /** @test */
-    public function non_paying_channel_should_not_update_exclusive_content(): void
+    public function update_without_media_should_be_fine(): void
     {
-        $this->markTestIncomplete('TO BE DONE');
-        
-        $plan = $this->getFreePlan();
+        Event::fake();
+        $plan = $this->getPlanBySlug('daily_youtuber');
         $this->channel = $this->createChannelWithPlan($plan);
 
         $this->followingRedirects()
             ->actingAs($this->channel->user)
-            ->patch(route('channel.medias.update', ['channel' => $this->channel, 'media' => $this->media]), $this->mediaCreateFields())
-            ->assertForbidden()
+            ->patch(route('channel.medias.update', ['channel' => $this->channel, 'media' => $this->media]), $this->mediaUpdateFields(false))
+            ->assertSuccessful()
         ;
+
+        $this->media->refresh();
+        $this->assertEquals('title updated', $this->media->title);
+        $this->assertEquals('description updated', $this->media->description);
+        Event::assertDispatched(MediaUploadedByUser::class);
     }
 
-    /** @test */
-    public function paying_channel_may_update_exclusive_content(): void
+    public function update_with_media_should_be_fine(): void
     {
-        $this->markTestIncomplete('TO BE DONE');
+        Event::fake();
+        $plan = $this->getPlanBySlug('daily_youtuber');
+        $this->channel = $this->createChannelWithPlan($plan);
+
+        $this->followingRedirects()
+            ->actingAs($this->channel->user)
+            ->patch(route('channel.medias.update', ['channel' => $this->channel, 'media' => $this->media]), $this->mediaUpdateFields(true))
+            ->assertSuccessful()
+        ;
+
+        $this->media->refresh();
+        $this->assertEquals('title updated', $this->media->title);
+        $this->assertEquals('description updated', $this->media->description);
+        Event::assertDispatched(MediaUploadedByUser::class);
     }
 
     /**
@@ -198,5 +181,19 @@ like Aldus PageMaker including versions of Lorem Ipsum.
 EOT,
             'media_file' => $uploadedFile,
         ];
+    }
+
+    protected function mediaUpdateFields(bool $withMedia = false)
+    {
+        $params = [
+            'channel' => $this->channel,
+            'title' => 'title updated',
+            'description' => 'description updated',
+        ];
+
+        if ($withMedia) {
+        }
+
+        return $params;
     }
 }

@@ -99,13 +99,42 @@ class MediasController extends Controller
         ;
     }
 
-    public function update(UpdateMediaRequest $request, CHannel $channel, Media $media)
+    public function update(UpdateMediaRequest $request, Channel $channel, Media $media)
     {
         $this->authorize('addMedia', $channel);
 
         $validatedParams = $request->validated();
 
-        dd($validatedParams);
+        $updateMediaParams = [
+            'title' => $validatedParams['title'],
+            'description' => $validatedParams['description'],
+            'uploaded_by_user' => true,
+            'published_at' => Carbon::now(),
+            'grabbed_at' => Carbon::now(),
+            'status' => Media::STATUS_UPLOADED_BY_USER,
+        ];
+        if ($request->file('media_file') !== null) {
+            /** analyze the audio file */
+            $mediaProperties = MediaProperties::analyzeFile($request->file('media_file'));
+
+            /** getting media_id */
+            $mediaId = $channel->nextMediaId();
+
+            $updateMediaParams = [
+                'media_id' => $mediaId,
+                'duration' => $mediaProperties->duration(),
+                'length' => $mediaProperties->filesize(),
+            ];
+
+            // moving file where we can find it
+            Storage::putFileAs('uploadedMedias', $request->file('media_file'), $mediaId . '.mp3');
+        }
+
+        // save the information
+        $media->update($updateMediaParams);
+
+        // dispatching event
+        MediaUploadedByUser::dispatch($media);
 
         return redirect()
             ->route('channel.medias.index', $channel)
