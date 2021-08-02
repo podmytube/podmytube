@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Mail\WelcomeToPodmytube;
 use App\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
@@ -25,6 +28,8 @@ class RegisterController extends Controller
 
     use RegistersUsers;
 
+    public const SUCCESS_MESSAGE = 'Thank you for subscribing !';
+
     /**
      * Where to redirect users after registration.
      *
@@ -34,8 +39,6 @@ class RegisterController extends Controller
 
     /**
      * Create a new controller instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -44,8 +47,6 @@ class RegisterController extends Controller
 
     /**
      * Get a validator for an incoming registration request.
-     *
-     * @param array $data
      *
      * @return \Illuminate\Contracts\Validation\Validator
      */
@@ -56,11 +57,10 @@ class RegisterController extends Controller
             'lastname' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
+            'terms' => 'required|boolean',
         ];
 
-        /**
-         * if in dev mode there's no captcha displayed
-         */
+        // if in dev mode there's no captcha displayed
         if (App::environment('production')) {
             $data_to_valid['g-recaptcha-response'] = 'required|captcha';
         }
@@ -70,8 +70,6 @@ class RegisterController extends Controller
 
     /**
      * Create a new user instance after a valid registration.
-     *
-     * @param array $data
      *
      * @return \App\User
      */
@@ -88,13 +86,13 @@ class RegisterController extends Controller
     /**
      * The user has been registered.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param mixed                    $user
+     * @param mixed $user
      *
      * @return mixed
      */
-    protected function registered($user)
+    protected function registered(Request $request, User $user)
     {
+        $request->session()->flash('success', self::SUCCESS_MESSAGE);
         Mail::to($user)->send(new WelcomeToPodmytube($user));
     }
 }
