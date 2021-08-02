@@ -21,3 +21,4 @@ node_modules
 # ===============================================
 package-lock.json
 _ide_helper.php
+.php-cs-fixer.cache
