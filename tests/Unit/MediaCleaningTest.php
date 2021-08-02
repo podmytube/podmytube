@@ -34,6 +34,7 @@ class MediaCleaningTest extends TestCase
          * creating fake media with real file (storage disk is faked above).
          */
         $media = factory(Media::class)->create();
+        $preservedMediaId = $media->media_id;
         Storage::put(
             $media->remoteFilePath(),
             file_get_contents(base_path('tests/Fixtures/Audio/l8i4O7_btaA.mp3'))
@@ -53,10 +54,14 @@ class MediaCleaningTest extends TestCase
         $this->assertTrue($media->trashed());
 
         // all media informations should be null
-        $media->refresh();
-        $this->assertNull($media->grabbed_at);
-        $this->assertEquals(0, $media->length);
-        $this->assertEquals(0, $media->duration);
+        $mediaSoftDeleted = Media::withTrashed()
+            ->where('media_id', '=', $preservedMediaId)
+            ->first()
+        ;
+
+        $this->assertNull($mediaSoftDeleted->grabbed_at);
+        $this->assertEquals(0, $mediaSoftDeleted->length);
+        $this->assertEquals(0, $mediaSoftDeleted->duration);
 
         // an event should have been sent to rebuild podcast
         Event::assertDispatched(ChannelUpdated::class);
