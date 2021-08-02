@@ -11,6 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class MediaCleaning implements ShouldQueue
@@ -38,7 +39,10 @@ class MediaCleaning implements ShouldQueue
 
         // delete file
         if (Storage::exists($this->mediaToDelete->remoteFilePath())) {
+            Log::debug("This file {$this->mediaToDelete->remoteFilePath()} exists => delete.");
             Storage::delete($this->mediaToDelete->remoteFilePath());
+        } else {
+            Log::debug("This file {$this->mediaToDelete->remoteFilePath()} does not exist. It cannot be deleted.");
         }
 
         // soft deleting db entry

@@ -68,12 +68,12 @@ class DownloadYTMedia
 
     public function downloadedFilePath(): string
     {
-        return $this->destinationFolder.$this->media->media_id.'.'.self::AUDIO_FORMAT;
+        return $this->destinationFolder . $this->media->media_id . '.' . self::AUDIO_FORMAT;
     }
 
     public function downloadedVideoFilePath()
     {
-        return $this->destinationFolder.$this->media->media_id.'.'.self::VIDEO_FORMAT;
+        return $this->destinationFolder . $this->media->media_id . '.' . self::VIDEO_FORMAT;
     }
 
     /**
@@ -83,7 +83,7 @@ class DownloadYTMedia
     {
         passthru($this->commandLine, $err);
         if ($err !== 0) {
-            $message = "Downloading media '{$this->media->id()}' for channel {$this->media->channel->nameWithId()} has failed.";
+            $message = "Downloading media '{$this->media->media_id}' for channel {$this->media->channel->nameWithId()} has failed.";
             Log::error($message, ['err' => $err, 'cmd' => $this->commandLine]);
 
             throw new DownloadMediaFailureException($message);
@@ -121,7 +121,7 @@ class DownloadYTMedia
      */
     protected function buildCommandLine(): void
     {
-        $this->commandLine = self::YOUTUBE_DL_BINARY.' '.implode(' ', $this->getYoutubeDlParameters());
+        $this->commandLine = self::YOUTUBE_DL_BINARY . ' ' . implode(' ', $this->getYoutubeDlParameters());
     }
 
     /**
@@ -132,16 +132,16 @@ class DownloadYTMedia
         $this->youtubeDlparameters = [
             '--no-warnings', // Ignore warnings
             '--extract-audio', // Convert video files to audio-only files (requires ffmpeg)
-            '--audio-format '.self::AUDIO_FORMAT, // post processing option to convert file obtained to mp3
+            '--audio-format ' . self::AUDIO_FORMAT, // post processing option to convert file obtained to mp3
             "--format 'bestaudio[ext=mp3]/best[ext=webm]/best'", // Download best (else dl is slow)
-            "--output '".$this->destinationFolder."%(id)s.%(ext)s'",
+            "--output '" . $this->destinationFolder . "%(id)s.%(ext)s'",
         ];
 
         if (!$this->verbose) {
             $this->youtubeDlparameters[] = '--quiet';
         }
 
-        $this->youtubeDlparameters[] = 'https://www.youtube.com/watch?v='.$this->media->id();
+        $this->youtubeDlparameters[] = 'https://www.youtube.com/watch?v=' . $this->media->media_id;
 
         if (!$this->verbose) {
             $this->youtubeDlparameters[] = '>/dev/null 2>&1';

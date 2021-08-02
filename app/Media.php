@@ -38,7 +38,7 @@ class Media extends Model
     protected $table = 'medias';
 
     /** @var string if only I had set id as prim key */
-    protected $primaryKey = 'media_id';
+    //protected $primaryKey = 'media_id';
 
     protected $guarded = ['id'];
     /**
@@ -65,12 +65,12 @@ class Media extends Model
 
     public function mediaFileName(): string
     {
-        return $this->media_id.self::FILE_EXTENSION;
+        return $this->media_id . self::FILE_EXTENSION;
     }
 
     public function relativePath(): string
     {
-        return $this->mediaFolder().'/'.$this->mediaFileName();
+        return $this->mediaFolder() . '/' . $this->mediaFileName();
     }
 
     public function mediaFolder(): string
@@ -158,11 +158,6 @@ class Media extends Model
         return $this->duration;
     }
 
-    public function id(): string
-    {
-        return $this->media_id;
-    }
-
     public function isGrabbed(): bool
     {
         return $this->grabbed_at !== null;
@@ -178,7 +173,7 @@ class Media extends Model
 
     public function url(): string
     {
-        return config('app.mp3_url').'/'.$this->remoteFilePath();
+        return config('app.mp3_url') . '/' . $this->remoteFilePath();
     }
 
     public function scopeGrabbedBefore(Builder $query, Carbon $date): Builder
@@ -198,7 +193,7 @@ class Media extends Model
 
     public function remoteFilePath(): string
     {
-        return config('app.mp3_path').$this->relativePath();
+        return config('app.mp3_path') . $this->relativePath();
     }
 
     public function toPodcastItem()
@@ -217,7 +212,7 @@ class Media extends Model
 
     public static function youtubeUrl(string $mediaId)
     {
-        return 'https://www.youtube.com/watch?v='.$mediaId;
+        return 'https://www.youtube.com/watch?v=' . $mediaId;
     }
 
     public function youtubeWatchUrl()
