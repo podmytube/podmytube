@@ -35,7 +35,7 @@ class MediasControllerTest extends TestCase
     }
 
     /** @test */
-    public function forbidden_for_guests(): void
+    public function checking_routes_are_alive(): void
     {
         $roadsToCheck = [
             'index' => 'get',
@@ -48,7 +48,9 @@ class MediasControllerTest extends TestCase
         array_map(
             function ($roadToCheck, $method) {
                 if (in_array($roadToCheck, ['destroy', 'update', 'edit'])) {
-                    $this->{$method}(route('channel.medias.' . $roadToCheck, ['channel' => $this->channel, 'media' => $this->media]))->assertRedirect(route('login'));
+                    $this->{$method}(route('channel.medias.' . $roadToCheck, ['channel' => $this->channel, 'media' => $this->media]))
+                        ->assertRedirect(route('login'))
+                    ;
 
                     return true;
                 }

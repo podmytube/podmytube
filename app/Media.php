@@ -31,14 +31,8 @@ class Media extends Model
     public const STATUS_NOT_AVAILABLE_ON_YOUTUBE = 21; // should not be possible unless deleted after being registered in pod
     public const STATUS_EXHAUSTED_QUOTA = 99; // user has more episode to be converted but is not paying enough for
 
-    /** @var bool come with my fucking legacy media_id */
-    public $incrementing = false;
-
     /** @var string medias table name - without it fails */
     protected $table = 'medias';
-
-    /** @var string if only I had set id as prim key */
-    //protected $primaryKey = 'media_id';
 
     protected $guarded = ['id'];
     /**
