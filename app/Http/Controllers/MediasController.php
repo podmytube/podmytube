@@ -145,7 +145,7 @@ class MediasController extends Controller
     public function destroy(Channel $channel, Media $media)
     {
         $this->authorize('addMedia', $channel);
-
+        
         $savedTitle = $media->title;
 
         MediaCleaning::dispatch($media);
