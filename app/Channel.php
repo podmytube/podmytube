@@ -303,6 +303,11 @@ class Channel extends Model implements Podcastable, Coverable
         return $this->subscription->plan_id === Plan::FREE_PLAN_ID;
     }
 
+    public function isPaying(): bool
+    {
+        return !in_array($this->subscription->plan_id, [Plan::FREE_PLAN_ID, Plan::EARLY_PLAN_ID]);
+    }
+
     public function slugChannelName(): string
     {
         return substr(Str::slug($this->channel_name), 0, 20);
