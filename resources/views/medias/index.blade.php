@@ -24,12 +24,21 @@
         </nav>
 
         <p class="text-center pb-6">
-            <a href="{{ route('channel.medias.create', $channel) }}">
-                <button target="_blank" class="btn-podcast">
-                    @php echo file_get_contents(public_path('images/gift.svg')) @endphp
-                    Add exclusive content
-                </button>
-            </a>
+            @if ($channel->isPaying())
+                <a href="{{ route('channel.medias.create', $channel) }}">
+                    <button target="_blank" class="btn-podcast">
+                        @php echo file_get_contents(public_path('images/gift.svg')) @endphp
+                        Add exclusive content
+                    </button>
+                </a>
+            @else
+                <a href="{{ route('plans.index', $channel) }}">
+                    <button target="_blank" class="btn-upgrade">
+                        @php echo file_get_contents(public_path('images/rocket.svg')) @endphp
+                        Upgrade now and add exclusive content. 😍
+                    </button>
+                </a>
+            @endif
         </p>
 
         @if ($medias->count() > 0)

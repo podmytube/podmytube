@@ -214,4 +214,29 @@ class ChannelModelTest extends TestCase
         $expectedSlugChannelName = substr(Str::slug($this->channel->channel_name), 0, 20);
         $this->assertEquals($expectedSlugChannelName, $this->channel->slugChannelName());
     }
+
+    /** @test */
+    public function is_paying_channel_is_fine(): void
+    {
+        $freePlan = $this->getFreePlan();
+        $channel = $this->createChannelWithPlan($freePlan);
+        $this->assertFalse($channel->isPaying());
+
+        $earlyPlan = $this->getPlanBySlug('early_bird');
+        $channel = $this->createChannelWithPlan($earlyPlan);
+        $this->assertFalse($channel->isPaying());
+
+        array_map(function (string $planSlug): void {
+            $payingPlan = $this->getPlanBySlug($planSlug);
+            $channel = $this->createChannelWithPlan($payingPlan);
+            $this->assertTrue($channel->isPaying(), "{$planSlug} should be considered as a paying plan.");
+        }, [
+            'monthly_6',
+            'weekly_youtuber',
+            'daily_youtuber',
+            'starter',
+            'professional',
+            'business',
+        ]);
+    }
 }

@@ -159,6 +159,9 @@ abstract class TestCase extends BaseTestCase
         );
     }
 
+    /**
+     * will return real plan model (seeded).
+     */
     public function getPlanBySlug(string $slug): ?Plan
     {
         Artisan::call('db:seed', ['--class' => 'PlansTableSeeder']);
@@ -166,6 +169,9 @@ abstract class TestCase extends BaseTestCase
         return Plan::bySlug($slug);
     }
 
+    /**
+     * will return seeded free plan.
+     */
     public function getFreePlan()
     {
         return $this->getPlanBySlug('forever_free');
