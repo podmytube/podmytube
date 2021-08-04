@@ -56,10 +56,13 @@
                         @foreach ($medias as $media)
                             <tr>
                                 <td class="px-2 py-2">
-                                    <a
-                                        href="{{ route('channel.medias.edit', ['channel' => $channel, 'media' => $media]) }}">
+                                    @if ($media->isUploadedByUser())
+                                        <a
+                                            href="{{ route('channel.medias.edit', ['channel' => $channel, 'media' => $media]) }}">
+                                            {{ $media->title }} </a>
+                                    @else
                                         {{ $media->title }}
-                                    </a>
+                                    @endif
                                 </td>
                                 <td class="text-center">
                                     {{ $media->publishedAt() }}
