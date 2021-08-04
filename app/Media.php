@@ -176,9 +176,13 @@ class Media extends Model
         return $query->whereDate('grabbed_at', '<', $date);
     }
 
-    public static function byMediaId(string $mediaId): ?self
+    public static function byMediaId(string $mediaId, bool $withTrashed = false): ?self
     {
-        return self::where('media_id', '=', $mediaId)->first();
+        $query = self::query();
+        if($withTrashed===true){
+            $query->withTrashed();
+        }
+        return $query->where('media_id', '=', $mediaId)->first();
     }
 
     public function uploadedFilePath(): string

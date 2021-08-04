@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use App\User;
@@ -10,10 +12,8 @@ class UsersTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
-    public function run()
+    public function run(): void
     {
         DB::table('users')->delete();
 
@@ -21,7 +21,7 @@ class UsersTableSeeder extends Seeder
             [
                 'firstname' => 'Fred',
                 'email' => 'frederick@podmytube.com',
-                'password' => '$2y$10$c5.Md.ZOCYFv70pPv/3nAeNSsXzV3ttFguIu.GzEFYhaijHh988se',
+                'password' => '$2y$10$NZouI76/3YhdnrkRXT3ee.1MaHA3zvg3TDKS07vobYfSV0rsHnEN2',
             ],
             [
                 'firstname' => 'another fred',
