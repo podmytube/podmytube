@@ -47,6 +47,7 @@ class Media extends Model
 
     protected $casts = [
         'duration' => 'integer',
+        'uploaded_by_user' => 'boolean',
     ];
 
     /**
@@ -241,5 +242,10 @@ class Media extends Model
         }
 
         return $this->published_at->format('Y-m-d');
+    }
+
+    public function isUploadedByUser(): bool
+    {
+        return $this->uploaded_by_user === true;
     }
 }

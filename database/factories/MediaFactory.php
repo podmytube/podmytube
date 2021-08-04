@@ -35,5 +35,6 @@ EOT,
         'grabbed_at' => $grabbedAt,
         'status' => $attributes['status'] ?? Media::STATUS_NOT_DOWNLOADED,
         'deleted_at' => $attributes['deleted_at'] ?? null,
+        'uploaded_by_user' => $attributes['uploaded_by_user'] ?? false,
     ];
 });

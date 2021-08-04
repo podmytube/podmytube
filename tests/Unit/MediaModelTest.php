@@ -34,7 +34,7 @@ class MediaModelTest extends TestCase
         $this->media = factory(Media::class)->create(['channel_id' => $this->channel->channel_id]);
     }
 
-    public function testPublishedBetweenShouldBeFine(): void
+    public function test_published_between_should_be_fine(): void
     {
         $expectedNbMedias = 3;
         factory(Media::class, $expectedNbMedias)->create([
@@ -53,7 +53,7 @@ class MediaModelTest extends TestCase
         );
     }
 
-    public function testPublishedLastMonthShouldBeFine(): void
+    public function test_published_last_month_should_be_fine(): void
     {
         $expectedNbMedias = 3;
         factory(Media::class, $expectedNbMedias)->create([
@@ -72,7 +72,7 @@ class MediaModelTest extends TestCase
     }
 
     /** @test */
-    public function isGrabbedIsOk(): void
+    public function is_grabbed_is_ok(): void
     {
         $this->media->update(['grabbed_at' => null]);
         $this->assertFalse($this->media->isGrabbed());
@@ -82,7 +82,7 @@ class MediaModelTest extends TestCase
         $this->assertTrue($this->media->isGrabbed());
     }
 
-    public function testGrabbedAtShouldBeFine(): void
+    public function test_grabbed_at_should_be_fine(): void
     {
         $expectedResult = 3;
         factory(Media::class, $expectedResult)->create([
@@ -93,15 +93,15 @@ class MediaModelTest extends TestCase
         $this->assertEquals($expectedResult, Media::grabbedAt()->count());
     }
 
-    public function testingByMediaIdShouldBeGood(): void
+    public function testing_by_media_id_should_be_good(): void
     {
         $this->assertEquals($this->media->title, Media::byMediaId($this->media->media_id)->title);
         $this->assertNull(Media::byMediaId('ThisIsNotAMediaId'));
     }
 
-    public function testMediaFileName(): void
+    public function test_media_file_name(): void
     {
-        $expectedMediaFileName = $this->media->media_id.Media::FILE_EXTENSION;
+        $expectedMediaFileName = $this->media->media_id . Media::FILE_EXTENSION;
         $this->assertEquals(
             $expectedMediaFileName,
             $result = $this->media->mediaFileName(),
@@ -109,7 +109,7 @@ class MediaModelTest extends TestCase
         );
     }
 
-    public function testUploadedPath(): void
+    public function test_uploaded_path(): void
     {
         $expectedFilePath = Storage::disk(Media::UPLOADED_BY_USER_DISK)
             ->path($this->media->mediaFileName())
@@ -121,31 +121,31 @@ class MediaModelTest extends TestCase
         );
     }
 
-    public function testMediaFilenameIsOk(): void
+    public function test_media_filename_is_ok(): void
     {
         $this->assertEquals(
-            $this->media->media_id.'.mp3',
+            $this->media->media_id . '.mp3',
             $this->media->mediaFileName()
         );
     }
 
-    public function testRelativePathIsOk(): void
+    public function test_relative_path_is_ok(): void
     {
         $this->assertEquals(
-            $this->media->channel->channel_id.'/'.$this->media->mediaFileName(),
+            $this->media->channel->channel_id . '/' . $this->media->mediaFileName(),
             $this->media->relativePath()
         );
     }
 
-    public function testRemotePathIsOk(): void
+    public function test_remote_path_is_ok(): void
     {
         $this->assertEquals(
-            config('app.mp3_path').$this->media->relativePath(),
+            config('app.mp3_path') . $this->media->relativePath(),
             $this->media->remoteFilePath()
         );
     }
 
-    public function testToPodcastItemShouldReturnEveryField(): void
+    public function test_to_podcast_item_should_return_every_field(): void
     {
         $expectedKeys = [
             'guid',
@@ -163,7 +163,7 @@ class MediaModelTest extends TestCase
         }, $expectedKeys);
     }
 
-    public function testToPodcastItemWithNonExplicitChannel(): void
+    public function test_to_podcast_item_with_non_explicit_channel(): void
     {
         $result = $this->media->toPodcastItem();
         $this->assertEquals($result['guid'], $this->media->media_id);
@@ -176,7 +176,7 @@ class MediaModelTest extends TestCase
         $this->assertEquals($result['explicit'], 'false');
     }
 
-    public function testToPodcastItemWithExplicitChannel(): void
+    public function test_to_podcast_item_with_explicit_channel(): void
     {
         $channel = factory(Channel::class)->create(['explicit' => true]);
         $media = factory(Media::class)->create(['channel_id' => $channel->channel_id]);
@@ -191,7 +191,7 @@ class MediaModelTest extends TestCase
         $this->assertEquals($result['explicit'], 'true');
     }
 
-    public function testToPodcastItemWithEmptyMediaInfos(): void
+    public function test_to_podcast_item_with_empty_media_infos(): void
     {
         $expectedKeys = [
             'guid',
@@ -230,7 +230,7 @@ class MediaModelTest extends TestCase
     }
 
     /** @test */
-    public function youtubeWatchUrlIsOk(): void
+    public function youtube_watch_url_is_ok(): void
     {
         $this->assertEquals(
             "https://www.youtube.com/watch?v={$this->media->media_id}",
@@ -239,7 +239,7 @@ class MediaModelTest extends TestCase
     }
 
     /** @test */
-    public function publishedAtIsFine(): void
+    public function published_at_is_fine(): void
     {
         $this->media->update(['published_at' => null]);
         $result = $this->media->publishedAt();
@@ -253,5 +253,15 @@ class MediaModelTest extends TestCase
         $this->assertNotNull($result);
         $this->assertIsString($result);
         $this->assertEquals($publishedAt->format('Y-m-d'), $result);
+    }
+
+    /** @test */
+    public function is_uploaded_by_user_is_fine(): void
+    {
+        $media = factory(Media::class)->create(['uploaded_by_user' => false]);
+        $this->assertFalse($media->isUploadedByUser());
+
+        $media = factory(Media::class)->create(['uploaded_by_user' => true]);
+        $this->assertTrue($media->isUploadedByUser());
     }
 }
