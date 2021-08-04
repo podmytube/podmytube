@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
 use App\Channel;
@@ -32,16 +34,16 @@ class UpdateChannelsCommand extends Command
      */
     protected $description = 'This will update list of episodes by type of channels';
 
-    /** @var \App\Youtube\YoutubeCore $youtubeCore */
+    /** @var \App\Youtube\YoutubeCore */
     protected $youtubeCore;
 
-    /** @var array $channels list of channel models */
+    /** @var array list of channel models */
     protected $channels = [];
 
-    /** @var array $errors list of errors that occured */
+    /** @var array list of errors that occured */
     protected $errors = [];
 
-    /** @var int $mediasAdded nb medias added during process */
+    /** @var int nb medias added during process */
     protected $mediasAdded = 0;
 
     /**
@@ -57,46 +59,50 @@ class UpdateChannelsCommand extends Command
         // no channel to refresh => nothing to do
         if (!$this->channels->count()) {
             $message = 'There is no channel to update, 🤔 strange.';
+
             throw new RuntimeException($message);
             $this->error($message);
             Log::debug($message);
+
             return 1;
         }
 
         $this->prologue($this->channels->count());
 
-        /** for each channel */
+        // for each channel
         $this->channels->map(function ($channel) {
             try {
                 Log::info("Processing channel {$channel->nameWithId()}");
                 $factory = YoutubeChannelVideos::forChannel($channel->channel_id, 50);
                 if (!count($factory->videos())) {
                     Log::info("Channel {$channel->channel_name} ({$channel->channel_id}) has no video.");
+
                     return false;
                 }
 
-                /** for each channel video */
-                array_map(function ($video) use ($channel) {
+                // for each channel video
+                array_map(function ($video) use ($channel): void {
                     /** check if the video already exist in database */
-                    $media = Media::withTrashed()->find($video['media_id']);
+                    $media = Media::byMediaId($video['media_id'], true);
                     if ($media === null) {
                         $media = new Media();
                         $media->media_id = $video['media_id'];
                         $media->channel_id = $channel->channel_id;
                         Log::info("Media {$video['title']} has been registered for channel {$channel->channel_name}.");
-                        $this->mediasAdded++;
+                        ++$this->mediasAdded;
                     }
                     // update it
                     $media->title = $video['title'];
                     $media->description = $video['description'];
                     $media->published_at = $video['published_at'];
 
-                    /** save it */
+                    // save it
                     $media->save();
                 }, $factory->videos());
 
                 $apikeysAndQuotas = YoutubeQuotas::forUrls($factory->queriesUsed())
-                    ->quotaConsumed();
+                    ->quotaConsumed()
+                ;
 
                 Quota::saveScriptConsumption(pathinfo(__FILE__, PATHINFO_BASENAME), $apikeysAndQuotas);
             } catch (YoutubeNoResultsException $exception) {
@@ -107,10 +113,11 @@ class UpdateChannelsCommand extends Command
         });
 
         $this->epilogue();
+
         return 0;
     }
 
-    protected function prologue(int $prograssBarNbItems)
+    protected function prologue(int $prograssBarNbItems): void
     {
         $this->info('Updating channels.', 'v');
         if ($this->getOutput()->isVerbose()) {
@@ -119,7 +126,7 @@ class UpdateChannelsCommand extends Command
         }
     }
 
-    protected function epilogue()
+    protected function epilogue(): void
     {
         if ($this->getOutput()->isVerbose()) {
             $this->bar->finish();
@@ -129,17 +136,17 @@ class UpdateChannelsCommand extends Command
         Log::info("There were {$this->mediasAdded} media(s) added during process.");
     }
 
-    protected function displayErrors()
+    protected function displayErrors(): void
     {
         if (count($this->errors) && $this->getOutput()->isVerbose()) {
             $this->line('');
-            array_map(function ($error) {
+            array_map(function ($error): void {
                 $this->error($error);
             }, $this->errors);
         }
     }
 
-    protected function makeProgressBarProgress()
+    protected function makeProgressBarProgress(): void
     {
         if ($this->getOutput()->isVerbose()) {
             $this->bar->advance();

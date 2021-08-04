@@ -93,10 +93,22 @@ class MediaModelTest extends TestCase
         $this->assertEquals($expectedResult, Media::grabbedAt()->count());
     }
 
-    public function testing_by_media_id_should_be_good(): void
+    /** @test */
+    public function by_media_id_is_fine(): void
     {
-        $this->assertEquals($this->media->title, Media::byMediaId($this->media->media_id)->title);
         $this->assertNull(Media::byMediaId('ThisIsNotAMediaId'));
+        $this->assertEquals($this->media->title, Media::byMediaId($this->media->media_id)->title);
+
+        /** same with deleted media */
+        $deletedMedia = factory(Media::class)->create(['deleted_at' => now()]);
+        // that should not be found here
+        $this->assertNull(Media::byMediaId($deletedMedia->media_id));
+
+        /** and should be found here */
+        $foundMedia = Media::byMediaId($deletedMedia->media_id, true);
+        $this->assertNotNull($foundMedia);
+        $this->assertInstanceOf(Media::class, $foundMedia);
+        $this->assertEquals($deletedMedia->title, $foundMedia->title);
     }
 
     public function test_media_file_name(): void
