@@ -45,7 +45,9 @@ class DownloadVideosByChannelCommand extends Command
         $medias = Media::with('channel')
             ->publishedBetween($period->startDate(), $period->endDate())
             ->where('channel_id', '=', $channelId)
-            ->whereNull('grabbed_at')->get();
+            ->whereNull('grabbed_at')
+            ->get()
+        ;
 
         $nbMedias = $medias->count();
         if ($nbMedias <= 0) {
@@ -84,6 +86,6 @@ class DownloadVideosByChannelCommand extends Command
 
     public function defaultPeriod()
     {
-        return date('Y').'-'.date('n');
+        return date('Y') . '-' . date('n');
     }
 }
