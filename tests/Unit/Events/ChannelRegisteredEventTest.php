@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Listeners;
+namespace Tests\Unit\Events;
 
 use App\Channel;
 use App\Events\ChannelRegistered;
