@@ -26,6 +26,6 @@ class PodcastUpdated implements InteractsWithPodcastable
 
     public function podcastable(): Podcastable
     {
-        return $this->media->channel;
+        return $this->podcastable;
     }
 }
