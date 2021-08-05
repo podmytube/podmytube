@@ -38,7 +38,7 @@ class RemoveDuplicateMediasCommand extends Command
         $channels->map(function (Channel $channel) use ($deleted, $doIt): void {
             $mediaIdsStorage = [];
             /** get all medias */
-            $medias = $channel->medias()->orderBy('created_at', 'desc')->get();
+            $medias = $channel->medias()->orderBy('created_at', 'asc')->get();
             foreach ($medias as $media) {
                 // if not known => keep
                 if (!in_array($media->media_id, $mediaIdsStorage)) {
