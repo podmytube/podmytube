@@ -7,14 +7,14 @@ namespace App\Console\Commands;
 use App\Channel;
 use Illuminate\Console\Command;
 
-class RemoveDuplicateMediasCommand extends Command
+class FixRemoveDuplicateMediasCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'remove:duplicates {doIt=0}';
+    protected $signature = 'fix:remove-duplicates {doIt=0}';
 
     /**
      * The console command description.
