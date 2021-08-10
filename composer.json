@@ -34,6 +34,7 @@
         "sentry/sentry-laravel": "^2.3",
         "spatie/laravel-sitemap": "^5.8",
         "spatie/laravel-stripe-webhooks": "^2.3",
+        "spatie/ssh": "^1.6",
         "stripe/stripe-php": "^7.39",
         "symfony/console": "^5.1",
         "symfony/process": "^5.0",

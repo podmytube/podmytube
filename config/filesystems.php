@@ -1,10 +1,6 @@
 <?php
 
-$sshCredentials = [
-    'user' => env('SFTP_USER', 'fred'),
-    'host' => env('SFTP_HOST', 'ns3363684.ip-37-187-100.eu'),
-    'path' => base_path() . '/.ssh/kimUpload',
-];
+declare(strict_types=1);
 
 return [
     /*
@@ -64,9 +60,7 @@ return [
             'root' => base_path('resources/views/emails/newsletters/'),
         ],
 
-        /**
-         * Local podcast feeds
-         */
+        // Local podcast feeds
         'feeds' => [
             'driver' => 'local',
             'root' => storage_path('app/public/feeds'),
@@ -88,14 +82,12 @@ return [
             'visibility' => 'public',
         ],
 
-        /**
-         * Medias
-         */
+        // Medias
         'medias' => [
             'driver' => 'sftp',
-            'host' => $sshCredentials['host'],
-            'username' => $sshCredentials['user'],
-            'privateKey' => $sshCredentials['path'],
+            'host' => config('app.sftp_host'),
+            'username' => config('app.sftp_user'),
+            'privateKey' => config('app.sftp_key_path'),
             // 'port' => 22,
             'root' => env('SFTP_MP3_PATH'),
             'url' => env('MP3_URL'),
@@ -104,9 +96,7 @@ return [
             'permPublic' => 0755,
         ],
 
-        /**
-         * Uploaded medias
-         */
+        // Uploaded medias
         'uploadedMedias' => [
             'driver' => 'local',
             'root' => storage_path('app/uploadedMedias'),
@@ -115,9 +105,9 @@ return [
 
         'remote' => [
             'driver' => 'sftp',
-            'host' => $sshCredentials['host'],
-            'username' => $sshCredentials['user'],
-            'privateKey' => $sshCredentials['path'],
+            'host' => config('app.sftp_host'),
+            'username' => config('app.sftp_user'),
+            'privateKey' => config('app.sftp_key_path'),
             'root' => '/home/www',
             'timeout' => 20,
             'visibility' => 'public',
