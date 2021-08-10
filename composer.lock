@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "291387425e00b56ed776e15030b82e24",
+    "content-hash": "bb029d110abc966209d07f1bd89df095",
     "packages": [
         {
             "name": "anhskohbo/no-captcha",
@@ -7486,6 +7486,65 @@
                 }
             ],
             "time": "2021-05-06T16:55:55+00:00"
+        },
+        {
+            "name": "spatie/ssh",
+            "version": "1.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/ssh.git",
+                "reference": "4266927d26a26082e013cdd710a00bad487455df"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/ssh/zipball/4266927d26a26082e013cdd710a00bad487455df",
+                "reference": "4266927d26a26082e013cdd710a00bad487455df",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.0|^7.4",
+                "symfony/process": "^4.3 || ^5.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.4",
+                "spatie/phpunit-snapshot-assertions": "^4.0",
+                "symfony/var-dumper": "^5.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\Ssh\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "homepage": "https://spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A lightweight package to execute commands over an SSH connection",
+            "homepage": "https://github.com/spatie/ssh",
+            "keywords": [
+                "spatie",
+                "ssh"
+            ],
+            "support": {
+                "issues": "https://github.com/spatie/ssh/issues",
+                "source": "https://github.com/spatie/ssh/tree/1.6.0"
+            },
+            "funding": [
+                {
+                    "url": "https://spatie.be/open-source/support-us",
+                    "type": "custom"
+                }
+            ],
+            "time": "2021-03-10T13:41:32+00:00"
         },
         {
             "name": "spatie/temporary-directory",

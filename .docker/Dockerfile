@@ -22,7 +22,6 @@ FROM node:14.15-buster as node
 RUN mkdir -p /app/public
 
 COPY package.json webpack.mix.js tailwind.config.js postcss.config.js /app/
-COPY resources/css/ /app/resources/css/
 COPY resources/images/ /app/resources/images/
 COPY resources/js/ /app/resources/js/
 COPY resources/sass/ /app/resources/sass/
@@ -51,6 +50,7 @@ RUN     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezo
 # ffmpeg is used to convert video to audio by youtube-dl
 # supervisor is used to manage backgroud processes and queues
 # sqlite is for tests
+# ssh is for connecting on remote with shell_exec commands
 # python is useful to run youtube-dl
 RUN apt-get update -y && \
         apt-get install -y -qq libpng-dev \
@@ -59,7 +59,8 @@ RUN apt-get update -y && \
         ffmpeg \
         supervisor \
         sqlite \
-        python && \
+        python \
+        ssh && \
         rm -rf /var/lib/apt/lists/*;
 
 # Set the locale
