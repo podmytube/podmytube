@@ -19,6 +19,12 @@ class DownloadMediaJob implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
+    /** @var \App\Media */
+    protected $media;
+
+    /** @var bool */
+    protected $force;
+
     /**
      * Create a new job instance.
      */
