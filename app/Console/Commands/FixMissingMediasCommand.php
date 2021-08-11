@@ -48,9 +48,18 @@ class FixMissingMediasCommand extends Command
             return 1;
         }
 
+        $lineLogs = explode(PHP_EOL, $sshProcess->getOutput());
+        $nbMissingMedias = count($lineLogs);
+        if ($nbMissingMedias <= 0) {
+            $this->info('There is no missing medias actually.', 'v');
+
+            return 0;
+        }
+
+        $this->comment("There are {$nbMissingMedias} missing files reported.", 'v');
         array_map(function (string $lineLog): void {
             $this->processLineLog($lineLog);
-        }, explode(PHP_EOL, $sshProcess->getOutput()));
+        }, $lineLogs);
 
         return 0;
     }
