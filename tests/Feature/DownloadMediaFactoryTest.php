@@ -47,14 +47,16 @@ class DownloadMediaFactoryTest extends TestCase
             ]
         );
 
-        $marioCoinDownloadedFilePath = Storage::disk('tmp')->path(self::MARIO_COIN_VIDEO.'.mp3');
+        $marioCoinDownloadedFilePath = Storage::disk('tmp')->path(self::MARIO_COIN_VIDEO . '.mp3');
         if (file_exists($marioCoinDownloadedFilePath)) {
             unlink($marioCoinDownloadedFilePath);
         }
     }
 
-    /** YT media does not exists - should throw exception */
-    public function test_invalid_media_should_be_rejected(): void
+    /** YT media does not exists - should throw exception.
+     * @test
+     */
+    public function invalid_media_should_be_rejected(): void
     {
         $this->media = factory(Media::class)->create([
             'channel_id' => $this->channel->channel_id,
@@ -88,7 +90,8 @@ class DownloadMediaFactoryTest extends TestCase
         $this->someChecksWhenNotDowloaded();
     }
 
-    public function test_video_is_being_downloaded(): void
+    /** @test */
+    public function video_is_being_downloaded(): void
     {
         $expectedMediaLength = [26666, 26898];
         $expectedDuration = 5;
@@ -140,5 +143,25 @@ class DownloadMediaFactoryTest extends TestCase
 
         DownloadMediaFactory::media($this->media)->run();
         $this->assertEquals(Media::STATUS_EXHAUSTED_QUOTA, $this->media->status);
+    }
+
+    /**
+     * @test
+     * some medias may be missing on remote mp3 server although present in DB.
+     * If present in DB I should have them on the remote server.
+     */
+    public function force_download_should_be_ok(): void
+    {
+        // adding grabbed media(s) to channel (with free plan)
+        $this->media = factory(Media::class)->create(
+            [
+                'channel_id' => $this->channel->channel_id,
+                'media_id' => self::MARIO_COIN_VIDEO,
+                'grabbed_at' => now(),
+            ]
+        );
+
+        DownloadMediaFactory::media($this->media, true)->run();
+        $this->assertEquals(Media::STATUS_DOWNLOADED, $this->media->status);
     }
 }
