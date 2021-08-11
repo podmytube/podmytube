@@ -11,7 +11,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
 
 class DownloadMediaJob implements ShouldQueue
 {
@@ -25,7 +24,6 @@ class DownloadMediaJob implements ShouldQueue
      */
     public function __construct(Media $mediaToDownload, bool $force = false)
     {
-        Log::debug(__CLASS__ . '::' . __FUNCTION__);
         $this->media = $mediaToDownload;
         $this->force = $force;
     }
@@ -35,6 +33,6 @@ class DownloadMediaJob implements ShouldQueue
      */
     public function handle(): void
     {
-        DownloadMediaFactory::media($this->media)->run();
+        DownloadMediaFactory::media($this->media, $this->force)->run();
     }
 }

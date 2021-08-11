@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Factories;
 
 use App\Events\ChannelUpdated;
@@ -19,72 +21,59 @@ use Illuminate\Support\Facades\Log;
 
 class DownloadMediaFactory
 {
-    /** @var \App\Media $media */
+    /** @var \App\Media */
     protected $media;
 
-    /** @var bool $verbose */
+    /** @var bool */
+    protected $force;
+
+    /** @var bool */
     protected $verbose;
 
-    private function __construct(Media $media)
+    private function __construct(Media $media, bool $force = false)
     {
         $this->media = $media;
+        $this->force = $force;
     }
 
-    public static function media(...$params)
+    public static function media(Media $media, bool $force = false)
     {
-        return new static(...$params);
+        return new static($media, $force);
     }
 
     public function run(): bool
     {
         try {
-            /**
-             * check if media is eligible for download
-             */
-            Log::debug("Should media {$this->media->media_id} being download.");
-            ShouldMediaBeingDownloadedFactory::create($this->media)->check();
-
-            /**
-             * exhausted quota ?
-             */
-            if ($this->media->channel->hasReachedItslimit()) {
-                $message = "Channel {$this->media->channel->nameWithId()} has reached its quota. Media {$this->media->media_id} won't be downloaded .";
-                Log::debug($message);
-                throw new ChannelHasReachedItsQuotaException($message);
+            if ($this->force === false) {
+                // if forced we download it whatever its quota/plan situation.
+                $this->shouldWeDownloadMedia();
             }
 
-            /**
-             * getting media infos
-             */
+            // getting media infos
             Log::debug("Getting informations for media {$this->media->media_id}");
             $youtubeVideo = YoutubeVideo::forMedia($this->media->media_id);
 
-            /** download, convert and get its path */
+            // download, convert and get its path
             Log::debug("About to download media {$this->media->media_id}.");
             $downloadedFilePath = DownloadYTMedia::init($this->media, '/tmp/', false)
                 ->download()
-                ->downloadedFilePath();
+                ->downloadedFilePath()
+            ;
 
-            /**
-             * if empty will throw exception
-             */
+            // if empty will throw exception
             Log::debug("Media {$this->media->media_id} has been download successfully from youtube. Analyzing.");
             $mediaProperties = MediaProperties::analyzeFile($downloadedFilePath);
 
-            /**
-             * checking obtained file duration of result
-             */
+            // checking obtained file duration of result
             Log::debug("Checking media {$this->media->media_id} duration.");
             CheckingGrabbedFile::init($mediaProperties, $youtubeVideo->duration())->check();
 
-            /**
-             * upload it
-             */
+            // upload it
             Log::debug("Uploading media {$this->media->media_id} duration.");
             SendFileBySFTP::dispatchSync($downloadedFilePath, $this->media->remoteFilePath(), $cleanAfter = true);
 
             /**
-             * setting status
+             * setting status.
              */
             $status = Media::STATUS_DOWNLOADED;
         } catch (YoutubeMediaDoesNotExistException $exception) {
@@ -99,9 +88,7 @@ class DownloadMediaFactory
             $status = Media::STATUS_EXHAUSTED_QUOTA;
         }
 
-        /**
-         * update infos
-         */
+        // update infos
         Log::notice('Persisting media infos into DB.');
 
         $updateParams = [
@@ -127,6 +114,29 @@ class DownloadMediaFactory
 
         Log::debug("Processing media {$this->media->media_id} is finished.");
         ChannelUpdated::dispatch($this->media->channel);
+
+        return true;
+    }
+
+    public function isForced(): bool
+    {
+        return $this->force === true;
+    }
+
+    protected function shouldWeDownloadMedia(): bool
+    {
+        // check if media is eligible for download
+        Log::debug("Should media {$this->media->media_id} being download.");
+        ShouldMediaBeingDownloadedFactory::create($this->media)->check();
+
+        // exhausted quota ?
+        if ($this->media->channel->hasReachedItslimit()) {
+            $message = "Channel {$this->media->channel->nameWithId()} has reached its quota. Media {$this->media->media_id} won't be downloaded .";
+            Log::debug($message);
+
+            throw new ChannelHasReachedItsQuotaException($message);
+        }
+
         return true;
     }
 }
