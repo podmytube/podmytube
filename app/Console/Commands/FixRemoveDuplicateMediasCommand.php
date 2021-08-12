@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Channel;
+use App\Media;
 use Illuminate\Console\Command;
 
 class FixRemoveDuplicateMediasCommand extends Command
@@ -14,7 +15,7 @@ class FixRemoveDuplicateMediasCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'fix:remove-duplicates {doIt=0}';
+    protected $signature = 'fix:remove-duplicates {channel_id?} {--doIt=0}';
 
     /**
      * The console command description.
@@ -31,14 +32,34 @@ class FixRemoveDuplicateMediasCommand extends Command
     public function handle()
     {
         $deleted = 0;
-        $doIt = (bool) $this->argument('doIt');
+        $channelId = $this->argument('channel_id');
+        $doIt = (bool) $this->option('doIt');
 
-        /** get all channels */
-        $channels = Channel::all();
+        // get all channels
+        if ($channelId !== null) {
+            $channels = Channel::where('channel_id', '=', $channelId)->get();
+        } else {
+            $channels = Channel::all();
+        }
+
+        if (!$channels->count()) {
+            $this->error('Either the channel you specified is unknown or there are no active channels in DB.');
+
+            return 1;
+        }
+
         $channels->map(function (Channel $channel) use ($deleted, $doIt): void {
             $mediaIdsStorage = [];
             /** get all medias */
-            $medias = $channel->medias()->orderBy('created_at', 'asc')->get();
+            $medias = Media::withTrashed()
+                ->where('channel_id', '=', $channel->channel_id)
+                ->orderBy('id', 'asc')
+                ->get()
+            ;
+            if (!$medias->count()) {
+                return;
+            }
+
             foreach ($medias as $media) {
                 // if not known => keep
                 if (!in_array($media->media_id, $mediaIdsStorage)) {
