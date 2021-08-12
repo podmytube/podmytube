@@ -84,13 +84,21 @@ class FixMissingMediasCommand extends Command
         }
 
         $media = Media::byMediaId($mediaId, true);
-        if ($media !== null) {
-            // this media is to be downloaded --force
-            DownloadMediaJob::dispatch($media, true);
+        if ($media === null) {
+            // media is indexed by a feed but is unknown in DB
+            Log::error("Media {$mediaId} is missing from a feed but it is unknown in DB too.");
 
             return;
         }
-        // strange case !!!!
-        Log::debug("Media {$mediaId} is missing from a feed but it is unknown in DB too.");
+
+        if ($media->remoteFileExists()) {
+            // media is 404 but file is on its right place ...
+            Log::error("Media {$mediaId} is 404 but it is on the right place.");
+
+            return;
+        }
+
+        // this media is to be downloaded --force
+        DownloadMediaJob::dispatch($media, true);
     }
 }

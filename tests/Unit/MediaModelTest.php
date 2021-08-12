@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use App\Channel;
+use App\Jobs\SendFileBySFTP;
 use App\Media;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -275,5 +276,20 @@ class MediaModelTest extends TestCase
 
         $media = factory(Media::class)->create(['uploaded_by_user' => true]);
         $this->assertTrue($media->isUploadedByUser());
+    }
+
+    /** @test */
+    public function remote_file_exists_is_ok(): void
+    {
+        Storage::fake(SendFileBySFTP::REMOTE_DISK);
+
+        $this->assertFalse($this->media->remoteFileExists());
+
+        Storage::disk(SendFileBySFTP::REMOTE_DISK)->put(
+            $this->media->remoteFilePath(),
+            file_get_contents(base_path('tests/Fixtures/Audio/l8i4O7_btaA.mp3'))
+        );
+
+        $this->assertTrue($this->media->remoteFileExists());
     }
 }

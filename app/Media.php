@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App;
 
 use App\Exceptions\InvalidStartDateException;
+use App\Jobs\SendFileBySFTP;
 use App\Modules\EnclosureUrl;
 use App\Traits\BelongsToChannel;
 use Carbon\Carbon;
@@ -179,9 +180,10 @@ class Media extends Model
     public static function byMediaId(string $mediaId, bool $withTrashed = false): ?self
     {
         $query = self::query();
-        if($withTrashed===true){
+        if ($withTrashed === true) {
             $query->withTrashed();
         }
+
         return $query->where('media_id', '=', $mediaId)->first();
     }
 
@@ -193,6 +195,11 @@ class Media extends Model
     public function remoteFilePath(): string
     {
         return config('app.mp3_path') . $this->relativePath();
+    }
+
+    public function remoteFileExists(): bool
+    {
+        return Storage::disk(SendFileBySFTP::REMOTE_DISK)->exists($this->remoteFilePath());
     }
 
     public function toPodcastItem()
