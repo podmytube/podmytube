@@ -39,10 +39,10 @@ class MediaCleaning implements ShouldQueue
 
         // delete file
         if (Storage::exists($this->mediaToDelete->remoteFilePath())) {
-            Log::debug("This file {$this->mediaToDelete->remoteFilePath()} exists => delete.");
+            Log::notice("This file {$this->mediaToDelete->remoteFilePath()} exists => delete.");
             Storage::delete($this->mediaToDelete->remoteFilePath());
         } else {
-            Log::debug("This file {$this->mediaToDelete->remoteFilePath()} does not exist. It cannot be deleted.");
+            Log::notice("This file {$this->mediaToDelete->remoteFilePath()} does not exist. It cannot be deleted.");
         }
 
         // soft deleting db entry

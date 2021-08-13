@@ -57,7 +57,6 @@ class Handler extends ExceptionHandler
             $handler = new HtmlErrorRenderer(true); // boolean, true raises debug flag...
             $css = $handler->getStylesheet();
             $content = $handler->getBody($exception);
-            Log::debug('Queueing mail for : '.config('mail.email_to_warn'));
             Mail::to(config('mail.email_to_warn'))
                 ->queue(new ExceptionEmail(compact('css', 'content')))
             ;

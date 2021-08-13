@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Factories;
 
 use App\Exceptions\PodcastSavingFailureException;
@@ -10,7 +12,7 @@ use Illuminate\Support\Facades\Log;
 
 class UploadPodcastFactory
 {
-    /** @var \App\Interfaces\Podcastable $podcastable */
+    /** @var \App\Interfaces\Podcastable */
     protected $podcastable;
 
     private function __construct()
@@ -39,11 +41,12 @@ class UploadPodcastFactory
             throw new PodcastSavingFailureException("Saving rendered podcast to {$localPath} has failed.");
         }
 
-        /** uploading */
+        // uploading
         SendFileBySFTP::dispatchSync($localPath, $this->remotePath(), $cleanAfter = true);
 
-        Log::debug("Podcast {$podcastable->podcastTitle()} has been successfully updated.");
-        Log::debug("You can check it here : {$podcastable->podcastUrl()}");
+        Log::notice("Podcast {$podcastable->podcastTitle()} has been successfully updated.");
+        Log::notice("You can check it here : {$podcastable->podcastUrl()}");
+
         return $this;
     }
 
@@ -60,6 +63,7 @@ class UploadPodcastFactory
                 throw new PodcastSavingFailureException("mkdir {$dirname} has failed, cannot save it locally.");
             }
         }
+
         return true;
     }
 

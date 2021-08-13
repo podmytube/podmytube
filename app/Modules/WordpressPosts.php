@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Modules;
 
 use App\Exceptions\NoPostsObtainedException;
@@ -12,20 +14,20 @@ use Illuminate\Support\Facades\Log;
  * It is :
  * - querying one wordpress api
  * - parsing the results
- * - calling PostFactory that is creating the Post and the PostCategory (if needed)
+ * - calling PostFactory that is creating the Post and the PostCategory (if needed).
  */
 class WordpressPosts
 {
-    /** @var string $endpoint wordpress api endpoint */
+    /** @var string wordpress api endpoint */
     protected $endpoint = 'posts';
 
-    /** @var int $page we only need page 1 - i won't publish posts this fast enough */
+    /** @var int we only need page 1 - i won't publish posts this fast enough */
     protected $page = 1;
 
     /** @var array json decoded posts */
     protected $posts = [];
 
-    /** @var int $importedPosts */
+    /** @var int */
     protected $importedPosts = 0;
 
     private function __construct()
@@ -54,18 +56,18 @@ class WordpressPosts
     {
         $response = file_get_contents($this->url(), false);
         $this->posts = json_decode($response, true);
+
         return $this;
     }
 
     /**
      * will obtain posts from one file (mainly for tests).
-     *
-     * @param string $filename
      */
     public function getPostsFromFile(string $filename): self
     {
         $response = file_get_contents($filename, false);
         $this->posts = json_decode($response, true);
+
         return $this;
     }
 
@@ -88,16 +90,17 @@ class WordpressPosts
         }
 
         array_map(
-            function ($postData) {
+            function ($postData): void {
                 try {
                     PostFactory::create($postData);
-                    $this->importedPosts++;
+                    ++$this->importedPosts;
                 } catch (PostCategoryNotWantedHereException $exception) {
-                    Log::debug("Post {{$postData['title']['rendered']}} does not belong here");
+                    Log::error("Post {{$postData['title']['rendered']}} does not belong here");
                 }
             },
             $this->posts()
         );
+
         return $this;
     }
 }

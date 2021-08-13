@@ -62,7 +62,7 @@ class UpdateChannelsCommand extends Command
 
             throw new RuntimeException($message);
             $this->error($message);
-            Log::debug($message);
+            Log::error($message);
 
             return 1;
         }
