@@ -53,7 +53,7 @@ class UpdateChannelCommand extends Command
         if ($channelToUpdate === null) {
             $message = "There is no channel with this channel_id ({$this->argument('channel_id')})";
             $this->error($message);
-            Log::debug($message);
+            Log::error($message);
 
             return 1;
         }
@@ -63,7 +63,9 @@ class UpdateChannelCommand extends Command
 
         $nbVideos = count($factory->videos());
         if ($nbVideos <= 0) {
-            $this->error("This channel ({$this->argument('channel_id')}) seems to have no videos.");
+            $message = "This channel ({$this->argument('channel_id')}) seems to have no videos.";
+            $this->error($message);
+            Log::error($message);
 
             return 1;
         }

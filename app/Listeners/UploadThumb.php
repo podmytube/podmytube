@@ -20,13 +20,10 @@ class UploadThumb implements ShouldQueue
 
     public function handle(InteractsWithPodcastable $event): void
     {
-        Log::debug(self::class.'::'.__FUNCTION__.' - start');
         $this->podcastable = $event->podcastable();
 
         $localPath = $this->podcastable->cover->localFilePath();
         $remotePath = $this->podcastable->cover->remoteFilePath();
-
-        Log::debug("{$localPath} - {$remotePath}");
 
         if (!file_exists($localPath)) {
             $message = "File on {$localPath} does not exists.";

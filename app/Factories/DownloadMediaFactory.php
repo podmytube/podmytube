@@ -132,7 +132,7 @@ class DownloadMediaFactory
         // exhausted quota ?
         if ($this->media->channel->hasReachedItslimit()) {
             $message = "Channel {$this->media->channel->nameWithId()} has reached its quota. Media {$this->media->media_id} won't be downloaded .";
-            Log::debug($message);
+            Log::notice($message);
 
             throw new ChannelHasReachedItsQuotaException($message);
         }

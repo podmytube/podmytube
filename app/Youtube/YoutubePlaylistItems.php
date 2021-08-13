@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Youtube;
 
 use Carbon\Carbon;
@@ -7,10 +9,10 @@ use Illuminate\Support\Facades\Log;
 
 class YoutubePlaylistItems extends YoutubeCore
 {
-    /** @var string $playlistId $youtube playlist id */
+    /** @var string $youtube playlist id */
     protected $playlistId;
 
-    /** @var array $videos pile of video obtained from youtube api */
+    /** @var array pile of video obtained from youtube api */
     protected $videos = [];
 
     public function forPlaylist(string $playlistId): self
@@ -18,7 +20,7 @@ class YoutubePlaylistItems extends YoutubeCore
         $this->playlistId = $playlistId;
 
         /**
-         * get all the uploaded videos for that playlist
+         * get all the uploaded videos for that playlist.
          */
         $videos = $this->defineEndpoint('/youtube/v3/playlistItems')
             ->addParams([
@@ -27,19 +29,22 @@ class YoutubePlaylistItems extends YoutubeCore
             ])
             ->addParts(['id', 'snippet', 'contentDetails'])
             ->run()
-            ->items();
+            ->items()
+        ;
 
         /**
-         * filtering video
+         * filtering video.
          */
         $onlyValidVideos = array_filter($videos, function ($item) {
             if (
-                !isset($item['contentDetails']['videoPublishedAt']) ||
-                !strlen($item['contentDetails']['videoPublishedAt'])
+                !isset($item['contentDetails']['videoPublishedAt'])
+                || !strlen($item['contentDetails']['videoPublishedAt'])
                 ) {
-                Log::debug('========> REJECTED ========> ', $item);
+                Log::notice('========> REJECTED ========> ', $item);
+
                 return false;
             }
+
             return true;
         });
         $this->videos = array_map(function ($videoItem) {

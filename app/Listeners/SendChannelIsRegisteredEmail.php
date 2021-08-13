@@ -21,7 +21,7 @@ class SendChannelIsRegisteredEmail implements ShouldQueue
         Mail::to($event->podcastable->user)->send(
             new ChannelIsRegistered($event->podcastable())
         );
-        Log::debug(
+        Log::notice(
             'Newly registered podcastable email has been sent',
             ['channel_id', $event->podcastable->id()]
         );

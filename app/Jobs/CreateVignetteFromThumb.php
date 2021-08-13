@@ -49,11 +49,11 @@ class CreateVignetteFromThumb implements ShouldQueue
             Vignette::fromThumb($this->srcThumb)->makeIt()->saveLocally();
         } catch (Exception $exception) {
             $message = "Creation of vignette from thumb {{$this->srcThumb}} \\
-                    for coverable {$this->srcThumb->coverableLabel()} has failed with message :".
+                    for coverable {$this->srcThumb->coverableLabel()} has failed with message :" .
                     $exception->getMessage();
+            Log::error($message);
 
             throw new VignetteCreationFromThumbException($message);
-            Log::debug($message);
         }
     }
 }
