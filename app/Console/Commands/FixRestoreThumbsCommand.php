@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Channel;
+use App\Modules\ServerRole;
 use App\Thumb;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
@@ -27,11 +28,15 @@ class FixRestoreThumbsCommand extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
-    public function handle()
+    public function handle(): int
     {
+        if (!ServerRole::isWorker()) {
+            $this->info('This server is not a worker.', 'v');
+
+            return 0;
+        }
+
         /** scan directory where thumbs are located */
         $folders = Storage::disk('remote')->directories('thumbs.podmytube.com/www');
 

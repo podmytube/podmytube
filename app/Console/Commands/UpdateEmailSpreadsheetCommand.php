@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Factories\GoogleSpreadsheetFactory;
+use App\Modules\ServerRole;
 use App\User;
 use Illuminate\Console\Command;
 
@@ -30,11 +31,15 @@ class UpdateEmailSpreadsheetCommand extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
-    public function handle()
+    public function handle(): int
     {
+        if (!ServerRole::isWorker()) {
+            $this->info('This server is not a worker.', 'v');
+
+            return 0;
+        }
+
         $this->info('Updating users spreadsheet', 'v');
 
         /*
@@ -65,5 +70,7 @@ class UpdateEmailSpreadsheetCommand extends Command
         ;
 
         $this->comment('Spreadsheet updated with success.', 'v');
+
+        return 0;
     }
 }

@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
+use App\Modules\ServerRole;
 use App\Modules\WordpressPosts;
 use Illuminate\Console\Command;
 
@@ -28,6 +31,12 @@ class UpdateBlogPostsCommand extends Command
      */
     public function handle()
     {
+        if (!ServerRole::isWorker()) {
+            $this->info('This server is not a worker.', 'v');
+
+            return 0;
+        }
+
         $this->info('Updating blog posts', 'v');
         $wpPosts = WordpressPosts::init()->getPostsFromRemote()->update();
         $this->comment("Blog posts updated - nb posts added : {$wpPosts->importedPosts()}", 'v');

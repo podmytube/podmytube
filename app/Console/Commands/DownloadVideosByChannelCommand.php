@@ -9,6 +9,7 @@ use App\Exceptions\YoutubeMediaIsNotAvailableException;
 use App\Factories\DownloadMediaFactory;
 use App\Media;
 use App\Modules\PeriodsHelper;
+use App\Modules\ServerRole;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Console\Command;
@@ -30,6 +31,12 @@ class DownloadVideosByChannelCommand extends Command
      */
     public function handle(): int
     {
+        if (!ServerRole::isWorker()) {
+            $this->info('This server is not a worker.', 'v');
+
+            return 0;
+        }
+
         $channelId = $this->argument('channel_id');
         /**
          * no period set => using current month.
@@ -67,7 +74,7 @@ class DownloadVideosByChannelCommand extends Command
         foreach ($medias as $media) {
             try {
                 DownloadMediaFactory::media($media, $this->getOutput()->isVerbose())->run();
-            } catch (YoutubeMediaIsNotAvailableException | DownloadMediaTagException $exception) {
+            } catch (YoutubeMediaIsNotAvailableException|DownloadMediaTagException $exception) {
                 Log::notice($exception->getMessage());
             } catch (Exception $exception) {
                 Log::error($exception->getMessage());

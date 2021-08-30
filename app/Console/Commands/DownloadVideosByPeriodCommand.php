@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Channel;
-use App\Exceptions\NoActiveChannelException;
 use App\Factories\DownloadMediaFactory;
 use App\Media;
 use App\Modules\PeriodsHelper;
+use App\Modules\ServerRole;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Console\Command;
@@ -27,11 +27,15 @@ class DownloadVideosByPeriodCommand extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
-    public function handle()
+    public function handle(): int
     {
+        if (!ServerRole::isWorker()) {
+            $this->info('This server is not a worker.', 'v');
+
+            return 0;
+        }
+
         /**
          * no period set => using current month.
          */
@@ -55,7 +59,7 @@ class DownloadVideosByPeriodCommand extends Command
             $this->error($message, 'v');
             Log::error($message);
 
-            throw new NoActiveChannelException($message);
+            return 1;
         }
 
         // looping on all channels
@@ -90,6 +94,8 @@ class DownloadVideosByPeriodCommand extends Command
                 Log::error($exception->getMessage());
             }
         });
+
+        return 0;
     }
 
     public function defaultPeriod()

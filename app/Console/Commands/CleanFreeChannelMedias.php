@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
 use App\Jobs\MediaCleaning;
 use App\Media;
+use App\Modules\ServerRole;
 use App\Plan;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -13,10 +16,10 @@ class CleanFreeChannelMedias extends Command
 {
     public const RETENTION_PERIOD_IN_MONTH = 4;
 
-    /** @var string $signature The name and signature of the console command. */
+    /** @var string The name and signature of the console command. */
     protected $signature = 'medias:clean';
 
-    /** @var string $description The console command description. */
+    /** @var string The console command description. */
     protected $description = 'This command is cleaning free channel medias that are older than '
         . self::RETENTION_PERIOD_IN_MONTH . ' monthes';
 
@@ -25,31 +28,38 @@ class CleanFreeChannelMedias extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): int
     {
+        if (!ServerRole::isWorker()) {
+            $this->info('This server is not a worker.', 'v');
+
+            return 0;
+        }
+
         /**
-         * Date before we soft deletes free channels episodes
+         * Date before we soft deletes free channels episodes.
          */
         $removeBeforeThisDate = Carbon::now()->startOfDay()->subMonths(self::RETENTION_PERIOD_IN_MONTH);
 
         /**
          * get free channel medias older than RETENTION_PERIOD_IN_MONTH
-         * SELECT * FROM `channels` inner join subscriptions using(channel_id) WHERE subscriptions.plan_id=1
+         * SELECT * FROM `channels` inner join subscriptions using(channel_id) WHERE subscriptions.plan_id=1.
          */
         $mediasToDelete = Media::grabbedBefore($removeBeforeThisDate)
-            ->whereHas('channel', function (Builder $query) {
-                $query->whereHas('subscription', function (Builder $query) {
+            ->whereHas('channel', function (Builder $query): void {
+                $query->whereHas('subscription', function (Builder $query): void {
                     $query->where('plan_id', '=', Plan::FREE_PLAN_ID);
                 });
             })
-            ->get();
+            ->get()
+        ;
 
         $this->comment("There is {$mediasToDelete->count()} medias to delete", 'v');
-        /**
-         * remove each of them
-         */
-        $mediasToDelete->map(function ($media) {
+        // remove each of them
+        $mediasToDelete->each(function ($media): void {
             MediaCleaning::dispatch($media);
         });
+
+        return 0;
     }
 }

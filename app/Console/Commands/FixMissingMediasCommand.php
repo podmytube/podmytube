@@ -7,6 +7,7 @@ namespace App\Console\Commands;
 use App\Factories\LineLogParserFactory;
 use App\Jobs\DownloadMediaJob;
 use App\Media;
+use App\Modules\ServerRole;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Spatie\Ssh\Ssh;
@@ -34,6 +35,12 @@ class FixMissingMediasCommand extends Command
      */
     public function handle()
     {
+        if (!ServerRole::isWorker()) {
+            $this->info('This server is not a worker.', 'v');
+
+            return 0;
+        }
+
         $remoteCommandToBeRun = 'docker logs --since=' . $this->argument('duration') . ' ' . config('app.audio_container_name') . ' | grep 404';
         $this->info("Remote command to be run : {$remoteCommandToBeRun}", 'v');
         $sshProcess = Ssh::create(config('app.sftp_user'), config('app.sftp_host'))

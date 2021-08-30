@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
 use App\Channel;
 use App\Exceptions\YoutubeNoResultsException;
 use App\Mail\ChannelIsInTroubleWarningMail;
 use App\Modules\LastMediaChecker;
+use App\Modules\ServerRole;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
@@ -14,10 +17,10 @@ class LastMediaPublishedChecker extends Command
 {
     public const NB_HOURS_AGO = 6;
 
-    /** @var \Illuminate\Support\Collection $channelsToCheck */
+    /** @var \Illuminate\Support\Collection */
     protected $channelsToCheck;
 
-    /** @var array $channelInTroubleMessages */
+    /** @var array */
     protected $channelInTroubleMessages = [];
     /**
      * The name and signature of the console command.
@@ -33,7 +36,7 @@ class LastMediaPublishedChecker extends Command
      */
     protected $description = 'Check if last media on Youtube has been grabbed.';
 
-    /** @var Carbon\Carbon $someHoursAgo some hours ago */
+    /** @var Carbon\Carbon some hours ago */
     protected $someHoursAgo;
 
     public function __construct()
@@ -47,23 +50,25 @@ class LastMediaPublishedChecker extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): int
     {
-        /**
-         * get paying channels
-         */
+        if (!ServerRole::isWorker()) {
+            $this->info('This server is not a worker.', 'v');
+
+            return 0;
+        }
+
+        // get paying channels
         $this->channelsToCheck = Channel::payingChannels();
 
-        /** add now tech */
+        // add now tech
         $this->addNowTech();
 
-        /** remove accropolis */
+        // remove accropolis
         $this->removeChannel('UCq80IvL314jsE7PgYsTdw7Q');
 
-        /**
-         * get last episode
-         */
-        $this->channelsToCheck->map(function ($channelToCheck) {
+        // get last episode
+        $this->channelsToCheck->map(function ($channelToCheck): void {
             $this->info("Checking channel {$channelToCheck->channel_name} ({$channelToCheck->channel_id}) .", 'v');
 
             try {
@@ -81,18 +86,21 @@ class LastMediaPublishedChecker extends Command
         $this->comment('Nb paying channels in trouble : ' . count($this->channelInTroubleMessages), 'v');
 
         if (count($this->channelInTroubleMessages)) {
-            /** Send myself an email with channels in trouble */
+            // Send myself an email with channels in trouble
             $this->comment(implode("\n", $this->channelInTroubleMessages), 'v');
             Mail::to(config('mail.email_to_warn'))
-                ->queue(new ChannelIsInTroubleWarningMail($this->channelInTroubleMessages));
+                ->queue(new ChannelIsInTroubleWarningMail($this->channelInTroubleMessages))
+            ;
         }
         $this->info("It's all folks.", 'v');
+
+        return 0;
     }
 
     /**
-     * add now tech
+     * add now tech.
      */
-    protected function addNowTech()
+    protected function addNowTech(): void
     {
         $nowtech = Channel::find('UCRU38zigLJNtMIh7oRm2hIg');
         if ($nowtech !== null) {
@@ -104,7 +112,7 @@ class LastMediaPublishedChecker extends Command
      * remove channel
      * typically, accropolis has a problem on his channel but he does not answer my emails.
      */
-    protected function removeChannel(string $channelIdToRemove)
+    protected function removeChannel(string $channelIdToRemove): void
     {
         $this->channelsToCheck->filter(function ($channel) use ($channelIdToRemove) {
             return $channel->channel_id === $channelIdToRemove;

@@ -6,8 +6,10 @@ namespace App\Console\Commands;
 
 use App\Channel;
 use App\Mail\MonthlyReportMail;
+use App\Modules\ServerRole;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class SendMonthlyReports extends Command
@@ -23,8 +25,14 @@ class SendMonthlyReports extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): int
     {
+        if (!ServerRole::isWorker()) {
+            $this->info('This server is not a worker.', 'v');
+
+            return 0;
+        }
+
         $wantedMonth = $this->option('period') !== null ?
             Carbon::createFromFormat('Y-m', $this->option('period'))->startOfMonth() :
             Carbon::now()->startOfMonth()->subMonth();
@@ -33,6 +41,14 @@ class SendMonthlyReports extends Command
          * get channels list.
          */
         $channels = Channel::allActiveChannels();
+
+        if (!$channels->count()) {
+            $message = 'There is no channels to send report for.';
+            $this->error($message);
+            Log::error($message);
+
+            return 1;
+        }
 
         // dispatch
         $channels->map(function ($channel) use ($wantedMonth): void {
@@ -45,5 +61,7 @@ class SendMonthlyReports extends Command
             "{$channels->count()} monthly reports emails were successfully queued.",
             'v'
         );
+
+        return 0;
     }
 }

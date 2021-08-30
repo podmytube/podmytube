@@ -6,6 +6,7 @@ namespace App\Console\Commands;
 
 use App\Channel;
 use App\Media;
+use App\Modules\ServerRole;
 use App\Quota;
 use App\Youtube\YoutubeChannelVideos;
 use App\Youtube\YoutubeQuotas;
@@ -47,6 +48,12 @@ class UpdateChannelCommand extends Command
      */
     public function handle(): int
     {
+        if (!ServerRole::isWorker()) {
+            $this->info('This server is not a worker.', 'v');
+
+            return 0;
+        }
+
         $channelToUpdate = Channel::byChannelId($this->argument('channel_id'));
 
         // no channel to refresh => nothing to do

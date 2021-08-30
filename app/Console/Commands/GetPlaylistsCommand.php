@@ -1,12 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
 use App\Channel;
-use App\Exceptions\NoPayingChannelException;
+use App\Modules\ServerRole;
 use App\Playlist;
 use App\Youtube\YoutubePlaylists;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class GetPlaylistsCommand extends Command
 {
@@ -24,16 +27,16 @@ class GetPlaylistsCommand extends Command
      */
     protected $description = 'This will obtain playlists for all paying channels';
 
-    /** @var \App\Youtube\YoutubeCore $youtubeCore */
+    /** @var \App\Youtube\YoutubeCore */
     protected $youtubeCore;
 
-    /** @var array $channels list of channel models */
+    /** @var array list of channel models */
     protected $channels = [];
 
-    /** @var array $errors list of errors that occured */
+    /** @var array list of errors that occured */
     protected $errors = [];
 
-    /** @var \Symfony\Component\Console\Helper\ProgressBar $bar */
+    /** @var \Symfony\Component\Console\Helper\ProgressBar */
     protected $bar;
 
     /**
@@ -41,26 +44,36 @@ class GetPlaylistsCommand extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): int
     {
-        /**
-         * get paying channels
-         */
-        $channels = Channel::payingChannels();
-        if ($channels === null) {
-            throw new NoPayingChannelException('There is no paying channel to get playlist for.');
+        if (!ServerRole::isWorker()) {
+            $this->info('This server is not a worker.', 'v');
+
+            return 0;
         }
 
         /**
-         * get playlists from youtube
+         * get paying channels.
+         */
+        $channels = Channel::payingChannels();
+        if ($channels === null) {
+            $message = 'There is no paying channel to get playlist for.';
+            $this->error($message);
+            Log::notice($message);
+
+            return 1;
+        }
+
+        /**
+         * get playlists from youtube.
          */
         $nbPlaylists = 0;
-        $channels->map(function (Channel $channel) use (&$nbPlaylists) {
+        $channels->map(function (Channel $channel) use (&$nbPlaylists): void {
             $this->comment('======================================================================', 'v');
             $this->comment("Getting playlists (from youtube) for {$channel->nameWithId()}", 'v');
             $playlists = ((new YoutubePlaylists())->forChannel($channel->channelId())->playlists());
             $nbPlaylists += count($playlists);
-            array_map(function ($playlistItem) use ($channel) {
+            array_map(function ($playlistItem) use ($channel): void {
                 $this->line("Getting {$playlistItem['title']}");
                 Playlist::updateOrCreate(
                     ['youtube_playlist_id' => $playlistItem['id']],
@@ -75,5 +88,7 @@ class GetPlaylistsCommand extends Command
         });
 
         $this->info("Nb playlists added/updated : {$nbPlaylists}", 'v');
+
+        return 0;
     }
 }
