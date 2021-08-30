@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
 use App\Channel;
 use App\Factories\UploadPodcastFactory;
+use App\Modules\ServerRole;
 use Illuminate\Console\Command;
 
 class UpdatePodcastForChannelCommand extends Command
@@ -22,7 +25,7 @@ class UpdatePodcastForChannelCommand extends Command
      */
     protected $description = 'This command will build one podcast feed at a time.';
 
-    /** @var \App\Channel $channel */
+    /** @var \App\Channel */
     protected $channel;
 
     /**
@@ -30,8 +33,14 @@ class UpdatePodcastForChannelCommand extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): int
     {
+        if (!ServerRole::isWorker()) {
+            $this->info('This server is not a worker.', 'v');
+
+            return 0;
+        }
+
         $this->channel = Channel::findOrFail($this->argument('channelId'));
         $this->info("Updating podcast for channel {$this->channel->nameWithId()}", 'v');
 
@@ -39,5 +48,7 @@ class UpdatePodcastForChannelCommand extends Command
 
         $this->comment("Podcast {$this->channel->nameWithId()} has been successfully updated.", 'v');
         $this->info("You can check it here : {$this->channel->podcastUrl()}", 'v');
+
+        return 0;
     }
 }

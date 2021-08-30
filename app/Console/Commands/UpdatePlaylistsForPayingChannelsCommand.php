@@ -7,6 +7,7 @@ namespace App\Console\Commands;
 use App\Channel;
 use App\Exceptions\NoPayingChannelException;
 use App\Factories\UploadPodcastFactory;
+use App\Modules\ServerRole;
 use App\Playlist;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -47,8 +48,14 @@ class UpdatePlaylistsForPayingChannelsCommand extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): int
     {
+        if (!ServerRole::isWorker()) {
+            $this->info('This server is not a worker.', 'v');
+
+            return 0;
+        }
+
         /**
          * get paying channels.
          */
@@ -84,5 +91,7 @@ class UpdatePlaylistsForPayingChannelsCommand extends Command
                 $this->line("You can check it here : {$playlist->podcastUrl()}", null, 'v');
             });
         });
+
+        return 0;
     }
 }

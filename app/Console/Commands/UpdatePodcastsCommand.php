@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
 use App\Channel;
 use App\Factories\UploadPodcastFactory;
+use App\Modules\ServerRole;
 use Exception;
 use Illuminate\Console\Command;
 use RuntimeException;
@@ -16,7 +19,7 @@ class UpdatePodcastsCommand extends Command
     public const FAILURE = 0;
     public const SUCCESS = 1;
 
-    /** @var array $messages */
+    /** @var array */
     protected $messages = [];
 
     protected $progressBar;
@@ -40,8 +43,14 @@ class UpdatePodcastsCommand extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): int
     {
+        if (!ServerRole::isWorker()) {
+            $this->info('This server is not a worker.', 'v');
+
+            return 0;
+        }
+
         $optionAndMethods = [
             'free' => 'freeChannels',
             'paying' => 'payingChannels',
@@ -62,6 +71,7 @@ class UpdatePodcastsCommand extends Command
                 "There is no channels to generate for option {{$optionTyped}}",
                 'v'
             );
+
             return true;
         }
 
@@ -72,7 +82,7 @@ class UpdatePodcastsCommand extends Command
             $this->progressBar->start();
         }
 
-        $channels->map(function ($channel) {
+        $channels->map(function ($channel): void {
             try {
                 UploadPodcastFactory::init()->for($channel);
                 $this->recordSuccess($channel);
@@ -90,15 +100,15 @@ class UpdatePodcastsCommand extends Command
             $this->info(implode(PHP_EOL, $this->getSuccess()));
         }
 
-        /**
-         * Used with a crontab errors will be sent by email if any.
-         */
+        // Used with a crontab errors will be sent by email if any.
         if ($this->getErrors()) {
             $this->error(implode(PHP_EOL, $this->getErrors()));
         }
+
+        return 0;
     }
 
-    protected function recordSuccess(Channel $channel)
+    protected function recordSuccess(Channel $channel): void
     {
         $this->addMessage(
             self::SUCCESS,
@@ -108,7 +118,7 @@ class UpdatePodcastsCommand extends Command
         );
     }
 
-    protected function recordFailure(Channel $channel, $exception)
+    protected function recordFailure(Channel $channel, $exception): void
     {
         $this->addMessage(
             self::FAILURE,
@@ -118,7 +128,7 @@ class UpdatePodcastsCommand extends Command
         );
     }
 
-    protected function addMessage($key, $value)
+    protected function addMessage($key, $value): void
     {
         $this->messages[$key][] = $value;
     }

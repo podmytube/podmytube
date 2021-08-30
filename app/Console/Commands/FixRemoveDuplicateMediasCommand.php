@@ -6,6 +6,7 @@ namespace App\Console\Commands;
 
 use App\Channel;
 use App\Media;
+use App\Modules\ServerRole;
 use Illuminate\Console\Command;
 
 class FixRemoveDuplicateMediasCommand extends Command
@@ -31,6 +32,12 @@ class FixRemoveDuplicateMediasCommand extends Command
      */
     public function handle()
     {
+        if (!ServerRole::isWorker()) {
+            $this->info('This server is not a worker.', 'v');
+
+            return 0;
+        }
+
         $deleted = 0;
         $channelId = $this->argument('channel_id');
         $doIt = (bool) $this->option('doIt');

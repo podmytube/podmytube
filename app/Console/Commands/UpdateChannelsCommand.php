@@ -7,6 +7,7 @@ namespace App\Console\Commands;
 use App\Channel;
 use App\Exceptions\YoutubeNoResultsException;
 use App\Media;
+use App\Modules\ServerRole;
 use App\Quota;
 use App\Youtube\YoutubeChannelVideos;
 use App\Youtube\YoutubeQuotas;
@@ -53,6 +54,12 @@ class UpdateChannelsCommand extends Command
      */
     public function handle(): int
     {
+        if (!ServerRole::isWorker()) {
+            $this->info('This server is not a worker.', 'v');
+
+            return 0;
+        }
+
         // update all channels
         $this->channels = Channel::active()->get();
 

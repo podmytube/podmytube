@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Media;
+use App\Modules\ServerRole;
 use App\Playlist;
 use App\Youtube\YoutubePlaylistItems;
 use Carbon\Carbon;
@@ -34,6 +35,12 @@ class GetPlaylistMediasCommand extends Command
      */
     public function handle(): int
     {
+        if (!ServerRole::isWorker()) {
+            $this->info('This server is not a worker.', 'v');
+
+            return 0;
+        }
+
         /**
          * get active playlists.
          */

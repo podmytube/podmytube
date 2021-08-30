@@ -20,6 +20,8 @@ return [
 
     'wpbackend' => env('WPBACKEND_URL', 'https://wpbackend.tyteca.net'),
 
+    'server_role' => env('SERVER_ROLE', 'display'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment
