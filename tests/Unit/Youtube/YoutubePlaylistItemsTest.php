@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Youtube;
 
 use App\Exceptions\YoutubeNoResultsException;
+use App\Youtube\YoutubeCore;
 use App\Youtube\YoutubePlaylistItems;
 use App\Youtube\YoutubeQuotas;
 use Carbon\Carbon;
@@ -20,7 +21,7 @@ class YoutubePlaylistItemsTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected const MY_PERSONAL_UPLOADS_PLAYLIST_ID = 'UUw6bU9JT_Lihb2pbtqAUGQw';
+    protected const MY_PERSONAL_UPLOADS_PLAYLIST_ID = YoutubeCoreTest::PERSONAL_UPLOADS_PLAYLIST_ID;
 
     public function setUp(): void
     {

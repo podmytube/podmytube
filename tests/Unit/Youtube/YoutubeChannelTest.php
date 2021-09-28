@@ -40,7 +40,7 @@ class YoutubeChannelTest extends TestCase
     public function testAnotherWayToObtainUploadsPlaylistId()
     {
         $this->assertEquals(
-            'UUw6bU9JT_Lihb2pbtqAUGQw',
+            YoutubeCoreTest::PERSONAL_UPLOADS_PLAYLIST_ID,
             $this->youtubeChannel->forChannel(YoutubeCoreTest::PERSONAL_CHANNEL_ID, ['id', 'snippet', 'contentDetails'])->uploadsPlaylistId()
         );
     }

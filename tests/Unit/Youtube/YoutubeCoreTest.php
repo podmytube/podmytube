@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Youtube;
 
 use App\Exceptions\YoutubeInvalidEndpointException;
@@ -10,12 +12,13 @@ use Illuminate\Support\Facades\Artisan;
 use InvalidArgumentException;
 use Tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class YoutubeCoreTest extends TestCase
 {
     use RefreshDatabase;
-
-    /** @var \App\Youtube\YoutubeCore $youtubeCore*/
-    protected $abstractCore;
 
     public const PERSONAL_UPLOADS_PLAYLIST_ID = 'UUw6bU9JT_Lihb2pbtqAUGQw';
     public const PERSONAL_CHANNEL_NB_OF_PLAYLISTS = 2;
@@ -24,63 +27,66 @@ class YoutubeCoreTest extends TestCase
     public const NOWTECH_UPLOADS_PLAYLIST_ID = 'UUVwG9JHqGLfEO-4TkF-lf2g';
     public const NOWTECH_PLAYLIST_ID = 'PLhQHoIKUR5vD0vq6Jwns89QAz9OZWTvpx';
 
+    /** @var \App\Youtube\YoutubeCore */
+    protected $abstractCore;
+
     public function setUp(): void
     {
         parent::setUp();
         Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
         // Create a new instance from the Abstract Class
-        $this->abstractCore = new class extends YoutubeCore {
-            // Just a sample public function that returns this anonymous instance
-            public function returnThis()
-            {
-                return $this;
-            }
-        };
+        $this->abstractCore = new class() extends YoutubeCore {};
     }
 
-    public function testingAbstractInstance()
+    /** @test */
+    public function abstract_instance_is_working_fine(): void
     {
-        $this->assertInstanceOf(
-            YoutubeCore::class,
-            $this->abstractCore->returnThis()
-        );
+        $this->assertNotNull($this->abstractCore);
+        $this->assertInstanceOf(YoutubeCore::class, $this->abstractCore);
     }
 
-    public function testEndpointInvalid()
+    /** @test */
+    public function invalid_endpoint_should_fail(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->abstractCore->defineEndpoint('LoremIpsum');
     }
 
-    public function testAddPartWithoutEndpointFail()
+    /** @test */
+    public function add_part_without_endpoint_fail(): void
     {
         $this->expectException(YoutubeInvalidEndpointException::class);
         $this->abstractCore->addParts(['id', 'snippet']);
     }
 
-    public function testInvalidChannelShouldThrowException()
+    /** @test */
+    public function invalid_channel_should_throw_exception(): void
     {
         $this->expectException(YoutubeNoResultsException::class);
         $this->abstractCore
             ->defineEndpoint('/youtube/v3/channels')
             ->addParts(['id'])
             ->addParams(['id' => 'ForSureThisChannelIdIsInvalid'])
-            ->run();
+            ->run()
+        ;
     }
 
-    public function testGettingProperIdForChannelListShouldBeOk()
+    /** @test */
+    public function getting_proper_id_for_channel_list_should_be_ok(): void
     {
         $items = $this->abstractCore
             ->defineEndpoint('/youtube/v3/channels')
             ->addParts(['id'])
             ->addParams(['id' => self::PEWDIEPIE_CHANNEL_ID])
             ->run()
-            ->items();
+            ->items()
+        ;
 
         $this->assertEquals('UC-lHJZR3Gqxm24_Vd_AJ5Yw', $items[0]['id']);
     }
 
-    public function testGettingProperIdForPlaylistListShouldBeOk()
+    /** @test */
+    public function getting_proper_id_for_playlist_list_should_be_ok(): void
     {
         $items = $this->abstractCore
             ->defineEndpoint('/youtube/v3/playlists')
@@ -90,7 +96,8 @@ class YoutubeCoreTest extends TestCase
                 'maxResults' => 50,
             ])
             ->run()
-            ->items();
+            ->items()
+        ;
 
         $this->assertEquals(
             self::NOWTECH_CHANNEL_ID,
@@ -98,20 +105,21 @@ class YoutubeCoreTest extends TestCase
         );
     }
 
-    public function testGettingProperIdForPlaylistItemsListShouldBeOk()
+    /** @test */
+    public function getting_proper_id_for_playlist_items_list_should_be_ok(): void
     {
-        $myUploadsPlaylistId = 'UUw6bU9JT_Lihb2pbtqAUGQw';
         $items = $this->abstractCore
             ->defineEndpoint('/youtube/v3/playlistItems')
             ->addParts(['id', 'snippet'])
             ->addParams([
-                'playlistId' => $myUploadsPlaylistId,
+                'playlistId' => self::PERSONAL_UPLOADS_PLAYLIST_ID,
             ])
             ->run()
-            ->items();
+            ->items()
+        ;
 
         $this->assertCount(2, $items);
-        array_map(function ($item) {
+        array_map(function ($item): void {
             $this->assertEquals(
                 self::PERSONAL_CHANNEL_ID,
                 $item['snippet']['channelId']
@@ -119,7 +127,8 @@ class YoutubeCoreTest extends TestCase
         }, $items);
     }
 
-    public function testGettingOnlyFirstPewDiePiePlaylistsShouldBeQuick()
+    /** @test */
+    public function getting_only_first_pew_die_pie_playlists_should_be_quick(): void
     {
         $items = $this->abstractCore
             ->defineEndpoint('/youtube/v3/playlists')
@@ -127,7 +136,8 @@ class YoutubeCoreTest extends TestCase
             ->addParts(['id', 'snippet'])
             ->addParams(['channelId' => self::PEWDIEPIE_CHANNEL_ID])
             ->run()
-            ->items();
+            ->items()
+        ;
 
         $this->assertEquals(
             self::PEWDIEPIE_CHANNEL_ID,
@@ -135,9 +145,10 @@ class YoutubeCoreTest extends TestCase
         );
     }
 
-    public function testGettingAllPlaylistItemsByPageIsOk()
+    /** @test */
+    public function getting_all_playlist_items_by_page_is_ok(): void
     {
-        /**
+        /*
          * nowtech has more then 15 playlists.
          * this function is testing pagination
          */
@@ -157,11 +168,12 @@ class YoutubeCoreTest extends TestCase
         );
     }
 
-    public function testCombiningLimitsAndMaxResults()
+    /** @test */
+    public function combining_limits_and_max_results(): void
     {
         $uploadsId = self::PEWDIEPIE_CHANNEL_ID;
         $uploadsId[1] = 'U';
-        /**
+        /*
          * we are asking for 35 items on each request
          * we are setting a limit to 60
          * at the end we should have :
@@ -177,7 +189,8 @@ class YoutubeCoreTest extends TestCase
                 'maxResults' => 35,
             ])
             ->addParts(['id', 'snippet'])
-            ->run();
+            ->run()
+        ;
 
         $this->assertCount(2, $this->abstractCore->queriesUsed());
         $this->assertCount(70, $this->abstractCore->items());

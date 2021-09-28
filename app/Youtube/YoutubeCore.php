@@ -39,6 +39,7 @@ abstract class YoutubeCore implements QuotasConsumer
     protected $partParams = [];
     /** @var array list of valid queries used */
     protected $queries = [];
+    protected bool $cacheHasBeenUsed = false;
 
     public function __construct()
     {
@@ -219,6 +220,11 @@ abstract class YoutubeCore implements QuotasConsumer
         return $this->queries;
     }
 
+    public function hasCacheBeingUsed(): bool
+    {
+        return $this->cacheHasBeenUsed === true;
+    }
+
     /**
      * return if we are qyuerying youtube api next page.
      * According to an eventual limit set or the presence of a nextPageToken
@@ -246,17 +252,22 @@ abstract class YoutubeCore implements QuotasConsumer
     {
         // get it from cache (if any)
         if (Cache::has($this->cacheKey())) {
+            $this->cacheHasBeenUsed = true;
+
             return Cache::get($this->cacheKey());
         }
+
         // querying api
         $rawResults = Query::create($this->url())
             ->run()
             ->results()
         ;
+
         // adding url to the list of queries used
         $this->queries[] = $this->url();
+
         // putting results in cache for next time
-        Cache::put($this->cacheKey(), $rawResults, now()->addHours(6));
+        Cache::put($this->cacheKey(), $rawResults, now()->addHour());
 
         return $rawResults;
     }

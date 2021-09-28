@@ -18,8 +18,6 @@ class YoutubePlaylistsTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected const MY_PERSONAL_UPLOADS_PLAYLIST_ID = 'UUw6bU9JT_Lihb2pbtqAUGQw';
-
     public function setUp(): void
     {
         parent::setUp();
