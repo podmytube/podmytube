@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit;
 
 use App\ApiKey;
@@ -7,21 +9,26 @@ use App\Quota;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class QuotaModelTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var \App\ApiKey $apikey */
+    /** @var \App\ApiKey */
     protected $apikey;
 
     public function setUp(): void
     {
         parent::setUp();
-        /** this key will be used in every test */
+        // this key will be used in every test
         $this->apikey = factory(ApiKey::class)->create();
     }
 
-    public function testingByScriptShouldBeGood()
+    /** @test */
+    public function by_script_should_be_good(): void
     {
         /** preparation */
         $scriptName = 'lorem.php';
@@ -31,21 +38,22 @@ class QuotaModelTest extends TestCase
             'script' => $scriptName,
         ]);
 
-        /** checking results */
+        // checking results
         $this->assertCount(5, Quota::byScript($scriptName));
         $this->assertCount(0, Quota::byScript('NeverCallAScript.cpp'));
     }
 
-    public function testingSavingSingleConsumptionShouldBeGood()
+    /** @test */
+    public function saving_single_consumption_should_be_good(): void
     {
         /** preparation */
         $expectedQuotaConsumed = 20;
         $scriptName = 'lorem.php';
         $quotaConsumed = [
-            $this->apikey->apikey => $expectedQuotaConsumed
+            $this->apikey->apikey => $expectedQuotaConsumed,
         ];
 
-        /** using function to be tested */
+        // using function to be tested
         Quota::saveScriptConsumption($scriptName, $quotaConsumed);
 
         /** checking results */
@@ -54,10 +62,11 @@ class QuotaModelTest extends TestCase
         $this->assertEquals($results->first()->quota_used, $expectedQuotaConsumed);
     }
 
-    public function testingSavingMultipleConsumptionShouldBeGood()
+    /** @test */
+    public function saving_multiple_consumption_should_be_good(): void
     {
-        /** 
-         * preparation - this script will use 3 calls to youtube
+        /**
+         * preparation - this script will use 3 calls to youtube.
          */
         $anotherApikey = factory(ApiKey::class)->create();
         $lastApikey = factory(ApiKey::class)->create();
@@ -68,7 +77,7 @@ class QuotaModelTest extends TestCase
             $lastApikey->apikey => 5,
         ];
 
-        /** using function to be tested */
+        // using function to be tested
         Quota::saveScriptConsumption($scriptName, $quotaConsumed);
 
         /** checking results */

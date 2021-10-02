@@ -4,16 +4,19 @@ declare(strict_types=1);
 
 namespace Tests;
 
+use App\ApiKey;
 use App\Channel;
 use App\Interfaces\Coverable;
 use App\Interfaces\Podcastable;
 use App\Media;
 use App\Plan;
 use App\Playlist;
+use App\Quota;
 use App\Subscription;
 use App\Thumb;
 use App\User;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Collection;
@@ -200,5 +203,25 @@ abstract class TestCase extends BaseTestCase
         }
 
         return factory(Subscription::class)->create($createContext)->channel;
+    }
+
+    protected function createDepletedApiKeys(int $nbkeys = 1): EloquentCollection
+    {
+        return $this->createApiKeysWithQuotaUsed(Quota::LIMIT_PER_DAY + 1, $nbkeys);
+    }
+
+    protected function createApiKeysWithQuotaUsed(int $quotaUsed, int $nbkeys = 1): EloquentCollection
+    {
+        return factory(ApiKey::class, $nbkeys)
+            ->create()
+            ->each(function (ApiKey $apiKey) use ($quotaUsed): void {
+                factory(Quota::class)->create(
+                    [
+                        'apikey_id' => $apiKey->id,
+                        'quota_used' => $quotaUsed,
+                    ]
+                );
+            })
+        ;
     }
 }

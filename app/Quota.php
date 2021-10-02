@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 class Quota extends Model
@@ -18,12 +21,15 @@ class Quota extends Model
         return $this->belongsTo(ApiKey::class, 'apikey_id', 'id');
     }
 
-    public static function byScript(string $script)
+    public static function byScript(string $script): Collection
     {
         return self::where('script', '=', $script)->get();
     }
 
-    public static function saveScriptConsumption(string $scriptName, array $apikeysAndQuotas)
+    /**
+     * saveScriptConsumption will save consumption for one script and its api key call.
+     */
+    public static function saveScriptConsumption(string $scriptName, array $apikeysAndQuotas): void
     {
         $dataToInsert = [];
         foreach ($apikeysAndQuotas as $apikey => $quota) {
