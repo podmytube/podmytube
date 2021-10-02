@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App;
 
 use App\Exceptions\YoutubeNoApiKeyAvailableException;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -32,37 +31,47 @@ class ApiKey extends Model
      */
     public static function getOne(): string
     {
-        // get all api keys.
-        $apiKeys = ApiKey::all();
+        // get all api keys
+        // get all api keys consumption
+        // order by consumptions
+        // filtering depleted ones
 
-        // consumed keys for today.
-        $consumedKeys = ApiKey::select('quotas.apikey_id', 'api_keys.apikey', DB::raw('SUM(quotas.quota_used) as sum_quota_used'))
-            ->join('quotas', 'api_keys.id', '=', 'quotas.apikey_id')
-            ->whereBetween('quotas.created_at', [Carbon::today(), Carbon::now()])
-            ->groupBy('quotas.apikey_id')
-            ->having('sum_quota_used', '>', Quota::LIMIT_PER_DAY)
+        $apikeys = self::query()
+            ->with(['quotas' => function ($query): void {
+                $query->select(DB::raw('apikey_id, sum(quotas.quota_used) as consumed'))
+                    ->whereBetween('created_at', [today(), now()])
+                    ->groupBy('apikey_id')
+                ;
+            }])
             ->get()
+            ->filter(function (ApiKey $apikey): bool {
+                // no quota recored for this apikey yet => it is good
+                if (!$apikey->quotas->count()) {
+                    return true;
+                }
+
+                return $apikey->quotas->first()->consumed < Quota::LIMIT_PER_DAY;
+            })
+            ->map(function (ApiKey $apikey): Apikey {
+                if ($apikey->quotas->count()) {
+                    $apikey->consumed = $apikey->quotas->first()->consumed;
+                } else {
+                    $apikey->consumed = 0;
+                }
+
+                return $apikey;
+            })
+            ->sortBy('consumed')
         ;
 
-        // no consumed keys ? return first apikey
-        if (!$consumedKeys->count()) {
-            return $apiKeys->first()->apikey;
-        }
-
-        // we have consumed keys ? keeping keys that are not consumed.
-        $consumedKeyIds = $consumedKeys->pluck('apikey_id')->toArray();
-        $availableKeys = $apiKeys->filter(function ($apiKeyModel) use ($consumedKeyIds) {
-            return !in_array($apiKeyModel->id, $consumedKeyIds);
-        });
-
-        if (!$availableKeys->count()) {
+        if (!$apikeys->count()) {
             throw new YoutubeNoApiKeyAvailableException('No remaining apikey available for today.');
         }
 
-        return $availableKeys->first()->apikey;
+        return $apikeys->first()->apikey;
     }
 
-    public static function byApikey(string $apikey): self
+    public static function byApikey(string $apikey): ?self
     {
         return self::where('apikey', '=', $apikey)->first();
     }
