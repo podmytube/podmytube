@@ -34,7 +34,7 @@ RUN npm install && npm run production
 #
 # App
 #
-FROM    php:7.4-apache-buster
+FROM    php:8.0.11-apache-buster
 
 # enabling mod rewrite
 RUN     a2enmod rewrite
