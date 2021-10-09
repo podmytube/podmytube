@@ -17,7 +17,7 @@ class DownloadYTMedia
     public const VIDEO_FORMAT = 'mp4';
 
     /** Will contain the path to the youtube-dl app */
-    protected const YOUTUBE_DL_BINARY = '/usr/local/bin/youtube-dl';
+    protected const YOUTUBE_DL_BINARY = '/usr/local/bin/yt-dlp';
 
     /** @var \App\Media */
     protected $media;
@@ -133,7 +133,7 @@ class DownloadYTMedia
             '--no-warnings', // Ignore warnings
             '--extract-audio', // Convert video files to audio-only files (requires ffmpeg)
             '--audio-format ' . self::AUDIO_FORMAT, // post processing option to convert file obtained to mp3
-            "--format 'bestaudio[ext=mp3]/best[ext=webm]/best'", // Download best (else dl is slow)
+            //"--format 'bestaudio[ext=mp3]/best[ext=webm]/best'", // Download best (else dl is slow) //
             "--output '" . $this->destinationFolder . "%(id)s.%(ext)s'",
         ];
 

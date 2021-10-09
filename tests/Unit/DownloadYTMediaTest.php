@@ -45,7 +45,7 @@ class DownloadYTMediaTest extends TestCase
         parent::setUp();
         $this->media = factory(Media::class)->create(['media_id' => self::MARIO_COIN_VIDEO]);
         $this->destinationFolder = '/tmp/';
-        $this->expectedVideoFile = $this->destinationFolder.self::MARIO_COIN_VIDEO.self::AUDIO_FILE_EXTENSION;
+        $this->expectedVideoFile = $this->destinationFolder . self::MARIO_COIN_VIDEO . self::AUDIO_FILE_EXTENSION;
         if (file_exists($this->expectedVideoFile)) {
             unlink($this->expectedVideoFile);
         }
@@ -64,14 +64,14 @@ class DownloadYTMediaTest extends TestCase
         $this->assertEquals(
             $this->expectedVideoFile,
             DownloadYTMedia::init($this->media, $this->destinationFolder, false)->downloadedFilePath(),
-            'expected file {'.$this->expectedVideoFile.'} should be there'
+            'expected file {' . $this->expectedVideoFile . '} should be there'
         );
     }
 
     /** @test */
     public function command_line_should_be_good(): void
     {
-        $expectedCommandLine = "/usr/local/bin/youtube-dl --no-warnings --extract-audio --audio-format mp3 --format 'bestaudio[ext=mp3]/best[ext=webm]/best' --output '/tmp/%(id)s.%(ext)s' --quiet https://www.youtube.com/watch?v=qfx6yf8pux4 >/dev/null 2>&1";
+        $expectedCommandLine = "/usr/local/bin/yt-dlp --no-warnings --extract-audio --audio-format mp3 --output '/tmp/%(id)s.%(ext)s' --quiet https://www.youtube.com/watch?v=qfx6yf8pux4 >/dev/null 2>&1";
         $this->assertEquals(
             $expectedCommandLine,
             DownloadYTMedia::init($this->media, $this->destinationFolder, false)->commandLine()
@@ -80,7 +80,7 @@ class DownloadYTMediaTest extends TestCase
 
     public function test_existing_file_should_be_removed_before_download(): void
     {
-        $expectedFileToBeRemovedBefore = $this->destinationFolder.'/'.self::MARIO_COIN_VIDEO.'.mp4';
+        $expectedFileToBeRemovedBefore = $this->destinationFolder . '/' . self::MARIO_COIN_VIDEO . '.mp4';
         // creating fake file
         touch($expectedFileToBeRemovedBefore);
         $this->assertFileExists($expectedFileToBeRemovedBefore);

@@ -93,7 +93,8 @@ class DownloadMediaFactoryTest extends TestCase
     /** @test */
     public function video_is_being_downloaded(): void
     {
-        $expectedMediaLength = [26666, 26898];
+        // downloaded file may have various size once transformed in audio
+        $expectedMediaLength = [26666, 26898, 27429];
         $expectedDuration = 5;
         $this->media = factory(Media::class)->create(
             [
