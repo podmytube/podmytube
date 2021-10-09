@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Channel;
 use App\Exceptions\DownloadMediaTagException;
 use App\Exceptions\YoutubeMediaIsNotAvailableException;
 use App\Factories\DownloadMediaFactory;
@@ -18,7 +19,7 @@ use Illuminate\Support\Facades\Log;
 class DownloadVideosByChannelCommand extends Command
 {
     /** @var string */
-    protected $signature = 'download:channel {channel_id} {period?}';
+    protected $signature = 'download:channel {channel_id} {--period=}';
 
     /** @var string */
     protected $description = 'This command will get all ungrabbed videos from specified channel \\
@@ -37,24 +38,24 @@ class DownloadVideosByChannelCommand extends Command
             return 0;
         }
 
-        $channelId = $this->argument('channel_id');
-        /**
-         * no period set => using current month.
-         */
-        $periodArgument = $this->argument('period') ? Carbon::createFromFormat('Y-m', $this->argument('period')) : Carbon::now();
+        $channel = Channel::byChannelId($this->argument('channel_id'));
+        if ($channel === null) {
+            $message = "There is no channel with this channel_id ({$this->argument('channel_id')})";
+            $this->error($message);
+            Log::error($message);
 
-        $period = PeriodsHelper::create($periodArgument->month, $periodArgument->year);
+            return 1;
+        }
 
-        Log::notice("Downloading ungrabbed medias for channel {$channelId} during period {$period->startDate()} and {$period->endDate()}");
+        // no period set => using current month.
+        $periodOption = $this->option('period') ? Carbon::createFromFormat('Y-m', $this->option('period')) : Carbon::now();
+        $period = PeriodsHelper::create($periodOption->month, $periodOption->year);
+
+        Log::notice("Downloading ungrabbed medias for channel {$channel->channelId()} during period {$period->startDate()} and {$period->endDate()}");
         /**
          * getting all non grabbed episodes published during this period order by (with channel and subscription).
          */
-        $medias = Media::with('channel')
-            ->publishedBetween($period->startDate(), $period->endDate())
-            ->where('channel_id', '=', $channelId)
-            ->whereNull('grabbed_at')
-            ->get()
-        ;
+        $medias = Media::ungrabbedMediasForChannel($channel, $period);
 
         $nbMedias = $medias->count();
         if ($nbMedias <= 0) {

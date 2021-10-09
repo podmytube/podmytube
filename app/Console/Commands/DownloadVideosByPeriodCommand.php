@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Log;
 class DownloadVideosByPeriodCommand extends Command
 {
     /** @var string */
-    protected $signature = 'download:channels {period?}';
+    protected $signature = 'download:channels {--period=}';
 
     /** @var string */
     protected $description = 'This command will get all ungrabbed videos from all channels on specified period. Current period by default.';
@@ -36,12 +36,8 @@ class DownloadVideosByPeriodCommand extends Command
             return 0;
         }
 
-        /**
-         * no period set => using current month.
-         */
-        $periodArgument = $this->argument('period') ? Carbon::createFromFormat('Y-m', $this->argument('period')) : Carbon::now();
-
-        $period = PeriodsHelper::create($periodArgument->month, $periodArgument->year);
+        $periodOption = $this->option('period') ? Carbon::createFromFormat('Y-m', $this->option('period')) : Carbon::now();
+        $period = PeriodsHelper::create($periodOption->month, $periodOption->year);
 
         Log::notice("Downloading ungrabbed medias for period {$period->startDate()} and {$period->endDate()}");
 
@@ -65,16 +61,8 @@ class DownloadVideosByPeriodCommand extends Command
         // looping on all channels
         $channels->map(function (Channel $channel) use ($period): void {
             try {
-                /**
-                 * getting all non grabbed episodes published during this period order by (with channel and subscription).
-                 */
-                $medias = Media::with('channel')
-                    ->where('channel_id', '=', $channel->channel_id)
-                    ->publishedBetween($period->startDate(), $period->endDate())
-                    ->whereNull('grabbed_at')
-                    ->orderBy('published_at', 'desc')
-                    ->get()
-                ;
+                // getting all non grabbed episodes published during this period order by (with channel and subscription).
+                $medias = Media::ungrabbedMediasForChannel($channel, $period);
 
                 $nbMedias = $medias->count();
                 if ($nbMedias <= 0) {
@@ -96,10 +84,5 @@ class DownloadVideosByPeriodCommand extends Command
         });
 
         return 0;
-    }
-
-    public function defaultPeriod()
-    {
-        return date('Y') . '-' . date('n');
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use App\Category;
@@ -18,8 +20,6 @@ class ChannelsTableSeeder extends Seeder
 
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
     public function run()
     {
@@ -55,7 +55,7 @@ class ChannelsTableSeeder extends Seeder
         Subscription::create(
             [
                 'channel_id' => $channel->channel_id,
-                'plan_id' => Plan::bySlug('forever_free')->id,
+                'plan_id' => Plan::bySlug('starter')->id,
             ]
         );
     }

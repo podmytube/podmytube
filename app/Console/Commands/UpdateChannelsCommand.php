@@ -77,7 +77,7 @@ class UpdateChannelsCommand extends Command
         $this->prologue($this->channels->count());
 
         // for each channel
-        $this->channels->map(function ($channel) {
+        $this->channels->each(function (Channel $channel) {
             try {
                 Log::info("Processing channel {$channel->nameWithId()}");
                 $factory = YoutubeChannelVideos::forChannel($channel->channel_id, 50);
@@ -88,7 +88,7 @@ class UpdateChannelsCommand extends Command
                 }
 
                 // for each channel video
-                array_map(function ($video) use ($channel): void {
+                array_map(function (array $video) use ($channel): void {
                     /** check if the video already exist in database */
                     $media = Media::byMediaId($video['media_id'], true);
                     if ($media === null) {
@@ -96,7 +96,7 @@ class UpdateChannelsCommand extends Command
                         $media->media_id = $video['media_id'];
                         $media->channel_id = $channel->channel_id;
                         Log::info("Media {$video['title']} has been registered for channel {$channel->channel_name}.");
-                        ++$this->mediasAdded;
+                        $this->mediasAdded++;
                     }
                     // update it
                     $media->title = $video['title'];

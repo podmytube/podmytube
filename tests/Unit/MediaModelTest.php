@@ -8,6 +8,7 @@ use App\Channel;
 use App\Jobs\SendFileBySFTP;
 use App\Media;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Storage;
@@ -291,5 +292,39 @@ class MediaModelTest extends TestCase
         );
 
         $this->assertTrue($this->media->remoteFileExists());
+    }
+
+    /** @test */
+    public function ungrabbed_media_is_fine_by_default(): void
+    {
+        // should be empty
+        $someChannel = $this->createChannelWithPlan();
+        $medias = Media::ungrabbedMediasForChannel($someChannel);
+        $this->assertInstanceOf(Collection::class, $medias);
+        $this->assertCount(0, $medias);
+
+        // should have some episode
+        $expectedNumberOfMediasForSomeChannel = 2;
+        $this->addMediasToChannel($someChannel, $expectedNumberOfMediasForSomeChannel, false);
+        $this->channel->refresh();
+
+        $medias = Media::ungrabbedMediasForChannel($someChannel);
+        $this->assertInstanceOf(Collection::class, $medias);
+        $this->assertCount($expectedNumberOfMediasForSomeChannel, $medias);
+
+        // adding another channel with some ungrabbed medias
+        $expectedNumberOfMediasForAnotherChannel = 3;
+
+        $anotherChannel = factory(Channel::class)->create();
+        $this->addMediasToChannel($anotherChannel, $expectedNumberOfMediasForAnotherChannel, false);
+        $anotherChannel->refresh();
+
+        $medias = Media::ungrabbedMediasForChannel($anotherChannel);
+        $this->assertCount($expectedNumberOfMediasForAnotherChannel, $medias);
+
+        // adding a grabbed media for someChannel sjould not change the result
+        $this->addMediasToChannel($someChannel, 1, true);
+        $medias = Media::ungrabbedMediasForChannel($someChannel);
+        $this->assertCount($expectedNumberOfMediasForSomeChannel, $medias);
     }
 }

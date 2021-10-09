@@ -51,13 +51,14 @@ class SendFileBySFTP implements ShouldQueue
         Log::notice(
             'About to copy file on ' . self::REMOTE_DISK,
             [
+                'user' => config('filesystems.disks.' . self::REMOTE_DISK . '.username'),
+                'host' => config('filesystems.disks.' . self::REMOTE_DISK . '.host'),
                 'localFilePath' => $this->localFilePath,
                 'remoteFilePath' => $this->remoteFilePath,
                 'destFolder' => $destFolder,
                 'destFilename' => $destFilename,
             ]
         );
-
         $result = Storage::disk(self::REMOTE_DISK)->putFileAs($destFolder, $this->localFilePath, $destFilename);
 
         if ($result === false) {
