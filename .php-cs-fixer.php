@@ -40,6 +40,7 @@ $config
         'php_unit_method_casing' => ['case' => 'snake_case'],
         'concat_space' => ['spacing' => 'one'],
         'binary_operator_spaces' => ['default' => 'single_space'],
+        'increment_style' => ['style' => 'post'],
         //'header_comment' => ['header' => $header],
     ])
     ->setFinder($finder)
