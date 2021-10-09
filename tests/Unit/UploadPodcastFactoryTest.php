@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit;
 
 use App\Factories\UploadPodcastFactory;
@@ -11,11 +13,15 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Bus;
 use Tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class UploadPodcastFactoryTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var \App\Channel $channel */
+    /** @var \App\Channel */
     protected $channel;
 
     public function setUp(): void
@@ -24,20 +30,16 @@ class UploadPodcastFactoryTest extends TestCase
         Bus::fake(SendFileBySFTP::class);
     }
 
-    public function testBuildingPodcastForChannelIsGood()
+    public function test_building_podcast_for_channel_is_good(): void
     {
         $this->channel = $this->createChannelWithPlan();
         $factory = UploadPodcastFactory::init()->for($this->channel);
 
-        $this->assertEquals(
-            '/tmp/' . $this->channel->relativeFeedPath(),
-            $factory->localPath()
-        );
         $this->assertEquals($this->channel->remoteFilePath(), $factory->remotePath());
         Bus::assertDispatched(SendFileBySFTP::class);
     }
 
-    public function testBuildingPodcastForPlaylistIsGood()
+    public function test_building_podcast_for_playlist_is_good(): void
     {
         Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
         factory(Media::class)->create(['media_id' => 'GJzweq_VbVc', 'grabbed_at' => now()->subday()]);
@@ -47,10 +49,6 @@ class UploadPodcastFactoryTest extends TestCase
         $this->playlist = factory(Playlist::class)->create(['youtube_playlist_id' => self::PODMYTUBE_TEST_PLAYLIST_ID]);
         $factory = UploadPodcastFactory::init()->for($this->playlist);
 
-        $this->assertEquals(
-            '/tmp/' . $this->playlist->relativeFeedPath(),
-            $factory->localPath()
-        );
         $this->assertEquals($this->playlist->remoteFilePath(), $factory->remotePath());
         Bus::assertDispatched(SendFileBySFTP::class);
     }

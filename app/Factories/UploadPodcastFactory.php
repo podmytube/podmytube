@@ -34,8 +34,6 @@ class UploadPodcastFactory
         /** saving it in /tmp */
         $localPath = $this->localPath();
 
-        $this->checkLocalPath();
-
         $status = file_put_contents($localPath, $renderedPodcast);
         if ($status === false) {
             throw new PodcastSavingFailureException("Saving rendered podcast to {$localPath} has failed.");
@@ -52,19 +50,7 @@ class UploadPodcastFactory
 
     public function localPath()
     {
-        return "/tmp/{$this->podcastable->relativeFeedPath()}";
-    }
-
-    public function checkLocalPath()
-    {
-        $dirname = pathinfo($this->localPath(), PATHINFO_DIRNAME);
-        if (!is_dir($dirname)) {
-            if (!mkdir($dirname)) {
-                throw new PodcastSavingFailureException("mkdir {$dirname} has failed, cannot save it locally.");
-            }
-        }
-
-        return true;
+        return tempnam('/tmp', 'podcast_');
     }
 
     public function remotePath(): string
