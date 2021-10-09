@@ -113,7 +113,10 @@ class DownloadMediaFactory
         $this->media->update($updateParams);
 
         Log::debug("Processing media {$this->media->media_id} is finished.");
-        ChannelUpdated::dispatch($this->media->channel);
+        if ($status === Media::STATUS_DOWNLOADED) {
+            // media has been dowloaded => update podcast feed
+            ChannelUpdated::dispatch($this->media->channel);
+        }
 
         return true;
     }

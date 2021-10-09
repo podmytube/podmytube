@@ -7,9 +7,11 @@ namespace App;
 use App\Exceptions\InvalidStartDateException;
 use App\Jobs\SendFileBySFTP;
 use App\Modules\EnclosureUrl;
+use App\Modules\PeriodsHelper;
 use App\Traits\BelongsToChannel;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
@@ -123,6 +125,16 @@ class Media extends Model
     public function scopeGrabbedAt(Builder $query): Builder
     {
         return $query->whereNotNull('grabbed_at');
+    }
+
+    /**
+     * define a scope to get medias that are grabbed.
+     *
+     * @param Illuminate\Database\Eloquent\Builder query is the query object
+     */
+    public function scopeUngrabbed(Builder $query): Builder
+    {
+        return $query->whereNull('grabbed_at');
     }
 
     /**
@@ -258,5 +270,20 @@ class Media extends Model
     public function isUploadedByUser(): bool
     {
         return $this->uploaded_by_user === true;
+    }
+
+    public static function ungrabbedMediasForChannel(Channel $channel, ?PeriodsHelper $period = null): Collection
+    {
+        if ($period === null) {
+            $period = PeriodsHelper::create(now()->month, now()->year);
+        }
+
+        return self::query()
+            ->where('channel_id', '=', $channel->channelId())
+            ->ungrabbed()
+            ->publishedBetween($period->startDate(), $period->endDate())
+            ->orderBy('published_at', 'desc')
+            ->get()
+        ;
     }
 }
