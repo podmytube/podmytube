@@ -59,7 +59,7 @@ RUN apt-get update -y && \
         ffmpeg \
         supervisor \
         sqlite \
-        python \
+        python3 \
         ssh && \
         rm -rf /var/lib/apt/lists/*;
 
