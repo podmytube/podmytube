@@ -50,7 +50,7 @@ class FixRestoreThumbsCommand extends Command
                 return false;
             }
 
-            $this->info("for channel {$channel->nameWithId()}, fetting candidate thumbs ");
+            $this->info("for channel {$channel->nameWithId()}, setting candidate thumbs ");
 
             /** get all files in folder */
             $filesInChannelFolder = Storage::disk('remote')->files($folderPath);

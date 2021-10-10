@@ -121,31 +121,6 @@ class DownloadMediaFactoryTest extends TestCase
         $this->assertEquals(0, $this->media->duration);
     }
 
-    /** @test */
-    public function channel_has_reached_its_limit(): void
-    {
-        // adding grabbed media(s) to channel (with free plan)
-        factory(Media::class)->create(
-            [
-                'channel_id' => $this->channel->channel_id,
-                'media_id' => self::MARIO_COIN_VIDEO,
-                'grabbed_at' => now(),
-            ]
-        );
-
-        // channel has a media to download
-        $this->media = factory(Media::class)->create(
-            [
-                'channel_id' => $this->channel->channel_id,
-                'media_id' => self::MARIO_MUSHROOM_VIDEO,
-                'grabbed_at' => null,
-            ]
-        );
-
-        DownloadMediaFactory::media($this->media)->run();
-        $this->assertEquals(Media::STATUS_EXHAUSTED_QUOTA, $this->media->status);
-    }
-
     /**
      * @test
      * some medias may be missing on remote mp3 server although present in DB.

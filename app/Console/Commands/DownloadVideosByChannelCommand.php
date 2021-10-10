@@ -52,6 +52,15 @@ class DownloadVideosByChannelCommand extends Command
         $period = PeriodsHelper::create($periodOption->month, $periodOption->year);
 
         Log::notice("Downloading ungrabbed medias for channel {$channel->channelId()} during period {$period->startDate()} and {$period->endDate()}");
+
+        if ($channel->hasReachedItslimit($period->month(), $period->year())) {
+            $message = "Channel {$channel->nameWithId()} has reached its quota. No more media will be downloaded for this period.";
+            $this->comment($message);
+            Log::info($message);
+
+            return 1;
+        }
+
         /**
          * getting all non grabbed episodes published during this period order by (with channel and subscription).
          */

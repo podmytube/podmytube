@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Modules;
 
 use App\Helpers\NumberChecker;
@@ -15,35 +17,37 @@ class PeriodsHelper
 
     protected $startDate;
     protected $endDate;
+    protected $month;
+    protected $year;
 
     /**
      * constructor.
      *
      * @param int $month the month we want (by default, it is current one)
-     * @param int $year the year we want (by default, it is current one)
+     * @param int $year  the year we want (by default, it is current one)
      */
     private function __construct(
         ?int $monthParam = null,
         ?int $yearParam = null
     ) {
-        $month = $monthParam ?? date('n');
-        $year = $yearParam ?? date('Y');
+        $this->month = $monthParam ?? intval(date('n'));
+        $this->year = $yearParam ?? intval(date('Y'));
 
-        NumberChecker::isBetween($month, self::MONTH_MIN, self::MONTH_MAX);
-        NumberChecker::isBetween($year, self::YEAR_MIN, self::YEAR_MAX);
+        NumberChecker::isBetween($this->month, self::MONTH_MIN, self::MONTH_MAX);
+        NumberChecker::isBetween($this->year, self::YEAR_MIN, self::YEAR_MAX);
 
-        $this->startDate = Carbon::createMidnightDate($year, $month, 1)->startOfMonth();
-        $this->endDate = Carbon::createMidnightDate($year, $month, 1)->endOfMonth();
+        $this->startDate = Carbon::createMidnightDate($this->year, $this->month, 1)->startOfMonth();
+        $this->endDate = Carbon::createMidnightDate($this->year, $this->month, 1)->endOfMonth();
         if ($this->endDate->greaterThan(Carbon::today()->endOfDay())) {
             $this->endDate = Carbon::today()->endOfDay();
         }
     }
 
     /**
-     * Create
+     * Create.
      *
      * @param int $month the month we want (by default, it is current one)
-     * @param int $year the year we want (by default, it is current one)
+     * @param int $year  the year we want (by default, it is current one)
      */
     public static function create(?int $month = null, ?int $year = null)
     {
@@ -68,5 +72,15 @@ class PeriodsHelper
     public function endDate(): Carbon
     {
         return $this->endDate;
+    }
+
+    public function month(): int
+    {
+        return $this->month;
+    }
+
+    public function year(): int
+    {
+        return $this->year;
     }
 }

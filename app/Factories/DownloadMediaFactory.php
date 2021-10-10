@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Factories;
 
 use App\Events\ChannelUpdated;
-use App\Exceptions\ChannelHasReachedItsQuotaException;
 use App\Exceptions\DownloadMediaTagException;
 use App\Exceptions\MediaIsTooOldException;
 use App\Exceptions\YoutubeMediaDoesNotExistException;
@@ -84,8 +83,6 @@ class DownloadMediaFactory
             $status = Media::STATUS_TAG_FILTERED;
         } catch (MediaIsTooOldException $exception) {
             $status = Media::STATUS_AGE_FILTERED;
-        } catch (ChannelHasReachedItsQuotaException $exception) {
-            $status = Media::STATUS_EXHAUSTED_QUOTA;
         }
 
         // update infos
@@ -131,14 +128,6 @@ class DownloadMediaFactory
         // check if media is eligible for download
         Log::debug("Should media {$this->media->media_id} being download.");
         ShouldMediaBeingDownloadedFactory::create($this->media)->check();
-
-        // exhausted quota ?
-        if ($this->media->channel->hasReachedItslimit()) {
-            $message = "Channel {$this->media->channel->nameWithId()} has reached its quota. Media {$this->media->media_id} won't be downloaded .";
-            Log::notice($message);
-
-            throw new ChannelHasReachedItsQuotaException($message);
-        }
 
         return true;
     }

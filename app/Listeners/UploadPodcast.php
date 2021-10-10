@@ -16,7 +16,7 @@ class UploadPodcast implements ShouldQueue
 
     public function handle(InteractsWithPodcastable $event)
     {
-        Log::debug(self::class.'::'.__FUNCTION__.' - start');
+        Log::debug('About to upload podcast feed for '.$event->podcastable()->nameWithId());
         UploadPodcastFactory::init()->for($event->podcastable());
 
         return true; // only for tests
