@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Helpers;
 
 class NumberChecker
@@ -14,6 +16,7 @@ class NumberChecker
         if ($min <= $number && $number <= $max) {
             return true;
         }
+
         throw new \InvalidArgumentException(
             "Number {$number} should be set between {$min} and {$max}"
         );

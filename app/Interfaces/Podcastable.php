@@ -51,4 +51,6 @@ interface Podcastable
     public function delete();
 
     public static function byYoutubeId(string $youtubeId): ?Podcastable;
+
+    public function nameWithId(): string;
 }

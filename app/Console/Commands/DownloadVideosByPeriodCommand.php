@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Channel;
+use App\Exceptions\ChannelHasReachedItsQuotaException;
 use App\Factories\DownloadMediaFactory;
 use App\Media;
 use App\Modules\PeriodsHelper;
@@ -59,8 +60,13 @@ class DownloadVideosByPeriodCommand extends Command
         }
 
         // looping on all channels
-        $channels->map(function (Channel $channel) use ($period): void {
+        $channels->each(function (Channel $channel) use ($period): void {
             try {
+                if ($channel->hasReachedItslimit($period->month(), $period->year())) {
+                    $message = "Channel {$channel->nameWithId()} has reached its quota. No more media will be downloaded for this period.";
+
+                    throw new ChannelHasReachedItsQuotaException($message);
+                }
                 // getting all non grabbed episodes published during this period order by (with channel and subscription).
                 $medias = Media::ungrabbedMediasForChannel($channel, $period);
 
@@ -78,6 +84,8 @@ class DownloadVideosByPeriodCommand extends Command
                 $medias->map(function ($media): void {
                     DownloadMediaFactory::media($media, $this->getOutput()->isVerbose())->run();
                 });
+            } catch (ChannelHasReachedItsQuotaException $exception) {
+                Log::info($exception->getMessage());
             } catch (Exception $exception) {
                 Log::error($exception->getMessage());
             }
