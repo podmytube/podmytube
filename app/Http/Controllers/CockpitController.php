@@ -25,7 +25,18 @@ class CockpitController extends Controller
     public function index()
     {
         $lastRegisteredChannel = Channel::orderBy('channel_createdAt', 'desc')->first();
+        $nbActiveChannels = Channel::active()
+            ->whereHas('medias', function ($query): void {
+                $query->whereNotNull('grabbed_at')
+                    ->whereBetween('grabbed_at', [
+                        now()->startOfMonth(),
+                        now(),
+                    ])
+                ;
+            })
+            ->count()
+        ;
 
-        return view('cockpit.index', compact('lastRegisteredChannel'));
+        return view('cockpit.index', compact('lastRegisteredChannel', 'nbActiveChannels'));
     }
 }
