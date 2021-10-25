@@ -44,6 +44,32 @@ class UserModelTest extends TestCase
         $this->assertEquals($nbExpectedUsersWhoWantNewsletter + 3, User::count());
     }
 
+    /** @test */
+    public function by_email_is_doing_fine(): void
+    {
+        $expectedEmail = 'john@connor.com';
+        $this->assertNull(User::byEmail($expectedEmail));
+
+        factory(User::class)->create(['email' => $expectedEmail]);
+        $user = User::byEmail($expectedEmail);
+        $this->assertNotNull($user);
+        $this->assertInstanceOf(User::class, $user);
+        $this->assertEquals($expectedEmail, $user->email);
+    }
+
+    /** @test */
+    public function by_stripe_id_is_doing_fine(): void
+    {
+        $expectedStripeId = $this->faker->asciify('cus_************');
+        $this->assertNull(User::byStripeId($expectedStripeId));
+
+        factory(User::class)->create(['stripe_id' => $expectedStripeId]);
+        $user = User::byStripeId($expectedStripeId);
+        $this->assertNotNull($user);
+        $this->assertInstanceOf(User::class, $user);
+        $this->assertEquals($expectedStripeId, $user->stripe_id);
+    }
+
     /**
      * ===============================================
      * helpers & providers
