@@ -35,7 +35,7 @@ class PlansController extends Controller
                 'line_items' => [
                     [
                         // it s a price ID not the price in €
-                        'price' => $plan->stripePlan->first()->{$stripeIdColumn},
+                        'price' => $plan->stripePlans->first()->{$stripeIdColumn},
                         'quantity' => 1,
                     ],
                 ],

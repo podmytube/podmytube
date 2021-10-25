@@ -68,6 +68,11 @@ class User extends Authenticatable
         return self::where('email', '=', $email)->first();
     }
 
+    public static function byStripeId(string $stripeId): ?self
+    {
+        return self::where('stripe_id', '=', $stripeId)->first();
+    }
+
     public function scopeNewsletter(Builder $query)
     {
         return $query->where('newsletter', '=', 1);

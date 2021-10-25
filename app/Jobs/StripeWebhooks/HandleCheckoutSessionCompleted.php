@@ -10,17 +10,18 @@ use App\Exceptions\ChannelOwnerMismatchingStripeException;
 use App\Exceptions\EmptyChannelIdReceivedFromStripeException;
 use App\Exceptions\EmptyPlanReceivedFromStripeException;
 use App\Exceptions\EmptySubscriptionReceivedFromStripeException;
-use App\Exceptions\UnknownEmailReceivedFromStripeException;
+use App\Exceptions\InvalidSubscriptionReceivedFromStripeException;
+use App\Exceptions\UnknownChannelIdReceivedFromStripeException;
 use App\Exceptions\UnknownStripePlanReceivedFromStripeException;
 use App\StripePlan;
 use App\Subscription;
 use App\User;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
 use Spatie\WebhookClient\Models\WebhookCall;
 
 class HandleCheckoutSessionCompleted implements ShouldQueue
@@ -29,17 +30,19 @@ class HandleCheckoutSessionCompleted implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    /** @var \Spatie\WebhookClient\Models\WebhookCall */
-    public $webhookCall;
+    public const ERROR_MESSAGE_CUSTOMER_NOT_FOUND = 'Customer not found.';
+    public const ERROR_MESSAGE_EMPTY_CHANNEL = 'No channel in json.';
+    public const ERROR_MESSAGE_CHANNEL_NOT_FOUND = 'Channel not found.';
+    public const ERROR_MESSAGE_USER_IS_NOT_OWNER = 'User is not the owner.';
+    public const ERROR_MESSAGE_EMPTY_SUBSCRIPTION = 'No subscription in json.';
+    public const ERROR_MESSAGE_SUBSCRIPTION_NOT_FOUND = 'Suscription not found.';
+    public const ERROR_MESSAGE_NO_ERROR = 'ok';
 
-    /** var \App\User $user */
-    protected $user;
+    public WebhookCall $webhookCall;
 
-    /** var \App\Channel $channel */
-    protected $channel;
-
-    /** var \App\StripePlan $stripePlan */
-    protected $stripePlan;
+    protected User $user;
+    protected Channel $channel;
+    protected StripePlan $stripePlan;
 
     /** var int $endsAt contain a timestamp returned by stripe for subscription ending */
     protected $endsAt;
@@ -49,80 +52,65 @@ class HandleCheckoutSessionCompleted implements ShouldQueue
         $this->webhookCall = $webhookCall;
     }
 
-    public function handle(): void
+    public function handle(): int
     {
-        Log::info('checkout session completed');
-        Log::debug(print_r($this->webhookCall->payload, true));
-
-        /**
-         * checking user received from stripe.
-         */
-        $userFound = $this->checkStripeUser();
-        if ($userFound === false) {
-            throw new CannotIdentifyUserFromStripeException('User not found. customer id : '.$this->customerId().'--- email : '.$this->customerEmail());
+        $user = $this->getUserFromJson();
+        if ($user === null) {
+            throw new CannotIdentifyUserFromStripeException(self::ERROR_MESSAGE_CUSTOMER_NOT_FOUND);
         }
 
-        // checking channel id received
-        $this->checkStripeChannelId();
+        $channel = $this->getChannelFromJson($user);
 
         // check subscription received from stripe
         $this->checkSubscription();
 
         // update subscription on Pod side
         $this->updateSubscription();
+
+        return 0;
     }
 
-    protected function checkStripeUser(): bool
+    protected function getUserFromJson(): ?User
     {
-        $customerStripeId = $this->customerId();
-        if ($customerStripeId !== null && $this->obtainUserFromStripeId()) {
-            return true;
+        $customerStripeId = $this->customerIdFromJson();
+
+        if ($customerStripeId !== null) {
+            return User::byStripeId($customerStripeId);
         }
 
-        $customerEmail = $this->customerEmail();
-        if ($customerEmail !== null && $this->obtainUserFromEmail()) {
-            return true;
+        $email = $this->customerEmailFromJson();
+        if ($email !== null) {
+            return User::byEmail($email);
         }
 
-        return false;
+        return null;
     }
 
-    /**
-     * will affect stripe customer id to user.
-     */
-    protected function obtainUserFromEmail(): bool
+    protected function getChannelFromJson(User $user): Channel
     {
-        $customerEmail = $this->customerEmail();
-        $customerStripeId = $this->customerId();
-
-        // getting user from his email address
-        $this->user = User::where('email', '=', $customerEmail)->first();
-        if ($this->user === null) {
-            throw new UnknownEmailReceivedFromStripeException("Email address {$customerEmail} is unknown.");
+        $channelId = $this->channelIdFromJson();
+        if ($channelId === null) {
+            throw new EmptyChannelIdReceivedFromStripeException(self::ERROR_MESSAGE_EMPTY_CHANNEL);
         }
 
-        // associating stripe id
-        $this->user->stripe_id = $customerStripeId;
-        $this->user->save();
-
-        return true;
-    }
-
-    protected function obtainUserFromStripeId(): bool
-    {
-        $customerStripeId = $this->customerId();
-        $this->user = User::where('stripe_id', '=', $customerStripeId)->first();
-        if ($this->user === null) {
-            return false;
+        // checking channel id received
+        $channel = Channel::byChannelId($channelId);
+        if ($channel === null) {
+            throw new UnknownChannelIdReceivedFromStripeException(self::ERROR_MESSAGE_CHANNEL_NOT_FOUND);
         }
 
-        return true;
+        // channel should belongs to the user
+        if ($channel->user->id() !== $user->id()) {
+            throw new ChannelOwnerMismatchingStripeException(self::ERROR_MESSAGE_USER_IS_NOT_OWNER);
+        }
+
+        return $channel;
     }
 
     /**
      * extract email if any from json.
      */
-    protected function customerEmail()
+    protected function customerEmailFromJson(): ?string
     {
         return $this->webhookCall->payload['data']['object']['customer_email'] ?? null;
     }
@@ -130,31 +118,22 @@ class HandleCheckoutSessionCompleted implements ShouldQueue
     /**
      * extract customer stripe id from json.
      */
-    protected function customerId()
+    protected function customerIdFromJson(): ?string
     {
         return $this->webhookCall->payload['data']['object']['customer'] ?? null;
     }
 
     /**
-     * will check channel id is valid.
+     * extract channel_id from json.
      */
-    protected function checkStripeChannelId(): void
+    protected function channelIdFromJson(): ?string
     {
-        /**
-         * channel id should be returned within stripe metadata.
-         */
-        $channelId = $this->webhookCall->payload['data']['object']['metadata']['channel_id'] ?? null;
-        if ($channelId === null) {
-            throw new EmptyChannelIdReceivedFromStripeException('Channel id received from stripe is empty.');
-        }
+        return $this->webhookCall->payload['data']['object']['metadata']['channel_id'] ?? null;
+    }
 
-        // channel id should exists
-        $this->channel = Channel::findOrFail($channelId);
-
-        // channel should belongs to the user
-        if ($this->channel->user->id() !== $this->user->id()) {
-            throw new ChannelOwnerMismatchingStripeException("Channel {$this->channel->channel_name} do not belongs to {$this->user->id()}.");
-        }
+    protected function subscriptionIdFromJson(): ?string
+    {
+        return $this->webhookCall->payload['data']['object']['subscription'] ?? null;
     }
 
     /**
@@ -162,16 +141,21 @@ class HandleCheckoutSessionCompleted implements ShouldQueue
      */
     protected function checkSubscription()
     {
-        $subscriptionId = $this->webhookCall->payload['data']['object']['subscription'] ?? null;
+        $subscriptionId = $this->subscriptionIdFromJson();
         if ($subscriptionId === null) {
-            throw new EmptySubscriptionReceivedFromStripeException('Subscription id received from stripe is empty.');
+            throw new EmptySubscriptionReceivedFromStripeException(HandleCheckoutSessionCompleted::ERROR_MESSAGE_EMPTY_SUBSCRIPTION);
         }
 
-        $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));
-        $subscription = $stripe->subscriptions->retrieve(
-            $subscriptionId,
-            []
-        );
+        try {
+            $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));
+            $subscription = $stripe->plans->retrieve(
+                $subscriptionId,
+                []
+            );
+        } catch (Exception $exception) {
+            throw new InvalidSubscriptionReceivedFromStripeException(HandleCheckoutSessionCompleted::ERROR_MESSAGE_SUBSCRIPTION_NOT_FOUND);
+        }
+
         $currentPeriodEnd = $subscription['current_period_end'] ?? null;
         if ($currentPeriodEnd !== null) {
             $this->endsAt = Carbon::createFromTimestamp($currentPeriodEnd);

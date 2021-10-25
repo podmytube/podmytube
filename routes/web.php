@@ -20,7 +20,9 @@ Route::get('privacy', function () {
     return view('privacy');
 })->name('privacy');
 
-Route::domain('www.'.config('app.domain'))->group(function (): void {
+Route::stripeWebhooks('/stripe/webhooks');
+
+Route::domain('www.' . config('app.domain'))->group(function (): void {
     Route::get('/', 'IndexController@index')->name('www.index');
     Route::get('pricing', 'PricingController@index')->name('pricing');
     Route::get('faq', function () {
@@ -38,16 +40,13 @@ Route::domain('www.'.config('app.domain'))->group(function (): void {
     })->name('test');
 });
 
-Route::domain('dashboard.'.config('app.domain'))->group(function (): void {
+Route::domain('dashboard.' . config('app.domain'))->group(function (): void {
     Auth::routes();
     // ================================================
     // Dash homepage is the login screen
     Route::get('/', function () {
         return view('auth.login');
     })->name('root');
-
-    // not a user interaction
-    Route::stripeWebhooks('/stripe/webhooks');
 
     Route::middleware(['auth'])->group(function (): void {
         Route::get('/home', 'HomeController@index')->name('home');

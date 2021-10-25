@@ -12,6 +12,7 @@ use App\Media;
 use App\Plan;
 use App\Playlist;
 use App\Quota;
+use App\StripePlan;
 use App\Subscription;
 use App\Thumb;
 use App\User;
@@ -223,5 +224,28 @@ abstract class TestCase extends BaseTestCase
                 );
             })
         ;
+    }
+
+    protected function getFixturesPath(string $relativePath): string
+    {
+        return __DIR__ . '/Fixtures/' . $relativePath;
+    }
+
+    protected function seedStripePlans(bool $plansAreRequired = true): void
+    {
+        if ($plansAreRequired) {
+            $this->seedPlans();
+        }
+
+        if (!StripePlan::count()) {
+            Artisan::call('db:seed', ['--class' => 'StripePlansTableSeeder']);
+        }
+    }
+
+    protected function seedPlans(): void
+    {
+        if (!Plan::count()) {
+            Artisan::call('db:seed', ['--class' => 'PlansTableSeeder']);
+        }
     }
 }
