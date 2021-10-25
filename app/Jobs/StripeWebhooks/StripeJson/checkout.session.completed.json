@@ -1,33 +1,70 @@
 {
-    "id": "evt_1H56PgLrQ8vSqYZEHb6hdW0O",
+    "id": "evt_1JnHYJLrQ8vSqYZEE5nbXhy2",
     "object": "event",
-    "api_version": "2020-03-02",
-    "created": 1594803388,
+    "api_version": "2019-02-19",
+    "created": 1634885310,
     "data": {
         "object": {
-            "id": "cs_test_JBcjzjg7KKQhXrA76F2JjHJE4e0SYM3248jeSoejjOXM0lH5rv0yhd88",
+            "id": "cs_live_a1LDuPv9eCAojjhgL3szpev9Hgpl18fudr2eTPa9lFF6HtnxiQlfJGD4kj",
             "object": "checkout.session",
+            "after_expiration": null,
+            "allow_promotion_codes": null,
+            "amount_subtotal": 0,
+            "amount_total": 0,
+            "automatic_tax": {
+                "enabled": false,
+                "status": null
+            },
             "billing_address_collection": null,
-            "cancel_url": "http://dash.local.pmt/cancel",
+            "cancel_url": "https://dashboard.podmytube.com/cancel",
             "client_reference_id": null,
-            "customer": "cus_HePEmeXlWckYit",
-            "customer_email": "frederick@podmytube.com",
-            "livemode": false,
+            "consent": null,
+            "consent_collection": null,
+            "currency": "eur",
+            "customer": "cus_KSBwbKgEFlahLF",
+            "customer_details": {
+                "email": "frederick@tyteca.net",
+                "phone": null,
+                "tax_exempt": "none",
+                "tax_ids": []
+            },
+            "customer_email": "frederick@tyteca.net",
+            "expires_at": 1634971578,
+            "livemode": true,
             "locale": null,
-            "metadata": { "channel_id": "UCw6bU9JT_Lihb2pbtqAUGQw" },
+            "metadata": {
+                "channel_id": "UCw6bU9JT_Lihb2pbtqAUGQw"
+            },
             "mode": "subscription",
             "payment_intent": null,
-            "payment_method_types": ["card"],
-            "setup_intent": null,
+            "payment_method_options": [],
+            "payment_method_types": [
+                "card"
+            ],
+            "payment_status": "paid",
+            "phone_number_collection": {
+                "enabled": false
+            },
+            "recovered_from": null,
+            "setup_intent": "seti_1JnHWvLrQ8vSqYZEwzZun32H",
             "shipping": null,
             "shipping_address_collection": null,
             "submit_type": null,
-            "subscription": "sub_HePERJr3qUtPKY",
-            "success_url": "http://dash.local.pmt/success?session_id={CHECKOUT_SESSION_ID}"
+            "subscription": "sub_1JnHYHLrQ8vSqYZE07uhdDdH",
+            "success_url": "https://dashboard.podmytube.com/success?session_id={CHECKOUT_SESSION_ID}",
+            "total_details": {
+                "amount_discount": 0,
+                "amount_shipping": 0,
+                "amount_tax": 0
+            },
+            "url": null
         }
     },
-    "livemode": false,
+    "livemode": true,
     "pending_webhooks": 1,
-    "request": { "id": "req_F41Y7WeA4Tf1vw", "idempotency_key": null },
+    "request": {
+        "id": null,
+        "idempotency_key": null
+    },
     "type": "checkout.session.completed"
 }
