@@ -19,8 +19,11 @@ Route::get('terms', function () {
 Route::get('privacy', function () {
     return view('privacy');
 })->name('privacy');
+Route::domain('cockpit.' . config('app.domain'))->group(function (): void {
+    Route::get('/', 'CockpitController@index')->name('cockpit.index');
+});
 
-Route::domain('www.'.config('app.domain'))->group(function (): void {
+Route::domain('www.' . config('app.domain'))->group(function (): void {
     Route::get('/', 'IndexController@index')->name('www.index');
     Route::get('pricing', 'PricingController@index')->name('pricing');
     Route::get('faq', function () {
@@ -38,7 +41,7 @@ Route::domain('www.'.config('app.domain'))->group(function (): void {
     })->name('test');
 });
 
-Route::domain('dashboard.'.config('app.domain'))->group(function (): void {
+Route::domain('dashboard.' . config('app.domain'))->group(function (): void {
     Auth::routes();
     // ================================================
     // Dash homepage is the login screen

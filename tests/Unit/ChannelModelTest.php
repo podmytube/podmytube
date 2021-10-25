@@ -239,4 +239,11 @@ class ChannelModelTest extends TestCase
             'business',
         ]);
     }
+
+    /** @test */
+    public function youtube_url_is_fine(): void
+    {
+        $expectedChannelYoutubeUrl = 'https://www.youtube.com/channel/' . $this->channel->channelId();
+        $this->assertEquals($expectedChannelYoutubeUrl, $this->channel->youtubeUrl());
+    }
 }

@@ -474,4 +474,12 @@ class Channel extends Model implements Podcastable, Coverable
     {
         return self::byChannelId($youtubeId);
     }
+
+    /**
+     * Return the youtube url for this channel.
+     */
+    public function youtubeUrl(): string
+    {
+        return 'https://www.youtube.com/channel/' . $this->channelId();
+    }
 }
