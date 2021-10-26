@@ -11,6 +11,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Channel;
+use App\Factories\RevenueFactory;
+use App\Media;
 
 /**
  * the home controller class.
@@ -25,18 +27,13 @@ class CockpitController extends Controller
     public function index()
     {
         $lastRegisteredChannel = Channel::orderBy('channel_createdAt', 'desc')->first();
-        $nbActiveChannels = Channel::active()
-            ->whereHas('medias', function ($query): void {
-                $query->whereNotNull('grabbed_at')
-                    ->whereBetween('grabbed_at', [
-                        now()->startOfMonth(),
-                        now(),
-                    ])
-                ;
-            })
-            ->count()
-        ;
 
-        return view('cockpit.index', compact('lastRegisteredChannel', 'nbActiveChannels'));
+        $nbActiveChannels = Channel::nbReallyActiveChannels();
+
+        $nbMedias = Media::whereNotNull('grabbed_at')->count();
+
+        $revenues = RevenueFactory::init()->get();
+
+        return view('cockpit.index', compact('lastRegisteredChannel', 'nbActiveChannels', 'nbMedias', 'revenues'));
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -19,6 +21,10 @@ class Plan extends Model
     public const DEFAULT_PLAN_ID = self::FREE_PLAN_ID;
     public const WEEKLY_PLAN_PROMO_ID = 8;
     public const DAILY_PLAN_PROMO_ID = 9;
+
+    protected $casts = [
+        'price' => 'integer',
+    ];
 
     /**
      * One plan may be subscribed by many channels.
@@ -54,17 +60,19 @@ class Plan extends Model
     public static function byIds(array $planIds)
     {
         return static::whereIn('plans.id', $planIds)
-            ->join('stripe_plans', function ($join) {
+            ->join('stripe_plans', function ($join): void {
                 $join
                     ->on('stripe_plans.plan_id', '=', 'plans.id')
                     ->where(
                         'stripe_plans.is_live',
                         '=',
                         env('APP_ENV') === 'production' ? true : false
-                    );
+                    )
+                ;
             })
             ->orderBy('price', 'ASC')
-            ->get();
+            ->get()
+        ;
     }
 
     public function scopeSlug(Builder $query, string $slug)
@@ -88,6 +96,7 @@ class Plan extends Model
         if (!$results->count()) {
             return null;
         }
+
         return $results;
     }
 
@@ -104,6 +113,7 @@ class Plan extends Model
         if (!$results->count()) {
             return null;
         }
+
         return $results;
     }
 
@@ -115,12 +125,13 @@ class Plan extends Model
 
         return Plan::with(
             [
-                'stripePlan' => function ($query) use ($isYearly) {
+                'stripePlan' => function ($query) use ($isYearly): void {
                     $query->where('is_yearly', '=', $isYearly);
                 },
             ]
         )
             ->slugs($slugs)
-            ->get();
+            ->get()
+        ;
     }
 }

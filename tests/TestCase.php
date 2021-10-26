@@ -224,4 +224,17 @@ abstract class TestCase extends BaseTestCase
             })
         ;
     }
+
+    /**
+     * create many channel.
+     */
+    protected function createChannelsWithPlan(Plan $plan = null, int $nbChannels = 1): EloquentCollection
+    {
+        $createContext = [];
+        if ($plan) {
+            $createContext = ['plan_id' => $plan->id];
+        }
+
+        return factory(Subscription::class, $nbChannels)->create($createContext);
+    }
 }
