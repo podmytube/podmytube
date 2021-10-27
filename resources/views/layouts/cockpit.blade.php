@@ -5,8 +5,10 @@
 
 <body class="antialiased bg-gray-900" style="font-family: 'Roboto', sans-serif;">
 
-    @yield('content')
+    @include('partials.cockpit.header')
 
+    @yield('content')
+    
 </body>
 
 </html>

@@ -12,6 +12,7 @@ namespace App\Http\Controllers;
 
 use App\Channel;
 use App\Factories\RevenueFactory;
+use App\Factories\VolumeOnDiskFactory;
 use App\Media;
 
 /**
@@ -29,11 +30,21 @@ class CockpitController extends Controller
         $lastRegisteredChannel = Channel::orderBy('channel_createdAt', 'desc')->first();
 
         $nbActiveChannels = Channel::nbReallyActiveChannels();
+        $nbPodcasts = Channel::active()->count();
 
         $nbMedias = Media::whereNotNull('grabbed_at')->count();
 
         $revenues = RevenueFactory::init()->get();
 
-        return view('cockpit.index', compact('lastRegisteredChannel', 'nbActiveChannels', 'nbMedias', 'revenues'));
+        $volumeOnDisk = VolumeOnDiskFactory::init()->formatted();
+
+        return view('cockpit.index', compact(
+            'lastRegisteredChannel',
+            'nbPodcasts',
+            'nbActiveChannels',
+            'nbMedias',
+            'revenues',
+            'volumeOnDisk',
+        ));
     }
 }

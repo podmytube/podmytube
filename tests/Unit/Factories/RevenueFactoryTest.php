@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Factories;
+namespace Tests\Unit\Factories;
 
 use App\Factories\RevenueFactory;
 use App\Subscription;

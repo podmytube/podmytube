@@ -20,19 +20,16 @@ class RevenueFactory
 
     public function get(): int
     {
-        $revenues = 0;
         // get all active subscriptions
-        Subscription::query()
+        return Subscription::query()
             ->with('plan')
             ->whereNull('ends_at')
             ->orWhere('ends_at', '>', now())
             ->get()
-            ->each(function (Subscription $subscription) use (&$revenues): void {
+            ->reduce(function ($carry, Subscription $subscription): int {
                 // on each subscription get plan price
-                $revenues += $subscription->plan->price;
+                return $carry + $subscription->plan->price;
             })
         ;
-
-        return $revenues;
     }
 }
