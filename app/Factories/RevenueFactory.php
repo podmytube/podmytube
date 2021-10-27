@@ -29,7 +29,7 @@ class RevenueFactory
             ->reduce(function ($carry, Subscription $subscription): int {
                 // on each subscription get plan price
                 return $carry + $subscription->plan->price;
-            })
+            }, 0)
         ;
     }
 }
