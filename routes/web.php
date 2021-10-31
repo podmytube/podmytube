@@ -19,8 +19,9 @@ Route::get('terms', function () {
 Route::get('privacy', function () {
     return view('privacy');
 })->name('privacy');
-
-Route::stripeWebhooks('/stripe/webhooks');
+Route::domain('cockpit.' . config('app.domain'))->group(function (): void {
+    Route::get('/', 'CockpitController@index')->name('cockpit.index');
+});
 
 Route::domain('www.' . config('app.domain'))->group(function (): void {
     Route::get('/', 'IndexController@index')->name('www.index');
@@ -42,6 +43,9 @@ Route::domain('www.' . config('app.domain'))->group(function (): void {
 
 Route::domain('dashboard.' . config('app.domain'))->group(function (): void {
     Auth::routes();
+
+    Route::stripeWebhooks('/stripe/webhooks');
+
     // ================================================
     // Dash homepage is the login screen
     Route::get('/', function () {

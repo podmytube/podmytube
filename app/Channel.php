@@ -474,4 +474,27 @@ class Channel extends Model implements Podcastable, Coverable
     {
         return self::byChannelId($youtubeId);
     }
+
+    /**
+     * Return the youtube url for this channel.
+     */
+    public function youtubeUrl(): string
+    {
+        return 'https://www.youtube.com/channel/' . $this->channelId();
+    }
+
+    public static function nbReallyActiveChannels()
+    {
+        return Channel::active()
+            ->whereHas('medias', function ($query): void {
+                $query->whereNotNull('grabbed_at')
+                    ->whereBetween('grabbed_at', [
+                        now()->startOfMonth(),
+                        now(),
+                    ])
+            ;
+            })
+            ->count()
+        ;
+    }
 }

@@ -239,4 +239,31 @@ class ChannelModelTest extends TestCase
             'business',
         ]);
     }
+
+    /** @test */
+    public function youtube_url_is_fine(): void
+    {
+        $expectedChannelYoutubeUrl = 'https://www.youtube.com/channel/' . $this->channel->channelId();
+        $this->assertEquals($expectedChannelYoutubeUrl, $this->channel->youtubeUrl());
+    }
+
+    /** @test */
+    public function nb_really_active_channels_is_fine(): void
+    {
+        $this->assertEquals(0, Channel::nbReallyActiveChannels());
+
+        // create some channels
+        $inactiveChannels = factory(Channel::class, 5)->create();
+
+        // create some active channels
+        $expectedActiveChannels = 3;
+        factory(Channel::class, $expectedActiveChannels)
+            ->create()
+            ->each(function (Channel $channel): void {
+                $this->addMediasToChannel($channel, 1, true);
+            })
+        ;
+
+        $this->assertEquals($expectedActiveChannels, Channel::nbReallyActiveChannels());
+    }
 }
