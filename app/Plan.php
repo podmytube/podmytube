@@ -22,6 +22,10 @@ class Plan extends Model
     public const WEEKLY_PLAN_PROMO_ID = 8;
     public const DAILY_PLAN_PROMO_ID = 9;
 
+    protected $casts = [
+        'price' => 'integer',
+    ];
+
     /**
      * One plan may be subscribed by many channels.
      *
