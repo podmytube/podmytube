@@ -191,7 +191,7 @@ class StripeWebhooksTest extends TestCase
         $channel = $this->createChannelWithPlan();
         $stripeMocked = Mockery::mock(Stripe::class)->makePartial();
         $stripeMocked->shouldReceive('retrieve')->with($stripeSubscriptionId)->once()->andReturn(true);
-        $orderNumber = $mocked->CREATION_COMMANDE($this->orderDataset);
+        
         $this->postJson(
             self::STRIPE_ROUTE,
             [

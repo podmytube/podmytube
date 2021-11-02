@@ -38,7 +38,5 @@ class StripeSubscriptionTest extends TestCase
         $this->assertEquals($expectedSubscriptionId, $subscription->subscriptionId());
         $this->assertEquals($expectedCustomerId, $subscription->customerId());
         $this->assertEquals($expectedStatus, $subscription->status());
-
-        $this->assertEquals($expectedStatus, $subscription->plan());
     }
 }
