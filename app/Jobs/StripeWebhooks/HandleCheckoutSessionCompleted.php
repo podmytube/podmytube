@@ -8,6 +8,7 @@ use App\Channel;
 use App\Exceptions\CannotIdentifyUserFromStripeException;
 use App\Exceptions\ChannelOwnerMismatchingStripeException;
 use App\Exceptions\EmptyChannelIdReceivedFromStripeException;
+use App\Exceptions\EmptyCustomerReceivedFromStripeException;
 use App\Exceptions\EmptyPlanReceivedFromStripeException;
 use App\Exceptions\EmptySubscriptionReceivedFromStripeException;
 use App\Exceptions\InvalidSubscriptionReceivedFromStripeException;
@@ -30,6 +31,7 @@ class HandleCheckoutSessionCompleted implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
+    public const ERROR_MESSAGE_EMPTY_CUSTOMER = 'No customer in json.';
     public const ERROR_MESSAGE_CUSTOMER_NOT_FOUND = 'Customer not found.';
     public const ERROR_MESSAGE_EMPTY_CHANNEL = 'No channel in json.';
     public const ERROR_MESSAGE_CHANNEL_NOT_FOUND = 'Channel not found.';
@@ -73,12 +75,16 @@ class HandleCheckoutSessionCompleted implements ShouldQueue
     protected function getUserFromJson(): ?User
     {
         $customerStripeId = $this->customerIdFromJson();
+        $email = $this->customerEmailFromJson();
+
+        if ($customerStripeId === null && $email === null) {
+            throw new EmptyCustomerReceivedFromStripeException(self::ERROR_MESSAGE_EMPTY_CUSTOMER);
+        }
 
         if ($customerStripeId !== null) {
             return User::byStripeId($customerStripeId);
         }
 
-        $email = $this->customerEmailFromJson();
         if ($email !== null) {
             return User::byEmail($email);
         }
@@ -88,12 +94,13 @@ class HandleCheckoutSessionCompleted implements ShouldQueue
 
     protected function getChannelFromJson(User $user): Channel
     {
+        // checking channel id in json
         $channelId = $this->channelIdFromJson();
         if ($channelId === null) {
             throw new EmptyChannelIdReceivedFromStripeException(self::ERROR_MESSAGE_EMPTY_CHANNEL);
         }
 
-        // checking channel id received
+        // obtaining channel
         $channel = Channel::byChannelId($channelId);
         if ($channel === null) {
             throw new UnknownChannelIdReceivedFromStripeException(self::ERROR_MESSAGE_CHANNEL_NOT_FOUND);

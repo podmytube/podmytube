@@ -20,9 +20,28 @@ class StripeSubscription
         return new static(...$params);
     }
 
+    public function create()
+    {
+        
+
+    $subscription = Subscription::create([
+        'customer' => '{{CUSTOMER_ID}}'
+      ,
+        'items' => [[
+          'price' => '{{RECURRING_PRICE_ID}}',
+        ]],
+        'add_invoice_items' => [[
+          'price' => '{{PRICE_ID}}'
+      ,
+        ]],
+]);
+ 
+    }
+
     public function retrieve(string $subscriptionId): self
     {
         $this->subscription = $this->stripeClient->subscriptions->retrieve($subscriptionId);
+        dd($this->subscription->customer);
         return $this;
     }
 
@@ -41,8 +60,4 @@ class StripeSubscription
         return $this->subscription->status;
     }
 
-    public function plan()
-    {
-        dd($this->subscription->metadata);
-    }
 }
