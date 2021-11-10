@@ -34,6 +34,11 @@ class YoutubeVideoTagsForChannelCommand extends Command
     public function handle(): int
     {
         $channel = Channel::byChannelId($this->argument('channelId'));
+        if (!$channel) {
+            $this->error("There is no registered channel with this id ({$this->argument('channelId')}).");
+
+            return 1;
+        }
 
         $periodHelper = PeriodsHelper::create();
         if ($this->option('period')) {
