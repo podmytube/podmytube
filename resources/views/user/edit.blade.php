@@ -1,8 +1,6 @@
 @extends('layouts.app', ['var' => 1])
 
-@section('pageTitle', __('messages.page_title_user_show'))
-
-@section('content')
+@section('pageTitle', 'User informations')
 
 @section('content')
     <div class="max-w-screen-xl mx-auto py-6 md:py-12 px-4">
@@ -20,30 +18,33 @@
 
                 <div class="pb-4">
                     <label class="block py-1" for="firstname">Your firstname</label>
-                    <input type="text" id="firstname" name="firstname" value="{{ old('firstname') ?? $user->firstname }}"
+                    <input type="text" id="firstname" name="firstname" value="{{ old('firstname', $user->firstname) }}"
                         placeholder="Your firstname" aria-label="Your firstname"
                         class="w-full px-5 py-1 text-gray-900 bg-gray-200 rounded placeholder-gray-700">
                 </div>
 
                 <div class="pb-4">
                     <label class="block py-1" for="lastname">Your lastname</label>
-                    <input type="text" id="lastname" name="lastname" value="{{ old('lastname') ?? $user->lastname }}"
+                    <input type="text" id="lastname" name="lastname" value="{{ old('lastname', $user->lastname) }}"
                         placeholder="Your lastname" aria-label="Your lastname"
                         class="w-full px-5 py-1 text-gray-900 bg-gray-200 rounded placeholder-gray-700">
                 </div>
 
                 <div class="pb-4">
                     <label class="block py-1" for="email">Your email</label>
-                    <input type="email" id="email" name="email" value="{{ old('email') ?? $user->email }}"
+                    <input type="email" id="email" name="email" value="{{ old('email', $user->email) }}"
                         placeholder="Your email" aria-label="Your email"
                         class="w-full px-5 py-1 text-gray-900 bg-gray-200 rounded placeholder-gray-700">
                 </div>
 
                 <div class="pb-4 pl-7">
                     <label class="block py-1" for="newsletter">
-                        <input type="checkbox" id="newsletter" name="newsletter" value="1" class="form-checkbox" @if ($user->newsletter) checked @endif>
-                        <span class="ml-2">I agree to the receive <span class="underline">some emails</span></span><br>
-                        <small class="pl-4">the only emails you will receive are monthly reports and (more rarely) important
+                        <input type="checkbox" id="newsletter" name="newsletter" value="1" class="form-checkbox"
+                            @if ($user->newsletter) checked @endif>
+                        <span class="ml-2">I agree to the receive <span class="underline">some
+                                emails</span></span><br>
+                        <small class="pl-4">the only emails you will receive are monthly reports and (more rarely)
+                            important
                             news about Podmytube</small>
                     </label>
                 </div>
@@ -111,6 +112,5 @@
                 </div>
             </form>
         </div>
-
     </div>
 @endsection
