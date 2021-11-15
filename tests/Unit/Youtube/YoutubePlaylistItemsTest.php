@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace Tests\Unit\Youtube;
 
 use App\Exceptions\YoutubeNoResultsException;
-use App\Youtube\YoutubeCore;
 use App\Youtube\YoutubePlaylistItems;
 use App\Youtube\YoutubeQuotas;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 
 /**
@@ -26,7 +24,7 @@ class YoutubePlaylistItemsTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
+        $this->seedApiKeys();
     }
 
     public function test_having_the_right_number_of_items_in_playlist(): void

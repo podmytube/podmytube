@@ -11,7 +11,6 @@ use App\Media;
 use App\Plan;
 use App\Subscription;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Bus;
 use Storage;
 use Tests\TestCase;
@@ -36,8 +35,8 @@ class DownloadMediaFactoryTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
-        Artisan::call('db:seed', ['--class' => 'PlansTableSeeder']);
+        $this->seedApiKeys();
+        $this->seedPlans();
         Bus::fake(SendFileBySFTP::class);
         $this->channel = factory(Channel::class)->create(['channel_id' => 'test']);
         $this->subscription = factory(Subscription::class)->create(

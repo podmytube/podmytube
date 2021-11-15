@@ -1,39 +1,45 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit;
 
 use App\Channel;
 use App\Plan;
 use App\Thumb;
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Artisan;
+use Tests\TestCase;
 use Tests\Traits\IsAbleToTestPodcast;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class ChannelPodcastTest extends TestCase
 {
-    use RefreshDatabase, IsAbleToTestPodcast;
+    use RefreshDatabase;
+    use IsAbleToTestPodcast;
 
-    /** @var \App\Channel $channel */
+    /** @var \App\Channel */
     protected $channel;
 
     public function setUp(): void
     {
         parent::setUp();
-        Artisan::call('db:seed', ['--class' => 'PlansTableSeeder']);
+        $this->seedPlans();
         $this->channel = $this->createChannelWithPlan();
     }
 
     /** @test */
-    public function podcast_cover_url_should_be_default_one()
+    public function podcast_cover_url_should_be_default_one(): void
     {
-        /** channel has no cover yet should be default url */
+        // channel has no cover yet should be default url
         $this->assertEquals(Thumb::defaultUrl(), $this->channel->podcastCoverUrl());
     }
 
     /** @test */
-    public function podcast_cover_url_should_be_good()
+    public function podcast_cover_url_should_be_good(): void
     {
         $thumb = factory(Thumb::class)->create();
         $this->channel->setCoverFromThumb($thumb);
@@ -42,12 +48,12 @@ class ChannelPodcastTest extends TestCase
         $this->assertEquals($thumb->podcastUrl(), $this->channel->podcastCoverUrl());
     }
 
-    public function testingToPodcastHeaderIsFineWithAllInformations()
+    public function testing_to_podcast_header_is_fine_with_all_informations(): void
     {
         $this->podcastHeaderInfosChecking($this->channel, $this->channel->podcastHeader());
     }
 
-    public function testingToPodcastHeaderIsFineWithoutSome()
+    public function testing_to_podcast_header_is_fine_without_some(): void
     {
         $this->channel->update([
             'podcast_title' => null,
@@ -63,13 +69,13 @@ class ChannelPodcastTest extends TestCase
         $this->podcastHeaderInfosChecking($this->channel, $this->channel->podcastHeader());
     }
 
-    public function testToPodcastItemsForEmptyChannelShouldBeGood()
+    public function test_to_podcast_items_for_empty_channel_should_be_good(): void
     {
         $this->assertCount(0, $this->channel->podcastItems());
         $this->assertNotNull($this->channel->podcastItems());
     }
 
-    public function testToPodcastItemsForFreeChannelShouldBeGood()
+    public function test_to_podcast_items_for_free_channel_should_be_good(): void
     {
         $expectedNumberOfItems = 3;
         $freePlan = Plan::where('id', 1)->first();
@@ -78,7 +84,7 @@ class ChannelPodcastTest extends TestCase
         $this->assertCount($expectedNumberOfItems, $channel->podcastItems());
     }
 
-    public function testToPodcastItemsForPayingChannelShouldBeGood()
+    public function test_to_podcast_items_for_paying_channel_should_be_good(): void
     {
         $expectedNumberOfItems = 6;
         $paidPlan = Plan::find(Plan::DAILY_PLAN_ID);
@@ -87,31 +93,31 @@ class ChannelPodcastTest extends TestCase
         $this->assertCount($expectedNumberOfItems, $channel->podcastItems());
     }
 
-    public function testChannelWithNoMediasToPodcastShouldBeGood()
+    public function test_channel_with_no_medias_to_podcast_should_be_good(): void
     {
         $channelToPodcastInfos = $this->channel->toPodcast();
-        /** checking header */
+        // checking header
         $this->podcastHeaderInfosChecking($this->channel, $channelToPodcastInfos);
-        /** checking items */
+        // checking items
         $this->assertCount(0, $channelToPodcastInfos['podcastItems']);
     }
 
-    public function testFreeChannelWithMediasToPodcastShouldBeGood()
+    public function test_free_channel_with_medias_to_podcast_should_be_good(): void
     {
         $freePlan = Plan::find(Plan::FREE_PLAN_ID);
         $channel = $this->createChannelWithPlan($freePlan);
         $this->addMediasToChannel($channel, 5, true);
         $channelToPodcastInfos = $channel->toPodcast();
 
-        /** checking header */
+        // checking header
         $this->podcastHeaderInfosChecking($channel, $channelToPodcastInfos);
-        /** checking items */
+        // checking items
         $this->assertInstanceOf(Collection::class, $channelToPodcastInfos['podcastItems']);
         $this->assertCount(3, $channelToPodcastInfos['podcastItems']);
         $this->podcastItemsChecking($channelToPodcastInfos['podcastItems']);
     }
 
-    public function testPayingChannelWithMediasToPodcastShouldBeGood()
+    public function test_paying_channel_with_medias_to_podcast_should_be_good(): void
     {
         $expectedNumberOfPodcastItems = 7;
         $payingPlan = Plan::find(Plan::WEEKLY_PLAN_ID);
@@ -119,20 +125,20 @@ class ChannelPodcastTest extends TestCase
         $this->addMediasToChannel($channel, $expectedNumberOfPodcastItems, true);
         $channelToPodcastInfos = $channel->toPodcast();
 
-        /** checking header */
+        // checking header
         $this->podcastHeaderInfosChecking($channel, $channelToPodcastInfos);
-        /** checking items */
+        // checking items
         $this->assertInstanceOf(Collection::class, $channelToPodcastInfos['podcastItems']);
         $this->assertCount($expectedNumberOfPodcastItems, $channelToPodcastInfos['podcastItems']);
         $this->podcastItemsChecking($channelToPodcastInfos['podcastItems']);
     }
 
-    public function testPodcastAuthorsIsOk()
+    public function test_podcast_authors_is_ok(): void
     {
         $this->assertEquals($this->channel->authors, $this->channel->podcastAuthor());
     }
 
-    public function testPodcastExplicitIsOk()
+    public function test_podcast_explicit_is_ok(): void
     {
         $this->channel->update(['explicit' => true]);
         $this->assertTrue($this->channel->explicit);

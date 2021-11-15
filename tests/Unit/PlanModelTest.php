@@ -1,16 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit;
 
 use App\Plan;
 use App\StripePlan;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Artisan;
 use InvalidArgumentException;
-use PlansTableSeeder;
 use Tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class PlanModelTest extends TestCase
 {
     use RefreshDatabase;
@@ -18,11 +22,11 @@ class PlanModelTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Artisan::call('db:seed', ['--class' => PlansTableSeeder::class]);
+        $this->seedPlans();
     }
 
     /** @test */
-    public function free_plan_should_exist_still()
+    public function free_plan_should_exist_still(): void
     {
         $freePlan = Plan::bySlug('forever_free');
         $this->assertNotNull($freePlan);
@@ -30,10 +34,10 @@ class PlanModelTest extends TestCase
     }
 
     /** @test */
-    public function paying_plans_should_exist()
+    public function paying_plans_should_exist(): void
     {
         $planSlugs = ['monthly_6', 'weekly_youtuber', 'daily_youtuber', 'starter', 'professional', 'business'];
-        array_map(function ($payingSlug) {
+        array_map(function ($payingSlug): void {
             $plan = Plan::bySlug($payingSlug);
             $this->assertNotNull($plan);
             $this->assertInstanceOf(Plan::class, $plan);
@@ -41,7 +45,7 @@ class PlanModelTest extends TestCase
     }
 
     /** @test */
-    public function by_Slug_is_ok()
+    public function by__slug_is_ok(): void
     {
         $this->assertNull(Plan::bySlug('unknown'));
 
@@ -51,7 +55,7 @@ class PlanModelTest extends TestCase
     }
 
     /** @test */
-    public function by_slugs_is_ok()
+    public function by_slugs_is_ok(): void
     {
         $this->assertNull(Plan::bySlugs(['unknown', 'cat', 'dog']));
 
@@ -60,21 +64,21 @@ class PlanModelTest extends TestCase
         $plans = Plan::bySlugs($planSlugs);
         $this->assertCount(count($planSlugs), $plans);
         $this->assertInstanceOf(Collection::class, $plans);
-        $plans->map(function ($plan) use ($planSlugs) {
+        $plans->map(function ($plan) use ($planSlugs): void {
             $this->assertInstanceOf(Plan::class, $plan);
             $this->assertTrue(in_array($plan->slug, $planSlugs));
         });
     }
 
     /** @test */
-    public function by_slugs_and_billing_frequency_should_fail()
+    public function by_slugs_and_billing_frequency_should_fail(): void
     {
         $this->expectException(InvalidArgumentException::class);
         Plan::bySlugsAndBillingFrequency([]);
     }
 
     /** @test */
-    public function by_slugs_and_billing_frequency_is_ok()
+    public function by_slugs_and_billing_frequency_is_ok(): void
     {
         $catPlan = factory(Plan::class)->create(['slug' => 'cat']);
         $catYearlyBillingIWant = factory(StripePlan::class)->create(['plan_id' => $catPlan->id, 'is_yearly' => true]);

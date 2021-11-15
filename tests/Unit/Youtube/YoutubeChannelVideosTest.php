@@ -8,7 +8,6 @@ use App\Exceptions\YoutubeNoResultsException;
 use App\Youtube\YoutubeChannelVideos;
 use App\Youtube\YoutubeQuotas;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 
 /**
@@ -22,7 +21,7 @@ class YoutubeChannelVideosTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
+        $this->seedApiKeys();
     }
 
     public function test_having_the_right_number_of_videos(): void
@@ -32,7 +31,7 @@ class YoutubeChannelVideosTest extends TestCase
         $this->assertCount(
             2,
             $videos = $factory->videos(),
-            'Expected number of videos for this channel was 2, obtained '.count($videos)
+            'Expected number of videos for this channel was 2, obtained ' . count($videos)
         );
         /*
          * quota usage

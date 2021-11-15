@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit;
 
 use App\Channel;
@@ -7,12 +9,14 @@ use App\Media;
 use App\Modules\LastMediaChecker;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 
 /**
  * the main parts of these tests is based on my personal youtube channel
- * the last media has been published on Oct 28, 2015
+ * the last media has been published on Oct 28, 2015.
+ *
+ * @internal
+ * @coversNothing
  */
 class LastMediaCheckerTest extends TestCase
 {
@@ -20,18 +24,18 @@ class LastMediaCheckerTest extends TestCase
 
     public const DELAY_IN_HOURS = 6;
 
-    /** @var \App\Channel $channel */
+    /** @var \App\Channel */
     protected $channel;
 
     public function setUp(): void
     {
         parent::setUp();
-        Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
+        $this->seedApiKeys();
         $this->channel = factory(Channel::class)->create(['channel_id' => self::PERSONAL_CHANNEL_ID]);
     }
 
     /** @test */
-    public function has_been_published_recently_should_be_false()
+    public function has_been_published_recently_should_be_false(): void
     {
         $this->assertFalse(
             LastMediaChecker::forChannel($this->channel)->hasMediaBeenPublishedRecently(),
@@ -40,7 +44,7 @@ class LastMediaCheckerTest extends TestCase
     }
 
     /** @test */
-    public function media_published_long_ago_is_still_unknown_should_have_been_grabbed()
+    public function media_published_long_ago_is_still_unknown_should_have_been_grabbed(): void
     {
         $this->channel->update([
             'accept_video_by_tag' => 'foolish, stupid, awesome', // last video of my channel has tags dev,podmytube
@@ -54,18 +58,18 @@ class LastMediaCheckerTest extends TestCase
     }
 
     /** @test */
-    public function media_published_long_ago_should_have_been_grabbed()
+    public function media_published_long_ago_should_have_been_grabbed(): void
     {
         $this->channel->update([
             'accept_video_by_tag' => 'foolish, stupid, awesome', // last video of my channel has tags dev,podmytube
             'reject_video_too_old' => Carbon::create(2015, 10, 1), // my last video has been published on 28/10/2015
         ]);
 
-        /** creating media */
+        // creating media
         factory(Media::class)->create([
             'media_id' => self::BEACH_VOLLEY_VIDEO_1,
             'channel_id' => $this->channel->channel_id,
-            'published_at' => Carbon::createFromDate(2015, 10, 28)]);
+            'published_at' => Carbon::createFromDate(2015, 10, 28), ]);
 
         $this->assertFalse(
             LastMediaChecker::forChannel($this->channel)->shouldMediaBeingGrabbed(),
@@ -74,14 +78,14 @@ class LastMediaCheckerTest extends TestCase
     }
 
     /** @test */
-    public function media_published_long_ago_has_already_been_grabbed()
+    public function media_published_long_ago_has_already_been_grabbed(): void
     {
         $this->channel->update([
             'accept_video_by_tag' => 'foolish, stupid, awesome', // last video of my channel has tags dev,podmytube
             'reject_video_too_old' => Carbon::create(2015, 10, 1), // my last video has been published on 28/10/2015
         ]);
 
-        /** creating media */
+        // creating media
         factory(Media::class)->create([
             'media_id' => self::BEACH_VOLLEY_VIDEO_1,
             'channel_id' => $this->channel->channel_id,
