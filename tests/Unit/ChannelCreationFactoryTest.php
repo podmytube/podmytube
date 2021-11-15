@@ -14,7 +14,6 @@ use App\Plan;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
@@ -37,9 +36,9 @@ class ChannelCreationFactoryTest extends TestCase
     {
         parent::setUp();
         $this->user = factory(User::class)->create();
-        Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
-        Artisan::call('db:seed', ['--class' => 'CategoriesTableSeeder']);
-        Artisan::call('db:seed', ['--class' => 'PlansTableSeeder']);
+        $this->seedApiKeys();
+        $this->seedCategories();
+        $this->seedPlans();
         $this->defaultCategory = Category::bySlug(ChannelCreationFactory::DEFAULT_CATEGORY_SLUG);
     }
 
@@ -47,7 +46,7 @@ class ChannelCreationFactoryTest extends TestCase
     public function test_creation_with_default_free_plan_should_be_ok(): void
     {
         Event::fake();
-        $validYoutubeUrl = 'https://www.youtube.com/channel/'.self::PERSONAL_CHANNEL_ID.'?view_as=subscriber';
+        $validYoutubeUrl = 'https://www.youtube.com/channel/' . self::PERSONAL_CHANNEL_ID . '?view_as=subscriber';
         $channelFactory = ChannelCreationFactory::create(
             $this->user,
             $validYoutubeUrl,
@@ -72,7 +71,7 @@ class ChannelCreationFactoryTest extends TestCase
     {
         Event::fake();
 
-        $validYoutubeUrl = 'https://www.youtube.com/channel/'.self::PERSONAL_CHANNEL_ID.'?view_as=subscriber';
+        $validYoutubeUrl = 'https://www.youtube.com/channel/' . self::PERSONAL_CHANNEL_ID . '?view_as=subscriber';
         $weeklyYoutuberPlan = Plan::bySlug('weekly_youtuber');
         $channelFactory = ChannelCreationFactory::create(
             $this->user,
@@ -109,7 +108,7 @@ class ChannelCreationFactoryTest extends TestCase
         $this->expectException(ChannelAlreadyRegisteredException::class);
         ChannelCreationFactory::create(
             $this->user,
-            'https://www.youtube.com/channel/'.self::PERSONAL_CHANNEL_ID.'?view_as=subscriber',
+            'https://www.youtube.com/channel/' . self::PERSONAL_CHANNEL_ID . '?view_as=subscriber',
             Plan::bySlug('forever_free')
         );
     }

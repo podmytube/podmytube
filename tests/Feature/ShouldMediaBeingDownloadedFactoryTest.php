@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature;
 
 use App\Channel;
@@ -9,9 +11,12 @@ use App\Exceptions\MediaIsTooOldException;
 use App\Factories\ShouldMediaBeingDownloadedFactory;
 use App\Media;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class ShouldMediaBeingDownloadedFactoryTest extends TestCase
 {
     use RefreshDatabase;
@@ -22,10 +27,10 @@ class ShouldMediaBeingDownloadedFactoryTest extends TestCase
     /** \App\Media $taggedMedia */
     protected $taggedMedia;
 
-    public function setUp():void
+    public function setUp(): void
     {
         parent::setUp();
-        Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
+        $this->seedApiKeys();
         $this->taggedMedia = factory(Media::class)->create(
             [
                 'media_id' => self::BEACH_VOLLEY_VIDEO_1,
@@ -42,9 +47,9 @@ class ShouldMediaBeingDownloadedFactoryTest extends TestCase
     }
 
     /** @test */
-    public function old_video_check_is_ok()
+    public function old_video_check_is_ok(): void
     {
-        /** no filters => accepted */
+        // no filters => accepted
         $this->assertTrue(
             ShouldMediaBeingDownloadedFactory::create($this->taggedMedia)->check(),
             'Channel has no date filter, media should be accepted'
@@ -61,15 +66,15 @@ class ShouldMediaBeingDownloadedFactoryTest extends TestCase
      *
      * @test
      */
-    public function no_filtering_tag_at_is_ok()
+    public function no_filtering_tag_at_is_ok(): void
     {
-        /** channel with no filter accept everything - TAGGED media */
+        // channel with no filter accept everything - TAGGED media
         $this->assertTrue(
             ShouldMediaBeingDownloadedFactory::create($this->taggedMedia)->check(),
             'Channel is filtering nothing, media with tags ["dev", "podmytube"] should be accepted.'
         );
 
-        /** channel with no filter accept everything - UNTAGGED media */
+        // channel with no filter accept everything - UNTAGGED media
         $this->assertTrue(
             ShouldMediaBeingDownloadedFactory::create($this->nonTaggedMedia)->check(),
             'Channel is filtering nothing, media with tags ["dev", "podmytube"] should be accepted.'
@@ -81,12 +86,10 @@ class ShouldMediaBeingDownloadedFactoryTest extends TestCase
      *
      * @test
      */
-    public function filtering_on_podmytube_tag_is_ok()
+    public function filtering_on_podmytube_tag_is_ok(): void
     {
-        /**
-         * adding accepted tag "podmytube" to channel
-         */
-        $this->taggedMedia->channel->update(['accept_video_by_tag' => 'podmytube', ]);
+        // adding accepted tag "podmytube" to channel
+        $this->taggedMedia->channel->update(['accept_video_by_tag' => 'podmytube']);
         $this->nonTaggedMedia->refresh();
 
         $this->assertTrue(
@@ -99,29 +102,27 @@ class ShouldMediaBeingDownloadedFactoryTest extends TestCase
     }
 
     /** @test */
-    public function non_tagged_media_is_rejected()
+    public function non_tagged_media_is_rejected(): void
     {
-        /**
-         * adding accepted tag "rejected" to channel
-         */
-        $this->nonTaggedMedia->channel->update(['accept_video_by_tag' => 'rejecting', ]);
+        // adding accepted tag "rejected" to channel
+        $this->nonTaggedMedia->channel->update(['accept_video_by_tag' => 'rejecting']);
         $this->expectException(DownloadMediaTagException::class);
         ShouldMediaBeingDownloadedFactory::create($this->nonTaggedMedia)->check();
     }
 
     /** @test */
-    public function tagged_media_with_wrong_tag_is_rejected()
+    public function tagged_media_with_wrong_tag_is_rejected(): void
     {
-        $this->taggedMedia->channel->update(['accept_video_by_tag' => 'rejecting', ]);
+        $this->taggedMedia->channel->update(['accept_video_by_tag' => 'rejecting']);
         $this->expectException(DownloadMediaTagException::class);
-        ShouldMediaBeingDownloadedFactory::create($this->taggedMedia)->check() ;
+        ShouldMediaBeingDownloadedFactory::create($this->taggedMedia)->check();
     }
 
     /** @test */
-    public function media_already_grabbed()
+    public function media_already_grabbed(): void
     {
         $this->taggedMedia->update(['grabbed_at' => now()->subDay()]);
         $this->expectException(MediaAlreadyGrabbedException::class);
-        ShouldMediaBeingDownloadedFactory::create($this->taggedMedia)->check() ;
+        ShouldMediaBeingDownloadedFactory::create($this->taggedMedia)->check();
     }
 }

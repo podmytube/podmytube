@@ -15,7 +15,7 @@ class ItunesCategoryTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Artisan::call('db:seed', ['--class' => 'CategoriesTableSeeder']);
+        $this->seedCategories();
     }
 
     public function testDocumentaryWillDisplaySocietyAndCulture()

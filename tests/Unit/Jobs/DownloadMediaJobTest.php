@@ -8,7 +8,6 @@ use App\Jobs\DownloadMediaJob;
 use App\Jobs\SendFileBySFTP;
 use App\Media;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
@@ -29,8 +28,8 @@ class DownloadMediaJobTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
-        Artisan::call('db:seed', ['--class' => 'PlansTableSeeder']);
+        $this->seedApiKeys();
+        $this->seedPlans();
         Storage::fake(SendFileBySFTP::REMOTE_DISK);
 
         $this->channel = $this->createChannelWithPlan();

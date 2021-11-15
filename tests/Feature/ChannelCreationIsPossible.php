@@ -7,7 +7,6 @@ namespace Tests\Feature;
 use App\Channel;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 
 /**
@@ -24,7 +23,9 @@ class ChannelCreationIsPossible extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Artisan::call('db:seed');
+        $this->seedPlans();
+        $this->seedApiKeys();
+        $this->seedCategories();
         $this->user = factory(User::class)->create();
     }
 
@@ -36,7 +37,7 @@ class ChannelCreationIsPossible extends TestCase
             ->actingAs($this->user)
             ->from(route('channel.create'))
             ->post(route('channel.store'), [
-                'channel_url' => 'https://www.youtube.com/channel/'.$expectedChannelId,
+                'channel_url' => 'https://www.youtube.com/channel/' . $expectedChannelId,
                 'owner' => 1,
             ])
             ->assertSuccessful()
@@ -54,7 +55,7 @@ class ChannelCreationIsPossible extends TestCase
     public function try_creating_a_non_existing_channel_id_will_fail(): void
     {
         array_map(
-            function ($invalidChannelId): void {
+            function (string $invalidChannelId): void {
                 $this->followingRedirects()
                     ->actingAs($this->user)
                     ->from(route('channel.create'))

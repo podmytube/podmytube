@@ -8,7 +8,6 @@ use App\Exceptions\YoutubeInvalidEndpointException;
 use App\Exceptions\YoutubeNoResultsException;
 use App\Youtube\YoutubeCore;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Artisan;
 use InvalidArgumentException;
 use Tests\TestCase;
 
@@ -33,7 +32,7 @@ class YoutubeCoreTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
+        $this->seedApiKeys();
         // Create a new instance from the Abstract Class
         $this->abstractCore = new class() extends YoutubeCore {};
     }
