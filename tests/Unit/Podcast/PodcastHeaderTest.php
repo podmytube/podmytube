@@ -1,30 +1,36 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Podcast;
 
 use App\Category;
 use App\Channel;
 use App\Podcast\PodcastHeader;
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Artisan;
+use Tests\TestCase;
 use Tests\Traits\IsAbleToTestPodcast;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class PodcastHeaderTest extends TestCase
 {
-    use RefreshDatabase, IsAbleToTestPodcast;
+    use RefreshDatabase;
+    use IsAbleToTestPodcast;
 
-    /** @var \App\Channel $channel */
+    /** @var \App\Channel */
     protected $channel;
 
     public function setUp(): void
     {
         parent::setUp();
         $this->channel = factory(Channel::class)->create();
-        Artisan::call('db:seed', ['--class' => 'CategoriesTableSeeder']);
+        $this->seedCategories();
     }
 
-    public function testingNewChannelWithParentCategoryShouldRenderFine()
+    public function testing_new_channel_with_parent_category_should_render_fine(): void
     {
         $attributes = [
             'link' => $this->channel->link,
@@ -56,7 +62,7 @@ class PodcastHeaderTest extends TestCase
         $this->assertStringContainsString('<itunes:explicit>' . $this->channel->podcastExplicit() . '</itunes:explicit>', $rendered);
     }
 
-    public function testingNewChannelWithSimpleCategoryShouldRenderFine()
+    public function testing_new_channel_with_simple_category_should_render_fine(): void
     {
         $attributes = [
             'link' => $this->channel->link,

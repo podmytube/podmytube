@@ -8,9 +8,7 @@ use App\Plan;
 use App\StripePlan;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Artisan;
 use InvalidArgumentException;
-use PlansTableSeeder;
 use Tests\TestCase;
 
 /**
@@ -24,7 +22,7 @@ class PlanModelTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Artisan::call('db:seed', ['--class' => PlansTableSeeder::class]);
+        $this->seedPlans();
     }
 
     /** @test */

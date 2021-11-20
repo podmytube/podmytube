@@ -7,7 +7,6 @@ namespace Tests\Unit\Youtube;
 use App\Exceptions\YoutubeNoResultsException;
 use App\Youtube\YoutubePlaylists;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 
 /**
@@ -21,7 +20,7 @@ class YoutubePlaylistsTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
+        $this->seedApiKeys();
     }
 
     public function test_invalid_channel_id_should_throw_an_exception(): void

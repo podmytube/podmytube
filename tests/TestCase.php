@@ -17,6 +17,9 @@ use App\Subscription;
 use App\Thumb;
 use App\User;
 use Carbon\Carbon;
+use Database\Seeders\ApiKeysTableSeeder;
+use Database\Seeders\CategoriesTableSeeder;
+use Database\Seeders\PlansTableSeeder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -168,7 +171,7 @@ abstract class TestCase extends BaseTestCase
      */
     public function getPlanBySlug(string $slug): ?Plan
     {
-        Artisan::call('db:seed', ['--class' => 'PlansTableSeeder']);
+        $this->seedPlans();
 
         return Plan::bySlug($slug);
     }
@@ -260,5 +263,20 @@ abstract class TestCase extends BaseTestCase
         }
 
         return factory(Subscription::class, $nbChannels)->create($createContext);
+    }
+
+    protected function seedApiKeys(): void
+    {
+        Artisan::call('db:seed', ['--class' => ApiKeysTableSeeder::class]);
+    }
+
+    protected function seedPlans(): void
+    {
+        Artisan::call('db:seed', ['--class' => PlansTableSeeder::class]);
+    }
+
+    protected function seedCategories(): void
+    {
+        Artisan::call('db:seed', ['--class' => CategoriesTableSeeder::class]);
     }
 }

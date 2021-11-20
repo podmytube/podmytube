@@ -17,7 +17,7 @@ class UpdatePlaylistsForChannelCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'update:playlist {channel_id} ';
+    protected $signature = 'update:playlist {channel_id}';
 
     /**
      * The console command description.

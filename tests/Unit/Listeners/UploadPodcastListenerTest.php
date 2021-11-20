@@ -10,7 +10,6 @@ use App\Listeners\UploadPodcast;
 use App\Media;
 use App\Playlist;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Bus;
 use Tests\TestCase;
 
@@ -31,7 +30,7 @@ class UploadPodcastListenerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
+        $this->seedApiKeys();
         $this->channel = $this->createChannelWithPlan();
         $this->playlist = factory(Playlist::class)->create([
             'channel_id' => $this->channel->channelId(),
@@ -49,7 +48,7 @@ class UploadPodcastListenerTest extends TestCase
         $thumbUpdatedEvent = new ThumbUpdated($this->channel);
         $this->assertTrue((new UploadPodcast())->handle($thumbUpdatedEvent));
         Bus::assertDispatched(function (SendFileBySFTP $job) {
-            return config('app.feed_path').$this->channel->channelId().'/'.config('app.feed_filename') === $job->remoteFilePath;
+            return config('app.feed_path') . $this->channel->channelId() . '/' . config('app.feed_filename') === $job->remoteFilePath;
         });
     }
 
@@ -60,7 +59,7 @@ class UploadPodcastListenerTest extends TestCase
         $this->assertTrue((new UploadPodcast())->handle($thumbUpdatedEvent));
         // Bus::assertDispatched(SendFileBySFTP::class); // useless
         Bus::assertDispatched(function (SendFileBySFTP $job) {
-            return config('app.playlists_path').$this->playlist->channelId().'/'.$this->playlist->youtube_playlist_id.'.xml' === $job->remoteFilePath;
+            return config('app.playlists_path') . $this->playlist->channelId() . '/' . $this->playlist->youtube_playlist_id . '.xml' === $job->remoteFilePath;
         });
     }
 }

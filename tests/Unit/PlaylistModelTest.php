@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use App\Channel;
 use App\Media;
 use App\Playlist;
 use App\Thumb;
@@ -11,7 +12,6 @@ use App\User;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 use Tests\Traits\IsAbleToTestPodcast;
 
@@ -39,7 +39,7 @@ class PlaylistModelTest extends TestCase
     public function podcast_url_is_fine(): void
     {
         $this->assertEquals(
-            config('app.playlists_url').'/'.$this->playlist->channel->channel_id.'/'.$this->playlist->youtube_playlist_id.'.xml',
+            config('app.playlists_url') . '/' . $this->playlist->channel->channel_id . '/' . $this->playlist->youtube_playlist_id . '.xml',
             $this->playlist->podcastUrl()
         );
     }
@@ -47,7 +47,7 @@ class PlaylistModelTest extends TestCase
     /** @test */
     public function medias_to_publish_should_be_fine(): void
     {
-        Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
+        $this->seedApiKeys();
         $expectedMediasToPublish = 2;
 
         factory(Media::class)->create(['media_id' => 'GJzweq_VbVc', 'grabbed_at' => now()->subday()]);
@@ -79,7 +79,7 @@ class PlaylistModelTest extends TestCase
         $this->playlist->refresh();
 
         $this->assertEquals(
-            config('app.thumbs_url')."/{$this->playlist->channelId()}/".$thumb->file_name,
+            config('app.thumbs_url') . "/{$this->playlist->channelId()}/" . $thumb->file_name,
             $this->playlist->podcastCoverUrl()
         );
     }
@@ -110,7 +110,7 @@ class PlaylistModelTest extends TestCase
     /** @test */
     public function playlist_to_podcast_is_running_fine(): void
     {
-        Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
+        $this->seedApiKeys();
         $expectedItems = 2;
         factory(Media::class)->create(['media_id' => 'GJzweq_VbVc', 'grabbed_at' => now()->subday()]);
         factory(Media::class)->create(['media_id' => 'AyU4u-iQqJ4', 'grabbed_at' => now()->subWeek()]);
@@ -129,7 +129,7 @@ class PlaylistModelTest extends TestCase
     public function relative_feed_path_is_good(): void
     {
         $this->assertEquals(
-            $this->playlist->channel->channelId().'/'.$this->playlist->youtube_playlist_id.'.xml',
+            $this->playlist->channel->channelId() . '/' . $this->playlist->youtube_playlist_id . '.xml',
             $this->playlist->relativeFeedPath()
         );
     }
@@ -138,7 +138,7 @@ class PlaylistModelTest extends TestCase
     public function remote_file_path_is_good(): void
     {
         $this->assertEquals(
-            config('app.playlists_path').$this->playlist->channel->channelId().'/'.$this->playlist->youtube_playlist_id.'.xml',
+            config('app.playlists_path') . $this->playlist->channel->channelId() . '/' . $this->playlist->youtube_playlist_id . '.xml',
             $this->playlist->remoteFilePath()
         );
     }
@@ -209,7 +209,7 @@ class PlaylistModelTest extends TestCase
     /** @test */
     public function associated_medias_is_fine(): void
     {
-        Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
+        $this->seedApiKeys();
 
         $this->playlist->update(['youtube_playlist_id' => self::PODMYTUBE_TEST_PLAYLIST_ID]);
         $this->playlist->refresh();
@@ -218,8 +218,6 @@ class PlaylistModelTest extends TestCase
         $this->assertNotNull($medias);
         $this->assertInstanceOf(Collection::class, $medias);
         $this->assertCount(0, $medias);
-
-        Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
 
         // with some medias
         factory(Media::class)->create(['media_id' => 'GJzweq_VbVc', 'grabbed_at' => now()->subday()]);
@@ -231,5 +229,17 @@ class PlaylistModelTest extends TestCase
         $this->assertNotNull($medias);
         $this->assertInstanceOf(Collection::class, $medias);
         $this->assertCount(2, $medias);
+    }
+
+    public function byChannelIdIsFine(): void
+    {
+        $this->assertNull(Playlist::byChannelId('unknown-channel-id'));
+
+        $expectedPlaylist = factory(Playlist::class)->create();
+
+        $results = Playlist::byChannelId($expectedPlaylist->channel_id);
+        $this->assertNotNull($results);
+        $this->assertInstanceOf(Collection::class, $results);
+        $this->assertTrue($results->contains($expectedPlaylist->id));
     }
 }

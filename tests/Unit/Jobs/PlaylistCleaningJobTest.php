@@ -11,7 +11,6 @@ use App\Jobs\SendFileBySFTP;
 use App\Media;
 use App\Playlist;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
@@ -40,7 +39,7 @@ class PlaylistCleaningJobTest extends TestCase
         $nbMediasForPodcastable = 2;
         $this->playlistToDelete = $this->createPlaylistWithMedia();
 
-        Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
+        $this->seedApiKeys();
         $medias = $this->playlistToDelete->associatedMedias();
         $this->assertCount($nbMediasForPodcastable, $medias);
 

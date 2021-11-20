@@ -18,8 +18,7 @@ class ProfileAccessTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var \App\User */
-    protected $user;
+    protected User $user;
 
     public function setUp(): void
     {
@@ -38,13 +37,6 @@ class ProfileAccessTest extends TestCase
     /** @test */
     public function user_should_access_his_profile(): void
     {
-        $this->markTestSkipped(
-            <<<'EOT'
-This test is firing strange phpunit error
-===> Test code or tested code did not (only) close its own output buffers} <===
-I cannot find a way to fix
-EOT
-        );
         $this->followingRedirects()
             ->actingAs($this->user)
             ->get(route('user.index'))
