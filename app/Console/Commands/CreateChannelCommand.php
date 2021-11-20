@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
 use App\Factories\ChannelCreationFactory;
@@ -35,6 +37,7 @@ class CreateChannelCommand extends Command
         $user = User::find($userId);
         if ($user === null) {
             $this->error("This user id {$userId} is unknown in database.");
+
             return 1;
         }
         $youtubeUrl = 'https://www.youtube.com/channel/' . $this->argument('channel_id');
@@ -43,6 +46,7 @@ class CreateChannelCommand extends Command
         $plan = Plan::find($planId);
         if ($plan === null) {
             $this->error("This plan id {$planId} does not exists.");
+
             return 1;
         }
 
@@ -50,6 +54,7 @@ class CreateChannelCommand extends Command
 
         $this->info('Channel 🎉 ' . $factory->channel()->nameWithId() . ' 🎉 has been created successfully !');
         $this->line('');
+
         return 0;
     }
 }

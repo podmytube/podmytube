@@ -12,9 +12,7 @@ use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
-use PlansTableSeeder;
 use Tests\TestCase;
 
 /**
@@ -31,7 +29,7 @@ class ChannelModelTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Artisan::call('db:seed', ['--class' => PlansTableSeeder::class]);
+        $this->seedPlans();
         $this->channel = $this->createChannelWithPlan(Plan::find(Plan::FREE_PLAN_ID));
     }
 

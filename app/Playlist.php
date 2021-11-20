@@ -172,12 +172,12 @@ class Playlist extends Model implements Podcastable, Coverable
 
     public function podcastUrl(): string
     {
-        return config('app.playlists_url').'/'.$this->relativeFeedPath();
+        return config('app.playlists_url') . '/' . $this->relativeFeedPath();
     }
 
     public function relativeFeedPath(): string
     {
-        return $this->channel->channelId().'/'.$this->youtube_playlist_id.'.xml';
+        return $this->channel->channelId() . '/' . $this->youtube_playlist_id . '.xml';
     }
 
     /**
@@ -195,7 +195,7 @@ class Playlist extends Model implements Podcastable, Coverable
      */
     public function remoteFilePath(): string
     {
-        return config('app.playlists_path').$this->relativeFeedPath();
+        return config('app.playlists_path') . $this->relativeFeedPath();
     }
 
     public function scopeActive(Builder $query)
@@ -280,5 +280,10 @@ class Playlist extends Model implements Podcastable, Coverable
     public static function byYoutubeId(string $youtubeId): ?self
     {
         return self::where('youtube_playlist_id', '=', $youtubeId)->first();
+    }
+
+    public static function byChannelId(string $channelId): Collection
+    {
+        return self::where('channel_id', '=', $channelId)->get();
     }
 }

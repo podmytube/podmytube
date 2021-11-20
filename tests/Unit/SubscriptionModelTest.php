@@ -7,8 +7,6 @@ namespace Tests\Unit;
 use App\Channel;
 use App\Plan;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Artisan;
-use PlansTableSeeder;
 use Tests\TestCase;
 
 /**
@@ -25,7 +23,7 @@ class SubscriptionModelTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Artisan::call('db:seed', ['--class' => PlansTableSeeder::class]);
+        $this->seedPlans();
         $this->channel = $this->createChannelWithPlan(Plan::find(Plan::FREE_PLAN_ID));
     }
 

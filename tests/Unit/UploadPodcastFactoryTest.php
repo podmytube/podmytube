@@ -9,7 +9,6 @@ use App\Jobs\SendFileBySFTP;
 use App\Media;
 use App\Playlist;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Bus;
 use Tests\TestCase;
 
@@ -41,7 +40,7 @@ class UploadPodcastFactoryTest extends TestCase
 
     public function test_building_podcast_for_playlist_is_good(): void
     {
-        Artisan::call('db:seed', ['--class' => 'ApiKeysTableSeeder']);
+        $this->seedApiKeys();
         factory(Media::class)->create(['media_id' => 'GJzweq_VbVc', 'grabbed_at' => now()->subday()]);
         factory(Media::class)->create(['media_id' => 'AyU4u-iQqJ4', 'grabbed_at' => now()->subWeek()]);
         factory(Media::class)->create(['media_id' => 'hb0Fo1Jqxkc']);

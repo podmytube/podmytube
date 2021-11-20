@@ -68,7 +68,6 @@ RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
-ENV TZ="Europe/Paris"
 
 # installing required php modules
 # pdo & pdo_mysql for db connection
