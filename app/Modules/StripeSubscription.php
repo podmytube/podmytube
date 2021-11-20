@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules;
 
+use App\User;
 use Stripe\StripeClient;
 use Stripe\Subscription;
 
@@ -20,28 +21,20 @@ class StripeSubscription
         return new static(...$params);
     }
 
-    public function create()
+    public function create(User $user, string $stripePlanId): void
     {
-        
-
-    $subscription = Subscription::create([
-        'customer' => '{{CUSTOMER_ID}}'
-      ,
-        'items' => [[
-          'price' => '{{RECURRING_PRICE_ID}}',
-        ]],
-        'add_invoice_items' => [[
-          'price' => '{{PRICE_ID}}'
-      ,
-        ]],
-]);
- 
+        $this->stripeClient->subscriptions->create([
+            'customer' => $user->stripe_id,
+            'items' => [
+                ['price' => $stripePlanId],
+            ],
+        ]);
     }
 
     public function retrieve(string $subscriptionId): self
     {
         $this->subscription = $this->stripeClient->subscriptions->retrieve($subscriptionId);
-        dd($this->subscription->customer);
+
         return $this;
     }
 
@@ -60,4 +53,10 @@ class StripeSubscription
         return $this->subscription->status;
     }
 
+    public function cancel(): bool
+    {
+        $result = $this->stripeClient->subscriptions->cancel($this->subscription->id);
+
+        return $result->status === 'canceled';
+    }
 }

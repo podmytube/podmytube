@@ -154,8 +154,8 @@ class HandleCheckoutSessionCompleted implements ShouldQueue
         }
 
         try {
-            $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));
-            $subscription = $stripe->plans->retrieve(
+            $stripe = new \Stripe\StripeClient(config('app.stripe_secret'));
+            $subscription = $stripe->subscriptions-> plans->retrieve(
                 $subscriptionId,
                 []
             );

@@ -89,6 +89,8 @@ return [
 
     'audio_container_name' => 'mp3',
 
+    'stripe_secret' => env('STRIPE_SECRET'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

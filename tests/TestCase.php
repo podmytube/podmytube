@@ -20,6 +20,7 @@ use Carbon\Carbon;
 use Database\Seeders\ApiKeysTableSeeder;
 use Database\Seeders\CategoriesTableSeeder;
 use Database\Seeders\PlansTableSeeder;
+use Database\Seeders\StripePlansTableSeeder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -241,17 +242,10 @@ abstract class TestCase extends BaseTestCase
         }
 
         if (!StripePlan::count()) {
-            Artisan::call('db:seed', ['--class' => 'StripePlansTableSeeder']);
+            Artisan::call('db:seed', ['--class' => StripePlansTableSeeder::class]);
         }
     }
 
-    protected function seedPlans(): void
-    {
-        if (!Plan::count()) {
-            Artisan::call('db:seed', ['--class' => 'PlansTableSeeder']);
-        }
-    }
-    
     /**
      * create many channel.
      */

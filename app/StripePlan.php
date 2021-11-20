@@ -27,12 +27,33 @@ class StripePlan extends Model
     public static function stripeIdsOnly(): Collection
     {
         $query = self::query();
-        if (App::environment('production')) {
+        if (App::isProduction()) {
             $query->select('stripe_live_id as stripe_id');
         } else {
             $query->select('stripe_test_id as stripe_id');
         }
 
         return $query->get()->pluck('stripe_id');
+    }
+
+    /**
+     * getting stripe price id according to mode (live/test) and frequency.
+     */
+    public static function priceIdForPlanAndBilling(Plan $plan, bool $isYearly = false, bool $isLive = true): string
+    {
+        $query = self::query();
+        if ($isLive) {
+            $query->select('stripe_live_id as stripe_id');
+        } else {
+            $query->select('stripe_test_id as stripe_id');
+        }
+
+        return $query->where([
+            ['plan_id', '=', $plan->id],
+            ['is_yearly', '=', $isYearly],
+        ])
+            ->first()
+            ->stripe_id
+        ;
     }
 }
