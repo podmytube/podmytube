@@ -12,11 +12,13 @@ use App\Exceptions\EmptySubscriptionReceivedFromStripeException;
 use App\Exceptions\InvalidSubscriptionReceivedFromStripeException;
 use App\Exceptions\UnknownChannelIdReceivedFromStripeException;
 use App\Jobs\StripeWebhooks\HandleCheckoutSessionCompleted;
+use App\Modules\StripeCustomer;
 use App\StripePlan;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
 use Stripe\Stripe;
+use Stripe\StripeClient;
 use Tests\TestCase;
 
 /**
@@ -30,11 +32,20 @@ class StripeWebhooksTest extends TestCase
     protected const STRIPE_ROUTE = '/stripe/webhooks';
     protected const HTTP_METHOD_NOT_ALLOWED = 405;
 
+    protected StripeClient $stripeClient;
+    protected StripeCustomer $stripeCustomer;
+
     public function setUp(): void
     {
         parent::setUp();
         // setting signature check to false. I only need to check my part
         config(['stripe-webhooks.verify_signature' => false]);
+        $this->stripeClient = new StripeClient(config('app.stripe_secret'));
+    }
+
+    public function tearDown(): void
+    {
+        
     }
 
     /** @test */
@@ -187,11 +198,17 @@ class StripeWebhooksTest extends TestCase
     {
         $this->seedStripePlans();
 
+        // creating user that will subscribe
+        $user = factory(User::class)->create();
+        $stripeCustomer = StripeCustomer::init($this->stripeClient)->create($user);
+
+        // creating fake subscription
+
         $stripeSubscriptionId = StripePlan::stripeIdsOnly()->random();
         $channel = $this->createChannelWithPlan();
         $stripeMocked = Mockery::mock(Stripe::class)->makePartial();
         $stripeMocked->shouldReceive('retrieve')->with($stripeSubscriptionId)->once()->andReturn(true);
-        
+
         $this->postJson(
             self::STRIPE_ROUTE,
             [
@@ -213,8 +230,6 @@ class StripeWebhooksTest extends TestCase
             ])
         ;
 
-        /* $mocked->shouldReceive('create')->with(sldconfig('sld_domain_url'), sldconfig('sld_partenaire_id'));
-        $mocked->shouldReceive('CREATION_COMMANDE')->with($this->orderDataset)->once()->andReturn(25457);
-        $orderNumber = $mocked->CREATION_COMMANDE($this->orderDataset); */
+        // cleaning
     }
 }

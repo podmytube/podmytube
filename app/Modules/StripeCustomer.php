@@ -21,14 +21,34 @@ class StripeCustomer
         return new static(...$params);
     }
 
-    public function create(User $user)
+    public function create(User $user): self
     {
-        $this->customer = Customer::create([
+        $this->customer = $this->stripeClient->customers->create([
             'email' => $user->email,
-            'payment_method' => 'pm_1FWS6ZClCIKljWvsVCvkdyWg',
-            'invoice_settings' => [
-              'default_payment_method' => 'pm_1FWS6ZClCIKljWvsVCvkdyWg',
-            ],
         ]);
+
+        return $this;
+    }
+
+    public function get(): Customer
+    {
+        return $this->customer;
+    }
+
+    public function email(): string
+    {
+        return $this->customer->email;
+    }
+
+    public function customerId(): string
+    {
+        return $this->customer->id;
+    }
+
+    public function delete(): bool
+    {
+        $result = $this->stripeClient->customers->delete($this->customer->id);
+
+        return $result->deleted === true;
     }
 }

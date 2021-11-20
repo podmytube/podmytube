@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Modules;
 
+use App\Modules\StripeCustomer;
 use App\Modules\StripeSubscription;
+use App\StripePlan;
+use App\User;
 use Stripe\StripeClient;
 use Tests\TestCase;
 
@@ -15,28 +18,35 @@ use Tests\TestCase;
 class StripeSubscriptionTest extends TestCase
 {
     protected StripeClient $stripeClient;
+    protected ?StripeSubscription $stripeSubscription = null;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->stripeClient = new StripeClient(env('STRIPE_SECRET'));
+        $this->seedStripePlans($withPlans = true);
+        $this->stripeClient = new StripeClient(config('app.stripe_secret'));
+    }
+
+    public function tearDown(): void
+    {
+        if ($this->stripeSubscription !== null) {
+            $this->stripeSubscription->cancel();
+        }
+        parent::tearDown();
     }
 
     /** @test */
-    public function single_subscription_is_fine_too(): void
+    public function subscription_creation_is_fine(): void
     {
-        $expectedSubscriptionId = 'sub_JG9l8yNQe3TGe5';
-        $expectedCustomerId = 'cus_JG9lduW7rPvVKW';
-        $expectedStatus = 'active';
+        // creating one user
+        $user = factory(User::class)->create();
+        $this->stripeCustomer = StripeCustomer::init($this->stripeClient)->create($user);
+        $user->update(['stripe_id' => $this->stripeCustomer->customerId()]);
 
-        /**
-         * getting one random subscription from the stripe api.
-         */
-        $subscription = StripeSubscription::init($this->stripeClient)->retrieve($expectedSubscriptionId);
-        $this->assertNotNull($subscription);
-        $this->assertInstanceOf(StripeSubscription::class, $subscription);
-        $this->assertEquals($expectedSubscriptionId, $subscription->subscriptionId());
-        $this->assertEquals($expectedCustomerId, $subscription->customerId());
-        $this->assertEquals($expectedStatus, $subscription->status());
+        // getting one plan
+        $plan = $this->getPlanBySlug('starter');
+        $stripePlanId = StripePlan::priceIdForPlanAndBilling($plan, false, false);
+
+        $this->stripeSubscription = StripeSubscription::init($this->stripeClient)->create($user, $stripePlanId);
     }
 }

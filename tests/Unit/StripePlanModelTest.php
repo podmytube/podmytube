@@ -7,7 +7,6 @@ namespace Tests\Unit;
 use App\StripePlan;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 
 /**
@@ -21,8 +20,8 @@ class StripePlanModelTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Artisan::call('db:seed', ['--class' => 'PlansTableSeeder']);
-        Artisan::call('db:seed', ['--class' => 'StripePlansTableSeeder']);
+        $this->seedPlans();
+        $this->seedStripePlans();
     }
 
     /** @test */
@@ -44,5 +43,72 @@ class StripePlanModelTest extends TestCase
         $this->assertNotNull($result);
         $this->assertInstanceOf(Collection::class, $result);
         $this->assertEqualsCanonicalizing($expectedStripeIds, $result->toArray());
+    }
+
+    /**
+     * @test
+     * @dataProvider provideExpectedPriceIds
+     */
+    public function getting_stripe_id_by_plan_and_billing_frequency_is_fine(array $provided): void
+    {
+        array_map(
+            function (string $mode) use ($provided): void {
+                $plan = $this->getPlanBySlug($provided['slug']);
+                $expectedYearlyPriceId = $provided[$mode]['yearly'];
+                $expectedMonthlyPriceId = $provided[$mode]['monthly'];
+
+                $isLive = $mode === 'live' ? true : false;
+
+                // yearly
+                $result = StripePlan::priceIdForPlanAndBilling($plan, true, $isLive);
+                $this->assertNotNull($result);
+                $this->assertEquals($expectedYearlyPriceId, $result);
+
+                // monthly
+                $result = StripePlan::priceIdForPlanAndBilling($plan, false, $isLive);
+                $this->assertNotNull($result);
+                $this->assertEquals($expectedMonthlyPriceId, $result);
+            },
+            ['test', 'live']
+        );
+    }
+
+    public function provideExpectedPriceIds()
+    {
+        return [
+            [[
+                'slug' => 'starter',
+                'test' => [
+                    'yearly' => 'price_1Ia1NzLrQ8vSqYZETFAVb2Fb',
+                    'monthly' => 'price_1Ia1NzLrQ8vSqYZElJhNIc4V',
+                ],
+                'live' => [
+                    'yearly' => 'price_1HmxVLLrQ8vSqYZEFlv2SUpd',
+                    'monthly' => 'price_1HmxVLLrQ8vSqYZEOK2BxHfy',
+                ],
+            ]],
+            [[
+                'slug' => 'professional',
+                'test' => [
+                    'yearly' => 'price_1IctnvLrQ8vSqYZEQ2Khysvu',
+                    'monthly' => 'price_1IctnvLrQ8vSqYZEcx9buUYo',
+                ],
+                'live' => [
+                    'yearly' => 'price_1IcttMLrQ8vSqYZERib3oMYG',
+                    'monthly' => 'price_1IcttNLrQ8vSqYZE2xOQ6HGe',
+                ],
+            ]],
+            [[
+                'slug' => 'business',
+                'test' => [
+                    'yearly' => 'price_1IctxLLrQ8vSqYZEKdKkpHsm',
+                    'monthly' => 'price_1IctxLLrQ8vSqYZEg7qP6959',
+                ],
+                'live' => [
+                    'yearly' => 'price_1HmxbYLrQ8vSqYZEdab8H6WN',
+                    'monthly' => 'price_1HmxbYLrQ8vSqYZE1Q3qOMt1',
+                ],
+            ]],
+        ];
     }
 }
