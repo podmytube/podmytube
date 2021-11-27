@@ -14,6 +14,7 @@ use App\Media;
 use App\Modules\MediaProperties;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class MediasController extends Controller
@@ -67,14 +68,19 @@ class MediasController extends Controller
 
         $validatedParams = $request->validated();
 
+        Log::debug('MediaUploadedByUser : form is validated');
+
         /** analyze the audio file */
         $mediaProperties = MediaProperties::analyzeFile($request->file('media_file'));
 
+        Log::debug('MediaUploadedByUser : form is validated');
         /** getting media_id */
         $mediaId = $channel->nextMediaId();
 
         // moving file where we can find it
-        Storage::putFileAs('uploadedMedias', $request->file('media_file'), $mediaId . '.mp3');
+        $path = Storage::putFileAs('uploadedMedias', $request->file('media_file'), $mediaId . '.mp3');
+
+        Log::debug("MediaUploadedByUser : file has been moved to {$path}");
 
         /** save the information */
         $media = Media::create([
@@ -90,8 +96,12 @@ class MediasController extends Controller
             'status' => Media::STATUS_UPLOADED_BY_USER,
         ]);
 
+        Log::debug("MediaUploadedByUser : media is persisted with id {$media->id}");
+
         // dispatching event
         MediaUploadedByUser::dispatch($media);
+
+        Log::debug('MediaUploadedByUser : media has been dispatched for upload');
 
         return redirect()
             ->route('channel.medias.index', $channel)
@@ -113,6 +123,7 @@ class MediasController extends Controller
             'grabbed_at' => Carbon::now(),
             'status' => Media::STATUS_UPLOADED_BY_USER,
         ];
+
         if ($request->file('media_file') !== null) {
             /** analyze the audio file */
             $mediaProperties = MediaProperties::analyzeFile($request->file('media_file'));
@@ -145,7 +156,7 @@ class MediasController extends Controller
     public function destroy(Channel $channel, Media $media)
     {
         $this->authorize('addMedia', $channel);
-        
+
         $savedTitle = $media->title;
 
         MediaCleaning::dispatch($media);
