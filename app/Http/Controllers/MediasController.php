@@ -64,7 +64,6 @@ class MediasController extends Controller
 
     public function store(MediaRequest $request, Channel $channel)
     {
-        Log::debug('MediaUploadedByUser : start ');
         $this->authorize('addMedia', $channel);
 
         $validatedParams = $request->validated();
@@ -74,7 +73,7 @@ class MediasController extends Controller
         /** analyze the audio file */
         $mediaProperties = MediaProperties::analyzeFile($request->file('media_file'));
 
-        Log::debug('MediaUploadedByUser : form is validated');
+        Log::debug('MediaUploadedByUser : media has been analyzed');
         /** getting media_id */
         $mediaId = $channel->nextMediaId();
 
