@@ -64,6 +64,7 @@ class MediasController extends Controller
 
     public function store(MediaRequest $request, Channel $channel)
     {
+        Log::debug('MediaUploadedByUser : start ');
         $this->authorize('addMedia', $channel);
 
         $validatedParams = $request->validated();
