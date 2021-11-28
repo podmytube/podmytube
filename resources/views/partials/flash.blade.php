@@ -11,7 +11,7 @@
 
         @if ($errors->any())
             <div class="bg-gray-100 border rounded-lg border-gray-500 text-gray-900 px-4 py-3" role="alert">
-                <p class="font-semibold">Errors !</p>
+                <p class="font-semibold">😨 Oops something wrong happened 👾</p>
                 <p class="font-bold">
                 <ul>
                     @foreach ($errors->all() as $error)

@@ -13,6 +13,7 @@ use App\Playlist;
 use Exception;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class ThumbsController extends Controller
 {
@@ -20,14 +21,26 @@ class ThumbsController extends Controller
     {
         $this->authorize('update', $channel);
 
-        return $this->coverUpdate($request->file('new_thumb_file'), $channel);
+        try {
+            return $this->coverUpdate($request->file('new_thumb_file'), $channel);
+        } catch (Throwable $thrown) {
+            Log::error($thrown->getMessage());
+
+            return redirect()->route('home')->withErrors(['danger' => $thrown->getMessage()]);
+        }
     }
 
     public function playlistCoverUpdate(ThumbRequest $request, Playlist $playlist)
     {
         $this->authorize('update', $playlist);
 
-        return $this->coverUpdate($request->file('new_thumb_file'), $playlist);
+        try {
+            return $this->coverUpdate($request->file('new_thumb_file'), $playlist);
+        } catch (Throwable $thrown) {
+            Log::error($thrown->getMessage());
+
+            return redirect()->route('home')->withErrors(['danger' => $thrown->getMessage()]);
+        }
     }
 
     public function channelCoverEdit(Channel $channel)
@@ -55,11 +68,18 @@ class ThumbsController extends Controller
 
             throw new Exception('A problem occurs during new thumb upload !');
         }
+
         $thumb = $coverable->setCoverFromUploadedFile($uploadedFile);
+
+        Log::notice(__FUNCTION__ . " : {$coverable->nameWithId()} thumb has been updated/created in db");
 
         Vignette::fromThumb($thumb)->makeIt()->saveLocally();
 
+        Log::notice(__FUNCTION__ . " : {$coverable->nameWithId()} vignette has been created locally");
+
         ThumbUpdated::dispatch($thumb->coverable);
+
+        Log::notice(__FUNCTION__ . " : {$coverable->nameWithId()} thumbUpdated event has been dispatched");
 
         return redirect()->route('home')->with('success', 'Your cover has been updated 🎉.');
     }
