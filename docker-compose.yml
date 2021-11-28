@@ -1,7 +1,7 @@
 version: "3.3"
 services:
     dashboard-pmt:
-        container_name: dashboard.podmytube.com
+        container_name: podmytube
         build:
             context: .
             dockerfile: .docker/Dockerfile

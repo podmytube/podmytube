@@ -1,5 +1,5 @@
 #!/bin/bash
-containerName=dashboard.podmytube.com
+containerName=podmytube
 
 # updating code
 git pull
