@@ -1,5 +1,5 @@
 #!/usr/bin/zsh
-containerName=dashboard.podmytube.com
+containerName=podmytube
 
 # updating code
 git pull
