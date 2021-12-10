@@ -7,6 +7,7 @@ namespace App\Factories;
 use App\Events\ChannelUpdated;
 use App\Exceptions\DownloadMediaTagException;
 use App\Exceptions\MediaIsTooOldException;
+use App\Exceptions\YoutubeAndLocalDurationException;
 use App\Exceptions\YoutubeMediaDoesNotExistException;
 use App\Exceptions\YoutubeMediaIsNotAvailableException;
 use App\Jobs\SendFileBySFTP;
@@ -83,7 +84,10 @@ class DownloadMediaFactory
             $status = Media::STATUS_TAG_FILTERED;
         } catch (MediaIsTooOldException $exception) {
             $status = Media::STATUS_AGE_FILTERED;
+        } catch (YoutubeAndLocalDurationException $exception){
+            $status = Media::STATUS_NOT_DOWNLOADED;
         }
+
 
         // update infos
         Log::notice('Persisting media infos into DB.');
