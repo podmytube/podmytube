@@ -101,6 +101,10 @@ Route::domain('dashboard.' . config('app.domain'))->group(function (): void {
         Route::patch('playlist/{playlist}/cover/update', [ThumbsController::class, 'playlistCoverUpdate'])->name('playlist.cover.update');
 
         // User profile
-        Route::resource('user', 'UsersController')->only(['index', 'update', 'destroy']);
+        Route::resource('user', 'UserController')->only(['index', 'update', 'destroy']);
+        // Impersonate
+        Route::get('/{user}/impersonate', 'UsersController@impersonate')->name('users.impersonate');
+        Route::get('/leave-impersonate', 'UsersController@leaveImpersonate')->name('users.leave-impersonate');
+        Route::resource('users', 'UsersController')->only(['index']);
     });
 });
