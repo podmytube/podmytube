@@ -54,11 +54,6 @@ class UsersAccessTest extends TestCase
             ->get(route('users.impersonate', $anotherUser))
             ->assertForbidden()
         ;
-
-        $this->actingAs($notSuperadmin)
-            ->get(route('users.leave-impersonate'))
-            ->assertForbidden()
-        ;
     }
 
     /** @test */
