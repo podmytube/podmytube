@@ -36,8 +36,6 @@ class UsersController extends Controller
 
     public function leaveImpersonate()
     {
-        Gate::authorize('superadmin');
-
         auth()->user()->leaveImpersonation();
 
         return redirect()->route('home');
