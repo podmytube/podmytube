@@ -42,6 +42,11 @@
                 href="{{ route('channel.create') }}">Add your podcast</a>
             <a class="mt-1 block px-4 py-2 text-gray-100 rounded hover:bg-gray-800 sm:mt-0 sm:mr-2" href="#"
                 id="logout-link">Logout</a>
+            @if (session('impersonated_by'))
+                <a class="mt-1 block px-4 py-2 text-gray-100 rounded hover:bg-gray-800 sm:mt-0 sm:mr-2"
+                    href="{{ route('users.leave-impersonate') }}">Leave Impersonation</a>
+            @endif
+
         @endguest
     </div>
 </header>
