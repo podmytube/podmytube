@@ -31,16 +31,16 @@ class DeleteChannelCommand extends Command
      */
     public function handle()
     {
-        $channel = Channel::byChannelId($this->argument('channelId'));
+        $channel = Channel::byChannelId($this->argument('channel_id'));
         if (!$channel) {
-            $this->error("There is no registered channel with this id ({$this->argument('channelId')}).");
+            $this->error("There is no registered channel with this id ({$this->argument('channel_id')}).");
 
             return 1;
         }
 
         ChannelCleaningJob::dispatch($channel);
 
-        $this->line("Channel {$this->argument('channelId')} is queued to be deleted soon.");
+        $this->line("Channel {$this->argument('channel_id')} is queued to be deleted soon.");
 
         return 0;
     }
