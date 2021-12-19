@@ -1,6 +1,6 @@
 #!/usr/bin/zsh
 
-pathToFix='storage/logs'
+pathToFix='/home/fred/Projects/podmytube/storage/logs'
 for file in $(ls $pathToFix); do
     filePath=$pathToFix/$file
     filePerms=$(sudo stat -c '%U:%G' $filePath)
