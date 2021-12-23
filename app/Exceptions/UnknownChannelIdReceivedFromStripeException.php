@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Exceptions;
 
-use Exception;
-
-class UnknownChannelIdReceivedFromStripeException extends Exception
+class UnknownChannelIdReceivedFromStripeException extends PodmytubeException
 {
+    protected $message = 'Channel_id received from stripe is unknown.';
 }

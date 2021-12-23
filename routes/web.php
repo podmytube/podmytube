@@ -13,38 +13,56 @@ use App\Http\Controllers\ThumbsController;
 Route::get('test', function () {
     return view('test');
 })->name('terms');
+
 Route::get('terms', function () {
     return view('terms');
 })->name('terms');
+
 Route::get('privacy', function () {
     return view('privacy');
 })->name('privacy');
+
 Route::domain('cockpit.' . config('app.domain'))->group(function (): void {
     Route::get('/', 'CockpitController@index')->name('cockpit.index');
 });
 
+// =======================================
+//         !! Stripe Route !!
+// =======================================
+Route::stripeWebhooks('/stripe/webhooks');
+
+// =======================================
+//             public part
+// =======================================
 Route::domain('www.' . config('app.domain'))->group(function (): void {
     Route::get('/', 'IndexController@index')->name('www.index');
+
     Route::get('pricing', 'PricingController@index')->name('pricing');
+
     Route::get('faq', function () {
         return view('faq');
     })->name('faq');
+
     Route::get('about', function () {
         return view('about');
     })->name('about');
+
     Route::get('thumb', function () {
         return view('thumb');
     });
+
     Route::resource('post', 'PostController')->only(['index', 'show']);
+
     Route::get('test', function () {
         return view('test');
     })->name('test');
 });
 
+// =======================================
+//          authenticated part
+// =======================================
 Route::domain('dashboard.' . config('app.domain'))->group(function (): void {
     Auth::routes();
-
-    Route::stripeWebhooks('/stripe/webhooks');
 
     // ================================================
     // Dash homepage is the login screen
@@ -101,6 +119,10 @@ Route::domain('dashboard.' . config('app.domain'))->group(function (): void {
         Route::patch('playlist/{playlist}/cover/update', [ThumbsController::class, 'playlistCoverUpdate'])->name('playlist.cover.update');
 
         // User profile
-        Route::resource('user', 'UsersController')->only(['index', 'update', 'destroy']);
+        Route::resource('user', 'UserController')->only(['index', 'update', 'destroy']);
+        // Impersonate
+        Route::get('/{user}/impersonate', 'UsersController@impersonate')->name('users.impersonate');
+        Route::get('/leave-impersonate', 'UsersController@leaveImpersonate')->name('users.leave-impersonate');
+        Route::resource('users', 'UsersController')->only(['index']);
     });
 });

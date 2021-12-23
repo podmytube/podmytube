@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Exceptions;
 
-use Exception;
-
-class InvalidSubscriptionReceivedFromStripeException extends Exception
+class InvalidSubscriptionReceivedFromStripeException extends PodmytubeException
 {
+    protected $message = 'Subscription_id received from stripe seems invalid.';
 }

@@ -1,10 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Exceptions;
 
-use Exception;
-
-class EmptySubscriptionReceivedFromStripeException extends Exception
+class EmptySubscriptionReceivedFromStripeException extends PodmytubeException
 {
-    //
+    protected $message = 'There is no subscription_id in json received from stripe.';
 }

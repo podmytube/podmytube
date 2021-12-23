@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 /**
@@ -15,7 +17,7 @@ class IndexController extends Controller
     public function index()
     {
         /**
-         * With no DB Config, creating plans list
+         * With no DB Config, creating plans list.
          */
         $plans = [
             'free' => [
@@ -35,9 +37,7 @@ class IndexController extends Controller
             ],
         ];
 
-        /**
-         * convert hash table into many variables I can compact
-         */
+        // convert hash table into many variables I can compact
 
         return view('index', compact(['plans']));
     }

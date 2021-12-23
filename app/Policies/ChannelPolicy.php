@@ -12,7 +12,7 @@ class ChannelPolicy
 {
     use HandlesAuthorization;
 
-    public function any(User $user, Channel $channel): bool
+    public function viewAny(User $user, Channel $channel): bool
     {
         return $channel->user->is($user);
     }

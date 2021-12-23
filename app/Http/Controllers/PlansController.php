@@ -20,6 +20,8 @@ class PlansController extends Controller
      */
     public function index(Request $request, Channel $channel)
     {
+        $this->authorize($channel);
+
         $isYearly = $request->get('yearly') === 1 ? true : false;
 
         Stripe::setApiKey(config('services.stripe.secret'));
@@ -43,9 +45,11 @@ class PlansController extends Controller
                     'trial_period_days' => 30,
                 ],
                 'mode' => 'subscription',
-                'success_url' => config('app.url').'/success?session_id={CHECKOUT_SESSION_ID}',
-                'cancel_url' => config('app.url').'/cancel',
-                'metadata' => ['channel_id' => $channel->channel_id],
+                'success_url' => config('app.url') . '/success?session_id={CHECKOUT_SESSION_ID}',
+                'cancel_url' => config('app.url') . '/cancel',
+                'metadata' => [
+                    'channel_id' => $channel->channel_id,
+                ],
             ];
 
             if ($channel->user->stripe_id !== null) {

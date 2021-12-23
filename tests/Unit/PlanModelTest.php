@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use App\Plan;
+use App\StripePlan;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use InvalidArgumentException;
 use Tests\TestCase;
 
 /**
@@ -66,5 +68,34 @@ class PlanModelTest extends TestCase
             $this->assertInstanceOf(Plan::class, $plan);
             $this->assertTrue(in_array($plan->slug, $planSlugs));
         });
+    }
+
+    /** @test */
+    public function by_slugs_and_billing_frequency_should_fail(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        Plan::bySlugsAndBillingFrequency([]);
+    }
+
+    /** @test */
+    public function by_slugs_and_billing_frequency_is_ok(): void
+    {
+        $catPlan = factory(Plan::class)->create(['slug' => 'cat']);
+        $catYearlyBillingIWant = factory(StripePlan::class)->create(['plan_id' => $catPlan->id, 'is_yearly' => true]);
+        factory(StripePlan::class)->create(['plan_id' => $catPlan->id, 'is_yearly' => false]);
+
+        $result = Plan::bySlugsAndBillingFrequency(['cat'], true);
+        $this->assertEquals($catPlan->id, $result->first()->id);
+        $this->assertCount(1, $result->first()->stripePlans);
+        $this->assertEquals($catYearlyBillingIWant->id, $result->first()->stripePlans->first()->id);
+
+        /** adding another */
+        $anotherCatYearlyBillingIWant = factory(StripePlan::class)->create(['plan_id' => $catPlan->id, 'is_yearly' => true]);
+        $result = Plan::bySlugsAndBillingFrequency(['cat'], true);
+        $this->assertCount(2, $result->first()->stripePlans);
+        $this->assertEqualsCanonicalizing(
+            [$catYearlyBillingIWant->id, $anotherCatYearlyBillingIWant->id],
+            $result->first()->stripePlans->pluck('id')->toArray()
+        );
     }
 }

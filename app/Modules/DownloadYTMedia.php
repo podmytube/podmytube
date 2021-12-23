@@ -7,6 +7,7 @@ namespace App\Modules;
 use App\Exceptions\DownloadMediaFailureException;
 use App\Media;
 use Illuminate\Support\Facades\Log;
+use InvalidArgumentException;
 
 /**
  * This class goal is to download youtube video and to convert it into one audio file.
@@ -110,7 +111,7 @@ class DownloadYTMedia
     protected function checkDestinationFolder(): bool
     {
         if (!is_dir($this->destinationFolder) || !is_writable($this->destinationFolder)) {
-            throw new \InvalidArgumentException("The folder {$this->destinationFolder} is either invalid or not writable");
+            throw new InvalidArgumentException("The folder {$this->destinationFolder} for {$this->media->id} is either invalid or not writable");
         }
 
         return true;
@@ -148,8 +149,16 @@ class DownloadYTMedia
         }
     }
 
+    /**
+     * clean the way before.
+     * remove mp3 and video previously generated.
+     */
     protected function cleanPreviouslyDownloaded()
     {
+        if (file_exists($this->downloadedFilePath())) {
+            unlink($this->downloadedFilePath());
+        }
+
         if (file_exists($this->downloadedVideoFilePath())) {
             unlink($this->downloadedVideoFilePath());
         }

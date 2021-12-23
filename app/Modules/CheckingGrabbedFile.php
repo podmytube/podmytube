@@ -39,10 +39,10 @@ class CheckingGrabbedFile
          * yt duration is one integer, duration returned by mp3 is seconds.microseconds.
          */
         if (abs($this->mediaProperties->duration() - $this->youtubeMediaDuration) > $acceptableSpread) {
-            throw new YoutubeAndLocalDurationException(
-                "Spread between Youtube duration {$this->youtubeMediaDuration} and \\
-                audio file generated {$this->mediaProperties->duration()} is more than {{$acceptableSpread}} seconds !"
-            );
+            $message = "Spread between Youtube duration {$this->youtubeMediaDuration} and ";
+            $message .= "audio file generated {$this->mediaProperties->duration()} is more than {{$acceptableSpread}} seconds !";
+
+            throw new YoutubeAndLocalDurationException($message);
         }
 
         return true;

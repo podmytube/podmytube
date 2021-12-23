@@ -56,4 +56,13 @@ class StripePlan extends Model
             ->stripe_id
         ;
     }
+
+    public static function byStripeId(string $stripeId, bool $isLive = true): ?self
+    {
+        return self::query()->when($isLive, function ($query) use ($stripeId) {
+            return $query->where('stripe_live_id', '=', $stripeId);
+        }, function ($query) use ($stripeId) {
+            return $query->where('stripe_test_id', '=', $stripeId);
+        })->first();
+    }
 }

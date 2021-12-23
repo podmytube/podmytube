@@ -20,8 +20,7 @@ class StripePlanModelTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->seedPlans();
-        $this->seedStripePlans();
+        $this->seedStripePlans(true);
     }
 
     /** @test */
@@ -110,5 +109,18 @@ class StripePlanModelTest extends TestCase
                 ],
             ]],
         ];
+    }
+
+    /** @test */
+    public function by_stripe_id_should_be_good(): void
+    {
+        $this->assertNull(StripePlan::byStripeId('invalid-live', true));
+        $this->assertNull(StripePlan::byStripeId('invalid-test', false));
+
+        $expectedStripeId = 'price_1HmxVLLrQ8vSqYZEFlv2SUpd';
+        $result = StripePlan::byStripeId($expectedStripeId);
+        $this->assertNotNull($result);
+        $this->assertInstanceOf(StripePlan::class, $result);
+        $this->assertEquals($expectedStripeId, $result->stripe_live_id);
     }
 }
