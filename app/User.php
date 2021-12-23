@@ -13,12 +13,14 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Lab404\Impersonate\Models\Impersonate;
 
 /**
  * User Model Class.
  */
 class User extends Authenticatable
 {
+    use Impersonate;
     use Notifiable;
     use SoftDeletes;
 
@@ -31,6 +33,7 @@ class User extends Authenticatable
 
     protected $casts = [
         'newsletter' => 'boolean',
+        'superadmin' => 'boolean',
     ];
 
     /**
@@ -58,9 +61,9 @@ class User extends Authenticatable
         return $this->user_id;
     }
 
-    public function isSuperAdmin()
+    public function isSuperAdmin(): bool
     {
-        return $this->superadmin === 1;
+        return $this->superadmin === true;
     }
 
     public static function byEmail(string $email): ?self
@@ -81,5 +84,16 @@ class User extends Authenticatable
     public static function whoWantNewsletter(): Collection
     {
         return self::newsletter()->select('email', 'firstname', 'lastname')->get();
+    }
+
+    public function getNameAttribute()
+    {
+        $result = $this->firstname;
+
+        if ($this->lastname) {
+            $result .= ' ' . $this->lastname;
+        }
+
+        return $result;
     }
 }

@@ -1,10 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Exceptions;
 
-use Exception;
-
-class EmptyPlanReceivedFromStripeException extends Exception
+class EmptyPlanReceivedFromStripeException extends PodmytubeException
 {
-    //
+    protected $message = 'Plan id received from stripe is empty.';
 }

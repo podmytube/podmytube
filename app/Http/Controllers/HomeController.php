@@ -1,9 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * the home controller. Only used to display the welcome page project for now.
- *
- * @package PodMyTube
  *
  * @author Frederick Tyteca <fred@podmytube.com>
  */
@@ -28,7 +28,7 @@ class HomeController extends Controller
     public function index()
     {
         /**
-         * Get user's channel(s)
+         * Get user's channel(s).
          */
         $channels = Channel::with(['subscription.plan', 'cover'])
             ->where('user_id', '=', Auth::id())
@@ -38,8 +38,10 @@ class HomeController extends Controller
                 if ($channel->cover) {
                     $channel->vignetteUrl = Vignette::fromThumb($channel->cover)->url();
                 }
+
                 return $channel;
-            });
+            })
+        ;
 
         $playlists = Playlist::userPlaylists(Auth::user());
 

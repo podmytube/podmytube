@@ -25,6 +25,6 @@ $factory->define(App\User::class, function (Faker $faker, array $attributes = []
         'remember_token' => Str::random(10),
         'newsletter' => $attributes['newsletter'] ?? true,
         'superadmin' => $attributes['superadmin'] ?? false,
-        'stripe_id' => $attributes['stripe_id'] ?? true,
+        'stripe_id' => $attributes['stripe_id'] ?? null,
     ];
 });

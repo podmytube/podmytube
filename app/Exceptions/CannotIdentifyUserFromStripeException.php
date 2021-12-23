@@ -1,10 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Exceptions;
 
-use Exception;
-
-class CannotIdentifyUserFromStripeException extends Exception
+class CannotIdentifyUserFromStripeException extends PodmytubeException
 {
-    //
+    protected $message = 'The informations received from stripe does not allow us to identify the customer.';
 }

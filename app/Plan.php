@@ -7,6 +7,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use InvalidArgumentException;
 
 class Plan extends Model
 {
@@ -101,7 +102,7 @@ class Plan extends Model
 
     public function scopeWithYearlyStripePlans(Builder $query)
     {
-        return $query->whereHas('stripePlan', function (Builder $query) {
+        return $query->whereHas('stripePlans', function (Builder $query) {
             return $query->where('is_yearly', '=', true);
         });
     }
@@ -114,5 +115,23 @@ class Plan extends Model
         }
 
         return $results;
+    }
+
+    public static function bySlugsAndBillingFrequency(array $slugs, ?bool $isYearly = true): ?Collection
+    {
+        if (!count($slugs)) {
+            throw new InvalidArgumentException('You should give some slugs to get plans');
+        }
+
+        return Plan::with(
+            [
+                'stripePlans' => function ($query) use ($isYearly): void {
+                    $query->where('is_yearly', '=', $isYearly);
+                },
+            ]
+        )
+            ->slugs($slugs)
+            ->get()
+        ;
     }
 }
