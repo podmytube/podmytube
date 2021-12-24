@@ -9,14 +9,17 @@ use App\Exceptions\CannotIdentifyUserFromStripeException;
 use App\Exceptions\ChannelOwnerMismatchingStripeException;
 use App\Exceptions\EmptyChannelIdReceivedFromStripeException;
 use App\Exceptions\EmptyCustomerReceivedFromStripeException;
+use App\Exceptions\EmptyPlanReceivedFromStripeException;
 use App\Exceptions\EmptySubscriptionReceivedFromStripeException;
 use App\Exceptions\InvalidCustomerEmailReceivedFromStripeException;
 use App\Exceptions\InvalidSubscriptionReceivedFromStripeException;
 use App\Exceptions\UnknownChannelIdReceivedFromStripeException;
+use App\Exceptions\UnknownStripePlanReceivedFromStripeException;
 use App\Jobs\StripeWebhooks\HandleCheckoutSessionCompletedJob;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
+use InvalidArgumentException;
 use Mockery\MockInterface;
 use Spatie\WebhookClient\Models\WebhookCall;
 use Stripe\StripeClient;
@@ -172,6 +175,7 @@ class HandleCheckoutSessionCompletedJobTest extends TestCase
     /** @test */
     public function run_is_throwing_exception_when_subscription_unknown(): void
     {
+        $invalidSubscriptionId = 'sub_unknown';
         $webHookCall = new WebhookCall([
             'payload' => [
                 'data' => [
@@ -180,14 +184,108 @@ class HandleCheckoutSessionCompletedJobTest extends TestCase
                         'metadata' => [
                             'channel_id' => $this->channel->channel_id,
                         ],
-                        'subscription' => 'sub_unknown',
+                        'subscription' => $invalidSubscriptionId,
                     ],
                 ],
             ],
         ]);
 
-        $job = new HandleCheckoutSessionCompletedJob($webHookCall, $this->stripeMocked());
+        $stripeCLient = $this->mock(StripeClient::class, function (MockInterface $mock) use ($invalidSubscriptionId): void {
+            $mock->shouldReceive(config('app.stripe_secret'))->andReturnSelf();
+            // is called like this : $stripeClient->subscriptions->retrieve(subId)
+            $mock->shouldReceive('request')
+                ->with('get', '/v1/subscriptions/' . $invalidSubscriptionId, null, null)
+                ->andThrow(InvalidArgumentException::class, '')
+            ;
+        });
+
+        $job = new HandleCheckoutSessionCompletedJob($webHookCall, $stripeCLient);
         $this->expectException(InvalidSubscriptionReceivedFromStripeException::class);
+        $job->handle();
+    }
+
+    /** @test */
+    public function run_is_throwing_exception_when_stripe_plan_empty(): void
+    {
+        $validSubscriptionId = 'sub_valid';
+        $webHookCall = new WebhookCall([
+            'payload' => [
+                'data' => [
+                    'object' => [
+                        'customer_email' => $this->user->email,
+                        'metadata' => [
+                            'channel_id' => $this->channel->channel_id,
+                        ],
+                        'subscription' => $validSubscriptionId,
+                    ],
+                ],
+            ],
+        ]);
+
+        $stripeCLient = $this->mock(StripeClient::class, function (MockInterface $mock) use ($validSubscriptionId): void {
+            $mock->shouldReceive(config('app.stripe_secret'))->andReturnSelf();
+            // is called like this : $stripeClient->subscriptions->retrieve(subId)
+            $mock->shouldReceive('request')
+                ->with('get', '/v1/subscriptions/' . $validSubscriptionId, null, null)
+                ->andReturn(
+                    json_encode(
+                        [
+                            'id' => $validSubscriptionId,
+                            'object' => 'subscription',
+                            'plan' => [],
+                            'quantity' => 1,
+                        ]
+                    )
+                )
+            ;
+        });
+
+        $job = new HandleCheckoutSessionCompletedJob($webHookCall, $stripeCLient);
+        $this->expectException(EmptyPlanReceivedFromStripeException::class);
+        $job->handle();
+    }
+
+    /** @test */
+    public function run_is_throwing_exception_when_stripe_plan_unknown(): void
+    {
+        $validSubscriptionId = 'sub_valid';
+        $webHookCall = new WebhookCall([
+            'payload' => [
+                'data' => [
+                    'object' => [
+                        'customer_email' => $this->user->email,
+                        'metadata' => [
+                            'channel_id' => $this->channel->channel_id,
+                        ],
+                        'subscription' => $validSubscriptionId,
+                    ],
+                ],
+            ],
+        ]);
+
+        $stripeCLient = $this->mock(StripeClient::class, function (MockInterface $mock) use ($validSubscriptionId): void {
+            $mock->shouldReceive(config('app.stripe_secret'))->andReturnSelf();
+            // is called like this : $stripeClient->subscriptions->retrieve(subId)
+            $mock->shouldReceive('request')
+                ->with('get', '/v1/subscriptions/' . $validSubscriptionId, null, null)
+                ->andReturn(
+                    json_encode(
+                        [
+                            'id' => $validSubscriptionId,
+                            'object' => 'subscription',
+                            'plan' => [
+                                'id' => 'unknonw_stripe_plan_id',
+                                'object' => 'plan',
+                            ],
+                            'quantity' => 1,
+                        ]
+                    )
+                )
+            ;
+        });
+
+        $job = new HandleCheckoutSessionCompletedJob($webHookCall, $stripeCLient);
+        $this->expectException(UnknownStripePlanReceivedFromStripeException::class);
         $job->handle();
     }
 
