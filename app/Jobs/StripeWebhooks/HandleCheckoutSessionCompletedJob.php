@@ -11,6 +11,7 @@ use App\Exceptions\EmptyChannelIdReceivedFromStripeException;
 use App\Exceptions\EmptyCustomerReceivedFromStripeException;
 use App\Exceptions\EmptyPlanReceivedFromStripeException;
 use App\Exceptions\EmptySubscriptionReceivedFromStripeException;
+use App\Exceptions\InvalidCustomerEmailReceivedFromStripeException;
 use App\Exceptions\InvalidSubscriptionReceivedFromStripeException;
 use App\Exceptions\SubscriptionUpdateFailureException;
 use App\Exceptions\UnknownChannelIdReceivedFromStripeException;
@@ -29,7 +30,7 @@ use Illuminate\Support\Facades\Log;
 use Spatie\WebhookClient\Models\WebhookCall;
 use Stripe\StripeClient;
 
-class HandleCheckoutSessionCompleted implements ShouldQueue
+class HandleCheckoutSessionCompletedJob implements ShouldQueue
 {
     use InteractsWithQueue;
     use Queueable;
@@ -43,17 +44,26 @@ class HandleCheckoutSessionCompleted implements ShouldQueue
     protected User $user;
     protected Channel $channel;
     protected ?StripePlan $stripePlan;
+    protected StripeClient $stripeClient;
 
     /** var int $endsAt contain a timestamp returned by stripe for subscription ending */
     protected $endsAt;
 
-    public function __construct(WebhookCall $webhookCall)
+    public function __construct(WebhookCall $webhookCall, ?StripeClient $stripeClient = null)
     {
         $this->webhookCall = $webhookCall;
+
+        // this part is required because I want being able to mock the stripeClient
+        if ($stripeClient === null) {
+            $this->stripeClient = new StripeClient(config('app.stripe_secret'));
+        } else {
+            $this->stripeClient = $stripeClient;
+        }
     }
 
     public function handle(): int
     {
+        Log::debug(self::LOG_PREFIX . 'started');
         $user = $this->getUserFromJson();
         if ($user === null) {
             $exception = new CannotIdentifyUserFromStripeException();
@@ -63,6 +73,7 @@ class HandleCheckoutSessionCompleted implements ShouldQueue
             throw $exception;
         }
 
+        Log::debug(self::LOG_PREFIX . 'user obtained');
         $this->channel = $this->getChannelFromJson();
 
         // channel should belongs to the user
@@ -70,9 +81,10 @@ class HandleCheckoutSessionCompleted implements ShouldQueue
             throw new ChannelOwnerMismatchingStripeException();
         }
 
-        $stripeClient = new StripeClient(config('app.stripe_secret'));
+        Log::debug(self::LOG_PREFIX . 'channel obtained and ownership verified');
+
         // check subscription received from stripe
-        $this->checkSubscription($stripeClient);
+        $this->checkSubscription();
 
         // update subscription on Pod side
         $this->updateSubscription();
@@ -96,6 +108,13 @@ class HandleCheckoutSessionCompleted implements ShouldQueue
             if ($user !== null) {
                 return $user;
             }
+        }
+
+        if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
+            $exception = new InvalidCustomerEmailReceivedFromStripeException();
+            $exception->addInformations("Email : {$email}");
+
+            throw $exception;
         }
 
         // else we are looking for customer email
@@ -158,7 +177,7 @@ class HandleCheckoutSessionCompleted implements ShouldQueue
     /**
      * getting subscription user has chosen.
      */
-    protected function checkSubscription(StripeClient $stripeClient)
+    protected function checkSubscription()
     {
         $subscriptionId = $this->subscriptionIdFromJson();
         if ($subscriptionId === null) {
@@ -166,7 +185,7 @@ class HandleCheckoutSessionCompleted implements ShouldQueue
         }
 
         try {
-            $subscription = $stripeClient->subscriptions->retrieve(
+            $subscription = $this->stripeClient->subscriptions->retrieve(
                 $subscriptionId,
                 []
             );

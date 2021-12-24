@@ -11,14 +11,13 @@ use App\Exceptions\EmptyCustomerReceivedFromStripeException;
 use App\Exceptions\EmptySubscriptionReceivedFromStripeException;
 use App\Exceptions\InvalidSubscriptionReceivedFromStripeException;
 use App\Exceptions\UnknownChannelIdReceivedFromStripeException;
-use App\Jobs\StripeWebhooks\HandleCheckoutSessionCompleted;
-use App\Plan;
+use App\Jobs\StripeWebhooks\HandleCheckoutSessionCompletedJob;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Log;
 use Mockery;
 use Mockery\MockInterface;
 use Stripe\StripeClient;
-use Stripe\Subscription;
 use Tests\TestCase;
 
 /**
@@ -34,29 +33,28 @@ class StripeWebhooksTest extends TestCase
     protected const TEST_STRIPE_CUSTOMER_ID = 'cus_testid';
     protected const TEST_STRIPE_SUBSCRIPTION_ID = 'sub_testid';
 
-    protected MockInterface $mockedStripeClient;
-    protected MockInterface $mockedStripeCustomer;
-    protected MockInterface $mockedStripeSubscription;
-
     public function setUp(): void
     {
-        $this->markTestSkipped("TO BE MOCKED");
         parent::setUp();
+        Log::debug('foo');
         // setting signature check to false. I only need to check my part
         config(['stripe-webhooks.verify_signature' => false]);
 
         // $this->stripeClient = new StripeClient(config('app.stripe_secret'));
         $this->seedStripePlans();
+
+        // $this->mockStripe();
     }
 
     public function tearDown(): void
     {
-        Mockery::close();
+        // Mockery::close();
     }
 
     /** @test */
     public function get_should_fail(): void
     {
+        $this->markTestSkipped('Take too much time');
         $this->get(self::STRIPE_ROUTE)
             ->assertStatus(self::HTTP_METHOD_NOT_ALLOWED)
         ;
@@ -76,6 +74,8 @@ class StripeWebhooksTest extends TestCase
     /** @test */
     public function incomplete_post_no_channel_should_fail(): void
     {
+        $this->markTestSkipped('TO BE DONE');
+
         $user = factory(User::class)->create();
         $this->postJson(
             self::STRIPE_ROUTE,
@@ -94,6 +94,8 @@ class StripeWebhooksTest extends TestCase
     /** @test */
     public function incomplete_post_invalid_channel_should_fail(): void
     {
+        $this->markTestSkipped('TO BE DONE');
+
         $user = factory(User::class)->create();
         $this->postJson(
             self::STRIPE_ROUTE,
@@ -119,6 +121,8 @@ class StripeWebhooksTest extends TestCase
     /** @test */
     public function incomplete_post_channel_not_owned_by_user_should_fail(): void
     {
+        $this->markTestSkipped('TO BE DONE');
+
         $user = factory(User::class)->create();
         $channel = factory(Channel::class)->create();
         $this->postJson(
@@ -150,6 +154,8 @@ class StripeWebhooksTest extends TestCase
      */
     public function incomplete_post_no_subscription_should_fail(): void
     {
+        $this->markTestSkipped('TO BE DONE');
+
         $channel = factory(Channel::class)->create();
         $this->postJson(
             self::STRIPE_ROUTE,
@@ -175,6 +181,8 @@ class StripeWebhooksTest extends TestCase
     /** @test */
     public function incomplete_post_invalid_subscription_should_fail(): void
     {
+        $this->markTestSkipped('TO BE DONE');
+
         $channel = factory(Channel::class)->create();
         $this->postJson(
             self::STRIPE_ROUTE,
@@ -201,6 +209,7 @@ class StripeWebhooksTest extends TestCase
     /** @test */
     public function complete_post_should_succeed(): void
     {
+        $this->markTestSkipped('TO BE DONE');
         // creating user that will subscribe
         $user = factory(User::class)->create(['stripe_id' => self::TEST_STRIPE_CUSTOMER_ID]);
         $channel = factory(Channel::class)->create(['user_id' => $user->user_id]);
@@ -222,10 +231,19 @@ class StripeWebhooksTest extends TestCase
         )
             ->assertStatus(200)
             ->assertJson([
-                'message' => HandleCheckoutSessionCompleted::ERROR_MESSAGE_NO_ERROR,
+                'message' => HandleCheckoutSessionCompletedJob::ERROR_MESSAGE_NO_ERROR,
             ])
         ;
 
         // cleaning
+    }
+
+    protected function mockStripe(): void
+    {
+        $this->stripeClient = $this->mock(StripeClient::class, function (MockInterface $mock): void {
+            $mock->shouldReceive(config('app.stripe_secret'))->andReturnSelf();
+            // is called like this : $stripeClient->subscriptions->retrieve(subId)
+            $mock->shouldReceive('request')->with('get', '/v1/subscriptions/subId', null, null)->andReturn('{id:subId}');
+        });
     }
 }
