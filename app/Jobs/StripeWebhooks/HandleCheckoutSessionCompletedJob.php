@@ -179,10 +179,14 @@ class HandleCheckoutSessionCompletedJob implements ShouldQueue
      */
     protected function checkSubscription()
     {
+        Log::debug(self::LOG_PREFIX . __FUNCTION__);
+
         $subscriptionId = $this->subscriptionIdFromJson();
         if ($subscriptionId === null) {
             throw new EmptySubscriptionReceivedFromStripeException();
         }
+
+        Log::debug(self::LOG_PREFIX . "subscriptionId : {$subscriptionId}");
 
         try {
             $subscription = $this->stripeClient->subscriptions->retrieve(
@@ -190,6 +194,7 @@ class HandleCheckoutSessionCompletedJob implements ShouldQueue
                 []
             );
         } catch (Exception $thrownException) {
+            Log::debug(self::LOG_PREFIX . "subscriptionId : {$subscriptionId} failed");
             $exception = new InvalidSubscriptionReceivedFromStripeException();
             $exception->addInformations('Received subscription : ' . $subscriptionId);
             $exception->addInformations($thrownException->getMessage());
