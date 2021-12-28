@@ -36,6 +36,8 @@ class StripeWebhooksTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+        $this->markTestSkipped('TO BE DONE');
+
         Log::debug('foo');
         // setting signature check to false. I only need to check my part
         config(['stripe-webhooks.verify_signature' => false]);
@@ -54,7 +56,8 @@ class StripeWebhooksTest extends TestCase
     /** @test */
     public function get_should_fail(): void
     {
-        $this->markTestSkipped('Take too much time');
+        $this->markTestSkipped('TO BE DONE');
+
         $this->get(self::STRIPE_ROUTE)
             ->assertStatus(self::HTTP_METHOD_NOT_ALLOWED)
         ;
@@ -63,6 +66,8 @@ class StripeWebhooksTest extends TestCase
     /** @test */
     public function incomplete_post_no_user_should_fail(): void
     {
+        $this->markTestSkipped('TO BE DONE');
+
         $this->postJson(self::STRIPE_ROUTE, ['type' => 'checkout.session.completed'])
             ->assertStatus(500)
             ->assertJson([
