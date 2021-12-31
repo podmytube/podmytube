@@ -82,20 +82,19 @@ class UpdateChannelCommand extends Command
         // for each channel video
         array_map(function ($video) use ($channelToUpdate): void {
             /** check if the video already exist in database */
-            $media = Media::byMediaId($video['media_id']);
-            if ($media === null) {
-                $media = new Media();
-                $media->media_id = $video['media_id'];
-                $media->channel_id = $channelToUpdate->channel_id;
-                info("Media {{$video['title']}} has been registered for channel {{$channelToUpdate->channel_name}}.");
-            }
-            // update it
-            $media->title = $video['title'];
-            $media->description = $video['description'];
-            $media->published_at = $video['published_at'];
-
-            // save it
-            $media->save();
+            $media = Media::query()
+                ->updateOrCreate(
+                    [
+                        'media_id' => $video['media_id'],
+                        'channel_id' => $channelToUpdate->channel_id,
+                    ],
+                    [
+                        'title' => $video['title'],
+                        'description' => $video['description'],
+                        'published_at' => $video['published_at'],
+                    ]
+                )
+            ;
 
             $this->makeProgressBarProgress();
         }, $factory->videos());
