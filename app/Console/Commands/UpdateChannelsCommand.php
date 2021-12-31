@@ -89,22 +89,20 @@ class UpdateChannelsCommand extends Command
 
                 // for each channel video
                 array_map(function (array $video) use ($channel): void {
-                    /** check if the video already exist in database */
-                    $media = Media::byMediaId($video['media_id'], true);
-                    if ($media === null) {
-                        $media = new Media();
-                        $media->media_id = $video['media_id'];
-                        $media->channel_id = $channel->channel_id;
-                        Log::info("Media {$video['title']} has been registered for channel {$channel->channel_name}.");
-                        $this->mediasAdded++;
-                    }
-                    // update it
-                    $media->title = $video['title'];
-                    $media->description = $video['description'];
-                    $media->published_at = $video['published_at'];
-
-                    // save it
-                    $media->save();
+                    // check if the video already exist in database
+                    Media::query()
+                        ->updateOrCreate(
+                            [
+                                'media_id' => $video['media_id'],
+                            ],
+                            [
+                                'channel_id' => $channel->channel_id,
+                                'title' => $video['title'],
+                                'description' => $video['description'],
+                                'published_at' => $video['published_at'],
+                            ]
+                        )
+                    ;
                 }, $factory->videos());
 
                 $apikeysAndQuotas = YoutubeQuotas::forUrls($factory->queriesUsed())

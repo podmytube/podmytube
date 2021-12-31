@@ -322,7 +322,7 @@ class MediaModelTest extends TestCase
         $medias = Media::ungrabbedMediasForChannel($anotherChannel);
         $this->assertCount($expectedNumberOfMediasForAnotherChannel, $medias);
 
-        // adding a grabbed media for someChannel sjould not change the result
+        // adding a grabbed media for someChannel should not change the result
         $this->addMediasToChannel($someChannel, 1, true);
         $medias = Media::ungrabbedMediasForChannel($someChannel);
         $this->assertCount($expectedNumberOfMediasForSomeChannel, $medias);
