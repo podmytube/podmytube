@@ -81,14 +81,14 @@ class UpdateChannelCommand extends Command
 
         // for each channel video
         array_map(function ($video) use ($channelToUpdate): void {
-            /** check if the video already exist in database */
-            $media = Media::query()
+            // check if the video already exist in database
+            Media::query()
                 ->updateOrCreate(
                     [
                         'media_id' => $video['media_id'],
-                        'channel_id' => $channelToUpdate->channel_id,
                     ],
                     [
+                        'channel_id' => $channelToUpdate->channel_id,
                         'title' => $video['title'],
                         'description' => $video['description'],
                         'published_at' => $video['published_at'],
