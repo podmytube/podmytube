@@ -54,10 +54,10 @@ class UpdateChannelCommand extends Command
             return 0;
         }
 
-        $channelToUpdate = Channel::byChannelId($this->argument('channel_id'));
+        $channel = Channel::byChannelId($this->argument('channel_id'));
 
         // no channel to refresh => nothing to do
-        if ($channelToUpdate === null) {
+        if ($channel === null) {
             $message = "There is no channel with this channel_id ({$this->argument('channel_id')})";
             $this->error($message);
             Log::error($message);
@@ -65,8 +65,8 @@ class UpdateChannelCommand extends Command
             return 1;
         }
 
-        $this->info("Channel to update {$channelToUpdate->channel_id} - limit {$this->option('limit')}", 'v');
-        $factory = YoutubeChannelVideos::forChannel($channelToUpdate->channel_id, $this->option('limit'));
+        $this->info("Channel to update {$channel->channel_id} - limit {$this->option('limit')}", 'v');
+        $factory = YoutubeChannelVideos::forChannel($channel->channel_id, $this->option('limit'));
 
         $nbVideos = count($factory->videos());
         if ($nbVideos <= 0) {
@@ -80,21 +80,30 @@ class UpdateChannelCommand extends Command
         $this->prologue($nbVideos);
 
         // for each channel video
-        array_map(function ($video) use ($channelToUpdate): void {
+        array_map(function ($video) use ($channel): void {
             // check if the video already exist in database
-            Media::query()
-                ->updateOrCreate(
+            $media = Media::byMediaId($video['media_id'], true);
+            if ($media === null) {
+                Media::create(
                     [
                         'media_id' => $video['media_id'],
-                    ],
-                    [
-                        'channel_id' => $channelToUpdate->channel_id,
+                        'channel_id' => $channel->channel_id,
                         'title' => $video['title'],
                         'description' => $video['description'],
                         'published_at' => $video['published_at'],
                     ]
                 )
-            ;
+                ;
+            } else {
+                $media->update(
+                    [
+                        'channel_id' => $channel->channel_id,
+                        'title' => $video['title'],
+                        'description' => $video['description'],
+                        'published_at' => $video['published_at'],
+                    ]
+                );
+            }
 
             $this->makeProgressBarProgress();
         }, $factory->videos());
