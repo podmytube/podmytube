@@ -24,13 +24,15 @@ class UpdateChannelsCommandTest extends TestCase
         $this->seedApiKeys();
     }
 
-    public function test_no_active_channels_should_throw_exception(): void
+    /** @test */
+    public function update_channels_with_no_active_channel_should_throw_exception(): void
     {
         $this->expectException(RuntimeException::class);
         $this->artisan('update:channels')->assertExitCode(1);
     }
 
-    public function test_should_add_new_medias_only_on_active_channels(): void
+    /** @test */
+    public function update_channels_should_add_new_medias_only_on_active_channels(): void
     {
         $expectedNumberOfMedias = 2;
         factory(Channel::class)->create(['channel_id' => self::PERSONAL_CHANNEL_ID]);
@@ -40,5 +42,20 @@ class UpdateChannelsCommandTest extends TestCase
             ->assertExitCode(0)
         ;
         $this->assertCount($expectedNumberOfMedias, Media::all());
+    }
+
+    /** @test */
+    public function update_channels_should_update_medias_successfully(): void
+    {
+        $expectedNumberOfMedias = 2;
+        factory(Channel::class)->create(['channel_id' => self::PERSONAL_CHANNEL_ID]);
+        $this->assertCount(0, Media::all());
+        $this->artisan('update:channels')
+            ->assertExitCode(0)
+        ;
+        $this->assertCount($expectedNumberOfMedias, Media::all());
+        $this->artisan('update:channels')
+            ->assertExitCode(0)
+        ;
     }
 }
