@@ -90,19 +90,28 @@ class UpdateChannelsCommand extends Command
                 // for each channel video
                 array_map(function (array $video) use ($channel): void {
                     // check if the video already exist in database
-                    Media::query()
-                        ->updateOrCreate(
+                    $media = Media::byMediaId($video['media_id'], true);
+                    if ($media === null) {
+                        Media::create(
                             [
                                 'media_id' => $video['media_id'],
-                            ],
-                            [
                                 'channel_id' => $channel->channel_id,
                                 'title' => $video['title'],
                                 'description' => $video['description'],
                                 'published_at' => $video['published_at'],
                             ]
                         )
-                    ;
+                ;
+                    } else {
+                        $media->update(
+                            [
+                                'channel_id' => $channel->channel_id,
+                                'title' => $video['title'],
+                                'description' => $video['description'],
+                                'published_at' => $video['published_at'],
+                            ]
+                        );
+                    }
                 }, $factory->videos());
 
                 $apikeysAndQuotas = YoutubeQuotas::forUrls($factory->queriesUsed())
