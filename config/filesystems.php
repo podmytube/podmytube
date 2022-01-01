@@ -109,7 +109,7 @@ return [
             'username' => config('app.sftp_user'),
             'privateKey' => config('app.sftp_key_path'),
             'root' => '/home/www',
-            'timeout' => 20,
+            'timeout' => 30,
             'visibility' => 'public',
             'permPublic' => 0644,
             'directoryPerm' => 0755,
