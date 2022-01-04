@@ -4,10 +4,16 @@ declare(strict_types=1);
 
 namespace App;
 
+use App\Exceptions\StripeSessionCreationFailureException;
+use Carbon\Carbon;
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\App;
 use InvalidArgumentException;
+use Stripe\Checkout\Session;
+use Stripe\Stripe;
 
 class Plan extends Model
 {
@@ -21,6 +27,16 @@ class Plan extends Model
     public const DEFAULT_PLAN_ID = self::FREE_PLAN_ID;
     public const WEEKLY_PLAN_PROMO_ID = 8;
     public const DAILY_PLAN_PROMO_ID = 9;
+
+    protected int $id;
+    protected string $name;
+    protected string $slug;
+    protected int $price;
+    protected int $billing_yearly; // @todo remove this
+    protected int $nb_episodes_per_month;
+    protected Carbon $created_at;
+    protected Carbon $updated_at;
+    protected ?Session $stripeSession = null;
 
     protected $casts = [
         'price' => 'integer',
@@ -133,5 +149,57 @@ class Plan extends Model
             ->slugs($slugs)
             ->get()
         ;
+    }
+
+    /**
+     * add some stripe session data to be sent whith stripe checkout.
+     *
+     * @throws StripeSessionCreationFailureException
+     */
+    public function addStripeSessionForChannel(Channel $channel): self
+    {
+        try {
+            $stripeIdColumn = App::environment('production') ? 'stripe_live_id' : 'stripe_test_id';
+            $stripeSessionParams = [
+                'payment_method_types' => ['card'],
+                'line_items' => [
+                    [
+                        // it s a price ID not the price in €
+                        'price' => $this->stripePlans->first()->{$stripeIdColumn},
+                        'quantity' => 1,
+                    ],
+                ],
+                'subscription_data' => [
+                    'trial_period_days' => 30,
+                ],
+                'mode' => 'subscription',
+                'success_url' => config('app.url') . '/success?session_id={CHECKOUT_SESSION_ID}',
+                'cancel_url' => config('app.url') . '/cancel',
+                'metadata' => [
+                    'channel_id' => $channel->channel_id,
+                ],
+            ];
+
+            if ($channel->user->stripe_id !== null) {
+                $stripeSessionParams['customer'] = $channel->user->stripe_id;
+            } else {
+                $stripeSessionParams['customer_email'] = $channel->user->email;
+            }
+
+            Stripe::setApiKey(config('services.stripe.secret'));
+            $this->stripeSession = Session::create($stripeSessionParams);
+
+            return $this;
+        } catch (Exception $thrownException) {
+            $exception = new StripeSessionCreationFailureException();
+            $exception->addInformations($thrownException->getMessage());
+
+            throw $exception;
+        }
+    }
+
+    public function stripeSession(): ?Session
+    {
+        return $this->stripeSession;
     }
 }

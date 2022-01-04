@@ -39,7 +39,7 @@
             <a class="mt-1 block px-4 py-2 text-gray-100 rounded hover:bg-gray-800 sm:mt-0 sm:mr-2"
                 href="{{ route('user.index') }}">Profile</a>
             <a class="mt-1 block px-4 py-2 text-gray-100 rounded hover:bg-gray-800 sm:mt-0 sm:mr-2"
-                href="{{ route('channel.create') }}">Add your podcast</a>
+                href="{{ route('channel.step1') }}">Add your podcast</a>
             <a class="mt-1 block px-4 py-2 text-gray-100 rounded hover:bg-gray-800 sm:mt-0 sm:mr-2" href="#"
                 id="logout-link">Logout</a>
             @if (session('impersonated_by'))

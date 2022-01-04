@@ -1,27 +1,30 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Modules;
 
 use App\Exceptions\InvalidUrlException;
 use App\Exceptions\QueryFailureException;
+use CurlHandle;
 
 class Query
 {
-    /** @var string $sslpath */
+    /** @var string */
     protected $sslPath;
-    /** @var string $referer */
+    /** @var string */
     protected $referer;
-    /** @var string $results */
+    /** @var string */
     protected $results;
-    /** @var string $jsonResult */
+    /** @var string */
     protected $jsonResult;
-    /** @var int $errorCode */
+    /** @var int */
     protected $errorCode;
-    /** @var string $errorMessage */
+    /** @var string */
     protected $errorMessage;
-    /** @var string $urlToQuery */
+    /** @var string */
     protected $urlToQuery;
-    /** @var curl resource */
+    /** @var CurlHandle resource */
     protected $curlHandler;
 
     private function __construct(string $url)
@@ -62,7 +65,17 @@ class Query
         return $this;
     }
 
-    protected function addSSL()
+    public function results(): string
+    {
+        return $this->results ?? '';
+    }
+
+    public function errorCode()
+    {
+        return $this->errorCode;
+    }
+
+    protected function addSSL(): void
     {
         if ($this->sslPath !== null) {
             curl_setopt($this->curlHandler, CURLOPT_SSL_VERIFYPEER, true);
@@ -78,15 +91,5 @@ class Query
                 __DIR__ . '/cert/cacert.pem'
             );
         }
-    }
-
-    public function results()
-    {
-        return $this->results;
-    }
-
-    public function errorCode()
-    {
-        return $this->errorCode;
     }
 }

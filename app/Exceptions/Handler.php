@@ -34,10 +34,10 @@ class Handler extends ExceptionHandler
      */
     public function report(Throwable $exception): void
     {
+        Log::debug(__FUNCTION__ . ' ' . $exception->getMessage());
         if ($this->shouldReport($exception)) {
             // send email alert to me
             Log::error($exception->getMessage());
-            //$this->sendExceptionEmail($exception);
 
             if (app()->bound('sentry')) {
                 // if sentry send it to sentry

@@ -12,50 +12,72 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Factories\ChannelCreationFactory;
+use App\Channel;
+use App\Factories\CreateChannelFactory;
 use App\Http\Requests\ChannelCreationRequest;
 use App\Plan;
+use Auth;
 use Exception;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ChannelCreateController extends Controller
 {
+    public const DEFAULT_CATEGORY_SLUG = 'society-culture';
+
     /** @var App\Youtube\YoutubeChannel */
     protected $youtubeChannelObj;
 
     /**
      * Display the form channel creation.
+     * The form only ask for youtube channel url.
      */
-    public function create()
+    public function step1()
     {
-        $plans = [
-            'free' => Plan::FREE_PLAN_ID,
-            'weekly' => Plan::WEEKLY_PLAN_ID,
-            'daily' => Plan::DAILY_PLAN_ID,
-        ];
-
-        return view('channel.create', compact('plans'));
+        return view('channel.create');
     }
 
     /**
-     * create one channel from the form received.
+     * Validate the youtube url received and create inactive channel.
      */
-    public function store(ChannelCreationRequest $request)
+    public function step1Validate(ChannelCreationRequest $request)
     {
         $validatedParams = $request->validated();
+        $youtubeUrl = $validatedParams['channel_url'];
 
         try {
-            $factory = ChannelCreationFactory::create(Auth::user(), $validatedParams['channel_url'], Plan::bySlug('forever_free'));
+            $channel = CreateChannelFactory::fromYoutubeUrl(Auth::user(), $youtubeUrl);
 
-            return redirect()
-                ->route('home')
-                ->with('success', "Channel {$factory->channel()->channel_name} has been successfully registered.")
-            ;
+            return redirect()->route('channel.step2', $channel);
         } catch (Exception $exception) {
-            return redirect()
-                ->back()
-                ->withErrors(['danger' => $exception->getMessage()])
-            ;
+            Log::error($exception->getMessage());
+
+            return redirect()->back()->withErrors(['danger' => $exception->getMessage()]);
         }
+    }
+
+    /**
+     * Allow user to select the plan he will subscribe to.
+     */
+    public function step2(Request $request, Channel $channel)
+    {
+        $isYearly = $request->get('yearly') === '1' ? true : false;
+
+        $plans = Plan::bySlugsAndBillingFrequency(['starter', 'professional', 'business'], $isYearly);
+
+        // foreach plan create a session id that will be associated with plan
+        $plans->map(function (Plan $plan) use ($channel): void {
+            $plan->addStripeSessionForChannel($channel);
+        });
+
+        $buttonLabel = 'Register';
+
+        return view('channel.step2')->with([
+            'routeName' => 'channel.step2',
+            'channel' => $channel,
+            'plans' => $plans,
+            'isYearly' => $isYearly,
+            'buttonLabel' => $buttonLabel,
+        ]);
     }
 }

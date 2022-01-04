@@ -28,18 +28,16 @@ class YoutubeChannelTest extends TestCase
     }
 
     /** @test */
-    public function youtube_channel_name_is_ok(): void
+    public function invalid_channel_id_should_throw_exception(): void
     {
-        $this->assertEquals('PewDiePie', $this->youtubeChannel->forChannel(YoutubeCoreTest::PEWDIEPIE_CHANNEL_ID)->name());
+        $this->expectException(YoutubeNoResultsException::class);
+        YoutubeChannel::init()->forChannel('invalid-channel_id');
     }
 
     /** @test */
-    public function youtube_channel_exists_is_ok(): void
+    public function obtaining_name_from_valid_channel_id_should_succeed(): void
     {
-        $this->assertTrue($this->youtubeChannel->forChannel(YoutubeCoreTest::PEWDIEPIE_CHANNEL_ID)->exists());
-
-        $this->expectException(YoutubeNoResultsException::class);
-        $this->youtubeChannel->forChannel('Je-Doute-Que-Ce-Channel-Existe-Un-Jour-Meme-Lointain-Pour-De-Vrai')->exists();
+        $this->assertEquals('PewDiePie', $this->youtubeChannel->forChannel(YoutubeCoreTest::PEWDIEPIE_CHANNEL_ID)->name());
     }
 
     public function test_another_way_to_obtain_uploads_playlist_id(): void

@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use App\Channel;
 use App\Plan;
 use App\StripePlan;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use InvalidArgumentException;
+use Stripe\Checkout\Session;
 use Tests\TestCase;
 
 /**
@@ -97,5 +99,18 @@ class PlanModelTest extends TestCase
             [$catYearlyBillingIWant->id, $anotherCatYearlyBillingIWant->id],
             $result->first()->stripePlans->pluck('id')->toArray()
         );
+    }
+
+    /** @test */
+    public function add_stripe_session_for_channel_is_running_fine(): void
+    {
+        $this->seedStripePlans(true);
+        $plan = Plan::bySlug('starter');
+        $channel = factory(Channel::class)->create();
+        $this->assertNull($plan->stripeSession());
+
+        $plan->addStripeSessionForChannel($channel);
+        $this->assertNotNull($plan->stripeSession());
+        $this->assertInstanceOf(Session::class, $plan->stripeSession());
     }
 }
