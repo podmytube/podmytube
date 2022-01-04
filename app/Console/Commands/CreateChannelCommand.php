@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Factories\ChannelCreationFactory;
+use App\Factories\CreateChannelFactory;
 use App\Plan;
+use App\Subscription;
 use App\User;
 use Illuminate\Console\Command;
 
@@ -50,9 +51,20 @@ class CreateChannelCommand extends Command
             return 1;
         }
 
-        $factory = ChannelCreationFactory::create($user, $youtubeUrl, $plan);
+        // creating channel
+        $channel = CreateChannelFactory::fromYoutubeUrl($user, $youtubeUrl);
 
-        $this->info('Channel 🎉 ' . $factory->channel()->nameWithId() . ' 🎉 has been created successfully !');
+        // adding subscription
+        Subscription::query()
+            ->updateOrCreate(
+                ['channel_id' => $this->channel->channelId()],
+                [
+                    'channel_id' => $this->channel->channelId(),
+                    'plan_id' => $plan->id,
+                ]
+            );
+
+        $this->info('Channel 🎉 ' . $channel->nameWithId() . ' 🎉 has been created successfully !');
         $this->line('');
 
         return 0;

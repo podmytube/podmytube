@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Youtube;
 
 class YoutubeChannel extends YoutubeCore
 {
-    /** @var string $channelId $youtube channel id */
+    /** @var string $youtube channel id */
     protected $channelId;
 
-    /** @var array $results result of youtube query */
+    /** @var array result of youtube query */
     protected $results;
 
     public function forChannel(string $channelId, array $parts = ['id', 'snippet']): self
@@ -17,20 +19,10 @@ class YoutubeChannel extends YoutubeCore
             ->addParams(['id' => $channelId])
             ->addParts($parts)
             ->run()
-            ->results();
-        return $this;
-    }
+            ->results()
+        ;
 
-    /**
-     * check channel id existence on youtube api.
-     *
-     * @return bool true is channel exists
-     *
-     * @throws App\Exceptions\YoutubeNoResultsException if channel does not exists
-     */
-    public function exists(): bool
-    {
-        return $this->channelId === $this->results['items'][0]['id']; // double check
+        return $this;
     }
 
     public function name(): ?string

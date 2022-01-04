@@ -62,24 +62,23 @@ Route::domain('www.' . config('app.domain'))->group(function (): void {
 //          authenticated part
 // =======================================
 Route::domain('dashboard.' . config('app.domain'))->group(function (): void {
+    // ================================================
+    // user registration and login
     Auth::routes();
 
     // ================================================
     // Dash homepage is the login screen
-    Route::get('/', function () {
-        return view('auth.login');
-    })->name('root');
+    Route::get('/', function () { return view('auth.login'); })->name('root');
 
     Route::middleware(['auth'])->group(function (): void {
         Route::get('/home', 'HomeController@index')->name('home');
 
-        Route::post('/channel/', 'ChannelCreateController@store')
-            ->name('channel.store')
-        ;
-
-        Route::get('/channel/create', 'ChannelCreateController@create')
-            ->name('channel.create')
-        ;
+        // ================================================
+        // registering channel
+        Route::get('/create', 'ChannelCreateController@step1')->name('channel.step1');
+        Route::post('/create', 'ChannelCreateController@step1Validate')->name('channel.step1.validate');
+        Route::get('/create/{channel}/step2', 'ChannelCreateController@step2')->name('channel.step2');
+        Route::post('/create/{channel}/step2', 'ChannelCreateController@step2Validate')->name('channel.step2.validate');
 
         Route::resource('channel', 'ChannelsController')
             ->only(['show', 'edit', 'update', 'destroy'])
@@ -93,6 +92,7 @@ Route::domain('dashboard.' . config('app.domain'))->group(function (): void {
             ->name('password.update')
         ;
 
+        // ================================================
         // Plans
         Route::get('/plans/{channel}', 'PlansController@index')
             ->name('plans.index')
@@ -100,26 +100,34 @@ Route::domain('dashboard.' . config('app.domain'))->group(function (): void {
         Route::get('/success', 'SubscriptionResultController@success');
         Route::get('/canceled', 'SubscriptionResultController@failure');
 
+        // ================================================
         // Subscription
         Route::post('/subscribe', 'SubscribeController@store');
 
+        // ================================================
         // Medias
         Route::resource('channel.medias', 'MediasController')
             ->only(['index', 'create', 'edit', 'store', 'update', 'destroy'])
         ;
 
+        // ================================================
+        // Playlist
         Route::resource('playlist', 'PlaylistController')
             ->only(['edit', 'update'])
         ;
 
+        // ================================================
         // Cover
         Route::get('channel/{channel}/cover/edit', [ThumbsController::class, 'channelCoverEdit'])->name('channel.cover.edit');
         Route::patch('channel/{channel}/cover/update', [ThumbsController::class, 'channelCoverUpdate'])->name('channel.cover.update');
         Route::get('playlist/{playlist}/cover/edit', [ThumbsController::class, 'playlistCoverEdit'])->name('playlist.cover.edit');
         Route::patch('playlist/{playlist}/cover/update', [ThumbsController::class, 'playlistCoverUpdate'])->name('playlist.cover.update');
 
+        // ================================================
         // User profile
         Route::resource('user', 'UserController')->only(['index', 'update', 'destroy']);
+
+        // ================================================
         // Impersonate
         Route::get('/{user}/impersonate', 'UsersController@impersonate')->name('users.impersonate');
         Route::get('/leave-impersonate', 'UsersController@leaveImpersonate')->name('users.leave-impersonate');

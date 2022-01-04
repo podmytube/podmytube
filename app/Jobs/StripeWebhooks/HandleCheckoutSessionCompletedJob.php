@@ -41,13 +41,12 @@ class HandleCheckoutSessionCompletedJob implements ShouldQueue
 
     public WebhookCall $webhookCall;
 
-    protected User $user;
+    protected ?User $user;
     protected Channel $channel;
     protected ?StripePlan $stripePlan;
     protected StripeClient $stripeClient;
-
-    /** var int $endsAt contain a timestamp returned by stripe for subscription ending */
-    protected $endsAt;
+    protected ?Carbon $endsAt;
+    protected ?string $customerStripeId;
 
     public function __construct(WebhookCall $webhookCall, ?StripeClient $stripeClient = null)
     {
@@ -64,8 +63,8 @@ class HandleCheckoutSessionCompletedJob implements ShouldQueue
     public function handle(): int
     {
         Log::debug(self::LOG_PREFIX . 'started');
-        $user = $this->getUserFromJson();
-        if ($user === null) {
+        $this->user = $this->obtainUserFromJson();
+        if ($this->user === null) {
             $exception = new CannotIdentifyUserFromStripeException();
             $exception->addInformations('customerId from stripe : ' . $this->customerIdFromJson());
             $exception->addInformations('email from stripe : ' . $this->customerEmailFromJson());
@@ -77,7 +76,7 @@ class HandleCheckoutSessionCompletedJob implements ShouldQueue
         $this->channel = $this->getChannelFromJson();
 
         // channel should belongs to the user
-        if ($this->channel->user->id() !== $user->id()) {
+        if ($this->channel->user->id() !== $this->user->id()) {
             throw new ChannelOwnerMismatchingStripeException();
         }
 
@@ -89,22 +88,28 @@ class HandleCheckoutSessionCompletedJob implements ShouldQueue
         // update subscription on Pod side
         $this->updateSubscription();
 
+        // update user with stripe customer id.
+        $this->user->update(['stripe_id' => $this->customerStripeId]);
+
+        // finally update channel active status
+        $this->channel->update(['active' => true]);
+
         return 0;
     }
 
-    protected function getUserFromJson(): ?User
+    protected function obtainUserFromJson(): ?User
     {
-        $customerStripeId = $this->customerIdFromJson();
+        $this->customerStripeId = $this->customerIdFromJson();
         $email = $this->customerEmailFromJson();
-        Log::debug(self::LOG_PREFIX . "customerStripeId : {$customerStripeId} --- email : {$email}");
+        Log::debug(self::LOG_PREFIX . "customerStripeId : {$this->customerStripeId} --- email : {$email}");
 
-        if ($customerStripeId === null && $email === null) {
+        if ($this->customerStripeId === null && $email === null) {
             throw new EmptyCustomerReceivedFromStripeException();
         }
 
         // we are looking for the stripe customer id.
-        if ($customerStripeId !== null) {
-            $user = User::byStripeId($customerStripeId);
+        if ($this->customerStripeId !== null) {
+            $user = User::byStripeId($this->customerStripeId);
             if ($user !== null) {
                 return $user;
             }
@@ -228,14 +233,21 @@ class HandleCheckoutSessionCompletedJob implements ShouldQueue
     protected function updateSubscription(): void
     {
         try {
-            $actualSubscription = Subscription::where('channel_id', '=', $this->channel->channel_id)->first();
-            $actualSubscription->plan_id = $this->stripePlan->plan_id;
-            $actualSubscription->ends_at = $this->endsAt;
-            $actualSubscription->save();
+            Subscription::query()
+                ->updateOrCreate(
+                    ['channel_id' => $this->channel->channelId()],
+                    [
+                        'channel_id' => $this->channel->channelId(),
+                        'plan_id' => $this->stripePlan->plan_id,
+                        'ends_at' => $this->endsAt,
+                    ]
+                )
+            ;
         } catch (Exception $thrownException) {
             $exception = new SubscriptionUpdateFailureException();
             $exception->addInformations("channel_id : {$this->channel->channelId()}");
             $exception->addInformations("stripe_plan_id : {$this->stripePlan->plan_id}");
+            $exception->addInformations("error : {$thrownException->getMessage()}");
 
             throw $exception;
         }

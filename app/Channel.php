@@ -300,7 +300,7 @@ class Channel extends Model implements Podcastable, Coverable
 
     public function isFree(): bool
     {
-        return $this->subscription->plan_id === Plan::FREE_PLAN_ID;
+        return $this?->subscription?->plan_id === Plan::FREE_PLAN_ID;
     }
 
     public function isPaying(): bool

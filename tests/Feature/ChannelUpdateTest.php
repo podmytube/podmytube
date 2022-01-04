@@ -16,7 +16,6 @@ class ChannelUpdateTest extends TestCase
 
     public function setUp(): void
     {
-        //$this->markTestSkipped('This test is failing because of strange relationship handling with sqlite');
         parent::setUp();
         $this->channel = $this->createChannelWithPlan();
         Event::fake();

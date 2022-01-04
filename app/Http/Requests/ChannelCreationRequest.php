@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -25,7 +27,6 @@ class ChannelCreationRequest extends FormRequest
     {
         return [
             'channel_url' => 'required|string|min:27',
-            'owner' => 'required|boolean',
         ];
     }
 

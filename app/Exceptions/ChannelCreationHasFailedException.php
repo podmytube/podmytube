@@ -1,10 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Exceptions;
 
-use Exception;
-
-class ChannelCreationHasFailedException extends Exception
+class ChannelCreationHasFailedException extends PodmytubeException
 {
-    //
+    protected $message = 'Channel creation has failed.';
 }

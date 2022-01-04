@@ -18,7 +18,7 @@
 
     @yield('recaptcha')
 
-    @yield('stripeJs')
+    @stack('javascripts')
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">

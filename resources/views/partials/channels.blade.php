@@ -4,7 +4,7 @@
 @if (!$channels->count())
     <div class="bg-gray-100 border rounded-lg border-gray-500 text-gray-900 px-4 py-3" role="alert">
         <p class="font-bold">You have no podcast at this time.</p>
-        <p class="text-base">It's time to <a href="{{ route('channel.create') }}"
+        <p class="text-base">It's time to <a href="{{ route('channel.step1') }}"
                 class="border-b-2 border-gray-900">transform your channel into a podcast</a>.</p>
     </div>
 @else
@@ -19,7 +19,8 @@
                     alt="Your best cover for {{ $channel->title() }}">
                 <div class="px-2 md:px-6 py-4 text-center">
                     <div class="font-bold text-xl text-gray-900 leading-tight mb-2">{{ $channel->title() }}</div>
-                    <p class="text-gray-700 text-base">Your plan : {{ $channel->subscription->plan->name }}</p>
+                    <p class="text-gray-700 text-base">Your plan :
+                        {{ $channel?->subscription?->plan?->name ?? 'none' }}</p>
                 </div>
 
                 @if ($channel->isFree())
