@@ -23,8 +23,7 @@ class ChannelModelTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var \App\Channel */
-    protected $channel;
+    protected Channel $channel;
 
     public function setUp(): void
     {
@@ -263,5 +262,14 @@ class ChannelModelTest extends TestCase
         ;
 
         $this->assertEquals($expectedActiveChannels, Channel::nbReallyActiveChannels());
+    }
+
+    /** @test */
+    public function has_subscription_is_fine(): void
+    {
+        $channelWithoutSubscription = factory(Channel::class)->create();
+        $this->assertFalse($channelWithoutSubscription->hasSubscription());
+
+        $this->assertTrue($this->channel->hasSubscription());
     }
 }

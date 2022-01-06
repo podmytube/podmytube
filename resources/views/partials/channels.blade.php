@@ -19,11 +19,9 @@
                     alt="Your best cover for {{ $channel->title() }}">
                 <div class="px-2 md:px-6 py-4 text-center">
                     <div class="font-bold text-xl text-gray-900 leading-tight mb-2">{{ $channel->title() }}</div>
-                    <p class="text-gray-700 text-base">Your plan :
-                        {{ $channel?->subscription?->plan?->name ?? 'none' }}</p>
                 </div>
 
-                @if ($channel->isFree())
+                @if (!$channel->hasSubscription())
                     <p class="text-center pb-6">
                         <a href="{{ route('plans.index', $channel) }}">
                             <button target="_blank" class="btn-upgrade">
@@ -31,6 +29,10 @@
                                 Upgrade
                             </button>
                         </a>
+                    </p>
+                @else
+                    <p class="text-gray-700 text-base">Your plan :
+                        {{ $channel?->subscription?->plan?->name ?? 'none' }}
                     </p>
                 @endif
 
