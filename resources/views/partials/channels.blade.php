@@ -21,7 +21,7 @@
                     <div class="font-bold text-xl text-gray-900 leading-tight mb-2">{{ $channel->title() }}</div>
                 </div>
 
-                @if (!$channel->hasSubscription())
+                @if (!$channel->hasSubscription() || $channel->isFree())
                     <p class="text-center pb-6">
                         <a href="{{ route('plans.index', $channel) }}">
                             <button target="_blank" class="btn-upgrade">
