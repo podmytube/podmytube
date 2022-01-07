@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use App\Channel;
 use App\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -26,9 +27,13 @@ class UserModelTest extends TestCase
         $this->assertInstanceOf(Collection::class, $result);
         $this->assertCount(0, $result);
 
-        /** with user that want newsletter */
+        /** with users that want newsletter and have active channel*/
         $nbExpectedUsersWhoWantNewsletter = 10;
-        $usersThatWillReceiveNewsletter = factory(User::class, $nbExpectedUsersWhoWantNewsletter)->create(['newsletter' => true]);
+        factory(User::class, $nbExpectedUsersWhoWantNewsletter)->create(['newsletter' => true])
+            ->each(function (User $user): void {
+                factory(Channel::class)->create(['user_id' => $user->userId()]);
+            })
+        ;
         $result = User::whoWantNewsletter();
         $this->assertNotNull($result);
         $this->assertInstanceOf(Collection::class, $result);
@@ -41,7 +46,17 @@ class UserModelTest extends TestCase
         $this->assertNotNull($result);
         $this->assertInstanceOf(Collection::class, $result);
         $this->assertCount($nbExpectedUsersWhoWantNewsletter, $result);
-        $this->assertEquals($nbExpectedUsersWhoWantNewsletter + 3, User::count());
+
+        // adding user that want newsletter but has inactive channel should not change the result either
+        factory(User::class, 1)->create(['newsletter' => true])
+            ->each(function (User $user): void {
+                factory(Channel::class)->create(['user_id' => $user->userId(), 'active' => false]);
+            })
+        ;
+        $result = User::whoWantNewsletter();
+        $this->assertNotNull($result);
+        $this->assertInstanceOf(Collection::class, $result);
+        $this->assertCount($nbExpectedUsersWhoWantNewsletter, $result);
     }
 
     /** @test */
@@ -69,7 +84,7 @@ class UserModelTest extends TestCase
         $this->assertInstanceOf(User::class, $user);
         $this->assertEquals($expectedStripeId, $user->stripe_id);
     }
-    
+
     public function is_superadmin_should_be_good(): void
     {
         $user = factory(User::class)->create();

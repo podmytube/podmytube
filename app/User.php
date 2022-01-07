@@ -83,7 +83,13 @@ class User extends Authenticatable
 
     public static function whoWantNewsletter(): Collection
     {
-        return self::newsletter()->select('email', 'firstname', 'lastname')->get();
+        return self::newsletter()
+            ->select('email', 'firstname', 'lastname')
+            ->whereHas('channels', function (Builder $query): void {
+                $query->where('active', '=', 1);
+            })
+            ->get()
+        ;
     }
 
     public function getNameAttribute()

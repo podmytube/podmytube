@@ -90,6 +90,7 @@ return [
     'audio_container_name' => 'mp3',
 
     'stripe_secret' => env('STRIPE_SECRET'),
+    'users_spreadsheet_id' => env('USERS_SPREADSHEET_ID', '1kvW6tTjN11hblybVY28o7z7qpjBSwEMySopCluf4gFE'),
 
     /*
     |--------------------------------------------------------------------------
