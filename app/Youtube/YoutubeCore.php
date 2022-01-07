@@ -11,6 +11,7 @@ use App\Interfaces\QuotasConsumer;
 use App\Modules\Query;
 use App\Traits\YoutubeEndpoints;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 abstract class YoutubeCore implements QuotasConsumer
@@ -257,11 +258,7 @@ abstract class YoutubeCore implements QuotasConsumer
             return Cache::get($this->cacheKey());
         }
 
-        // querying api
-        $rawResults = Query::create($this->url())
-            ->run()
-            ->results()
-        ;
+        $rawResults = Http::get($this->url())->body();
 
         // adding url to the list of queries used
         $this->queries[] = $this->url();
