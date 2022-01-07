@@ -29,6 +29,6 @@ class UploadMedia implements ShouldQueue
             throw new InvalidArgumentException($message);
         }
 
-        SendFileBySFTP::dispatchSync($localPath, $remotePath, true);
+        SendFileBySFTP::dispatch($localPath, $remotePath, true);
     }
 }
