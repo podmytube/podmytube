@@ -63,7 +63,7 @@ class YoutubeCoreTest extends TestCase
     {
         $this->expectException(YoutubeNoResultsException::class);
         $this->abstractCore
-            ->defineEndpoint('/youtube/v3/channels')
+            ->defineEndpoint(YoutubeCore::CHANNELS_ENDPOINT)
             ->addParts(['id'])
             ->addParams(['id' => 'ForSureThisChannelIdIsInvalid'])
             ->run()
@@ -74,7 +74,7 @@ class YoutubeCoreTest extends TestCase
     public function getting_proper_id_for_channel_list_should_be_ok(): void
     {
         $items = $this->abstractCore
-            ->defineEndpoint('/youtube/v3/channels')
+            ->defineEndpoint(YoutubeCore::CHANNELS_ENDPOINT)
             ->addParts(['id'])
             ->addParams(['id' => self::PEWDIEPIE_CHANNEL_ID])
             ->run()
@@ -88,7 +88,7 @@ class YoutubeCoreTest extends TestCase
     public function getting_proper_id_for_playlist_list_should_be_ok(): void
     {
         $items = $this->abstractCore
-            ->defineEndpoint('/youtube/v3/playlists')
+            ->defineEndpoint(YoutubeCore::PLAYLISTS_ENDPOINT)
             ->addParts(['id', 'snippet'])
             ->addParams([
                 'channelId' => self::NOWTECH_CHANNEL_ID,
@@ -108,7 +108,7 @@ class YoutubeCoreTest extends TestCase
     public function getting_proper_id_for_playlist_items_list_should_be_ok(): void
     {
         $items = $this->abstractCore
-            ->defineEndpoint('/youtube/v3/playlistItems')
+            ->defineEndpoint(YoutubeCore::PLAYLIST_ITEMS_ENDPOINT)
             ->addParts(['id', 'snippet'])
             ->addParams([
                 'playlistId' => self::PERSONAL_UPLOADS_PLAYLIST_ID,
@@ -130,7 +130,7 @@ class YoutubeCoreTest extends TestCase
     public function getting_only_first_pew_die_pie_playlists_should_be_quick(): void
     {
         $items = $this->abstractCore
-            ->defineEndpoint('/youtube/v3/playlists')
+            ->defineEndpoint(YoutubeCore::PLAYLISTS_ENDPOINT)
             ->setLimit(1)
             ->addParts(['id', 'snippet'])
             ->addParams(['channelId' => self::PEWDIEPIE_CHANNEL_ID])
@@ -155,7 +155,7 @@ class YoutubeCoreTest extends TestCase
             20,
             count(
                 $this->abstractCore
-                    ->defineEndpoint('/youtube/v3/playlistItems')
+                    ->defineEndpoint(YoutubeCore::PLAYLIST_ITEMS_ENDPOINT)
                     ->addParams([
                         'playlistId' => self::NOWTECH_PLAYLIST_ID,
                         'maxResults' => 15,
@@ -181,7 +181,7 @@ class YoutubeCoreTest extends TestCase
          * it's more than 60 so it should stop after 2 queries
          */
         $this->abstractCore
-            ->defineEndpoint('/youtube/v3/playlistItems')
+            ->defineEndpoint(YoutubeCore::PLAYLIST_ITEMS_ENDPOINT)
             ->setLimit(60)
             ->addParams([
                 'playlistId' => $uploadsId,

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Youtube;
 
-use App\Exceptions\YoutubeNoResultsException;
+use App\Exceptions\YoutubeGenericErrorException;
 use App\Youtube\YoutubePlaylistItems;
 use App\Youtube\YoutubeQuotas;
 use Carbon\Carbon;
@@ -63,7 +63,7 @@ class YoutubePlaylistItemsTest extends TestCase
 
     public function test_getting_playlist_that_does_not_exist_should_throw_exception(): void
     {
-        $this->expectException(YoutubeNoResultsException::class);
+        $this->expectException(YoutubeGenericErrorException::class);
         (new YoutubePlaylistItems())->forPlaylist('UUEmWzBUF53cVPhHTnUnsNMw');
     }
 }

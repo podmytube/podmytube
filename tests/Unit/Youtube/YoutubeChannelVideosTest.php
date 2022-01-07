@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Youtube;
 
-use App\Exceptions\YoutubeNoResultsException;
+use App\Exceptions\YoutubeGenericErrorException;
 use App\Youtube\YoutubeChannelVideos;
 use App\Youtube\YoutubeQuotas;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -77,7 +77,7 @@ class YoutubeChannelVideosTest extends TestCase
 
     public function testing_invalid_channel_should_throw_exception(): void
     {
-        $this->expectException(YoutubeNoResultsException::class);
+        $this->expectException(YoutubeGenericErrorException::class);
         YoutubeChannelVideos::forChannel('ThisChannelWillNeverExists');
     }
 }

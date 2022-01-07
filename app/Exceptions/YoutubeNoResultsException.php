@@ -1,10 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Exceptions;
 
-use Exception;
-
-class YoutubeNoResultsException extends Exception
+class YoutubeNoResultsException extends PodmytubeException
 {
-    //
 }

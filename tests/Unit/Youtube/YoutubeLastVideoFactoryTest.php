@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Youtube;
 
-use App\Exceptions\YoutubeNoResultsException;
+use App\Exceptions\YoutubeGenericErrorException;
 use App\Factories\YoutubeLastVideoFactory;
 use App\Quota;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -50,13 +50,15 @@ class YoutubeLastVideoFactoryTest extends TestCase
 
     public function test_channel_with_no_videos_should_throw_exception(): void
     {
-        $this->expectException(YoutubeNoResultsException::class);
-        YoutubeLastVideoFactory::forChannel('UCq80IvL314jsE7PgYsTdw7Q'); // accropolis replays (strangely)
+        // accopolis has some video on channel homepage
+        // but when you click on "videos" tab there are none.
+        $this->expectException(YoutubeGenericErrorException::class);
+        YoutubeLastVideoFactory::forChannel('UCq80IvL314jsE7PgYsTdw7Q');
     }
 
     public function test_getting_invalid_media_should_fail(): void
     {
-        $this->expectException(YoutubeNoResultsException::class);
+        $this->expectException(YoutubeGenericErrorException::class);
         YoutubeLastVideoFactory::forChannel('ChannelWhichWillNeverExists');
     }
 }

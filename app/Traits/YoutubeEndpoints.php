@@ -1,11 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Traits;
+
+use App\Youtube\YoutubeCore;
+use InvalidArgumentException;
 
 trait YoutubeEndpoints
 {
     protected $endpointMap = [
-        '/youtube/v3/channels' => [
+        YoutubeCore::CHANNELS_ENDPOINT => [
             'base' => 1,
             'part' => [
                 'auditDetails' => 4,
@@ -20,7 +25,7 @@ trait YoutubeEndpoints
                 'topicDetails' => 2,
             ],
         ],
-        '/youtube/v3/playlistItems' => [
+        YoutubeCore::PLAYLIST_ITEMS_ENDPOINT => [
             'base' => 1,
             'part' => [
                 'contentDetails' => 2,
@@ -29,7 +34,7 @@ trait YoutubeEndpoints
                 'status' => 2,
             ],
         ],
-        '/youtube/v3/playlists' => [
+        YoutubeCore::PLAYLISTS_ENDPOINT => [
             'base' => 1,
             'part' => [
                 'contentDetails' => 2,
@@ -40,11 +45,11 @@ trait YoutubeEndpoints
                 'status' => 2,
             ],
         ],
-        '/youtube/v3/search' => [
+        YoutubeCore::SEARCH_ENDPOINT => [
             'base' => 100,
             'part' => [],
         ],
-        '/youtube/v3/videos' => [
+        YoutubeCore::VIDEOS_ENDPOINT => [
             'base' => 1,
             'part' => [
                 'contentDetails' => 2,
@@ -78,31 +83,28 @@ trait YoutubeEndpoints
      * check the endpoint existence.
      * Throw exception if uknown.
      *
-     * @param string $endpoint
-     *
-     * @return bool
-     *
      * @throws InvalidArgumentException if not found
      */
     public function checkEndpoint(string $endpoint): bool
     {
         if (!isset($this->endpointMap[$endpoint])) {
-            throw new \InvalidArgumentException(
-                "Endpoint {$endpoint} is unknown.}"
-            );
+            throw new InvalidArgumentException("Endpoint {$endpoint} is unknown.}");
         }
+
         return true;
     }
 
     protected function endpointParts($endpoint)
     {
         $this->checkEndpoint($endpoint);
+
         return array_keys($this->endpointMap[$endpoint]['part']);
     }
 
     protected function baseQuotaCost(string $endpoint): int
     {
         $this->checkEndpoint($endpoint);
+
         return $this->endpointMap[$endpoint]['base'];
     }
 
@@ -112,6 +114,7 @@ trait YoutubeEndpoints
         if (!isset($this->endpointMap[$endpoint]['part'][$part])) {
             return 0;
         }
+
         return $this->endpointMap[$endpoint]['part'][$part];
     }
 }
