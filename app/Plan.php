@@ -40,6 +40,7 @@ class Plan extends Model
 
     protected $casts = [
         'price' => 'integer',
+        'nb_episodes_per_month' => 'integer',
     ];
 
     /**

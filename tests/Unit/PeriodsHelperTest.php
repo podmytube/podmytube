@@ -21,14 +21,14 @@ class PeriodsHelperTest extends TestCase
     /** @test */
     public function invalid_month_should_fail(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         PeriodsHelper::create(-1);
     }
 
     /** @test */
     public function invalid_year_should_fail(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         PeriodsHelper::create(1, 1950);
     }
 

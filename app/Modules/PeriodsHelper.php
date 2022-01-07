@@ -10,15 +10,13 @@ use Carbon\Carbon;
 class PeriodsHelper
 {
     private const YEAR_MIN = 2000;
-    private const YEAR_MAX = 2050;
+    private const YEAR_MAX = 2090;
 
     private const MONTH_MIN = 1;
     private const MONTH_MAX = 12;
 
     protected $startDate;
     protected $endDate;
-    protected $month;
-    protected $year;
 
     /**
      * constructor.
@@ -27,11 +25,11 @@ class PeriodsHelper
      * @param int $year  the year we want (by default, it is current one)
      */
     private function __construct(
-        ?int $monthParam = null,
-        ?int $yearParam = null
+        protected ?int $month = null,
+        protected ?int $year = null
     ) {
-        $this->month = $monthParam ?? intval(date('n'));
-        $this->year = $yearParam ?? intval(date('Y'));
+        $this->month = $this->month ?? intval(date('n'));
+        $this->year = $this->year ?? intval(date('Y'));
 
         NumberChecker::isBetween($this->month, self::MONTH_MIN, self::MONTH_MAX);
         NumberChecker::isBetween($this->year, self::YEAR_MIN, self::YEAR_MAX);
