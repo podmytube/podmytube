@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Traits;
 
 use App\Exceptions\ChannelHasNoSubscriptionException;
@@ -16,6 +18,7 @@ trait HasLimits
         if ($this->subscription === null) {
             throw new ChannelHasNoSubscriptionException("Channel {$this->nameWithId()} has no subscription.");
         }
+
         return $this->subscription->plan->nb_episodes_per_month;
     }
 
@@ -23,22 +26,22 @@ trait HasLimits
         ?int $month = null,
         ?int $year = null
     ): int {
-        $month = $month ?? date('m');
-        $year = $year ?? date('Y');
+        $month = $month ?? intval(date('m'));
+        $year = $year ?? intval(date('Y'));
+
         return $this->medias()
             ->whereBetween('grabbed_at', [
                 PeriodsHelper::create($month, $year)->startDate(),
                 PeriodsHelper::create($month, $year)->endDate(),
             ])
-            ->count();
+            ->count()
+        ;
     }
 
     /**
      * Tell if channel has reached its limits.
      * Tell if channel has already grabbed all the episodes
      * its subscription is allowing it to.
-     *
-     * @return bool
      */
     public function hasReachedItslimit(
         ?int $month = null,
