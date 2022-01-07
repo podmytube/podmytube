@@ -40,7 +40,7 @@ class UploadPodcastFactory
         }
 
         // uploading
-        SendFileBySFTP::dispatchSync($localPath, $this->remotePath(), $cleanAfter = true);
+        SendFileBySFTP::dispatch($localPath, $this->remotePath(), $cleanAfter = true);
 
         Log::notice("Podcast {$podcastable->podcastTitle()} has been successfully updated.");
         Log::notice("You can check it here : {$podcastable->podcastUrl()}");
