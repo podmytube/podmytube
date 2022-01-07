@@ -14,7 +14,6 @@ use Illuminate\Console\Command;
  */
 class UpdateEmailSpreadsheetCommand extends Command
 {
-    public const USERS_SPREADSHEET_ID = '1kvW6tTjN11hblybVY28o7z7qpjBSwEMySopCluf4gFE';
     /**
      * The name and signature of the console command.
      *
@@ -65,7 +64,7 @@ class UpdateEmailSpreadsheetCommand extends Command
         $dataToWrite = array_merge($headers, $content);
 
         // overwrite user spreasheet
-        GoogleSpreadsheetFactory::forSpreadsheetId(self::USERS_SPREADSHEET_ID)
+        GoogleSpreadsheetFactory::forSpreadsheetId(config('app.users_spreadsheet_id'))
             ->updateRange('A1:C', $dataToWrite)
         ;
 
