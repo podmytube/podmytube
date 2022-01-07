@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Youtube;
 
-use App\Exceptions\YoutubeNoResultsException;
+use App\Exceptions\YoutubeGenericErrorException;
 use App\Youtube\YoutubePlaylists;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -25,7 +25,7 @@ class YoutubePlaylistsTest extends TestCase
 
     public function test_invalid_channel_id_should_throw_an_exception(): void
     {
-        $this->expectException(YoutubeNoResultsException::class);
+        $this->expectException(YoutubeGenericErrorException::class);
         (new YoutubePlaylists())
             ->forChannel('ForSureThisChannelWillNeverEverExist')
         ;

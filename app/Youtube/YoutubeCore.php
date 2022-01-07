@@ -5,29 +5,29 @@ declare(strict_types=1);
 namespace App\Youtube;
 
 use App\ApiKey;
+use App\Exceptions\YoutubeGenericErrorException;
 use App\Exceptions\YoutubeInvalidEndpointException;
 use App\Exceptions\YoutubeNoResultsException;
 use App\Interfaces\QuotasConsumer;
-use App\Modules\Query;
 use App\Traits\YoutubeEndpoints;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 
 abstract class YoutubeCore implements QuotasConsumer
 {
     use YoutubeEndpoints;
 
     public const YOUTUBE_API_BASE_URL = 'https://www.googleapis.com';
+    public const CHANNELS_ENDPOINT = '/youtube/v3/channels';
+    public const PLAYLIST_ITEMS_ENDPOINT = '/youtube/v3/playlistItems';
+    public const PLAYLISTS_ENDPOINT = '/youtube/v3/playlists';
+    public const SEARCH_ENDPOINT = '/youtube/v3/search';
+    public const VIDEOS_ENDPOINT = '/youtube/v3/videos';
 
     /** @var string */
     protected $apikey;
     /** @var string */
     protected $endpoint;
-    /** @var string */
-    protected $sslPath;
-    /** @var string */
-    protected $referer;
     /** @var array contain the whole response */
     protected $jsonDecoded = [];
     /** @var array contains only the items */
@@ -99,24 +99,18 @@ abstract class YoutubeCore implements QuotasConsumer
             $this->jsonDecoded = json_decode($rawResults, true);
 
             if (isset($this->jsonDecoded['error'])) {
-                Log::error('====================================================');
-                Log::error('Youtube API ERROR 1 params used : ', $this->params());
-                Log::error("Youtube API ERROR 2 (Api key used : {$this->apikey()}).");
-                Log::error('Youtube API ERROR 3.', $this->jsonDecoded);
-                Log::error("Youtube API ERROR 4 : {$this->url()}");
-                Log::error('====================================================');
-
                 /*
-                 * I was throwing YoutubeQueryFailureException
-                 * But, sometimes, for the same query Youtube is returning a json with
+                 * Sometimes, for the same query Youtube is returning a json with
                  * an error and sometimes he is returning a json with no errors and empty
                  * item array, so I cannot throw differrent Exception for these 2 kinds of
                  * exceptions
                  */
-                throw new YoutubeNoResultsException(
-                    $this->jsonDecoded['error']['message'] . ". URL used : {$this->url()}",
-                    $this->jsonDecoded['error']['code']
-                );
+                $exception = new YoutubeGenericErrorException();
+                $exception->addInformations('url used ' . $this->url());
+                $exception->addInformations('youtube error message ' . $this->jsonDecoded['error']['message']);
+                $exception->addInformations('youtube error code ' . $this->jsonDecoded['error']['code']);
+
+                throw $exception;
             }
 
             if (!isset($this->jsonDecoded['items'])) {
