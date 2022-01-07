@@ -8,6 +8,7 @@ use App\Channel;
 use App\Exceptions\DownloadMediaTagException;
 use App\Exceptions\YoutubeMediaIsNotAvailableException;
 use App\Factories\DownloadMediaFactory;
+use App\Jobs\ChannelHasReachedItsLimitsJob;
 use App\Media;
 use App\Modules\PeriodsHelper;
 use App\Modules\ServerRole;
@@ -58,6 +59,8 @@ class DownloadVideosByChannelCommand extends Command
             $this->comment($message);
             Log::info($message);
 
+            ChannelHasReachedItsLimitsJob::dispatch($channel);
+
             return 1;
         }
 
@@ -72,7 +75,7 @@ class DownloadVideosByChannelCommand extends Command
             $this->comment($message, 'v');
             Log::notice($message);
 
-            return 1;
+            return 0;
         }
 
         if ($this->getOutput()->isVerbose()) {

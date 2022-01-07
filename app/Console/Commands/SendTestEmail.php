@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
 use App\Channel;
+use App\Mail\ChannelHasReachedItsLimitsMail;
 use App\Mail\ChannelIsRegistered;
 use App\Mail\MonthlyReportMail;
 use App\Mail\WelcomeToPodmytube;
@@ -11,35 +14,37 @@ use App\Plan;
 use App\Subscription;
 use App\User;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Mail;
+use InvalidArgumentException;
 
 class SendTestEmail extends Command
 {
     protected const DEFAULT_EMAIL = 'frederick@podmytube.com';
 
-    /** @var string $signature The name and signature of the console command. */
-    protected $signature = 'email:test {email=frederick@podmytube.com : email address to send email to}';
+    /** @var string The name and signature of the console command. */
+    protected $signature = <<<'EOT'
+email:test 
+{--email=frederick@podmytube.com : email address to send email to}
+{--emailIdToSend=: email template to send}
+EOT;
 
-    /** @var string $description The console command description. */
+    /** @var string The console command description. */
     protected $description = 'This command is allowing me to send test email to myself (by default) and check if everything is fine.';
 
-    /** @var int $emailIdToSend email id to be sent */
+    /** @var int email id to be sent */
     protected $emailIdToSend;
 
-    /** @var \App\User $user */
-    protected $user;
+    protected User $user;
 
-    /** @var \App\Channel $channel */
-    protected $channel;
+    protected Channel $channel;
 
-    /** @var \App\Subscription $subscription subscription model */
-    protected $subscription;
+    protected Subscription $subscription;
 
     /**
      * Create a new command instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -50,7 +55,7 @@ class SendTestEmail extends Command
             2 => ['label' => 'A new channel has been registered.'],
             3 => ['label' => 'Monthly report for free plan.'],
             4 => ['label' => 'Monthly report for paying user (no upgrade message) .'],
-            //5 => ['label' => 'Newsletter.'],
+            5 => ['label' => 'Channel has reached its limits.'],
         ];
     }
 
@@ -61,53 +66,72 @@ class SendTestEmail extends Command
      */
     public function handle(): int
     {
-        if (!$this->askUserWhatMailToSend()) {
-            return 1;
-        }
+        // if not restarted
+        Artisan::call('queue:restart');
 
-        // handle user with email
-        $this->fakeUser();
+        try {
+            $this->emailIdToSend = $this->option('emailIdToSend') ?? $this->askUserWhatMailToSend();
+            if (!in_array($this->emailIdToSend, array_keys($this->availableEmails))) {
+                throw new InvalidArgumentException("The template id ({$this->emailIdToSend}) you have chosen does not exists.");
+            }
+            // handle user with email
+            $this->fakeUser();
 
-        // handle user channel
-        $this->fakeChannel();
+            // handle user channel
+            $this->fakeChannel();
 
-        switch ($this->emailIdToSend) {
+            switch ($this->emailIdToSend) {
             case 1:
                 $mailable = new WelcomeToPodmytube($this->user);
+
                 break;
+
             case 2:
                 $mailable = new ChannelIsRegistered($this->channel);
+
                 break;
+
             case 3: // monthly report with upgrade message
                 $this->fakeSubscription(Plan::bySlug('forever_free'));
                 $mailable = new MonthlyReportMail($this->subscription->channel);
+
                 break;
+
             case 4: // monthly report with upgrade message
                 $this->fakeSubscription(Plan::bySlug('weekly_youtuber'));
                 $mailable = new MonthlyReportMail($this->subscription->channel);
+
                 break;
-            /* case 5:
-                $mailable = new Newsletter($this->user);
-                break; */
+
+            case 5:
+                $mailable = new ChannelHasReachedItsLimitsMail($this->channel);
+
+                break;
         }
 
-        // send it to me with the right locale
-        Mail::to($this->user)->queue($mailable);
+            // send it to me with the right locale
+            Mail::to($this->user)->queue($mailable);
 
-        $this->comment(
-            'Email "' .
+            $this->comment(
+                'Email "' .
                 $this->availableEmails[$this->emailIdToSend]['label'] .
                 "\" has been queued to be sent to {{$this->user->email}}."
-        );
-        return 0;
+            );
+
+            return 0;
+        } catch (Exception $exception) {
+            $this->error($exception->getMessage());
+
+            return 1;
+        }
     }
 
-    protected function fakeUser()
+    protected function fakeUser(): void
     {
         // if no user exists
-        $this->user = User::byEmail($this->argument('email'));
+        $this->user = User::byEmail($this->option('email'));
         if ($this->user === null) {
-            $this->user = factory(User::class)->create(['email' => $this->argument('email')]);
+            $this->user = factory(User::class)->create(['email' => $this->option('email')]);
         }
     }
 
@@ -118,6 +142,7 @@ class SendTestEmail extends Command
             $this->channel = factory(Channel::class)->create([
                 'user_id' => $this->user->user_id,
             ]);
+
             return true;
         }
         $this->channel = $this->user->channels->first();
@@ -135,29 +160,22 @@ class SendTestEmail extends Command
                 'channel_id' => $this->channel->channel_id,
                 'published_at' => Carbon::now()->subMonth(),
             ]);
+
             return true;
         }
         $this->subscription = $this->channel->subscription;
     }
 
     /**
-     * ask what kind of mail to send
-     *
-     * @return bool
+     * ask what kind of mail to send.
      */
-    protected function askUserWhatMailToSend(): bool
+    protected function askUserWhatMailToSend(): int
     {
         $this->comment('Here are the mails you can send :');
         foreach ($this->availableEmails as $id => $availableEmail) {
             $this->info($id . ' - ' . $availableEmail['label']);
         }
 
-        $this->emailIdToSend = $this->ask('Which one do you want to send ?');
-        if (
-            !in_array($this->emailIdToSend, array_keys($this->availableEmails))
-        ) {
-            return false;
-        }
-        return true;
+        return $this->ask('Which one do you want to send ?');
     }
 }

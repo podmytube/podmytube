@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Mail;
 
 use App\Channel;
@@ -7,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Collection;
 
 /**
  * This mailable is sent on every first day of month.
@@ -15,29 +18,20 @@ use Illuminate\Queue\SerializesModels;
  */
 class MonthlyReportMail extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
-    /** @var \App\Channel $channel */
-    protected $channel;
-
-    /** @var \Carbon\Carbon $wantedMonth */
-    protected $wantedMonth;
-
-    /** @var \Illuminate\Support\Collection $publishedMedias */
-    protected $publishedMedias = [];
+    protected Collection $publishedMedias = [];
 
     /**
      * Create a monthly report email.
      *
      * @param \App\Channel $channel
      * @param \Carbon\Carbon wanted month (start of month)
-     *
-     * @return void
      */
-    public function __construct(Channel $channel, Carbon $wantedMonth)
+    public function __construct(protected Channel $channel, protected ?Carbon $wantedMonth = null)
     {
-        $this->channel = $channel;
-        $this->wantedMonth = $wantedMonth;
+        $this->wantedMonth = $this->wantedMonth ?? now();
     }
 
     /**
@@ -59,7 +53,8 @@ class MonthlyReportMail extends Mailable
         $this->publishedMedias = $this->channel->medias()
             ->publishedBetween($this->wantedMonth, $endOfMonth)
             ->orderBy('published_at', 'desc')
-            ->get();
+            ->get()
+        ;
 
         return $this->subject($subject)
             ->view('emails.monthlyReport')
@@ -69,6 +64,7 @@ class MonthlyReportMail extends Mailable
                 'channel' => $this->channel,
                 'publishedMedias' => $this->publishedMedias,
                 'shouldChannelBeUpgraded' => $this->channel->shouldChannelBeUpgraded($this->wantedMonth->month, $this->wantedMonth->year),
-            ]);
+            ])
+        ;
     }
 }

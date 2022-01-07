@@ -7,6 +7,7 @@ namespace App\Console\Commands;
 use App\Channel;
 use App\Exceptions\ChannelHasReachedItsQuotaException;
 use App\Factories\DownloadMediaFactory;
+use App\Jobs\ChannelHasReachedItsLimitsJob;
 use App\Media;
 use App\Modules\PeriodsHelper;
 use App\Modules\ServerRole;
@@ -85,6 +86,7 @@ class DownloadVideosByPeriodCommand extends Command
                     DownloadMediaFactory::media($media, $this->getOutput()->isVerbose())->run();
                 });
             } catch (ChannelHasReachedItsQuotaException $exception) {
+                ChannelHasReachedItsLimitsJob::dispatch($channel);
                 Log::info($exception->getMessage());
             } catch (Exception $exception) {
                 Log::error($exception->getMessage());
