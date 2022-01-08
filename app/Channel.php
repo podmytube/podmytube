@@ -497,4 +497,14 @@ class Channel extends Model implements Podcastable, Coverable
             ->count()
         ;
     }
+
+    /**
+     * tell if channel has medias added in the last 5 minutes.
+     */
+    public function hasRecentlyAddedMedias(int $nbMinutesAgo = 5): bool
+    {
+        return self::whereHas('medias', function (Builder $query) use ($nbMinutesAgo): void {
+            $query->where('created_at', '>', now()->subMinutes($nbMinutesAgo));
+        })->exists();
+    }
 }
