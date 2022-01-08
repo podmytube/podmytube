@@ -8,7 +8,6 @@ use App\Channel;
 use App\Exceptions\DownloadMediaTagException;
 use App\Exceptions\YoutubeMediaIsNotAvailableException;
 use App\Factories\DownloadMediaFactory;
-use App\Jobs\ChannelHasReachedItsLimitsJob;
 use App\Media;
 use App\Modules\PeriodsHelper;
 use App\Modules\ServerRole;
@@ -58,8 +57,6 @@ class DownloadVideosByChannelCommand extends Command
             $message = "Channel {$channel->nameWithId()} has reached its quota. No more media will be downloaded for this period.";
             $this->comment($message);
             Log::info($message);
-
-            ChannelHasReachedItsLimitsJob::dispatch($channel);
 
             return 1;
         }

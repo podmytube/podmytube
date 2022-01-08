@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace Tests\Feature\Console;
 
 use App\Channel;
-use App\Jobs\ChannelHasReachedItsLimitsJob;
 use App\Plan;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Bus;
 use Tests\TestCase;
 
 /**
@@ -41,16 +39,5 @@ class DownloadVideosByChannelCommandTest extends TestCase
     {
         // command should run properly
         $this->artisan('download:channel', ['channel_id' => $this->channel->channelId()])->assertExitCode(0);
-    }
-
-    /** @test */
-    public function channel_with_exhausted_quota_should_be_sent_warning_mail(): void
-    {
-        Bus::fake(ChannelHasReachedItsLimitsJob::class);
-        $this->addMediasToChannel($this->channel, $this->starterPlan->nb_episodes_per_month, true);
-        // add a new media (that may be downloaded with a higher plan)
-        $this->addMediasToChannel($this->channel);
-        $this->artisan('download:channel', ['channel_id' => $this->channel->channelId()])->assertExitCode(1);
-        Bus::assertDispatched(ChannelHasReachedItsLimitsJob::class);
     }
 }

@@ -6,6 +6,7 @@ namespace Tests\Unit;
 
 use App\Channel;
 use App\Plan;
+use App\Subscription;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -31,6 +32,10 @@ class SubscriptionModelTest extends TestCase
     public function by_channel_id_is_ok(): void
     {
         $this->assertNull(Channel::byChannelId('this_will_never_exists'));
-        $this->assertEquals($this->channel->channel_id, Channel::byChannelId($this->channel->channel_id)->channel_id);
+
+        $result = Subscription::byChannelId($this->channel->channel_id);
+        $this->assertNotNull($result);
+        $this->assertInstanceOf(Subscription::class, $result);
+        $this->assertEquals($this->channel->channel_id, $result->channel_id);
     }
 }

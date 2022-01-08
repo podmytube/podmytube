@@ -24,12 +24,16 @@ class ChannelModelTest extends TestCase
     use RefreshDatabase;
 
     protected Channel $channel;
+    protected Plan $freePlan;
+    protected Plan $starterPlan;
 
     public function setUp(): void
     {
         parent::setUp();
         $this->seedPlans();
-        $this->channel = $this->createChannelWithPlan(Plan::find(Plan::FREE_PLAN_ID));
+        $this->freePlan = Plan::bySlug('forever_free');
+        $this->starterPlan = Plan::bySlug('starter');
+        $this->channel = $this->createChannelWithPlan($this->freePlan);
     }
 
     /** @test */
@@ -45,7 +49,11 @@ class ChannelModelTest extends TestCase
     public function by_channel_id_is_ok(): void
     {
         $this->assertNull(Channel::byChannelId('this_will_never_exists'));
-        $this->assertEquals($this->channel->channel_id, Channel::byChannelId($this->channel->channel_id)->channel_id);
+
+        $result = Channel::byChannelId($this->channel->channel_id);
+        $this->assertNotNull($result);
+        $this->assertInstanceOf(Channel::class, $result);
+        $this->assertEquals($this->channel->channel_id, $result->channel_id);
     }
 
     /** @test */
@@ -53,7 +61,7 @@ class ChannelModelTest extends TestCase
     {
         $this->assertTrue($this->channel->isFree());
 
-        $payingChannel = $this->createChannelWithPlan(Plan::find(Plan::WEEKLY_PLAN_ID));
+        $payingChannel = $this->createChannelWithPlan($this->starterPlan);
         $this->assertFalse($payingChannel->isFree());
     }
 
@@ -271,5 +279,25 @@ class ChannelModelTest extends TestCase
         $this->assertFalse($channelWithoutSubscription->hasSubscription());
 
         $this->assertTrue($this->channel->hasSubscription());
+    }
+
+    /** @test */
+    public function has_recently_added_medias_is_fine(): void
+    {
+        // no medias should return false
+        $channel = $this->createChannelWithPlan($this->starterPlan);
+        $this->assertFalse($channel->hasRecentlyAddedMedias());
+
+        // with last day created medias should return false
+        factory(Media::class)->create(['channel_id' => $channel->channel_id, 'created_at' => now()->subDay()]);
+        $this->assertFalse($channel->hasRecentlyAddedMedias());
+
+        // 1h is no recent media should return false
+        factory(Media::class)->create(['channel_id' => $channel->channel_id, 'created_at' => now()->subHour()]);
+        $this->assertFalse($channel->hasRecentlyAddedMedias());
+
+        // recent medias should return true
+        factory(Media::class)->create(['channel_id' => $channel->channel_id, 'created_at' => now()->subMinutes(1)]);
+        $this->assertTrue($channel->hasRecentlyAddedMedias());
     }
 }

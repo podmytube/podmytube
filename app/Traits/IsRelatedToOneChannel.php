@@ -6,7 +6,7 @@ namespace App\Traits;
 
 trait IsRelatedToOneChannel
 {
-    public static function byChannelId(string $channelId): ?self
+    public static function byChannelId(string $channelId): ?static
     {
         return self::where('channel_id', '=', $channelId)->first();
     }

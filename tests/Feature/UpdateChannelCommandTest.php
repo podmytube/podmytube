@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use App\Channel;
+use App\Jobs\ChannelHasReachedItsLimitsJob;
+use App\Plan;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Bus;
 use RuntimeException;
 use Tests\TestCase;
 
@@ -17,10 +19,14 @@ class UpdateChannelCommandTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected Plan $starterPlan;
+
     public function setUp(): void
     {
         parent::setUp();
         $this->seedApiKeys();
+        $this->seedPlans();
+        $this->starterPlan = Plan::bySlug('starter');
     }
 
     /** @test */
@@ -40,7 +46,7 @@ class UpdateChannelCommandTest extends TestCase
     public function update_channel_should_succeed_to_add_new_medias(): void
     {
         $expectedNumberOfMedias = 2;
-        $channel = factory(Channel::class)->create(['channel_id' => self::PERSONAL_CHANNEL_ID]);
+        $channel = $this->createMyOwnChannel($this->starterPlan);
         $this->assertCount(0, $channel->medias);
         $this->artisan('update:channel', ['channel_id' => $channel->channel_id])
             ->assertExitCode(0)
@@ -53,7 +59,7 @@ class UpdateChannelCommandTest extends TestCase
     public function update_channel_should_succeed_to_update_existing_medias(): void
     {
         $expectedNumberOfMedias = 2;
-        $channel = factory(Channel::class)->create(['channel_id' => self::PERSONAL_CHANNEL_ID]);
+        $channel = $this->createMyOwnChannel($this->starterPlan);
         $this->assertCount(0, $channel->medias);
         $this->artisan('update:channel', ['channel_id' => $channel->channel_id])
             ->assertExitCode(0)
@@ -66,5 +72,20 @@ class UpdateChannelCommandTest extends TestCase
         ;
         $channel->refresh();
         $this->assertCount($expectedNumberOfMedias, $channel->medias);
+    }
+
+    /** @test */
+    public function update_channel_should_warn_when_exceeded_quota(): void
+    {
+        Bus::fake();
+        // creating my own channel
+        $channel = $this->createMyOwnChannel($this->starterPlan);
+        // adding grabbed medias more than my plan should permit
+        $this->addGrabbedMediasToChannel($channel, 10);
+        // running update should add 2 medias and warn me
+        $this->artisan('update:channel', ['channel_id' => $channel->channel_id])
+            ->assertExitCode(0)
+        ;
+        Bus::assertDispatched(ChannelHasReachedItsLimitsJob::class);
     }
 }

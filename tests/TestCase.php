@@ -197,6 +197,11 @@ abstract class TestCase extends BaseTestCase
         return $medias->count() == 1 ? $medias->first() : $medias;
     }
 
+    protected function addGrabbedMediasToChannel(Channel $channel, int $numberOfMediasToAdd = 1): void
+    {
+        $this->addMediasToChannel($channel, $numberOfMediasToAdd, true);
+    }
+
     /**
      * create one channel.
      */
@@ -272,5 +277,21 @@ abstract class TestCase extends BaseTestCase
     protected function seedCategories(): void
     {
         Artisan::call('db:seed', ['--class' => CategoriesTableSeeder::class]);
+    }
+
+    protected function createMyOwnChannel(Plan $plan): Channel
+    {
+        $channel = factory(Channel::class)->create(['channel_id' => self::PERSONAL_CHANNEL_ID]);
+
+        factory(Subscription::class)
+            ->create(
+                [
+                    'channel_id' => $channel->channelId(),
+                    'plan_id' => $plan->id,
+                ]
+            )
+        ;
+
+        return $channel;
     }
 }

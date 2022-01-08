@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Channel;
+use App\Jobs\ChannelHasReachedItsLimitsJob;
 use App\Media;
 use App\Modules\ServerRole;
 use App\Quota;
@@ -81,32 +82,27 @@ class UpdateChannelCommand extends Command
 
         // for each channel video
         array_map(function ($video) use ($channel): void {
-            // check if the video already exist in database
-            $media = Media::byMediaId($video['media_id'], true);
-            if ($media === null) {
-                Media::create(
-                    [
-                        'media_id' => $video['media_id'],
-                        'channel_id' => $channel->channel_id,
-                        'title' => $video['title'],
-                        'description' => $video['description'],
-                        'published_at' => $video['published_at'],
-                    ]
-                )
-                ;
-            } else {
-                $media->update(
-                    [
-                        'channel_id' => $channel->channel_id,
-                        'title' => $video['title'],
-                        'description' => $video['description'],
-                        'published_at' => $video['published_at'],
-                    ]
-                );
-            }
+            Media::query()->updateOrCreate(
+                [
+                    'media_id' => $video['media_id'],
+                ],
+                [
+                    'media_id' => $video['media_id'],
+                    'channel_id' => $channel->channel_id,
+                    'title' => $video['title'],
+                    'description' => $video['description'],
+                    'published_at' => $video['published_at'],
+                ]
+            );
 
             $this->makeProgressBarProgress();
         }, $factory->videos());
+
+        if ($channel->hasReachedItslimit() && $channel->hasRecentlyAddedMedias()) {
+            // channel has exceeded its quota for this newly inserted media
+            // so we are warning user
+            ChannelHasReachedItsLimitsJob::dispatch($channel);
+        }
 
         $apikeysAndQuotas = YoutubeQuotas::forUrls($factory->queriesUsed())->quotaConsumed();
         Quota::saveScriptConsumption(pathinfo(__FILE__, PATHINFO_BASENAME), $apikeysAndQuotas);
