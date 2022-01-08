@@ -16,9 +16,9 @@ class GoogleFactory
 
     private function __construct()
     {
-        $authFile = storage_path(config('app.google_spreadsheet_auth_file'));
+        $authFile = storage_path('keys' . DIRECTORY_SEPARATOR . config('app.google_spreadsheet_auth_file'));
         if (!file_exists($authFile)) {
-            throw new GoogleApiAuthFileIsMissingException("Config file {$authFile} is missing and required.");
+            throw new GoogleApiAuthFileIsMissingException();
         }
         $this->client = new Google_Client();
         $this->client->setApplicationName(self::APPLICATION_NAME);
