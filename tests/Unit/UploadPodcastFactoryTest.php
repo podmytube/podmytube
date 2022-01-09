@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use App\Channel;
 use App\Factories\UploadPodcastFactory;
 use App\Jobs\SendFileBySFTP;
 use App\Media;
@@ -20,8 +21,7 @@ class UploadPodcastFactoryTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var \App\Channel */
-    protected $channel;
+    protected Channel $channel;
 
     public function setUp(): void
     {
