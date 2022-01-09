@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Jobs;
 
 use App\Exceptions\FileUploadFailureException;
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -59,20 +60,38 @@ class SendFileBySFTP implements ShouldQueue
                 'destFilename' => $destFilename,
             ]
         );
-        $result = Storage::disk(self::REMOTE_DISK)->putFileAs($destFolder, $this->localFilePath, $destFilename);
 
-        if ($result === false) {
-            throw new FileUploadFailureException(
-                "Uploading file from {$this->localFilePath} to {$this->remoteFilePath} has failed"
+        try {
+            $result = Storage::disk(self::REMOTE_DISK)->putFileAs($destFolder, $this->localFilePath, $destFilename);
+            /* if ($result === false) {
+                throw new FileUploadFailureException("Uploading file from {$this->localFilePath} to {$this->remoteFilePath} has failed");
+            } */
+            //Log::notice("file {$destFilename} has been uploaded");
+
+            if ($this->cleanAfter === true) {
+                // Log::notice("Cleaning {$this->localFilePath}.");
+                unlink($this->localFilePath);
+            }
+
+            return 0;
+        } catch (Exception $thrownException) {
+            $exception = new FileUploadFailureException();
+            $userName = config('filesystems.disks.' . self::REMOTE_DISK . '.username');
+            $remoteHost = config('filesystems.disks.' . self::REMOTE_DISK . '.host');
+            $exception->addInformations(
+                <<<EOT
+user : {$userName}
+host : {$remoteHost}
+localFilePath : {$this->localFilePath}
+remoteFilePath : {$this->remoteFilePath}
+destFolder : {$destFolder}
+destFilename : {$destFilename}
+error : {$thrownException->getMessage()}
+EOT
             );
-        }
-        Log::notice("file {$destFilename} has been uploaded");
+            dd($exception);
 
-        if ($this->cleanAfter === true) {
-            Log::notice("Cleaning {$this->localFilePath}.");
-            unlink($this->localFilePath);
+            throw $exception;
         }
-
-        return 0;
     }
 }
