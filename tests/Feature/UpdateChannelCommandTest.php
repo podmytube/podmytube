@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Jobs\ChannelHasReachedItsLimitsJob;
+use App\Media;
 use App\Plan;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
@@ -53,6 +54,29 @@ class UpdateChannelCommandTest extends TestCase
         ;
         $channel->refresh();
         $this->assertCount($expectedNumberOfMedias, $channel->medias);
+    }
+
+    /** @test */
+    public function update_channel_should_succeed_to_update_deleted_media(): void
+    {
+        $mediaId = 'EePwbhMqEh0';
+        $channel = $this->createMyOwnChannel($this->starterPlan);
+        factory(Media::class)->create([
+            'media_id' => $mediaId,
+            'channel_id' => $channel->channelId(),
+            'title' => 'foo',
+            'deleted_at' => now(),
+        ]);
+        $this->assertCount(0, $channel->medias);
+        $this->artisan('update:channel', ['channel_id' => $channel->channel_id])
+            ->assertExitCode(0)
+        ;
+        $this->assertCount(0, $channel->medias);
+
+        // checking media as really been updated
+        $media = Media::byMediaId($mediaId, true);
+        $this->assertEquals('2015 10 20 Natacha Christian versus Nolwen Fred 01', $media->title);
+        $this->assertEquals('2015-10-28', $media->publishedAt());
     }
 
     /** @test */

@@ -82,18 +82,20 @@ class UpdateChannelCommand extends Command
 
         // for each channel video
         array_map(function ($video) use ($channel): void {
-            Media::query()->updateOrCreate(
-                [
-                    'media_id' => $video['media_id'],
-                ],
-                [
-                    'media_id' => $video['media_id'],
-                    'channel_id' => $channel->channel_id,
-                    'title' => $video['title'],
-                    'description' => $video['description'],
-                    'published_at' => $video['published_at'],
-                ]
-            );
+            Media::withTrashed()
+                ->updateOrCreate(
+                    [
+                        'media_id' => $video['media_id'],
+                    ],
+                    [
+                        'media_id' => $video['media_id'],
+                        'channel_id' => $channel->channel_id,
+                        'title' => $video['title'],
+                        'description' => $video['description'],
+                        'published_at' => $video['published_at'],
+                    ]
+                )
+            ;
 
             $this->makeProgressBarProgress();
         }, $factory->videos());
