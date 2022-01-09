@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Jobs;
 
 use App\Exceptions\FileUploadFailureException;
-use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -49,49 +48,29 @@ class SendFileBySFTP implements ShouldQueue
     {
         $destFolder = pathinfo($this->remoteFilePath, PATHINFO_DIRNAME);
         $destFilename = pathinfo($this->remoteFilePath, PATHINFO_BASENAME);
-        Log::notice(
-            'About to copy file on ' . self::REMOTE_DISK,
-            [
-                'user' => config('filesystems.disks.' . self::REMOTE_DISK . '.username'),
-                'host' => config('filesystems.disks.' . self::REMOTE_DISK . '.host'),
-                'localFilePath' => $this->localFilePath,
-                'remoteFilePath' => $this->remoteFilePath,
-                'destFolder' => $destFolder,
-                'destFilename' => $destFilename,
-            ]
-        );
 
-        try {
-            $result = Storage::disk(self::REMOTE_DISK)->putFileAs($destFolder, $this->localFilePath, $destFilename);
-            /* if ($result === false) {
-                throw new FileUploadFailureException("Uploading file from {$this->localFilePath} to {$this->remoteFilePath} has failed");
-            } */
-            //Log::notice("file {$destFilename} has been uploaded");
-
-            if ($this->cleanAfter === true) {
-                // Log::notice("Cleaning {$this->localFilePath}.");
-                unlink($this->localFilePath);
-            }
-
-            return 0;
-        } catch (Exception $thrownException) {
+        $result = Storage::disk(self::REMOTE_DISK)->putFileAs($destFolder, $this->localFilePath, $destFilename);
+        if ($result === false) {
             $exception = new FileUploadFailureException();
-            $userName = config('filesystems.disks.' . self::REMOTE_DISK . '.username');
-            $remoteHost = config('filesystems.disks.' . self::REMOTE_DISK . '.host');
-            $exception->addInformations(
-                <<<EOT
-user : {$userName}
-host : {$remoteHost}
-localFilePath : {$this->localFilePath}
-remoteFilePath : {$this->remoteFilePath}
-destFolder : {$destFolder}
-destFilename : {$destFilename}
-error : {$thrownException->getMessage()}
-EOT
-            );
-            dd($exception);
+
+            $message = 'date : ' . now()->toDateTimeString() . PHP_EOL;
+            $message .= 'user : ' . config('filesystems.disks.' . self::REMOTE_DISK . '.username') . PHP_EOL;
+            $message .= 'host : ' . config('filesystems.disks.' . self::REMOTE_DISK . '.host') . PHP_EOL;
+            $message .= "localFilePath : {$this->localFilePath}" . PHP_EOL;
+            $message .= "remoteFilePath : {$this->remoteFilePath}" . PHP_EOL;
+            $message .= "destFolder : {$destFolder}" . PHP_EOL;
+            $message .= "destFilename : {$destFilename}" . PHP_EOL;
+            $exception->addInformations($message);
+            Log::debug($exception->getMessage());
 
             throw $exception;
         }
+        
+        if ($this->cleanAfter === true) {
+            // Log::notice("Cleaning {$this->localFilePath}.");
+            unlink($this->localFilePath);
+        }
+
+        return 0;
     }
 }
