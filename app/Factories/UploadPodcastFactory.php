@@ -39,8 +39,9 @@ class UploadPodcastFactory
             throw new PodcastSavingFailureException("Saving rendered podcast to {$localPath} has failed.");
         }
 
-        // uploading
-        SendFileBySFTP::dispatch($localPath, $this->remotePath(), $cleanAfter = true);
+        // WARNING
+        // You MUST keep dispatchSync !!!
+        SendFileBySFTP::dispatchSync($localPath, $this->remotePath(), $cleanAfter = true);
 
         Log::notice("Podcast {$podcastable->podcastTitle()} has been successfully updated.");
         Log::notice("You can check it here : {$podcastable->podcastUrl()}");
