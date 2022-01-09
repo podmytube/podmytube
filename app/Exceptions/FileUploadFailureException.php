@@ -1,10 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Exceptions;
 
-use Exception;
-
-class FileUploadFailureException extends Exception
+class FileUploadFailureException extends PodmytubeException
 {
-    //
 }

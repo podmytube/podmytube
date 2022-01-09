@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use App\Exceptions\FileUploadFailureException;
 use App\Jobs\SendFileBySFTP;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Storage;
@@ -31,11 +32,22 @@ class SendFileBySFTPTest extends TestCase
         parent::tearDown();
     }
 
-    public function testing_file_updload_is_ok(): void
+    /** @test */
+    public function sending_file_should_succeed(): void
     {
         $localFile = __DIR__ . '/../Fixtures/images/sampleVig.jpg';
         $remoteFile = $this->destFolder . '/testVig.jpg';
         SendFileBySFTP::dispatchSync($localFile, $remoteFile, false);
         $this->assertTrue(Storage::disk('remote')->exists($remoteFile));
+    }
+
+    /** @test */
+    public function sending_file_on_protected_folder_should_throw_exception(): void
+    {
+        $localFile = __DIR__ . '/../Fixtures/images/sampleVig.jpg';
+        $remoteFile = 'protected/testVig.jpg';
+        $this->expectException(FileUploadFailureException::class);
+        $job = new SendFileBySFTP($localFile, $remoteFile, false);
+        $job->handle();
     }
 }
