@@ -65,6 +65,29 @@ class UpdateChannelsCommandTest extends TestCase
     }
 
     /** @test */
+    public function update_channels_should_update_deleted_medias_successfully(): void
+    {
+        $mediaId = 'EePwbhMqEh0';
+        $expectedNumberOfMedias = 2;
+        $channel = $this->createMyOwnChannel($this->starterPlan);
+        factory(Media::class)->create([
+            'media_id' => $mediaId,
+            'channel_id' => $channel->channelId(),
+            'title' => 'foo',
+            'deleted_at' => now(),
+        ]);
+        $this->assertCount(1, Media::withTrashed()->get());
+        $this->artisan('update:channels')->assertExitCode(0);
+        $this->assertCount($expectedNumberOfMedias, Media::withTrashed()->get());
+        $this->artisan('update:channels')->assertExitCode(0);
+
+        // checking media as really been updated
+        $media = Media::byMediaId($mediaId, true);
+        $this->assertEquals('2015 10 20 Natacha Christian versus Nolwen Fred 01', $media->title);
+        $this->assertEquals('2015-10-28', $media->publishedAt());
+    }
+
+    /** @test */
     public function update_channels_should_warn_when_exceeded_quota(): void
     {
         Bus::fake();
