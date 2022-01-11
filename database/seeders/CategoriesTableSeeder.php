@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use App\Category;
@@ -11,12 +13,10 @@ class CategoriesTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
-    public function run()
+    public function run(): void
     {
-        /**
+        /*
          * I removed foreign key check to avoid losing data on channels
          * table during category slug column adding
          */
@@ -29,7 +29,7 @@ class CategoriesTableSeeder extends Seeder
             DB::table('categories')->delete();
         }
         /**
-         * Parents categories
+         * Parents categories.
          */
         $data = [
             ['parent_id' => 0, 'name' => 'Arts'],
@@ -66,9 +66,8 @@ class CategoriesTableSeeder extends Seeder
         Category::insert($data);
 
         /**
-         * Sub categories
+         * Sub categories.
          */
-
         $artsId = Category::bySlug('arts')->id;
         $businessId = Category::bySlug('business')->id;
         $comedyId = Category::bySlug('comedy')->id;
@@ -86,62 +85,46 @@ class CategoriesTableSeeder extends Seeder
         $tvFilmId = Category::bySlug('tv-film')->id;
 
         $data = [
-            /**
-             * Arts categories
-             */
+            // Arts categories
             ['parent_id' => $artsId, 'name' => 'Books'],
             ['parent_id' => $artsId, 'name' => 'Design'],
             ['parent_id' => $artsId, 'name' => 'Fashion & Beauty'],
             ['parent_id' => $artsId, 'name' => 'Food'],
             ['parent_id' => $artsId, 'name' => 'Performing Arts'],
             ['parent_id' => $artsId, 'name' => 'Visual Arts'],
-            /**
-             * Business categories
-             */
+            // Business categories
             ['parent_id' => $businessId, 'name' => 'Careers'],
             ['parent_id' => $businessId, 'name' => 'Entrepreneurship'],
             ['parent_id' => $businessId, 'name' => 'Investing'],
             ['parent_id' => $businessId, 'name' => 'Management'],
             ['parent_id' => $businessId, 'name' => 'Marketing'],
             ['parent_id' => $businessId, 'name' => 'NonProfit'],
-            /**
-             * Comedy categories
-             */
+            // Comedy categories
             ['parent_id' => $comedyId, 'name' => 'Comedy Interviews'],
             ['parent_id' => $comedyId, 'name' => 'Improv'],
             ['parent_id' => $comedyId, 'name' => 'StandUp'],
-            /**
-             * Education categories
-             */
+            // Education categories
             ['parent_id' => $educationId, 'name' => 'Courses'],
             ['parent_id' => $educationId, 'name' => 'How To'],
             ['parent_id' => $educationId, 'name' => 'Language Learning'],
             ['parent_id' => $educationId, 'name' => 'Self-Improvement'],
-            /**
-             * Fiction categories
-             */
+            // Fiction categories
             ['parent_id' => $fictionId, 'name' => 'Comedy Fiction'],
             ['parent_id' => $fictionId, 'name' => 'Drama'],
             ['parent_id' => $fictionId, 'name' => 'Science Fiction'],
-            /**
-             * Health & Fitness categories
-             */
+            // Health & Fitness categories
             ['parent_id' => $healthFitnessId, 'name' => 'Alternative Health'],
             ['parent_id' => $healthFitnessId, 'name' => 'Fitness'],
             ['parent_id' => $healthFitnessId, 'name' => 'Medicine'],
             ['parent_id' => $healthFitnessId, 'name' => 'Mental Health'],
             ['parent_id' => $healthFitnessId, 'name' => 'Nutrition'],
             ['parent_id' => $healthFitnessId, 'name' => 'Sexuality'],
-            /**
-             * Kids & Family categories
-             */
+            // Kids & Family categories
             ['parent_id' => $kidsFamilyId, 'name' => 'Education for Kids'],
             ['parent_id' => $kidsFamilyId, 'name' => 'Parenting'],
             ['parent_id' => $kidsFamilyId, 'name' => 'Pets & Animals'],
             ['parent_id' => $kidsFamilyId, 'name' => 'Stories For Kids'],
-            /**
-             * Leisure categories
-             */
+            // Leisure categories
             ['parent_id' => $leisureId, 'name' => 'Animation Manga'],
             ['parent_id' => $leisureId, 'name' => 'Automotive'],
             ['parent_id' => $leisureId, 'name' => 'Aviation'],
@@ -150,15 +133,11 @@ class CategoriesTableSeeder extends Seeder
             ['parent_id' => $leisureId, 'name' => 'Hobbies'],
             ['parent_id' => $leisureId, 'name' => 'Home & Garden'],
             ['parent_id' => $leisureId, 'name' => 'Video Games'],
-            /**
-             * Music categories
-             */
+            // Music categories
             ['parent_id' => $musicId, 'name' => 'Music Commentary'],
             ['parent_id' => $musicId, 'name' => 'Music History'],
             ['parent_id' => $musicId, 'name' => 'Music Interviews'],
-            /**
-             * News categories
-             */
+            // News categories
             ['parent_id' => $newsId, 'name' => 'Business News'],
             ['parent_id' => $newsId, 'name' => 'Daily News'],
             ['parent_id' => $newsId, 'name' => 'Entertainment News'],
@@ -167,9 +146,7 @@ class CategoriesTableSeeder extends Seeder
             ['parent_id' => $newsId, 'name' => 'Sports News'],
             ['parent_id' => $newsId, 'name' => 'Tech News'],
 
-            /**
-             * Religion & Spirtuality categories
-             */
+            // Religion & Spirtuality categories
             ['parent_id' => $religionSpiritualityId, 'name' => 'Buddhism'],
             ['parent_id' => $religionSpiritualityId, 'name' => 'Christianity'],
             ['parent_id' => $religionSpiritualityId, 'name' => 'Hinduism'],
@@ -177,9 +154,7 @@ class CategoriesTableSeeder extends Seeder
             ['parent_id' => $religionSpiritualityId, 'name' => 'Judaism'],
             ['parent_id' => $religionSpiritualityId, 'name' => 'Religion'],
             ['parent_id' => $religionSpiritualityId, 'name' => 'Spirituality'],
-            /**
-             * Science categories
-             */
+            // Science categories
             ['parent_id' => $scienceId, 'name' => 'Astronomy'],
             ['parent_id' => $scienceId, 'name' => 'Chemistry'],
             ['parent_id' => $scienceId, 'name' => 'Earth Sciences'],
@@ -189,17 +164,13 @@ class CategoriesTableSeeder extends Seeder
             ['parent_id' => $scienceId, 'name' => 'Nature'],
             ['parent_id' => $scienceId, 'name' => 'Physics'],
             ['parent_id' => $scienceId, 'name' => 'Social Sciences'],
-            /**
-             * Society & Culture categories
-             */
+            // Society & Culture categories
             ['parent_id' => $societyCultureId, 'name' => 'Documentary'],
             ['parent_id' => $societyCultureId, 'name' => 'Personal Journals'],
             ['parent_id' => $societyCultureId, 'name' => 'Philosophy'],
             ['parent_id' => $societyCultureId, 'name' => 'Places & Travel'],
             ['parent_id' => $societyCultureId, 'name' => 'Relationships'],
-            /**
-             * Sports categories
-             */
+            // Sports categories
             ['parent_id' => $sportsId, 'name' => 'Baseball'],
             ['parent_id' => $sportsId, 'name' => 'Basketball'],
             ['parent_id' => $sportsId, 'name' => 'Cricket'],
@@ -208,16 +179,14 @@ class CategoriesTableSeeder extends Seeder
             ['parent_id' => $sportsId, 'name' => 'Golf'],
             ['parent_id' => $sportsId, 'name' => 'Hockey'],
             ['parent_id' => $sportsId, 'name' => 'Rugby'],
-            //['parent_id' => $sportsId, 'name' => 'Running'],
+            ['parent_id' => $sportsId, 'name' => 'Running'],
             ['parent_id' => $sportsId, 'name' => 'Soccer'],
             ['parent_id' => $sportsId, 'name' => 'Swimming'],
             ['parent_id' => $sportsId, 'name' => 'Tennis'],
             ['parent_id' => $sportsId, 'name' => 'Volleyball'],
             ['parent_id' => $sportsId, 'name' => 'Wilderness'],
             ['parent_id' => $sportsId, 'name' => 'Wrestling'],
-            /**
-             * TV & Film categories
-             */
+            // TV & Film categories
             ['parent_id' => $tvFilmId, 'name' => 'After Shows'],
             ['parent_id' => $tvFilmId, 'name' => 'Film History'],
             ['parent_id' => $tvFilmId, 'name' => 'Film Interviews'],
