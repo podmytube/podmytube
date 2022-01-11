@@ -84,7 +84,7 @@ class UpdatePodcastsCommand extends Command
 
         $channels->map(function ($channel): void {
             try {
-                UploadPodcastFactory::init()->for($channel);
+                UploadPodcastFactory::for($channel)->run();
                 $this->recordSuccess($channel);
             } catch (Exception $exception) {
                 $this->recordFailure($channel, $exception);

@@ -13,22 +13,19 @@ use Illuminate\Support\Facades\Log;
 
 class UploadPodcastFactory
 {
-    protected Podcastable $podcastable;
     protected string $localPath;
 
-    private function __construct()
+    private function __construct(protected Podcastable $podcastable)
     {
     }
 
-    public static function init()
+    public static function for(Podcastable $podcastable)
     {
-        return new static();
+        return new static($podcastable);
     }
 
-    public function for(Podcastable $podcastable)
+    public function run()
     {
-        $this->podcastable = $podcastable;
-
         /** getting rendered podcast */
         $renderedPodcast = PodcastBuilder::create($this->podcastable->toPodcast())->render();
 
@@ -43,7 +40,7 @@ class UploadPodcastFactory
          */
         SendFileBySFTP::dispatchSync($this->localPath, $this->remotePath(), $cleanAfter = true);
 
-        Log::notice("Podcast {$podcastable->podcastTitle()} has been successfully updated. You can check it here : {$podcastable->podcastUrl()}");
+        Log::notice("Podcast {$this->podcastable->podcastTitle()} has been successfully updated. You can check it here : {$this->podcastable->podcastUrl()}");
 
         return $this;
     }
@@ -58,11 +55,19 @@ class UploadPodcastFactory
         return $this->podcastable->remoteFilePath();
     }
 
-    protected function saveRenderedFile(string $renderedPodcast): string
+    public function prepareLocalPath(): string
     {
         $localPath = '/tmp/';
-        $localPath .= now()->format('Y-m-d\TH:i:s') . '_';
+        $localPath .= now()->format('Y-m-d\TH:i') . '_';
         $localPath .= $this->podcastable instanceof Channel ? 'channel' : 'playlist';
+        $localPath .= '_' . $this->podcastable->channelId();
+
+        return $localPath;
+    }
+
+    protected function saveRenderedFile(string $renderedPodcast): string
+    {
+        $localPath = $this->prepareLocalPath();
 
         // saving podcast locally
         $status = file_put_contents($localPath, $renderedPodcast);

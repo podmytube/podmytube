@@ -44,7 +44,7 @@ class UpdatePodcastForChannelCommand extends Command
         $this->channel = Channel::findOrFail($this->argument('channelId'));
         $this->info("Updating podcast for channel {$this->channel->nameWithId()}", 'v');
 
-        UploadPodcastFactory::init()->for($this->channel);
+        UploadPodcastFactory::for($this->channel)->run();
 
         $this->comment("Podcast {$this->channel->nameWithId()} has been successfully updated.", 'v');
         $this->info("You can check it here : {$this->channel->podcastUrl()}", 'v');
