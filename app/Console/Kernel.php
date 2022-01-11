@@ -42,8 +42,19 @@ class Kernel extends ConsoleKernel
         // grabbing non grabbed videos
         $schedule->command(DownloadVideosByPeriodCommand::class)->hourlyAt(12);
 
-        // Building podcasts
-        $schedule->command(UpdatePodcastsCommand::class, ['all'])->hourlyAt(30);
+        /* 
+         * Building podcasts
+         * this command is now useless because DownloadVideosByPeriodCommand is
+         * dispatching podcast generation.
+         * DownloadVideosByPeriodCommand 
+         *   DownloadMediaFactory
+         *     ChannelUpdated
+         *       UploadPodcast
+         *         UploadPodcastFactory
+         * UpdatePodcastsCommand
+         *   UploadPodcastFactory
+         * $schedule->command(UpdatePodcastsCommand::class, ['all'])->hourlyAt(30);
+         */
 
         // get playlists from paying channels
         $schedule->command(GetPlaylistsCommand::class)->hourlyAt(35);
@@ -90,7 +101,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands(): void
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }
