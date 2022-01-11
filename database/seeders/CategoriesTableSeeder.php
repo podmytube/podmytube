@@ -208,7 +208,7 @@ class CategoriesTableSeeder extends Seeder
             ['parent_id' => $sportsId, 'name' => 'Golf'],
             ['parent_id' => $sportsId, 'name' => 'Hockey'],
             ['parent_id' => $sportsId, 'name' => 'Rugby'],
-            ['parent_id' => $sportsId, 'name' => 'Running'],
+            //['parent_id' => $sportsId, 'name' => 'Running'],
             ['parent_id' => $sportsId, 'name' => 'Soccer'],
             ['parent_id' => $sportsId, 'name' => 'Swimming'],
             ['parent_id' => $sportsId, 'name' => 'Tennis'],
