@@ -19,29 +19,28 @@ class LastMediaChecker
 {
     public const NB_HOURS_AGO = 6;
 
-    /** @var \App\Channel */
-    protected $channel;
+    protected ?Media $media;
 
-    /** @var \App\Media */
-    protected $media;
+    protected Carbon $someHoursAgo;
 
-    /** @var Carbon\Carbon some hours ago */
-    protected $someHoursAgo;
+    protected array $lastMediaFromYoutube;
 
-    /** @var array */
-    protected $lastMediaFromYoutube;
-
-    private function __construct(Channel $channel)
+    private function __construct(protected Channel $channel)
     {
-        $this->channel = $channel;
-        $this->someHoursAgo = Carbon::now()->subHours(self::NB_HOURS_AGO);
-        $this->lastMediaFromYoutube = YoutubeLastVideoFactory::forChannel($this->channel->channel_id)->lastMedia();
-        $this->media = Media::byMediaId($this->lastMediaFromYoutube['media_id']);
+        $this->someHoursAgo = now()->subHours(self::NB_HOURS_AGO);
     }
 
     public static function forChannel(...$params)
     {
         return new static(...$params);
+    }
+
+    public function run(): self
+    {
+        $this->lastMediaFromYoutube = YoutubeLastVideoFactory::forChannel($this->channel->channel_id)->lastMedia();
+        $this->media = Media::byMediaId($this->lastMediaFromYoutube['media_id']);
+
+        return $this;
     }
 
     /**
@@ -51,7 +50,7 @@ class LastMediaChecker
     {
         if ($this->hasMediaBeenPublishedRecently() === true) {
             // media is too recent to be already processed
-            Log::notice(
+            Log::debug(
                 "Last media {$this->lastMediaFromYoutube['media_id']} has been published recently for {$this->channel->nameWithId()}. \\
                 No alert to send."
             );
@@ -60,8 +59,8 @@ class LastMediaChecker
         }
 
         if ($this->media === null) {
-            Log::notice(
-                "Media {$this->lastMediaFromYoutube['media_id']} published more than ".self::NB_HOURS_AGO." hours ago is still unknown \\
+            Log::debug(
+                "Media {$this->lastMediaFromYoutube['media_id']} published more than " . self::NB_HOURS_AGO . " hours ago is still unknown \\
                 for {$this->channel->nameWithId()}. Sending alert !"
             );
 
@@ -71,9 +70,9 @@ class LastMediaChecker
         try {
             ShouldMediaBeingDownloadedFactory::create($this->media)->check();
         } catch (
-            MediaAlreadyGrabbedException |
-            YoutubeMediaIsNotAvailableException |
-            MediaIsTooOldException |
+            MediaAlreadyGrabbedException|
+            YoutubeMediaIsNotAvailableException|
+            MediaIsTooOldException|
             DownloadMediaTagException $exception
             ) {
             return false;
@@ -88,5 +87,10 @@ class LastMediaChecker
     public function hasMediaBeenPublishedRecently(): bool
     {
         return $this->lastMediaFromYoutube['published_at']->isAfter($this->someHoursAgo);
+    }
+
+    public function lastMediaFromYoutube(): array
+    {
+        return $this->lastMediaFromYoutube;
     }
 }
