@@ -38,7 +38,7 @@ class LastMediaCheckerTest extends TestCase
     public function has_been_published_recently_should_be_false(): void
     {
         $this->assertFalse(
-            LastMediaChecker::forChannel($this->channel)->hasMediaBeenPublishedRecently(),
+            LastMediaChecker::forChannel($this->channel)->run()->hasMediaBeenPublishedRecently(),
             'Last video on my personnal channel has been on 28/10/2015. '
         );
     }
@@ -52,7 +52,7 @@ class LastMediaCheckerTest extends TestCase
         ]);
 
         $this->assertTrue(
-            LastMediaChecker::forChannel($this->channel)->shouldMediaBeingGrabbed(),
+            LastMediaChecker::forChannel($this->channel)->run()->shouldMediaBeingGrabbed(),
             'My last video have none of this tag. Unknown in db => alert.'
         );
     }
@@ -72,7 +72,7 @@ class LastMediaCheckerTest extends TestCase
             'published_at' => Carbon::createFromDate(2015, 10, 28), ]);
 
         $this->assertFalse(
-            LastMediaChecker::forChannel($this->channel)->shouldMediaBeingGrabbed(),
+            LastMediaChecker::forChannel($this->channel)->run()->shouldMediaBeingGrabbed(),
             'My last video have none of this tag. This media should not be grabbed. No alert.'
         );
     }
@@ -93,7 +93,7 @@ class LastMediaCheckerTest extends TestCase
         ]);
 
         $this->assertFalse(
-            LastMediaChecker::forChannel($this->channel)->shouldMediaBeingGrabbed(),
+            LastMediaChecker::forChannel($this->channel)->run()->shouldMediaBeingGrabbed(),
             'Media is grabbed. => no alert'
         );
     }

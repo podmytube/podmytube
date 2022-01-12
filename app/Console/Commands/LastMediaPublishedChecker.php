@@ -5,23 +5,23 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Channel;
+use App\Exceptions\NoPayingChannelException;
 use App\Exceptions\YoutubeNoResultsException;
 use App\Mail\ChannelIsInTroubleWarningMail;
 use App\Modules\LastMediaChecker;
 use App\Modules\ServerRole;
-use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Mail;
 
 class LastMediaPublishedChecker extends Command
 {
     public const NB_HOURS_AGO = 6;
 
-    /** @var \Illuminate\Support\Collection */
-    protected $channelsToCheck;
+    protected Collection $channelsToCheck;
 
-    /** @var array */
-    protected $channelInTroubleMessages = [];
+    protected array $channelInTroubleMessages = [];
+
     /**
      * The name and signature of the console command.
      *
@@ -35,15 +35,6 @@ class LastMediaPublishedChecker extends Command
      * @var string
      */
     protected $description = 'Check if last media on Youtube has been grabbed.';
-
-    /** @var Carbon\Carbon some hours ago */
-    protected $someHoursAgo;
-
-    public function __construct()
-    {
-        parent::__construct();
-        $this->someHoursAgo = Carbon::now()->subHours(self::NB_HOURS_AGO);
-    }
 
     /**
      * Execute the console command.
@@ -67,15 +58,21 @@ class LastMediaPublishedChecker extends Command
         // remove accropolis
         $this->removeChannel('UCq80IvL314jsE7PgYsTdw7Q');
 
+        if (!$this->channelsToCheck->count()) {
+            throw new NoPayingChannelException();
+
+            return 1;
+        }
+
         // get last episode
         $this->channelsToCheck->map(function ($channelToCheck): void {
             $this->info("Checking channel {$channelToCheck->channel_name} ({$channelToCheck->channel_id}) .", 'v');
 
             try {
-                $factory = LastMediaChecker::forChannel($channelToCheck);
+                $factory = LastMediaChecker::forChannel($channelToCheck)->run();
                 if ($factory->shouldMediaBeingGrabbed()) {
                     $this->channelInTroubleMessages[] = "Channel {$channelToCheck->channel_name} ({$channelToCheck->channel_id}) "
-                        . 'last video has not been grabbed.';
+                        . 'last video ' . $factory->lastMediaFromYoutube()['media_id'] . ' has not been grabbed.';
                 }
             } catch (YoutubeNoResultsException $exception) {
                 $this->channelInTroubleMessages[] = "Channel {$channelToCheck->channel_name} ({$channelToCheck->channel_id}) "
