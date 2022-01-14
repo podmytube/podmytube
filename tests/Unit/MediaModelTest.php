@@ -36,6 +36,14 @@ class MediaModelTest extends TestCase
         $this->media = factory(Media::class)->create(['channel_id' => $this->channel->channel_id]);
     }
 
+    public function tearDown(): void
+    {
+        if (file_exists($this->media->uploadedFilePath())) {
+            unlink($this->media->uploadedFilePath());
+        }
+        parent::tearDown();
+    }
+
     public function test_published_between_should_be_fine(): void
     {
         $expectedNbMedias = 3;

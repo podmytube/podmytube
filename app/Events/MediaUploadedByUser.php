@@ -18,12 +18,8 @@ class MediaUploadedByUser implements InteractsWithPodcastable, InteractsWithMedi
     use InteractsWithSockets;
     use SerializesModels;
 
-    /** @var \App\Media */
-    public $media;
-
-    public function __construct(Media $media)
+    public function __construct(public Media $media)
     {
-        $this->media = $media;
     }
 
     public function podcastable(): Podcastable

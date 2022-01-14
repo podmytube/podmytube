@@ -127,7 +127,7 @@ class MediasController extends Controller
             return redirect()
                 ->route('channel.medias.index', $channel)
                 ->with('success', "Your episode {$validatedParams['title']} has been successfully added.")
-        ;
+            ;
         } catch (Throwable $exception) {
             Log::error($exception->getMessage());
 
