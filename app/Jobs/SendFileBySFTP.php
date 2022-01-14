@@ -65,7 +65,7 @@ class SendFileBySFTP implements ShouldQueue
 
             throw $exception;
         }
-        
+
         if ($this->cleanAfter === true) {
             // Log::notice("Cleaning {$this->localFilePath}.");
             unlink($this->localFilePath);
