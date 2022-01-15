@@ -48,7 +48,7 @@ class UploadMedia implements ShouldQueue
             throw new FileUploadUnreadableFileException("File on {$localPath} does not exists.");
         }
 
-        SendFileBySFTP::dispatch($localPath, $remotePath, true);
+        SendFileBySFTP::dispatchSync($localPath, $remotePath, true);
     }
 
     public function retryUntil(): Carbon
