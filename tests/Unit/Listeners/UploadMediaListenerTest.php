@@ -7,7 +7,7 @@ namespace Tests\Unit\Jobs;
 use App\Events\MediaUploadedByUser;
 use App\Exceptions\FileUploadUnreadableFileException;
 use App\Jobs\SendFileBySFTP;
-use App\Listeners\UploadMedia;
+use App\Listeners\UploadMediaListener;
 use App\Media;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
@@ -18,7 +18,7 @@ use Tests\TestCase;
  * @internal
  * @coversNothing
  */
-class UploadMediaTest extends TestCase
+class UploadMediaListenerTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -45,7 +45,7 @@ class UploadMediaTest extends TestCase
     /** @test */
     public function upload_media_should_fail_if_file_does_not_exists(): void
     {
-        $job = new UploadMedia();
+        $job = new UploadMediaListener();
         $this->expectException(InvalidArgumentException::class);
         $job->handle($this->event);
     }
@@ -55,7 +55,7 @@ class UploadMediaTest extends TestCase
     {
         touch($this->media->uploadedFilePath());
         chmod($this->media->uploadedFilePath(), 0300);
-        $job = new UploadMedia();
+        $job = new UploadMediaListener();
         $this->expectException(FileUploadUnreadableFileException::class);
         $job->handle($this->event);
     }
@@ -64,7 +64,7 @@ class UploadMediaTest extends TestCase
     public function upload_media_should_success(): void
     {
         touch($this->media->uploadedFilePath());
-        $job = new UploadMedia();
+        $job = new UploadMediaListener();
         $job->handle($this->event);
         Bus::assertDispatched(SendFileBySFTP::class);
     }

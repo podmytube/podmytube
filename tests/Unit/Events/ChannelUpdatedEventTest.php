@@ -18,11 +18,9 @@ class ChannelUpdatedEventTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var \App\Channel */
-    protected $channel;
+    protected Channel $channel;
 
-    /** @var \App\Playlist */
-    protected $playlist;
+    protected Playlist $playlist;
 
     public function setUp(): void
     {

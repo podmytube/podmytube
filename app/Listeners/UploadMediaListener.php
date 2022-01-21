@@ -13,7 +13,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 
-class UploadMedia implements ShouldQueue
+class UploadMediaListener implements ShouldQueue
 {
     use InteractsWithQueue;
 
