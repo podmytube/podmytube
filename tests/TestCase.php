@@ -67,7 +67,7 @@ abstract class TestCase extends BaseTestCase
         return htmlspecialchars($str, ENT_QUOTES | ENT_HTML401);
     }
 
-    public function createRealThumbFileFor(Coverable $coverable): Thumb
+    public function createCoverFor(Coverable $coverable): Thumb
     {
         $thumb = factory(Thumb::class)->create([
             'coverable_type' => get_class($coverable),

@@ -27,7 +27,7 @@ class PodcastBuilderTest extends TestCase
     {
         parent::setUp();
         $this->channel = $this->createChannelWithPlan();
-        $this->createRealThumbFileFor($this->channel);
+        $this->createCoverFor($this->channel);
     }
 
     public function testRenderingPodcastWithoutItemsShouldBeGood()

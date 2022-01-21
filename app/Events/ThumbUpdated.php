@@ -16,12 +16,8 @@ class ThumbUpdated implements InteractsWithPodcastable
     use InteractsWithSockets;
     use SerializesModels;
 
-    /** @var \App\Interfaces\Podcastable */
-    public $podcastable;
-
-    public function __construct(Podcastable $podcastable)
+    public function __construct(public Podcastable $podcastable)
     {
-        $this->podcastable = $podcastable;
     }
 
     public function podcastable(): Podcastable

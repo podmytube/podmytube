@@ -28,7 +28,7 @@ class VignetteModuleTest extends TestCase
     {
         parent::setUp();
         $this->channel = factory(Channel::class)->create();
-        $this->thumb = $this->createRealThumbFileFor($this->channel);
+        $this->thumb = $this->createCoverFor($this->channel);
         $this->vignette = Vignette::fromThumb($this->thumb);
     }
 
