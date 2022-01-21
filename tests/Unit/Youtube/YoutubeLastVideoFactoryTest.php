@@ -48,14 +48,6 @@ class YoutubeLastVideoFactoryTest extends TestCase
         $this->assertEquals(YoutubeLastVideoFactory::SCRIPT_NAME, $quotaModel->script);
     }
 
-    public function test_channel_with_no_videos_should_throw_exception(): void
-    {
-        // accopolis has some video on channel homepage
-        // but when you click on "videos" tab there are none.
-        $this->expectException(YoutubeGenericErrorException::class);
-        YoutubeLastVideoFactory::forChannel('UCq80IvL314jsE7PgYsTdw7Q');
-    }
-
     public function test_getting_invalid_media_should_fail(): void
     {
         $this->expectException(YoutubeGenericErrorException::class);
