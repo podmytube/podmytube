@@ -19,14 +19,11 @@ class MediaUploadedByUserEventTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var \App\Channel */
-    protected $channel;
+    protected Channel $channel;
 
-    /** @var \App\Playlist */
-    protected $playlist;
+    protected Playlist $playlist;
 
-    /** @var \App\Media */
-    protected $media;
+    protected Media $media;
 
     public function setUp(): void
     {

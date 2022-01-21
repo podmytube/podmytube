@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Listeners;
 
+use App\Channel;
 use App\Events\ThumbUpdated;
 use App\Jobs\SendFileBySFTP;
-use App\Listeners\UploadPodcast;
+use App\Listeners\UploadPodcastListener;
 use App\Media;
 use App\Playlist;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -21,11 +22,9 @@ class UploadPodcastListenerTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var \App\Channel */
-    protected $channel;
+    protected Channel $channel;
 
-    /** @var \App\Playlist */
-    protected $playlist;
+    protected Playlist $playlist;
 
     public function setUp(): void
     {
@@ -46,7 +45,7 @@ class UploadPodcastListenerTest extends TestCase
     public function upload_podcast_listener_for_channel(): void
     {
         $thumbUpdatedEvent = new ThumbUpdated($this->channel);
-        $this->assertTrue((new UploadPodcast())->handle($thumbUpdatedEvent));
+        $this->assertTrue((new UploadPodcastListener())->handle($thumbUpdatedEvent));
         Bus::assertDispatched(function (SendFileBySFTP $job) {
             return config('app.feed_path') . $this->channel->channelId() . '/' . config('app.feed_filename') === $job->remoteFilePath;
         });
@@ -56,7 +55,7 @@ class UploadPodcastListenerTest extends TestCase
     public function upload_podcast_listener_for_playlist(): void
     {
         $thumbUpdatedEvent = new ThumbUpdated($this->playlist);
-        $this->assertTrue((new UploadPodcast())->handle($thumbUpdatedEvent));
+        $this->assertTrue((new UploadPodcastListener())->handle($thumbUpdatedEvent));
         // Bus::assertDispatched(SendFileBySFTP::class); // useless
         Bus::assertDispatched(function (SendFileBySFTP $job) {
             return config('app.playlists_path') . $this->playlist->channelId() . '/' . $this->playlist->youtube_playlist_id . '.xml' === $job->remoteFilePath;
