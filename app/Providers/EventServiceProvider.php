@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Listeners\UploadThumbListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -27,9 +28,8 @@ class EventServiceProvider extends ServiceProvider
         ],
         // thumb has been updated
         \App\Events\ThumbUpdated::class => [
-            \App\Listeners\UploadThumb::class,
+            UploadThumbListener::class,
             \App\Listeners\UploadPodcast::class,
-            // \App\Listeners\RefreshVignette::class, // vignette is created immediately now
         ],
         // feed has been updated
         \App\Events\PodcastUpdated::class => [
