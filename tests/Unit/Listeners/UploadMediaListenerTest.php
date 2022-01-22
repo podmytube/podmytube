@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Jobs;
+namespace Tests\Unit\Listeners;
 
 use App\Events\MediaUploadedByUser;
 use App\Exceptions\FileUploadUnreadableFileException;
