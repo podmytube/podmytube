@@ -28,7 +28,7 @@ class SendTestEmail extends Command
     protected $signature = <<<'EOT'
 email:test 
 {--email=frederick@podmytube.com : email address to send email to}
-{--emailIdToSend=: email template to send}
+{--emailIdToSend= : email template to send}
 EOT;
 
     /** @var string The console command description. */
@@ -176,6 +176,6 @@ EOT;
             $this->info($id . ' - ' . $availableEmail['label']);
         }
 
-        return $this->ask('Which one do you want to send ?');
+        return intval($this->ask('Which one do you want to send ?'));
     }
 }

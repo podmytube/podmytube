@@ -26,5 +26,6 @@ $factory->define(App\User::class, function (Faker $faker, array $attributes = []
         'newsletter' => $attributes['newsletter'] ?? true,
         'superadmin' => $attributes['superadmin'] ?? false,
         'stripe_id' => $attributes['stripe_id'] ?? null,
+        'dont_warn_exceeding_quota' => $attributes['dont_warn_exceeding_quota'] ?? false,
     ];
 });

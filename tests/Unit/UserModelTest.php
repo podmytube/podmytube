@@ -18,6 +18,8 @@ class UserModelTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected User $user;
+
     /** @test */
     public function who_want_newsletter_is_fine(): void
     {
@@ -104,6 +106,18 @@ class UserModelTest extends TestCase
         $this->assertEquals($user->firstname, $user->name);
 
         // firstname cannot be null (DB constraint)
+    }
+
+    /** @test */
+    public function dont_warn_user_for_exceeding_quota_should_be_good(): void
+    {
+        // user has not checked checkbox
+        $this->user = factory(User::class)->create(['dont_warn_exceeding_quota' => false]);
+        $this->assertTrue($this->user->wantToBeWarnedForExceedingQuota());
+
+        // user has checked dont warn me for exceeding quota.
+        $this->user = factory(User::class)->create(['dont_warn_exceeding_quota' => true]);
+        $this->assertFalse($this->user->wantToBeWarnedForExceedingQuota());
     }
 
     /**
