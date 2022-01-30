@@ -32,6 +32,8 @@ class ChannelHasReachedItsLimitsJob implements ShouldQueue
      */
     public function handle(): void
     {
-        Mail::to($this->channel->user->email)->queue(new ChannelHasReachedItsLimitsMail($this->channel));
+        if ($this->channel->user->wantToBeWarnedForExceedingQuota()) {
+            Mail::to($this->channel->user->email)->queue(new ChannelHasReachedItsLimitsMail($this->channel));
+        }
     }
 }

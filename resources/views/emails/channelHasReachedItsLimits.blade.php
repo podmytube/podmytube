@@ -24,5 +24,8 @@
 
     <p>Please note: the exclusive episodes you add manually also count towards the quota.</p>
 
+    <p><strong>If you don't want to receive this warning, check the checkbox on <a href="{{ route('user.index') }}">your
+                profile
+                page</a></strong>. </p>
     And I wish you a great day 🌅.
 @endsection

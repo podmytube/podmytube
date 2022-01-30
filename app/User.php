@@ -34,6 +34,7 @@ class User extends Authenticatable
     protected $casts = [
         'newsletter' => 'boolean',
         'superadmin' => 'boolean',
+        'dont_warn_exceeding_quota' => 'boolean',
     ];
 
     /**
@@ -101,5 +102,10 @@ class User extends Authenticatable
         }
 
         return $result;
+    }
+
+    public function wantToBeWarnedForExceedingQuota(): bool
+    {
+        return $this->dont_warn_exceeding_quota === false;
     }
 }

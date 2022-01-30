@@ -49,6 +49,15 @@
                     </label>
                 </div>
 
+                <div class="pb-4 pl-7">
+                    <label class="block py-1" for="dont-warn-exceeding-quota">
+                        <input type="checkbox" id="dont-warn-exceeding-quota" name="dont-warn-exceeding-quota" value="1"
+                            class="form-checkbox" @if ($user->dont_warn_exceeding_quota) checked @endif>
+                        <span class="ml-2">Don't warn me for exceeding quota.</span><br>
+                        <small class="pl-4">You won't be warned for exceeding quota</small>
+                    </label>
+                </div>
+
                 <div class="flex mt-4 justify-center items-center">
                     <a href="#" onclick="event.preventDefault(); document.getElementById('edit-user-form').submit();">
                         <button type="submit"
