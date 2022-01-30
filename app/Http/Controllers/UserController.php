@@ -27,6 +27,9 @@ class UserController extends Controller
         if (!array_key_exists('newsletter', $validatedParams)) {
             $validatedParams['newsletter'] = false;
         }
+        if (!array_key_exists('dont_warn_exceeding_quota', $validatedParams)) {
+            $validatedParams['dont_warn_exceeding_quota'] = false;
+        }
 
         $user->update($validatedParams);
 

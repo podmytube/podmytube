@@ -20,7 +20,7 @@ class UserRequest extends FormRequest
             'lastname' => 'required',
             'email' => 'required|email',
             'newsletter' => 'nullable|boolean',
-            'dont-warn-exceeding-quota' => 'nullable|boolean',
+            'dont_warn_exceeding_quota' => 'nullable|boolean',
         ];
     }
 
@@ -33,7 +33,7 @@ class UserRequest extends FormRequest
 
             'email.email' => 'It seems the email address you wrote is not valid.',
             'newsletter.boolean' => 'Do not play with my newsletter. Please :).',
-            'dont-warn-exceeding-quota.boolean' => 'Do not play with this warning. Please :).',
+            'dont_warn_exceeding_quota.boolean' => 'Do not play with this warning. Please :).',
         ];
     }
 }
