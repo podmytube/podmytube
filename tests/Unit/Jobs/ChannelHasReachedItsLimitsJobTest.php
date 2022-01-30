@@ -43,7 +43,7 @@ class ChannelHasReachedItsLimitsJobTest extends TestCase
     }
 
     /** @test */
-    public function exceeding_quota_mail_should__no_t_be_sent(): void
+    public function exceeding_quota_mail_should__not_be_sent(): void
     {
         $this->user = factory(User::class)->create(['dont_warn_exceeding_quota' => true]);
         $this->channel = factory(Channel::class)->create(['user_id' => $this->user->id()]);
