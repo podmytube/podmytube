@@ -57,12 +57,13 @@ class CreateChannelCommand extends Command
         // adding subscription
         Subscription::query()
             ->updateOrCreate(
-                ['channel_id' => $this->channel->channelId()],
+                ['channel_id' => $channel->channelId()],
                 [
-                    'channel_id' => $this->channel->channelId(),
+                    'channel_id' => $channel->channelId(),
                     'plan_id' => $plan->id,
                 ]
-            );
+            )
+        ;
 
         $this->info('Channel 🎉 ' . $channel->nameWithId() . ' 🎉 has been created successfully !');
         $this->line('');
