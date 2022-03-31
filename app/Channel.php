@@ -49,6 +49,7 @@ class Channel extends Model implements Podcastable, Coverable
 
     public const CREATED_AT = 'channel_createdAt';
     public const UPDATED_AT = 'channel_updatedAt';
+
     /** the channel_id is not one auto_increment integer */
     public $incrementing = false;
 
@@ -165,8 +166,8 @@ class Channel extends Model implements Podcastable, Coverable
 
     public static function allActiveChannels(): Collection
     {
-        return self::active()
-            ->with(['User', 'Category', 'cover', 'Subscription'])
+        return self::with(['user', 'category', 'cover', 'subscription'])
+            ->active()
             ->get()
         ;
     }
@@ -257,7 +258,7 @@ class Channel extends Model implements Podcastable, Coverable
             $results[] = Lang::get('messages.accept_video_by_tag', [
                 'tag' => $this->accept_video_by_tag,
             ]);
-            //"accept only videos with tag " . $this->accept_video_by_tag;
+            // "accept only videos with tag " . $this->accept_video_by_tag;
         }
         if ($this->reject_video_by_keyword !== null) {
             $results[] = Lang::get('messages.reject_video_by_keyword', [

@@ -159,7 +159,6 @@ class ChannelModelTest extends TestCase
     /** @test */
     public function all_active_channels_should_be_empty(): void
     {
-        $this->channel->update(['active' => false]);
         $results = Channel::allActiveChannels();
         $this->assertInstanceOf(Collection::class, $results);
         $this->assertCount(0, $results);

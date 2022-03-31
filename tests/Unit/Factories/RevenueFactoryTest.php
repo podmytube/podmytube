@@ -17,6 +17,12 @@ class RevenueFactoryTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->seedPlans();
+    }
+
     /** @test */
     public function revenue_factory_is_fine(): void
     {
