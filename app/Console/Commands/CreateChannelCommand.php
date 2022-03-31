@@ -8,7 +8,9 @@ use App\Factories\CreateChannelFactory;
 use App\Plan;
 use App\Subscription;
 use App\User;
+use Exception;
 use Illuminate\Console\Command;
+use RuntimeException;
 
 class CreateChannelCommand extends Command
 {
@@ -33,41 +35,44 @@ class CreateChannelCommand extends Command
      */
     public function handle()
     {
-        $this->line('');
-        $userId = $this->option('userId');
-        $user = User::find($userId);
-        if ($user === null) {
-            $this->error("This user id {$userId} is unknown in database.");
+        try {
+            $this->line('');
+            $userId = $this->option('userId');
+            $user = User::find($userId);
+            if ($user === null) {
+                throw new RuntimeException("This user id {$userId} is unknown in database.");
+            }
 
-            return 1;
-        }
-        $youtubeUrl = 'https://www.youtube.com/channel/' . $this->argument('channel_id');
+            $youtubeUrl = 'https://www.youtube.com/channel/' . $this->argument('channel_id');
 
-        $planId = $this->option('planId');
-        $plan = Plan::find($planId);
-        if ($plan === null) {
-            $this->error("This plan id {$planId} does not exists.");
+            $planId = $this->option('planId');
+            $plan = Plan::find($planId);
+            if ($plan === null) {
+                throw new RuntimeException("This plan id {$planId} does not exists.");
+            }
 
-            return 1;
-        }
+            // creating channel
+            $channel = CreateChannelFactory::fromYoutubeUrl($user, $youtubeUrl);
 
-        // creating channel
-        $channel = CreateChannelFactory::fromYoutubeUrl($user, $youtubeUrl);
-
-        // adding subscription
-        Subscription::query()
-            ->updateOrCreate(
-                ['channel_id' => $channel->channelId()],
-                [
-                    'channel_id' => $channel->channelId(),
-                    'plan_id' => $plan->id,
-                ]
-            )
+            // adding subscription
+            Subscription::query()
+                ->updateOrCreate(
+                    ['channel_id' => $channel->channelId()],
+                    [
+                        'channel_id' => $channel->channelId(),
+                        'plan_id' => $plan->id,
+                    ]
+                )
         ;
 
-        $this->info('Channel 🎉 ' . $channel->nameWithId() . ' 🎉 has been created successfully !');
-        $this->line('');
+            $this->info('Channel 🎉 ' . $channel->nameWithId() . ' 🎉 has been created successfully !');
+            $this->line('');
 
-        return 0;
+            return 0;
+        } catch (Exception $exception) {
+            $this->error($exception->getMessage(), 'v');
+
+            return 1;
+        }
     }
 }
