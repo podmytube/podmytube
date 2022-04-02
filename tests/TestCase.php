@@ -25,8 +25,8 @@ use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
+use Mockery;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -51,11 +51,19 @@ abstract class TestCase extends BaseTestCase
 
     /** this video does exist and has two tags ['dev', 'podmytube'] */
     protected const BEACH_VOLLEY_VIDEO_1 = 'EePwbhMqEh0';
+
     /** this video does exist and has no tag */
     protected const BEACH_VOLLEY_VIDEO_2 = '9pTBAkkTRbw';
+
     /** this video is the shortest I know */
     protected const MARIO_COIN_VIDEO = 'qfx6yf8pux4';
     protected const MARIO_MUSHROOM_VIDEO = '6G-k4zxou7Y';
+
+    protected function tearDown(): void
+    {
+        Mockery::close();
+        parent::tearDown();
+    }
 
     /**
      * Laravel is encoding.
@@ -172,8 +180,6 @@ abstract class TestCase extends BaseTestCase
      */
     public function getPlanBySlug(string $slug): ?Plan
     {
-        $this->seedPlans();
-
         return Plan::bySlug($slug);
     }
 
@@ -247,7 +253,7 @@ abstract class TestCase extends BaseTestCase
         }
 
         if (!StripePlan::count()) {
-            Artisan::call('db:seed', ['--class' => StripePlansTableSeeder::class]);
+            $this->artisan('db:seed', ['--class' => StripePlansTableSeeder::class]);
         }
     }
 
@@ -266,17 +272,17 @@ abstract class TestCase extends BaseTestCase
 
     protected function seedApiKeys(): void
     {
-        Artisan::call('db:seed', ['--class' => ApiKeysTableSeeder::class]);
+        $this->seed(ApiKeysTableSeeder::class);
     }
 
     protected function seedPlans(): void
     {
-        Artisan::call('db:seed', ['--class' => PlansTableSeeder::class]);
+        $this->seed(PlansTableSeeder::class);
     }
 
     protected function seedCategories(): void
     {
-        Artisan::call('db:seed', ['--class' => CategoriesTableSeeder::class]);
+        $this->seed(CategoriesTableSeeder::class);
     }
 
     protected function createMyOwnChannel(Plan $plan): Channel

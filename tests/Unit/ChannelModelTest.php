@@ -31,6 +31,7 @@ class ChannelModelTest extends TestCase
     {
         parent::setUp();
         $this->seedPlans();
+
         $this->freePlan = Plan::bySlug('forever_free');
         $this->starterPlan = Plan::bySlug('starter');
         $this->channel = $this->createChannelWithPlan($this->freePlan);
@@ -157,8 +158,9 @@ class ChannelModelTest extends TestCase
     }
 
     /** @test */
-    public function all_active_channels_should_be_empty(): void
+    public function with_no_active_channel_all_active_channels_should_be_empty(): void
     {
+        $this->channel->update(['active' => 0]);
         $results = Channel::allActiveChannels();
         $this->assertInstanceOf(Collection::class, $results);
         $this->assertCount(0, $results);
@@ -176,6 +178,7 @@ class ChannelModelTest extends TestCase
         $inactiveChannel = factory(Channel::class)->create(['active' => false]);
         $results = Channel::allActiveChannels();
         $this->assertInstanceOf(Collection::class, $results);
+
         $this->assertCount(1, $results);
         $this->assertTrue($results->first()->hasCover());
 

@@ -20,6 +20,11 @@ class UserModelTest extends TestCase
 
     protected User $user;
 
+    public function setUp(): void
+    {
+        parent::setUp();
+    }
+
     /** @test */
     public function who_want_newsletter_is_fine(): void
     {
