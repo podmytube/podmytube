@@ -1,18 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature;
 
+use App\Channel;
 use App\Events\ChannelUpdated;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class ChannelUpdateTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var \App\Channel $channel */
-    protected $channel;
+    protected Channel $channel;
 
     public function setUp(): void
     {
@@ -24,26 +30,30 @@ class ChannelUpdateTest extends TestCase
     /**
      * @dataProvider provideValidData
      */
-    public function testValidData(array $data)
+    public function test_valid_data(array $data): void
     {
         $this->followingRedirects()
             ->actingAs($this->channel->user)
             ->patch(route('channel.update', $this->channel), $data)
-            ->assertSuccessful();
+            ->assertSuccessful()
+        ;
 
         Event::assertDispatched(ChannelUpdated::class);
     }
 
     /**
      * @dataProvider provideInvalidData
+     *
+     * @param mixed $error
      */
-    public function testInvalidData(array $data, $error)
+    public function test_invalid_data(array $data, $error): void
     {
         $this->actingAs($this->channel->user)
             ->from(route('channel.edit', $this->channel))
             ->patch(route('channel.update', $this->channel), $data)
             ->assertSessionHasErrors($error)
-            ->assertRedirect(route('channel.edit', $this->channel));
+            ->assertRedirect(route('channel.edit', $this->channel))
+        ;
 
         Event::assertNotDispatched(ChannelUpdated::class);
     }
@@ -62,9 +72,7 @@ class ChannelUpdateTest extends TestCase
 
     public function provideInvalidData()
     {
-        /**
-         * format is message, data to PATCH, field in error
-         */
+        // format is message, data to PATCH, field in error
         return [
             [['link' => 'invalid url'], 'link'],
             [['link' => 'google.com'], 'link'],

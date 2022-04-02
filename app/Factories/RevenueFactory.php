@@ -10,7 +10,6 @@ class RevenueFactory
 {
     private function __construct()
     {
-        //code
     }
 
     public static function init(...$params)

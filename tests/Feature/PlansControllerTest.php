@@ -7,6 +7,7 @@ namespace Tests\Feature;
 use App\Channel;
 use App\Plan;
 use App\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 /**
@@ -15,6 +16,8 @@ use Tests\TestCase;
  */
 class PlansControllerTest extends TestCase
 {
+    use RefreshDatabase;
+
     protected Channel $channel;
 
     public function setUp(): void
@@ -45,6 +48,7 @@ class PlansControllerTest extends TestCase
     public function default_plan_upgrade_should_be_allowed_to_owner(): void
     {
         $this->seedStripePlans();
+
         /**
          * user should see 3 plans (starter, professionnal and business).
          * with monthly subscription.
@@ -72,6 +76,7 @@ class PlansControllerTest extends TestCase
     public function yearly_plan_upgrade_should_be_allowed_to_owner(): void
     {
         $this->seedStripePlans();
+
         /**
          * user should see 3 plans (starter, professionnal and business).
          * with yearly subscription.

@@ -1,28 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use App\Plan;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class PlansTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
-    public function run()
+    public function run(): void
     {
-        DB::table('plans')->delete();
+        Schema::disableForeignKeyConstraints();
+        DB::table('plans')->truncate();
+        Schema::enableForeignKeyConstraints();
 
         $data = [
-            /**
-             * forever free
-             */
+            // forever free
             [
                 'name' => 'Forever free',
                 'slug' => 'forever_free',
@@ -32,9 +33,7 @@ class PlansTableSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ],
 
-            /**
-             * 2017
-             */
+            // 2017
             [
                 'name' => 'Early bird',
                 'slug' => 'early_bird',
@@ -44,9 +43,7 @@ class PlansTableSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ],
 
-            /**
-             * first premium subscribers --- monthly
-             */
+            // first premium subscribers --- monthly
             [
                 'name' => 'Promo',
                 'slug' => 'monthly_6',
@@ -56,9 +53,7 @@ class PlansTableSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ],
 
-            /**
-             * September 2018
-             */
+            // September 2018
             [
                 'name' => 'Weekly Youtuber',
                 'slug' => 'weekly_youtuber',
@@ -75,7 +70,7 @@ class PlansTableSeeder extends Seeder
                 'created_at' => Carbon::createFromDate(2018, 9, 1),
             ],
 
-            /**
+            /*
              * March 2021
              * yearly price is monthly price x10
              */
