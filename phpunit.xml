@@ -8,7 +8,7 @@
     executionOrder="defects"
     stopOnError="false" 
     stopOnFailure="false"
-    verbose="true"
+    verbose="false"
     >
     <coverage processUncoveredFiles="true">
         <include>
@@ -32,5 +32,6 @@
         <server name="QUEUE_CONNECTION" value="sync"/>
         <server name="QUEUE_DRIVER" value="sync"/>
         <server name="SESSION_DRIVER" value="array"/>
+        <ini name="memory_limit" value="512M" />
     </php>
 </phpunit>
