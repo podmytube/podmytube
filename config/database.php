@@ -1,7 +1,8 @@
 <?php
 
-return [
+declare(strict_types=1);
 
+return [
     /*
     |--------------------------------------------------------------------------
     | Default Database Connection Name
@@ -32,11 +33,10 @@ return [
     */
 
     'connections' => [
-
         'sqlite' => [
-            'driver'   => 'sqlite',
-            'database' => storage_path('database.sqlite'),
-            'prefix'   => '',
+            'driver' => 'sqlite',
+            'database' => env('DB_DATABASE', storage_path('database.sqlite')),
+            'prefix' => '',
         ],
 
         'mysql' => [
@@ -53,7 +53,6 @@ return [
             'strict' => true,
             'engine' => null,
         ],
-
     ],
 
     /*
@@ -81,7 +80,6 @@ return [
     */
 
     'redis' => [
-
         'client' => 'predis',
 
         'default' => [
@@ -90,7 +88,5 @@ return [
             'port' => env('REDIS_PORT', 6379),
             'database' => 0,
         ],
-
     ],
-
 ];
