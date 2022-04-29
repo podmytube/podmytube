@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App;
 
 use App\Interfaces\Coverable;
@@ -21,21 +23,20 @@ class Thumb extends Model
         return $this->morphTo();
     }
 
-    /*
-     * alias for getRelativePathAttribute
-     */
+    // alias for getRelativePathAttribute
     public function relativePath(): ?string
     {
         if ($this->coverable) {
             return $this->coverable->channelId() . '/' . $this->file_name;
         }
+
         return null;
     }
 
     /**
      * This function is returning the data of the relative img path specified.
      *
-     * @return string content of the file.
+     * @return string content of the file
      */
     public function getData()
     {
@@ -43,7 +44,7 @@ class Thumb extends Model
     }
 
     /**
-     * getter filename function
+     * getter filename function.
      */
     public function fileName()
     {
@@ -51,13 +52,13 @@ class Thumb extends Model
     }
 
     /**
-     * Check if thumb file exists
+     * Check if thumb file exists.
      *
-     * @return bool true if thumb present false else.
+     * @return bool true if thumb present false else
      */
     public function exists()
     {
-        return Storage::disk($this->file_disk)->exists($this->relativePath());
+        return $this->relativePath() !== null && Storage::disk($this->file_disk)->exists($this->relativePath());
     }
 
     /**
@@ -111,7 +112,7 @@ class Thumb extends Model
     }
 
     /**
-     * Label to be used in error logs/message
+     * Label to be used in error logs/message.
      */
     public function coverableLabel(): string
     {

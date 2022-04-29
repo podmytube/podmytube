@@ -1,26 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit;
 
 use App\Channel;
 use App\Playlist;
 use App\Thumb;
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
+use Tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class ThumbModelTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var \App\Thumb $thumb */
-    protected $thumb;
-
-    /** @var \App\Channel $channel */
-    protected $channel;
-
-    /** @var \App\Playlist $playlist */
-    protected $playlist;
+    protected Thumb $thumb;
+    protected Channel $channel;
+    protected Playlist $playlist;
 
     public function setUp(): void
     {
@@ -39,7 +40,7 @@ class ThumbModelTest extends TestCase
         parent::tearDown();
     }
 
-    public function testingDefaultUrl()
+    public function testing_default_url(): void
     {
         $this->assertEquals(
             config('app.thumbs_url') . '/' . Thumb::DEFAULT_THUMB_FILE,
@@ -48,7 +49,7 @@ class ThumbModelTest extends TestCase
     }
 
     /** @test */
-    public function relative_path_for_channel_is_good()
+    public function relative_path_for_channel_is_good(): void
     {
         $this->thumb->update([
             'coverable_type' => get_class($this->channel),
@@ -62,7 +63,7 @@ class ThumbModelTest extends TestCase
     }
 
     /** @test */
-    public function set_coverable_is_good()
+    public function set_coverable_is_good(): void
     {
         $this->thumb->setCoverable($this->channel);
         $this->assertNotNull($this->thumb->coverable);
@@ -70,7 +71,7 @@ class ThumbModelTest extends TestCase
         $this->assertEquals($this->channel->channelId(), $this->thumb->coverable->channelId());
     }
 
-    public function testingRelativePath()
+    public function testing_relative_path(): void
     {
         $this->thumb->setCoverable($this->channel);
         $this->assertEquals(
@@ -79,7 +80,7 @@ class ThumbModelTest extends TestCase
         );
     }
 
-    public function testingPodcastUrl()
+    public function testing_podcast_url(): void
     {
         $this->thumb->setCoverable($this->channel);
         $this->assertEquals(
@@ -89,20 +90,20 @@ class ThumbModelTest extends TestCase
     }
 
     /** @test */
-    public function exists_is_running_fine()
+    public function exists_is_running_fine(): void
     {
         $this->thumb->setCoverable($this->playlist);
-        /** cover does not exist yet */
+        // cover does not exist yet
         $this->assertFalse($this->thumb->exists());
 
-        /** creating one from fixture */
+        // creating one from fixture
         $this->createFakeCoverFor($this->thumb);
 
-        /** cover should exists now */
+        // cover should exists now
         $this->assertTrue($this->thumb->exists());
     }
 
-    public function testRemotePath()
+    public function test_remote_path(): void
     {
         $this->thumb->setCoverable($this->channel);
         $this->assertEquals(
@@ -112,7 +113,7 @@ class ThumbModelTest extends TestCase
     }
 
     /** @test */
-    public function coverable_label_is_fine()
+    public function coverable_label_is_fine(): void
     {
         $this->thumb->setCoverable($this->channel);
         $expectedLabel = get_class($this->channel) . "::find({$this->channel->id()})";
