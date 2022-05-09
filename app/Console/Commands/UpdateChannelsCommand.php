@@ -11,8 +11,10 @@ use App\Media;
 use App\Modules\ServerRole;
 use App\Quota;
 use App\Youtube\YoutubeChannelVideos;
+use App\Youtube\YoutubeCore;
 use App\Youtube\YoutubeQuotas;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 use RuntimeException;
 
@@ -35,18 +37,10 @@ class UpdateChannelsCommand extends Command
      * @var string
      */
     protected $description = 'This will update list of episodes by type of channels';
-
-    /** @var \App\Youtube\YoutubeCore */
-    protected $youtubeCore;
-
-    /** @var array list of channel models */
-    protected $channels = [];
-
-    /** @var array list of errors that occured */
-    protected $errors = [];
-
-    /** @var int nb medias added during process */
-    protected $mediasAdded = 0;
+    protected YoutubeCore $youtubeCore;
+    protected Collection $channels;
+    protected array $errors = [];
+    protected int $mediasAdded = 0;
 
     /**
      * Execute the console command.
@@ -129,11 +123,11 @@ class UpdateChannelsCommand extends Command
         return 0;
     }
 
-    protected function prologue(int $prograssBarNbItems): void
+    protected function prologue(int $progressBarNbItems): void
     {
         $this->info('Updating channels.', 'v');
         if ($this->getOutput()->isVerbose()) {
-            $this->bar = $this->output->createProgressBar($prograssBarNbItems);
+            $this->bar = $this->output->createProgressBar($progressBarNbItems);
             $this->bar->start();
         }
     }
