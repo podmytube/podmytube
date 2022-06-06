@@ -22,8 +22,4 @@
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    @if (App::environment('production'))
-        <script async defer data-domain="podmytube.com" src="https://stats.podmytube.com/js/index.js"></script>
-    @endif
 </head>
