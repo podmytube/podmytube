@@ -8,11 +8,11 @@ COPY composer.json composer.json
 COPY composer.lock composer.lock
 
 RUN composer install \
-        --ignore-platform-reqs \
-        --no-interaction \
-        --no-plugins \
-        --no-scripts \
-        --prefer-dist
+    --ignore-platform-reqs \
+    --no-interaction \
+    --no-plugins \
+    --no-scripts \
+    --prefer-dist
 
 #
 # node
@@ -34,7 +34,8 @@ RUN npm install && npm run production
 #
 # App
 #
-FROM    php:8.0.11-apache-buster
+#FROM    php:8.0.11-apache-buster
+FROM    php:8.1.8-apache-buster
 
 # enabling mod rewrite
 RUN     a2enmod rewrite
@@ -53,15 +54,15 @@ RUN     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezo
 # ssh is for connecting on remote with shell_exec commands
 # python is useful to run youtube-dl
 RUN apt-get update -y && \
-        apt-get install -y -qq libpng-dev \
-        libjpeg-dev \
-        locales \
-        ffmpeg \
-        supervisor \
-        sqlite \
-        python3 \
-        ssh && \
-        rm -rf /var/lib/apt/lists/*;
+    apt-get install -y -qq libpng-dev \
+    libjpeg-dev \
+    locales \
+    ffmpeg \
+    supervisor \
+    sqlite \
+    python3 \
+    ssh && \
+    rm -rf /var/lib/apt/lists/*;
 
 # Set the locale
 RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen
@@ -73,7 +74,7 @@ ENV LC_ALL en_US.UTF-8
 # pdo & pdo_mysql for db connection
 # gd ----- NOT SURE -----
 RUN     docker-php-ext-configure gd --with-jpeg && \
-        docker-php-ext-install pdo_mysql gd
+    docker-php-ext-install pdo_mysql gd
 
 # default vhost replaced by custom one                                                                                                                                                                                          
 # mainly documentRoot /app/public       
