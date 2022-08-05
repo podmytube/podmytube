@@ -30,6 +30,7 @@
         "phpstan/phpstan": "^0.12.88",
         "sebastian/version": "^3.0",
         "sentry/sentry-laravel": "^2.3",
+        "spatie/laravel-ray": "^1.30",
         "spatie/laravel-sitemap": "^6.1",
         "spatie/laravel-stripe-webhooks": "^3.0",
         "spatie/laravel-webhook-client": "^3.0",

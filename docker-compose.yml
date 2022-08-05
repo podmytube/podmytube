@@ -1,32 +1,34 @@
 version: "3.3"
 services:
-    dashboard-pmt:
-        container_name: podmytube
-        build:
-            context: .
-            dockerfile: .docker/Dockerfile
-        image: podmytube:$PODMYTUBE_VERSION
-        restart: always
-        expose:
-            - "80"
-            - "443"
-        environment:
-            - VIRTUAL_HOST=${VIRTUAL_HOST:?set it in .env}
-            - APACHE_RUN_USER=www-data
-            - APACHE_RUN_GROUP=www-data
-            - LETSENCRYPT_HOST=${VIRTUAL_HOST:?set it in .env}
-            - LETSENCRYPT_EMAIL=frederick@podmytube.com
-        volumes:
-            - .:/app
-            - /etc/localtime:/etc/localtime:ro
-            - /usr/local/bin/yt-dlp:/usr/local/bin/yt-dlp
-        healthcheck:
-            test: bash -c "[ -f /app/vendor/autoload.php ]"
-            timeout: 10s
-            retries: 30
-        networks:
-            - nginx-proxy
+  dashboard-pmt:
+    container_name: podmytube
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile
+    image: podmytube:$PODMYTUBE_VERSION
+    restart: always
+    expose:
+      - "80"
+      - "443"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - VIRTUAL_HOST=${VIRTUAL_HOST:?set it in .env}
+      - APACHE_RUN_USER=www-data
+      - APACHE_RUN_GROUP=www-data
+      - LETSENCRYPT_HOST=${VIRTUAL_HOST:?set it in .env}
+      - LETSENCRYPT_EMAIL=frederick@podmytube.com
+    volumes:
+      - .:/app
+      - /etc/localtime:/etc/localtime:ro
+      - /usr/local/bin/yt-dlp:/usr/local/bin/yt-dlp
+    healthcheck:
+      test: bash -c "[ -f /app/vendor/autoload.php ]"
+      timeout: 10s
+      retries: 30
+    networks:
+      - nginx-proxy
 
 networks:
-    nginx-proxy:
-        external: true
+  nginx-proxy:
+    external: true

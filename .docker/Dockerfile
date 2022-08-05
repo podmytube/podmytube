@@ -34,7 +34,6 @@ RUN npm install && npm run production
 #
 # App
 #
-#FROM    php:8.0.11-apache-buster
 FROM    php:8.1.8-apache-buster
 
 # enabling mod rewrite
