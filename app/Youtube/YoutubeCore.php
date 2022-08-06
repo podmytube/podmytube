@@ -26,18 +26,25 @@ abstract class YoutubeCore implements QuotasConsumer
 
     /** @var string */
     protected $apikey;
+
     /** @var string */
     protected $endpoint;
+
     /** @var array contain the whole response */
     protected $jsonDecoded = [];
+
     /** @var array contains only the items */
     protected $items = [];
+
     /** @var int max number of items to get */
     protected $limit = 0;
+
     /** @var array query parameters */
     protected $params = [];
+
     /** @var array youtube part parameters */
     protected $partParams = [];
+
     /** @var array list of valid queries used */
     protected $queries = [];
     protected bool $cacheHasBeenUsed = false;
@@ -258,7 +265,11 @@ abstract class YoutubeCore implements QuotasConsumer
         $this->queries[] = $this->url();
 
         // putting results in cache for next time
-        Cache::put($this->cacheKey(), $rawResults, now()->addHour());
+        // sometimes (I never reproduced it) youtube api is returning null body
+        // this test exists for those cases
+        if (strlen($rawResults)) {
+            Cache::put($this->cacheKey(), $rawResults, now()->addHour());
+        }
 
         return $rawResults;
     }

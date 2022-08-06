@@ -21,11 +21,9 @@ class ShouldMediaBeingDownloadedFactoryTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** \App\Media $nonTaggedMedia */
-    protected $nonTaggedMedia;
+    protected Media $nonTaggedMedia;
 
-    /** \App\Media $taggedMedia */
-    protected $taggedMedia;
+    protected Media $taggedMedia;
 
     public function setUp(): void
     {
