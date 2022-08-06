@@ -59,6 +59,7 @@ return [
     |
     */
 
+    'website_url' => env('WWW_URL', 'https://www.podmytube.com'),
     'url' => env('APP_URL', 'https://dashboard.podmytube.com'),
 
     'feed_filename' => 'podcast.xml',

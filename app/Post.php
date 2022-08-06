@@ -1,18 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App;
 
+use App\Interfaces\Sitemapable;
+use App\Traits\IsSitemapable;
 use Illuminate\Database\Eloquent\Model;
 
-class Post extends Model
+class Post extends Model implements Sitemapable
 {
-    protected $guarded = [];
+    use IsSitemapable;
 
+    public string $sitemapRouteName = 'post.show';
+    public string $sitemapPriority = '1.0';
+
+    protected $guarded = [];
     protected $casts = [
         'sticky' => 'boolean',
     ];
 
-    //protected $dates = ['created_at', 'updated_at', 'published_at'];
+    // protected $dates = ['created_at', 'updated_at', 'published_at'];
 
     public static function byWordpressId(int $wpId)
     {
@@ -41,6 +49,6 @@ class Post extends Model
 
     public function lastUpdate()
     {
-        return $this->updated_at->format("l jS \of F Y");
+        return $this->updated_at->format('l jS \\of F Y');
     }
 }

@@ -31,7 +31,6 @@
         "sebastian/version": "^3.0",
         "sentry/sentry-laravel": "^2.3",
         "spatie/laravel-ray": "^1.30",
-        "spatie/laravel-sitemap": "^6.1",
         "spatie/laravel-stripe-webhooks": "^3.0",
         "spatie/laravel-webhook-client": "^3.0",
         "spatie/ssh": "^1.6",
@@ -48,6 +47,7 @@
         "nunomaduro/phpinsights": "^2.0",
         "pestphp/pest": "^1.21",
         "pestphp/pest-plugin-laravel": "^1.2",
+        "pestphp/pest-plugin-parallel": "^1.2",
         "phpunit/phpunit": "^9.0",
         "spatie/laravel-ignition": "^1.0"
     },

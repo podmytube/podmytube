@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
 |--------------------------------------------------------------------------
 | Test Case
@@ -10,6 +12,8 @@
 | need to change it using the "uses()" function to bind a different classes or traits.
 |
 */
+
+use Carbon\Carbon;
 
 uses(Tests\TestCase::class)->in('Feature');
 
@@ -39,7 +43,20 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+function expectedSitemapNode(string $loc, ?Carbon $lastmod = null, ?string $changefreq = null, ?string $priority = null): string
 {
-    // ..
+    $lastmod ??= Carbon::yesterday();
+    $changefreq ??= 'daily';
+    $priority ??= '0.8';
+
+    $lastmod = $lastmod->toW3cString();
+
+    return <<<EOT
+<url>
+    <loc>{$loc}</loc>
+    <lastmod>{$lastmod}</lastmod>
+    <changefreq>{$changefreq}</changefreq>
+    <priority>{$priority}</priority>
+</url>
+EOT;
 }
