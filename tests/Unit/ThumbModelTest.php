@@ -40,7 +40,8 @@ class ThumbModelTest extends TestCase
         parent::tearDown();
     }
 
-    public function testing_default_url(): void
+    /** @test */
+    public function default_url_should_be_good(): void
     {
         $this->assertEquals(
             config('app.thumbs_url') . '/' . Thumb::DEFAULT_THUMB_FILE,
@@ -71,7 +72,8 @@ class ThumbModelTest extends TestCase
         $this->assertEquals($this->channel->channelId(), $this->thumb->coverable->channelId());
     }
 
-    public function testing_relative_path(): void
+    /** @test */
+    public function relative_path_is_good(): void
     {
         $this->thumb->setCoverable($this->channel);
         $this->assertEquals(
@@ -80,7 +82,8 @@ class ThumbModelTest extends TestCase
         );
     }
 
-    public function testing_podcast_url(): void
+    /** @test */
+    public function podcast_url_is_good(): void
     {
         $this->thumb->setCoverable($this->channel);
         $this->assertEquals(

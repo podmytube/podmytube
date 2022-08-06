@@ -45,13 +45,15 @@ class VignetteModuleTest extends TestCase
         parent::tearDown();
     }
 
-    public function testing_default_url(): void
+    /** @test */
+    public function default_url_is_good(): void
     {
         $expectedUrl = env('THUMBS_URL') . '/' . Vignette::DEFAULT_VIGNETTE_FILE;
         $this->assertEquals($expectedUrl, Vignette::defaultUrl());
     }
 
-    public function testing_file_name(): void
+    /** @test */
+    public function vignette_file_name_is_good(): void
     {
         $pathParts = pathinfo($this->thumb->fileName());
         $expectedFileName = $pathParts['filename'] . Vignette::VIGNETTE_SUFFIX . '.' . $pathParts['extension'];
@@ -59,13 +61,15 @@ class VignetteModuleTest extends TestCase
         $this->assertEquals($expectedFileName, $this->vignette->fileName());
     }
 
-    public function testing_vignette_relative_path(): void
+    /** @test */
+    public function vignette_relative_path_is_good(): void
     {
         $expectedPath = $this->channel->channel_id . '/' . $this->vignette->fileName();
         $this->assertEquals($expectedPath, $this->vignette->relativePath());
     }
 
-    public function test_local_path(): void
+    /** @test */
+    public function local_path_is_good(): void
     {
         $expectedFilePath = Storage::disk(Vignette::LOCAL_STORAGE_DISK)
             ->path($this->vignette->relativePath())
@@ -73,19 +77,22 @@ class VignetteModuleTest extends TestCase
         $this->assertEquals($expectedFilePath, $this->vignette->localFilePath());
     }
 
-    public function test_remote_path(): void
+    /** @test */
+    public function remote_path_is_good(): void
     {
         $expectedFilePath = config('app.thumbs_path') . $this->vignette->relativePath();
         $this->assertEquals($expectedFilePath, $this->vignette->remoteFilePath());
     }
 
-    public function test_get_data_from_valid_thumb_return_one_image(): void
+    /** @test */
+    public function get_data_from_valid_thumb_return_one_image(): void
     {
         $vignetteData = $this->vignette->makeIt()->getData();
         $this->assertInstanceOf(\Intervention\Image\Image::class, Image::make($vignetteData));
     }
 
-    public function test_get_data_from_invalid_thumb_throw_exception(): void
+    /** @test */
+    public function get_data_from_invalid_thumb_throw_exception(): void
     {
         unlink($this->thumb->localFilePath());
 

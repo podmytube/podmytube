@@ -27,7 +27,8 @@ class ItunesHeaderTest extends TestCase
         $this->seedCategories();
     }
 
-    public function testing_with_all_informations(): void
+    /** @test */
+    public function with_all_informations(): void
     {
         $authorName = 'Gérard Choufleur';
         $authorEmail = 'gchoufleur@gmail.com';
@@ -58,7 +59,8 @@ class ItunesHeaderTest extends TestCase
         ]);
     }
 
-    public function testing_author_name(): void
+    /** @test */
+    public function author_name(): void
     {
         $authorName = 'Gérard Choufleur';
         $this->renderedResult = ItunesHeader::prepare(['author' => $authorName])->render();
@@ -76,7 +78,8 @@ class ItunesHeaderTest extends TestCase
         ]);
     }
 
-    public function testing_author_email(): void
+    /** @test */
+    public function author_email(): void
     {
         $authorEmail = 'gerard@choufleur.com';
         $this->renderedResult = ItunesHeader::prepare(['email' => $authorEmail])->render();
@@ -95,7 +98,8 @@ class ItunesHeaderTest extends TestCase
         ]);
     }
 
-    public function testing_image_url(): void
+    /** @test */
+    public function image_url(): void
     {
         $imageUrl = 'https://thumbs.podmytube.com/UCf2ZTuey5uT8hN3ESe-ZCPQ/KjxVJazWLmuLsOdiQ0w0u0iHVTT7jqMCgKlIjCyQ.png';
         $this->renderedResult = ItunesHeader::prepare(['imageUrl' => $imageUrl])->render();
@@ -115,13 +119,15 @@ class ItunesHeaderTest extends TestCase
         ]);
     }
 
-    public function testing_invalid_image_url(): void
+    /** @test */
+    public function invalid_image_url(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         ItunesHeader::prepare(['imageUrl' => 'this is not a valid url'])->render();
     }
 
-    public function testing_invalid_type(): void
+    /** @test */
+    public function invalid_type(): void
     {
         $this->renderedResult = ItunesHeader::prepare(['type' => 'InvalidType'])->render();
         $this->assertStringContainsString('<itunes:explicit>false</itunes:explicit>', $this->renderedResult);
@@ -139,7 +145,8 @@ class ItunesHeaderTest extends TestCase
         ]);
     }
 
-    public function testing_episodic_type(): void
+    /** @test */
+    public function episodic_type(): void
     {
         $this->renderedResult = ItunesHeader::prepare(['type' => ItunesHeader::TYPE_EPISODIC])->render();
         $this->assertStringContainsString('<itunes:type>' . ItunesHeader::TYPE_EPISODIC . '</itunes:type>', $this->renderedResult);
@@ -155,7 +162,8 @@ class ItunesHeaderTest extends TestCase
         ]);
     }
 
-    public function testing_serial_type(): void
+    /** @test */
+    public function serial_type(): void
     {
         $this->renderedResult = ItunesHeader::prepare(['type' => ItunesHeader::TYPE_SERIAL])->render();
         $this->assertStringContainsString('<itunes:type>' . ItunesHeader::TYPE_SERIAL . '</itunes:type>', $this->renderedResult);
@@ -171,7 +179,8 @@ class ItunesHeaderTest extends TestCase
         ]);
     }
 
-    public function testing_explicit(): void
+    /** @test */
+    public function explicit(): void
     {
         $this->renderedResult = ItunesHeader::prepare(['explicit' => true])->render();
         $this->assertStringContainsString('<itunes:explicit>true</itunes:explicit>', $this->renderedResult);
@@ -188,7 +197,8 @@ class ItunesHeaderTest extends TestCase
         ]);
     }
 
-    public function testing_no_informations_should_render_nothing(): void
+    /** @test */
+    public function no_informations_should_render_nothing(): void
     {
         $this->renderedResult = ItunesHeader::prepare()->render();
         $this->assertStringContainsString('<itunes:explicit>false</itunes:explicit>', $this->renderedResult);
@@ -205,6 +215,24 @@ class ItunesHeaderTest extends TestCase
         ]);
     }
 
+    /** @test */
+    public function check_explicit_is_ok(): void
+    {
+        $this->assertEquals('true', ItunesHeader::checkExplicit(true));
+        $this->assertEquals('true', ItunesHeader::checkExplicit('true'));
+
+        $this->assertEquals('false', ItunesHeader::checkExplicit(false));
+        $this->assertEquals('false', ItunesHeader::checkExplicit('false'));
+
+        $this->assertEquals('false', ItunesHeader::checkExplicit('chat'));
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | helpers & providers
+    |--------------------------------------------------------------------------
+    */
+
     public function tagsThatShouldNotBeThere(array $tagsThatShouldBeMissing): void
     {
         array_map(function ($tagToCheck): void {
@@ -214,16 +242,5 @@ class ItunesHeaderTest extends TestCase
                 "Tag {$tagToCheck} should be missing in {$this->renderedResult}."
             );
         }, $tagsThatShouldBeMissing);
-    }
-
-    public function test_check_explicit_is_ok(): void
-    {
-        $this->assertEquals('true', ItunesHeader::checkExplicit(true));
-        $this->assertEquals('true', ItunesHeader::checkExplicit('true'));
-
-        $this->assertEquals('false', ItunesHeader::checkExplicit(false));
-        $this->assertEquals('false', ItunesHeader::checkExplicit('false'));
-
-        $this->assertEquals('false', ItunesHeader::checkExplicit('chat'));
     }
 }

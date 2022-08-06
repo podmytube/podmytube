@@ -43,7 +43,8 @@ class EnclosureUrlTest extends TestCase
         }
     }
 
-    public function testing_enclosure_url_is_valid(): void
+    /** @test */
+    public function enclosure_url_is_valid(): void
     {
         $this->assertEquals(
             config('app.mp3_url') . '/' . self::$media->channel_id . '/' . self::$media->media_id . '.mp3',

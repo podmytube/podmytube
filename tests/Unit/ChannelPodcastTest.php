@@ -48,12 +48,14 @@ class ChannelPodcastTest extends TestCase
         $this->assertEquals($thumb->podcastUrl(), $this->channel->podcastCoverUrl());
     }
 
-    public function testing_to_podcast_header_is_fine_with_all_informations(): void
+    /** @test */
+    public function to_podcast_header_is_fine_with_all_informations(): void
     {
         $this->podcastHeaderInfosChecking($this->channel, $this->channel->podcastHeader());
     }
 
-    public function testing_to_podcast_header_is_fine_without_some(): void
+    /** @test */
+    public function to_podcast_header_is_fine_without_some(): void
     {
         $this->channel->update([
             'podcast_title' => null,

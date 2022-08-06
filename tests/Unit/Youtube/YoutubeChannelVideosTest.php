@@ -75,7 +75,8 @@ class YoutubeChannelVideosTest extends TestCase
         );
     }
 
-    public function testing_invalid_channel_should_throw_exception(): void
+    /** @test */
+    public function invalid_channel_should_throw_exception(): void
     {
         $this->expectException(YoutubeGenericErrorException::class);
         YoutubeChannelVideos::forChannel('ThisChannelWillNeverExists');

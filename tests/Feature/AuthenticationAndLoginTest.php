@@ -53,7 +53,8 @@ class AuthenticationAndLoginTest extends TestCase
         $this->assertAuthenticatedAs($this->user); // <===== this one is failing
     }
 
-    public function testing_login_form(): void
+    /** @test */
+    public function login_form_should_succeed(): void
     {
         $this->followingRedirects()
             ->get(route('login'))
@@ -62,26 +63,30 @@ class AuthenticationAndLoginTest extends TestCase
         ;
     }
 
-    public function test_auth_user_is_redirect_from_login_form(): void
+    /** @test */
+    public function auth_user_is_redirect_from_login_form(): void
     {
         $response = $this->actingAs($this->user)->get(route('login'));
         $response->assertRedirect(route('home'));
     }
 
-    public function testing_register_form(): void
+    /** @test */
+    public function register_form(): void
     {
         $response = $this->get(route('register'));
         $response->assertSuccessful();
         $response->assertViewIs('auth.register');
     }
 
-    public function test_auth_user_is_redirect_from_register_form(): void
+    /** @test */
+    public function auth_user_is_redirect_from_register_form(): void
     {
         $response = $this->actingAs($this->user)->get(route('register'));
         $response->assertRedirect(route('home'));
     }
 
-    public function test_user_with_correct_credentials_will_authenticate(): void
+    /** @test */
+    public function user_with_correct_credentials_will_authenticate(): void
     {
         $response = $this->post(route('login'), [
             'email' => $this->user->email,
@@ -92,7 +97,8 @@ class AuthenticationAndLoginTest extends TestCase
         $this->assertAuthenticatedAs($this->user);
     }
 
-    public function test_invalid_password_should_not_authenticate(): void
+    /** @test */
+    public function invalid_password_should_not_authenticate(): void
     {
         $response = $this->from('/')->post('/login', [
             'email' => $this->user->email,

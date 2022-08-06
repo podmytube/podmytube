@@ -1,23 +1,31 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Podcast;
 
-use Tests\TestCase;
 use App\Podcast\ItunesOwner;
 use InvalidArgumentException;
+use Tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class ItunesOwnerTest extends TestCase
 {
     protected $ownerName = 'John doe';
     protected $ownerEmail = 'john.doe@gmail.com';
 
-    public function testingValidInformationsShouldRenderProperly()
+    /** @test */
+    public function valid_informations_should_render_properly(): void
     {
         $result = ItunesOwner::prepare([
             'itunesOwnerName' => $this->ownerName,
             'itunesOwnerEmail' => $this->ownerEmail,
         ])
-            ->render();
+            ->render()
+        ;
         $this->assertStringContainsString("<itunes:name>{$this->ownerName}</itunes:name>", $result);
         $this->assertStringContainsString('<itunes:owner>', $result);
         $this->assertStringContainsString("<itunes:name>{$this->ownerName}</itunes:name>", $result);
@@ -25,9 +33,10 @@ class ItunesOwnerTest extends TestCase
         $this->assertStringContainsString('</itunes:owner>', $result);
     }
 
-    public function testingOnlyOwnerNameShouldRenderProperlyToo()
+    /** @test */
+    public function only_owner_name_should_render_properly_too(): void
     {
-        $result = ItunesOwner::prepare(['itunesOwnerName' => 'John doe', ])->render();
+        $result = ItunesOwner::prepare(['itunesOwnerName' => 'John doe'])->render();
         $this->assertStringContainsString("<itunes:name>{$this->ownerName}</itunes:name>", $result);
         $this->assertStringContainsString('<itunes:owner>', $result);
         $this->assertStringContainsString("<itunes:name>{$this->ownerName}</itunes:name>", $result);
@@ -35,7 +44,8 @@ class ItunesOwnerTest extends TestCase
         $this->assertStringNotContainsString('<itunes:email>', $result);
     }
 
-    public function testingOnlyOwnerEmailShouldRenderProperlyToo()
+    /** @test */
+    public function only_owner_email_should_render_properly_too(): void
     {
         $result = ItunesOwner::prepare(['itunesOwnerEmail' => $this->ownerEmail])->render();
         $this->assertStringContainsString('<itunes:owner>', $result);
@@ -44,13 +54,15 @@ class ItunesOwnerTest extends TestCase
         $this->assertStringNotContainsString('<itunes:name>', $result);
     }
 
-    public function testingNoInformationsShouldRenderNothing()
+    /** @test */
+    public function no_informations_should_render_nothing(): void
     {
         $result = ItunesOwner::prepare()->render();
         $this->assertEmpty($result);
     }
 
-    public function testingInvalidEmailShouldFail()
+    /** @test */
+    public function invalid_email_should_fail(): void
     {
         $this->expectException(InvalidArgumentException::class);
         ItunesOwner::prepare(['itunesOwnerEmail' => 'Invalid email address']);

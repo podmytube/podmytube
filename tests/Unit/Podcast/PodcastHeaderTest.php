@@ -30,7 +30,8 @@ class PodcastHeaderTest extends TestCase
         $this->seedCategories();
     }
 
-    public function testing_new_channel_with_parent_category_should_render_fine(): void
+    /** @test */
+    public function new_channel_with_parent_category_should_render_fine(): void
     {
         $attributes = [
             'link' => $this->channel->link,
@@ -62,7 +63,8 @@ class PodcastHeaderTest extends TestCase
         $this->assertStringContainsString('<itunes:explicit>' . $this->channel->podcastExplicit() . '</itunes:explicit>', $rendered);
     }
 
-    public function testing_new_channel_with_simple_category_should_render_fine(): void
+    /** @test */
+    public function new_channel_with_simple_category_should_render_fine(): void
     {
         $attributes = [
             'link' => $this->channel->link,

@@ -1,16 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit;
 
-use Tests\TestCase;
+use App\Exceptions\ChannelCreationInvalidChannelUrlException;
 use App\Exceptions\ChannelCreationInvalidUrlException;
 use App\Exceptions\ChannelCreationOnlyYoutubeIsAccepted;
-use App\Exceptions\ChannelCreationInvalidChannelUrlException;
 use App\Modules\YoutubeChannelId;
+use Tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class YoutubeChannelIdTest extends TestCase
 {
-    public function testingInvalidCharactersInChannelId()
+    /** @test */
+    public function invalid_characters_in_channel_id(): void
     {
         $this->expectException(
             ChannelCreationInvalidChannelUrlException::class
@@ -20,7 +27,8 @@ class YoutubeChannelIdTest extends TestCase
         );
     }
 
-    public function testingInvalidHostInChannelId()
+    /** @test */
+    public function invalid_host_in_channel_id(): void
     {
         $this->expectException(ChannelCreationOnlyYoutubeIsAccepted::class);
         YoutubeChannelId::fromUrl(
@@ -28,13 +36,15 @@ class YoutubeChannelIdTest extends TestCase
         );
     }
 
-    public function testingInvalidYoutubeUrl()
+    /** @test */
+    public function invalid_youtube_url_should_throw_exception(): void
     {
         $this->expectException(ChannelCreationInvalidUrlException::class);
         YoutubeChannelId::fromUrl('This is not one url');
     }
 
-    public function testingValidYoutubeUrls()
+    /** @test */
+    public function valid_youtube_urls(): void
     {
         $expectedChannelId = self::PERSONAL_CHANNEL_ID;
         foreach ([

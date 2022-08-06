@@ -1,14 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Podcast;
 
-use Tests\TestCase;
 use App\Podcast\PodcastCover;
 use InvalidArgumentException;
+use Tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class PodcastCoverTest extends TestCase
 {
-    public function testingFullInformationsShouldRenderProperly()
+    /** @test */
+    public function full_informations_should_render_properly(): void
     {
         $imageUrl = 'https://thumbs.podmytube.com/UCf2ZTuey5uT8hN3ESe-ZCPQ/KjxVJazWLmuLsOdiQ0w0u0iHVTT7jqMCgKlIjCyQ.png';
         $imageLink = 'https://www.podmytube.com';
@@ -25,7 +32,8 @@ class PodcastCoverTest extends TestCase
         $this->assertStringContainsString('</image>', $renderedResult);
     }
 
-    public function testingMoreInformationsShouldRenderProperly()
+    /** @test */
+    public function more_informations_should_render_properly(): void
     {
         $imageUrl = 'https://thumbs.podmytube.com/UCf2ZTuey5uT8hN3ESe-ZCPQ/KjxVJazWLmuLsOdiQ0w0u0iHVTT7jqMCgKlIjCyQ.png';
         $imageTitle = 'Lorem ipsum';
@@ -41,7 +49,8 @@ class PodcastCoverTest extends TestCase
         $this->assertStringNotContainsString('<link>', $renderedResult);
     }
 
-    public function testingPartialInformationsShouldRenderProperly()
+    /** @test */
+    public function partial_informations_should_render_properly(): void
     {
         $imageUrl = 'https://thumbs.podmytube.com/UCf2ZTuey5uT8hN3ESe-ZCPQ/KjxVJazWLmuLsOdiQ0w0u0iHVTT7jqMCgKlIjCyQ.png';
         $renderedResult = PodcastCover::prepare([
@@ -55,28 +64,30 @@ class PodcastCoverTest extends TestCase
         $this->assertStringNotContainsString('<title>', $renderedResult);
     }
 
-    public function testingNoInformationsShouldRenderNothing()
+    /** @test */
+    public function no_informations_should_render_nothing(): void
     {
         $renderedResult = PodcastCover::prepare()->render();
         $this->assertEmpty($renderedResult);
     }
 
-    public function testingInvalidUrlShouldThrowException()
+    /** @test */
+    public function invalid_url_should_throw_exception(): void
     {
         $this->expectException(InvalidArgumentException::class);
         PodcastCover::prepare([
             'title' => 'Lorem ipsum',
-            'url' => 'Invalid url.'
+            'url' => 'Invalid url.',
         ]);
     }
 
     /** @test */
-    public function invalid_link_should_throw_exception()
+    public function invalid_link_should_throw_exception(): void
     {
         $this->expectException(InvalidArgumentException::class);
         PodcastCover::prepare([
             'title' => 'Lorem ipsum',
-            'link' => 'Invalid link.'
+            'link' => 'Invalid link.',
         ]);
     }
 }
