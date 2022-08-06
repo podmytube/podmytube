@@ -64,7 +64,7 @@ class MediasControllerTest extends TestCase
     /** @test */
     public function index_forbidden_to_another_user(): void
     {
-        $notTheOwner = factory(User::class)->create();
+        $notTheOwner = User::factory()->create();
         $this->actingAs($notTheOwner)
             ->get(route('channel.medias.index', $this->channel))
             ->assertForbidden()

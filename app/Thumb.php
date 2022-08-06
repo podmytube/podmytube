@@ -6,12 +6,14 @@ namespace App;
 
 use App\Interfaces\Coverable;
 use App\Traits\BelongsToChannel;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
 class Thumb extends Model
 {
     use BelongsToChannel;
+    use HasFactory;
 
     public const LOCAL_STORAGE_DISK = 'thumbs';
     public const DEFAULT_THUMB_FILE = 'default_thumb.jpg';

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use App\Events\ChannelUpdated;
-use App\Jobs\MediaCleaning as MediaCleaning;
+use App\Jobs\MediaCleaning;
 use App\Jobs\SendFileBySFTP;
 use App\Media;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -33,7 +33,7 @@ class MediaCleaningTest extends TestCase
         /**
          * creating fake media with real file (storage disk is faked above).
          */
-        $media = factory(Media::class)->create();
+        $media = Media::factory()->create();
         $preservedMediaId = $media->media_id;
         Storage::put(
             $media->remoteFilePath(),

@@ -36,7 +36,7 @@ it('should include website node', function (): void {
 });
 
 it('should include post node', function (): void {
-    $post = factory(Post::class)->create();
+    $post = Post::factory()->create();
     $sitemapNode = SitemapNode::withSitemapable($post);
 
     $expectedNode = expectedSitemapNode(loc: $post->sitemapLoc(), lastmod: $post->sitemapLastmod(), priority: '1.0');
@@ -47,7 +47,7 @@ it('should include post node', function (): void {
 });
 
 it('should include both post node and website', function (): void {
-    $post = factory(Post::class)->create();
+    $post = Post::factory()->create();
     $sitemapPostNode = SitemapNode::withSitemapable($post);
     $sitemapWebsiteNode = SitemapNode::withRoute(loc: route('www.index'));
 
@@ -60,7 +60,7 @@ it('should include both post node and website', function (): void {
 });
 
 it('should save sitemap', function (): void {
-    $post = factory(Post::class)->create();
+    $post = Post::factory()->create();
     $sitemapPostNode = SitemapNode::withSitemapable($post);
     $sitemapWebsiteNode = SitemapNode::withRoute(loc: route('www.index'));
 

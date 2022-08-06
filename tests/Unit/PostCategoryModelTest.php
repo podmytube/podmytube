@@ -1,36 +1,42 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit;
 
 use App\PostCategory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class PostCategoryModelTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testByWordpressIdShouldReturnNull()
+    public function test_by_wordpress_id_should_return_null(): void
     {
         $this->assertNull(PostCategory::byWordpressId(-12));
     }
 
-    public function testByWordpressIdIsWorkingFine()
+    public function test_by_wordpress_id_is_working_fine(): void
     {
-        $expectedPostCategory = factory(PostCategory::class)->create();
+        $expectedPostCategory = PostCategory::factory()->create();
         $postModel = PostCategory::byWordpressId($expectedPostCategory->wp_id);
         $this->assertEquals($expectedPostCategory->id, $postModel->id);
         $this->assertInstanceOf(PostCategory::class, $postModel);
     }
 
-    public function testBySlugShouldReturnNull()
+    public function test_by_slug_should_return_null(): void
     {
         $this->assertNull(PostCategory::bySlug('db-is-empty'));
     }
 
-    public function testBySlugIsWorkingFine()
+    public function test_by_slug_is_working_fine(): void
     {
-        $expectedPostCategory = factory(PostCategory::class)->create();
+        $expectedPostCategory = PostCategory::factory()->create();
         $postModel = PostCategory::bySlug($expectedPostCategory->slug);
         $this->assertEquals($expectedPostCategory->id, $postModel->id);
         $this->assertInstanceOf(PostCategory::class, $postModel);

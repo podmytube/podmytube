@@ -82,9 +82,9 @@ class PlanModelTest extends TestCase
     /** @test */
     public function by_slugs_and_billing_frequency_is_ok(): void
     {
-        $catPlan = factory(Plan::class)->create(['slug' => 'cat']);
-        $catYearlyBillingIWant = factory(StripePlan::class)->create(['plan_id' => $catPlan->id, 'is_yearly' => true]);
-        factory(StripePlan::class)->create(['plan_id' => $catPlan->id, 'is_yearly' => false]);
+        $catPlan = Plan::factory()->create(['slug' => 'cat']);
+        $catYearlyBillingIWant = StripePlan::factory()->create(['plan_id' => $catPlan->id, 'is_yearly' => true]);
+        StripePlan::factory()->create(['plan_id' => $catPlan->id, 'is_yearly' => false]);
 
         $result = Plan::bySlugsAndBillingFrequency(['cat'], true);
         $this->assertEquals($catPlan->id, $result->first()->id);
@@ -92,7 +92,7 @@ class PlanModelTest extends TestCase
         $this->assertEquals($catYearlyBillingIWant->id, $result->first()->stripePlans->first()->id);
 
         /** adding another */
-        $anotherCatYearlyBillingIWant = factory(StripePlan::class)->create(['plan_id' => $catPlan->id, 'is_yearly' => true]);
+        $anotherCatYearlyBillingIWant = StripePlan::factory()->create(['plan_id' => $catPlan->id, 'is_yearly' => true]);
         $result = Plan::bySlugsAndBillingFrequency(['cat'], true);
         $this->assertCount(2, $result->first()->stripePlans);
         $this->assertEqualsCanonicalizing(
@@ -106,7 +106,7 @@ class PlanModelTest extends TestCase
     {
         $this->seedStripePlans(true);
         $plan = Plan::bySlug('starter');
-        $channel = factory(Channel::class)->create();
+        $channel = Channel::factory()->create();
         $this->assertNull($plan->stripeSession());
 
         $plan->addStripeSessionForChannel($channel);

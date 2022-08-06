@@ -24,7 +24,7 @@ class UsersAccessTest extends TestCase
     /** @test */
     public function simple_user_should_not_access_to_users(): void
     {
-        $notSuperadmin = factory(User::class)->create();
+        $notSuperadmin = User::factory()->create();
 
         $this->actingAs($notSuperadmin)
             ->get(route('users.index'))
@@ -35,7 +35,7 @@ class UsersAccessTest extends TestCase
     /** @test */
     public function channel_view_is_allowed_to_owner(): void
     {
-        $superadmin = factory(User::class)->create(['superadmin' => true]);
+        $superadmin = User::factory()->create(['superadmin' => true]);
 
         $this->actingAs($superadmin)
             ->get(route('users.index'))
@@ -47,8 +47,8 @@ class UsersAccessTest extends TestCase
     /** @test */
     public function simple_user_should_not_be_able_to_impersonate(): void
     {
-        $notSuperadmin = factory(User::class)->create();
-        $anotherUser = factory(User::class)->create();
+        $notSuperadmin = User::factory()->create();
+        $anotherUser = User::factory()->create();
 
         $this->actingAs($notSuperadmin)
             ->get(route('users.impersonate', $anotherUser))
@@ -59,8 +59,8 @@ class UsersAccessTest extends TestCase
     /** @test */
     public function superadmin_should_be_able_to_impersonate(): void
     {
-        $superadmin = factory(User::class)->create(['superadmin' => true]);
-        $anotherUser = factory(User::class)->create();
+        $superadmin = User::factory()->create(['superadmin' => true]);
+        $anotherUser = User::factory()->create();
 
         $this->followingRedirects()
             ->actingAs($superadmin)

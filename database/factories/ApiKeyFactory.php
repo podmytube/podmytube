@@ -1,15 +1,19 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+declare(strict_types=1);
 
-use App\ApiKey;
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(ApiKey::class, function (Faker $faker, $attributes = []) {
-    return [
-        'apikey' =>
-            $attributes['apikey'] ?? $faker->regexify('[a-zA-Z0-9-_]{24}'),
-        'comment' => 'used for test',
-        'active' => true,
-    ];
-});
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+class ApiKeyFactory extends Factory
+{
+    public function definition(): array
+    {
+        return [
+            'apikey' => fake()->regexify('[a-zA-Z0-9-_]{24}'),
+            'comment' => 'used for test',
+            'active' => true,
+        ];
+    }
+}

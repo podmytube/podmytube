@@ -24,7 +24,7 @@ class CreateChannelFactoryTest extends TestCase
         parent::setUp();
         $this->seedApiKeys();
         $this->seedCategories();
-        $this->user = factory(User::class)->create();
+        $this->user = User::factory()->create();
     }
 
     /** @test */
@@ -55,7 +55,7 @@ class CreateChannelFactoryTest extends TestCase
     public function from_youtube_url_with_already_registered_channel_should_fail(): void
     {
         // channel exists
-        factory(Channel::class)->create(['channel_id' => TestCase::PERSONAL_CHANNEL_ID]);
+        Channel::factory()->create(['channel_id' => TestCase::PERSONAL_CHANNEL_ID]);
 
         // and I'm trying to add it once more
         $this->expectException(ChannelAlreadyRegisteredException::class);

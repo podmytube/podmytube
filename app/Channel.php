@@ -26,6 +26,7 @@ use Carbon\Carbon;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Support\Facades\Lang;
@@ -40,6 +41,7 @@ class Channel extends Model implements Podcastable, Coverable
     use BelongsToCategory;
     use BelongsToUser;
     use HasLimits;
+    use HasFactory;
     use HasManyMedias;
     use HasManyPlaylists;
     use HasOneSubscription;
@@ -301,7 +303,7 @@ class Channel extends Model implements Podcastable, Coverable
 
     public function isFree(): bool
     {
-        return $this?->subscription?->plan_id === Plan::FREE_PLAN_ID;
+        return $this->subscription?->plan_id === Plan::FREE_PLAN_ID;
     }
 
     public function isPaying(): bool
@@ -493,7 +495,7 @@ class Channel extends Model implements Podcastable, Coverable
                         now()->startOfMonth(),
                         now(),
                     ])
-            ;
+                ;
             })
             ->count()
         ;

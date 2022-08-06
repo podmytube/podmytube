@@ -30,9 +30,9 @@ class PlaylistModelTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->user = factory(User::class)->create();
+        $this->user = User::factory()->create();
         $this->channel = $this->createChannel($this->user);
-        $this->playlist = factory(Playlist::class)->create(['channel_id' => $this->channel->channelId()]);
+        $this->playlist = Playlist::factory()->create(['channel_id' => $this->channel->channelId()]);
     }
 
     /** @test */
@@ -50,11 +50,11 @@ class PlaylistModelTest extends TestCase
         $this->seedApiKeys();
         $expectedMediasToPublish = 2;
 
-        factory(Media::class)->create(['media_id' => 'GJzweq_VbVc', 'grabbed_at' => now()->subday()]);
-        factory(Media::class)->create(['media_id' => 'AyU4u-iQqJ4', 'grabbed_at' => now()->subWeek()]);
-        factory(Media::class)->create(['media_id' => 'hb0Fo1Jqxkc']);
+        Media::factory()->grabbedAt(now()->subDay())->create(['media_id' => 'GJzweq_VbVc']);
+        Media::factory()->grabbedAt(now()->subWeek())->create(['media_id' => 'AyU4u-iQqJ4']);
+        Media::factory()->create(['media_id' => 'hb0Fo1Jqxkc']);
 
-        $this->playlist = factory(Playlist::class)->create(['youtube_playlist_id' => self::PODMYTUBE_TEST_PLAYLIST_ID]);
+        $this->playlist = Playlist::factory()->create(['youtube_playlist_id' => self::PODMYTUBE_TEST_PLAYLIST_ID]);
 
         $mediasToPublish = $this->playlist->mediasToPublish();
         $this->assertCount($expectedMediasToPublish, $mediasToPublish);
@@ -70,7 +70,7 @@ class PlaylistModelTest extends TestCase
         // channel has default thumb, so has playlist
         $this->assertEquals(Thumb::defaultUrl(), $this->playlist->podcastCoverUrl());
 
-        $thumb = factory(Thumb::class)->create(
+        $thumb = Thumb::factory()->create(
             [
                 'coverable_type' => get_class($this->playlist),
                 'coverable_id' => $this->playlist->id(),
@@ -112,11 +112,11 @@ class PlaylistModelTest extends TestCase
     {
         $this->seedApiKeys();
         $expectedItems = 2;
-        factory(Media::class)->create(['media_id' => 'GJzweq_VbVc', 'grabbed_at' => now()->subday()]);
-        factory(Media::class)->create(['media_id' => 'AyU4u-iQqJ4', 'grabbed_at' => now()->subWeek()]);
-        factory(Media::class)->create(['media_id' => 'hb0Fo1Jqxkc']);
+        Media::factory()->grabbedAt(now()->subday())->create(['media_id' => 'GJzweq_VbVc']);
+        Media::factory()->grabbedAt(now()->subWeek())->create(['media_id' => 'AyU4u-iQqJ4']);
+        Media::factory()->create(['media_id' => 'hb0Fo1Jqxkc']);
 
-        $this->playlist = factory(Playlist::class)->create(['youtube_playlist_id' => self::PODMYTUBE_TEST_PLAYLIST_ID]);
+        $this->playlist = Playlist::factory()->create(['youtube_playlist_id' => self::PODMYTUBE_TEST_PLAYLIST_ID]);
         $playlistToPodcastInfos = $this->playlist->toPodcast();
         // checking header
         $this->podcastHeaderInfosChecking($this->playlist, $playlistToPodcastInfos);
@@ -146,7 +146,7 @@ class PlaylistModelTest extends TestCase
     /** @test */
     public function scope_active_is_ok(): void
     {
-        factory(Playlist::class)->create(['active' => false]);
+        Playlist::factory()->create(['active' => false]);
         $this->playlist->update(['active' => true]);
 
         /** getting all active playlist (should be only one) */
@@ -167,7 +167,7 @@ class PlaylistModelTest extends TestCase
     public function user_has_no_playlists_should_return_zero(): void
     {
         $expectedNumberOfPlaylists = 0;
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
         // user has no playlist yet
         $this->assertCount($expectedNumberOfPlaylists, Playlist::userPlaylists($user));
     }
@@ -183,7 +183,7 @@ class PlaylistModelTest extends TestCase
 
         /** creating some playlists on same channel */
         $numberOfPlaylistsToAdd = 5;
-        factory(Playlist::class, $numberOfPlaylistsToAdd)->create(['channel_id' => $this->channel->channelId(), 'active' => true]);
+        Playlist::factory()->count($numberOfPlaylistsToAdd)->create(['channel_id' => $this->channel->channelId(), 'active' => true]);
         $expectedNumberOfPlaylists += $numberOfPlaylistsToAdd;
 
         $this->assertCount($expectedNumberOfPlaylists, Playlist::userPlaylists($this->user));
@@ -191,7 +191,7 @@ class PlaylistModelTest extends TestCase
         /** associating another channel with some playlists */
         $anotherChannel = $this->createChannel($this->user);
         $numberOfPlaylistsToAdd = 3;
-        factory(Playlist::class, $numberOfPlaylistsToAdd)->create(['channel_id' => $anotherChannel->channelId(), 'active' => true]);
+        Playlist::factory()->count($numberOfPlaylistsToAdd)->create(['channel_id' => $anotherChannel->channelId(), 'active' => true]);
 
         $expectedNumberOfPlaylists += $numberOfPlaylistsToAdd;
         $this->assertCount($expectedNumberOfPlaylists, Playlist::userPlaylists($this->user));
@@ -213,6 +213,7 @@ class PlaylistModelTest extends TestCase
 
         $this->playlist->update(['youtube_playlist_id' => self::PODMYTUBE_TEST_PLAYLIST_ID]);
         $this->playlist->refresh();
+
         /** no medias */
         $medias = $this->playlist->associatedMedias();
         $this->assertNotNull($medias);
@@ -220,9 +221,9 @@ class PlaylistModelTest extends TestCase
         $this->assertCount(0, $medias);
 
         // with some medias
-        factory(Media::class)->create(['media_id' => 'GJzweq_VbVc', 'grabbed_at' => now()->subday()]);
-        factory(Media::class)->create(['media_id' => 'AyU4u-iQqJ4', 'grabbed_at' => now()->subWeek()]);
-        factory(Media::class)->create(['media_id' => 'hb0Fo1Jqxkc']);
+        Media::factory()->grabbedAt(now()->subday())->create(['media_id' => 'GJzweq_VbVc']);
+        Media::factory()->grabbedAt(now()->subWeek())->create(['media_id' => 'AyU4u-iQqJ4']);
+        Media::factory()->create(['media_id' => 'hb0Fo1Jqxkc']);
         $this->playlist->refresh();
 
         $medias = $this->playlist->associatedMedias();
@@ -235,7 +236,7 @@ class PlaylistModelTest extends TestCase
     {
         $this->assertNull(Playlist::byChannelId('unknown-channel-id'));
 
-        $expectedPlaylist = factory(Playlist::class)->create();
+        $expectedPlaylist = Playlist::factory()->create();
 
         $results = Playlist::byChannelId($expectedPlaylist->channel_id);
         $this->assertNotNull($results);

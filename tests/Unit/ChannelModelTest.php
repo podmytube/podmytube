@@ -75,11 +75,11 @@ class ChannelModelTest extends TestCase
     /** @test */
     public function by_user_id_is_working_fine(): void
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
         $this->assertNull(Channel::byUserId($user));
 
         $expectedChannels = 3;
-        factory(Channel::class, $expectedChannels)->create(['user_id' => $user->user_id]);
+        Channel::factory()->count($expectedChannels)->create(['user_id' => $user->user_id]);
         $this->assertCount($expectedChannels, Channel::byUserId($user));
     }
 
@@ -114,35 +114,38 @@ class ChannelModelTest extends TestCase
 
         /** with not paying enough channel */
         $channelWhichIsNotPayingEnough = $this->createChannelWithPlan(Plan::bySlug('weekly_youtuber'));
-        factory(Media::class, 10)->create(
-            [
-                'channel_id' => $channelWhichIsNotPayingEnough->channel_id,
-                'grabbed_at' => now()->subHour(),
-            ]
-        );
+        Media::factory()
+            ->grabbedAt(now()->subHour())
+            ->count(10)
+            ->create(
+                [
+                    'channel_id' => $channelWhichIsNotPayingEnough->channel_id,
+                ]
+            )
+        ;
         $this->assertTrue($channelWhichIsNotPayingEnough->shouldChannelBeUpgraded());
     }
 
     /** @test */
     public function user_channels_is_ok(): void
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
         $this->assertCount(0, Channel::userChannels($user));
 
         $this->channel->update(['user_id' => $user->user_id]);
         $this->assertCount(1, Channel::userChannels($user));
 
-        factory(Channel::class, 5)->create(['user_id' => $user->user_id]);
+        Channel::factory()->count(5)->create(['user_id' => $user->user_id]);
         $this->assertCount(6, Channel::userChannels($user));
     }
 
     /** @test */
     public function subscribe_to_plan_should_be_ok(): void
     {
-        $channel = factory(Channel::class)->create();
+        $channel = Channel::factory()->create();
         $this->assertNull($channel->subscription);
 
-        $plan = factory(Plan::class)->create();
+        $plan = Plan::factory()->create();
         $subscription = $channel->subscribeToPlan($plan);
         $channel->refresh();
         $this->assertNotNull($subscription);
@@ -175,7 +178,7 @@ class ChannelModelTest extends TestCase
         // adding cover to channel
         $this->channel->setCoverFromUploadedFile($uploadedFile);
 
-        $inactiveChannel = factory(Channel::class)->create(['active' => false]);
+        $inactiveChannel = Channel::factory()->create(['active' => false]);
         $results = Channel::allActiveChannels();
         $this->assertInstanceOf(Collection::class, $results);
 
@@ -197,7 +200,10 @@ class ChannelModelTest extends TestCase
         $this->assertCount(0, $medias);
 
         // with active medias
-        factory(Media::class, 3)->create(['channel_id' => $this->channel->channelId(), 'active' => true]);
+        Media::factory()
+            ->count(3)
+            ->create(['channel_id' => $this->channel->channelId(), 'active' => true])
+        ;
         $this->channel->refresh();
 
         $medias = $this->channel->associatedMedias();
@@ -206,7 +212,10 @@ class ChannelModelTest extends TestCase
         $this->assertCount(3, $medias);
 
         // with inactive medias
-        factory(Media::class, 2)->create(['channel_id' => $this->channel->channelId(), 'active' => false]);
+        Media::factory()
+            ->count(2)
+            ->create(['channel_id' => $this->channel->channelId(), 'active' => false])
+        ;
         $this->channel->refresh();
 
         $medias = $this->channel->associatedMedias();
@@ -260,11 +269,11 @@ class ChannelModelTest extends TestCase
         $this->assertEquals(0, Channel::nbReallyActiveChannels());
 
         // create some channels
-        $inactiveChannels = factory(Channel::class, 5)->create();
+        $inactiveChannels = Channel::factory()->count(5)->create();
 
         // create some active channels
         $expectedActiveChannels = 3;
-        factory(Channel::class, $expectedActiveChannels)
+        Channel::factory()->count($expectedActiveChannels)
             ->create()
             ->each(function (Channel $channel): void {
                 $this->addMediasToChannel($channel, 1, true);
@@ -277,7 +286,7 @@ class ChannelModelTest extends TestCase
     /** @test */
     public function has_subscription_is_fine(): void
     {
-        $channelWithoutSubscription = factory(Channel::class)->create();
+        $channelWithoutSubscription = Channel::factory()->create();
         $this->assertFalse($channelWithoutSubscription->hasSubscription());
 
         $this->assertTrue($this->channel->hasSubscription());
@@ -291,15 +300,15 @@ class ChannelModelTest extends TestCase
         $this->assertFalse($channel->hasRecentlyAddedMedias());
 
         // with last day created medias should return false
-        factory(Media::class)->create(['channel_id' => $channel->channel_id, 'created_at' => now()->subDay()]);
+        Media::factory()->create(['channel_id' => $channel->channel_id, 'created_at' => now()->subDay()]);
         $this->assertFalse($channel->hasRecentlyAddedMedias());
 
         // 1h is no recent media should return false
-        factory(Media::class)->create(['channel_id' => $channel->channel_id, 'created_at' => now()->subHour()]);
+        Media::factory()->create(['channel_id' => $channel->channel_id, 'created_at' => now()->subHour()]);
         $this->assertFalse($channel->hasRecentlyAddedMedias());
 
         // recent medias should return true
-        factory(Media::class)->create(['channel_id' => $channel->channel_id, 'created_at' => now()->subMinutes(1)]);
+        Media::factory()->create(['channel_id' => $channel->channel_id, 'created_at' => now()->subMinutes(1)]);
         $this->assertTrue($channel->hasRecentlyAddedMedias());
     }
 }

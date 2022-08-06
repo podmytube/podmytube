@@ -32,7 +32,7 @@ class CreateChannelCommandTest extends TestCase
         $this->seedCategories();
 
         // because we need one (the 1 at least)
-        factory(User::class)->create();
+        User::factory()->create();
     }
 
     /** @test */
@@ -60,7 +60,7 @@ class CreateChannelCommandTest extends TestCase
     /** @test */
     public function real_channel_id_with_user_should_succeed(): void
     {
-        $anotherUser = factory(User::class)->create();
+        $anotherUser = User::factory()->create();
         // command should run properly
         $this->artisan('create:channel', [
             'channel_id' => self::PERSONAL_CHANNEL_ID,
@@ -79,8 +79,8 @@ class CreateChannelCommandTest extends TestCase
     /** @test */
     public function real_channel_id_with_user_and_plan_should_succeed(): void
     {
-        $anotherUser = factory(User::class)->create();
-        $anotherPlan = factory(Plan::class)->create();
+        $anotherUser = User::factory()->create();
+        $anotherPlan = Plan::factory()->create();
 
         // command should run properly
         $this->artisan('create:channel', [

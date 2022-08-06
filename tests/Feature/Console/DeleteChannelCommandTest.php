@@ -29,7 +29,7 @@ class DeleteChannelCommandTest extends TestCase
     {
         Bus::fake();
 
-        $channel = factory(Channel::class)->create();
+        $channel = Channel::factory()->create();
 
         // command should run properly
         $this->artisan('delete:channel', ['channel_id' => $channel->channelId()])->assertExitCode(0);

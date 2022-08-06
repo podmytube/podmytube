@@ -29,7 +29,7 @@ class UploadMediaListenerTest extends TestCase
     {
         parent::setUp();
         Bus::fake(SendFileBySFTP::class);
-        $this->media = factory(Media::class)->create();
+        $this->media = Media::factory()->create();
 
         $this->event = new MediaUploadedByUser($this->media);
     }

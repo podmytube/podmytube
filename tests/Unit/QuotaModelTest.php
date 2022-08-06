@@ -24,7 +24,7 @@ class QuotaModelTest extends TestCase
     {
         parent::setUp();
         // this key will be used in every test
-        $this->apikey = factory(ApiKey::class)->create();
+        $this->apikey = ApiKey::factory()->create();
     }
 
     /** @test */
@@ -33,7 +33,7 @@ class QuotaModelTest extends TestCase
         /** preparation */
         $scriptName = 'lorem.php';
         $expectedNumber = 5;
-        factory(Quota::class, $expectedNumber)->create([
+        Quota::factory()->count($expectedNumber)->create([
             'apikey_id' => $this->apikey->id,
             'script' => $scriptName,
         ]);
@@ -68,8 +68,8 @@ class QuotaModelTest extends TestCase
         /**
          * preparation - this script will use 3 calls to youtube.
          */
-        $anotherApikey = factory(ApiKey::class)->create();
-        $lastApikey = factory(ApiKey::class)->create();
+        $anotherApikey = ApiKey::factory()->create();
+        $lastApikey = ApiKey::factory()->create();
         $scriptName = 'ipsum.php';
         $quotaConsumed = [
             $this->apikey->apikey => 10,

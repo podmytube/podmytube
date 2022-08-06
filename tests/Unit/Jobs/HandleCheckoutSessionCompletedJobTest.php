@@ -138,7 +138,7 @@ class HandleCheckoutSessionCompletedJobTest extends TestCase
     /** @test */
     public function run_is_throwing_exception_when_user_not_the_owner_of_channel(): void
     {
-        $anotherChannel = factory(Channel::class)->create();
+        $anotherChannel = Channel::factory()->create();
         $webHookCall = new WebhookCall([
             'payload' => [
                 'data' => [

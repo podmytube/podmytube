@@ -24,7 +24,7 @@ class AuthenticationAndLoginTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->user = factory(User::class)->create();
+        $this->user = User::factory()->create();
     }
 
     public function test_user_stay_guest_with_invalid_password(): void

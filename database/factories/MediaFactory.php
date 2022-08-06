@@ -2,39 +2,48 @@
 
 declare(strict_types=1);
 
-// @var $factory \Illuminate\Database\Eloquent\Factory
+namespace Database\Factories;
 
 use App\Channel;
 use App\Media;
-use Faker\Generator as Faker;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Media::class, function (Faker $faker, $attributes) {
-    $grabbedAt = null;
-    $length = 0;
-    $duration = 0;
-    if (isset($attributes['grabbed_at'])) {
-        $length = 355;
-        $duration = 2500;
-        $grabbedAt = $attributes['grabbed_at'];
-    }
-
-    // returning our nice new media
-    return [
-        'media_id' => $attributes['media_id'] ?? $faker->regexify('[a-zA-Z0-9-_]{4}'),
-        'channel_id' => $attributes['channel_id'] ?? function () {
-            return factory(Channel::class)->create()->channel_id;
-        },
-        'title' => $attributes['title'] ?? $faker->words(2, true),
-        'description' => $attributes['description'] ?? <<<'EOT'
+class MediaFactory extends Factory
+{
+    public function definition(): array
+    {
+        return [
+            'media_id' => fake()->regexify('[a-zA-Z0-9-_]{4}'),
+            'channel_id' => Channel::factory(),
+            'title' => fake()->words(2, true),
+            'description' => <<<'EOT'
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor. 
 Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi utt.
 EOT,
-        'length' => $length,
-        'duration' => $duration,
-        'published_at' => $attributes['published_at'] ?? now(),
-        'grabbed_at' => $grabbedAt,
-        'status' => $attributes['status'] ?? Media::STATUS_NOT_DOWNLOADED,
-        'deleted_at' => $attributes['deleted_at'] ?? null,
-        'uploaded_by_user' => $attributes['uploaded_by_user'] ?? false,
-    ];
-});
+            'length' => 0,
+            'duration' => 0,
+            'published_at' => now(),
+            'grabbed_at' => null,
+            'status' => Media::STATUS_NOT_DOWNLOADED,
+            'deleted_at' => null,
+            'uploaded_by_user' => false,
+        ];
+    }
+
+    public function channel(Channel $channel): static
+    {
+        return $this->state(['channel_id' => $channel->channel_id]);
+    }
+
+    public function grabbedAt(Carbon $grabbedAt): static
+    {
+        return $this->state(
+            [
+                'length' => 355,
+                'duration' => 2500,
+                'grabbed_at' => $grabbedAt,
+            ]
+        );
+    }
+}

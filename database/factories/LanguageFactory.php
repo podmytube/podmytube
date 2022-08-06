@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
-use App\Language;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Language::class, function (
-    Faker $faker,
-    $attributes = []
-) {
-    $name = $attributes['iso_name'] ?? $faker->word();
+class LanguageFactory extends Factory
+{
+    public function definition(): array
+    {
+        $name = fake()->word();
 
-    return [
-        'code' => strtolower(substr($name, 0, 2)),
-        'iso_name' => $name,
-        'native_name' => $name,
-    ];
-});
+        return [
+            'code' => strtolower(substr($name, 0, 2)),
+            'iso_name' => $name,
+            'native_name' => $name,
+        ];
+    }
+}

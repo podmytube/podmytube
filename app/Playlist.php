@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * the playlist model to access database same table name.
  *
@@ -24,6 +25,7 @@ use Exception;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection as SupportCollection;
 
@@ -34,6 +36,7 @@ class Playlist extends Model implements Podcastable, Coverable
 {
     use BelongsToChannel;
     use HasCover;
+    use HasFactory;
 
     protected $guarded = [];
 

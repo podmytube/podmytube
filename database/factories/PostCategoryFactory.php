@@ -1,23 +1,22 @@
 <?php
 
-use Illuminate\Support\Str;
-use Faker\Generator as Faker;
-/*
-|--------------------------------------------------------------------------
-| Model Factories
-|--------------------------------------------------------------------------
-|
-| This directory should contain each of the model factory definitions for
-| your application. Factories provide a convenient way to generate new
-| model instances for testing / seeding your application's database.
-|
-*/
+declare(strict_types=1);
 
-$factory->define(App\PostCategory::class, function (Faker $faker, array $attributes = []) {
-    $name = $faker->words(2, true);
-    return [
-        'wp_id' => $attributes['wp_id'] ?? $faker->randomNumber(2),
-        'name' => $attributes['name'] ?? $name,
-        'slug' => Str::slug($name),
-    ];
-});
+namespace Database\Factories;
+
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
+
+class PostCategoryFactory extends Factory
+{
+    public function definition(): array
+    {
+        $name = fake()->words(2, true);
+
+        return [
+            'wp_id' => fake()->randomNumber(2),
+            'name' => $name,
+            'slug' => Str::slug($name),
+        ];
+    }
+}

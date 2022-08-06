@@ -16,7 +16,6 @@ use App\StripePlan;
 use App\Subscription;
 use App\Thumb;
 use App\User;
-use Carbon\Carbon;
 use Database\Seeders\ApiKeysTableSeeder;
 use Database\Seeders\CategoriesTableSeeder;
 use Database\Seeders\PlansTableSeeder;
@@ -77,7 +76,7 @@ abstract class TestCase extends BaseTestCase
 
     public function createCoverFor(Coverable $coverable): Thumb
     {
-        $thumb = factory(Thumb::class)->create([
+        $thumb = Thumb::factory()->create([
             'coverable_type' => get_class($coverable),
             'coverable_id' => $coverable->id(),
         ]);
@@ -109,11 +108,11 @@ abstract class TestCase extends BaseTestCase
         if ($user !== null) {
             $userContext = ['user_id' => $user->id()];
         }
-        $channel = factory(Channel::class)->create($userContext);
+        $channel = Channel::factory()->create($userContext);
 
         // if no plan, affecting a created one
         if ($plan === null) {
-            $plan = factory(Plan::class)->create();
+            $plan = Plan::factory()->create();
         }
         $channel->subscribeToPlan($plan);
         $channel->refresh();
@@ -128,7 +127,8 @@ abstract class TestCase extends BaseTestCase
      */
     public function createMediaWithFileForChannel(Channel $channel, int $nbMediasToCreate = 1): Collection
     {
-        return factory(Media::class, $nbMediasToCreate)
+        return Media::factory()
+            ->count($nbMediasToCreate)
             ->create(['channel_id' => $channel->channelId()])
             ->map(function ($media): Media {
                 $this->createFakeRemoteFileForMedia($media);
@@ -149,12 +149,12 @@ abstract class TestCase extends BaseTestCase
      */
     public function createPlaylistWithMedia(): Playlist
     {
-        $playlist = factory(Playlist::class)->create(['youtube_playlist_id' => self::PODMYTUBE_TEST_PLAYLIST_ID]);
+        $playlist = Playlist::factory()->create(['youtube_playlist_id' => self::PODMYTUBE_TEST_PLAYLIST_ID]);
 
         // with some medias
-        factory(Media::class)->create(['media_id' => 'GJzweq_VbVc', 'grabbed_at' => now()->subday()]);
-        factory(Media::class)->create(['media_id' => 'AyU4u-iQqJ4', 'grabbed_at' => now()->subWeek()]);
-        factory(Media::class)->create(['media_id' => 'hb0Fo1Jqxkc']);
+        Media::factory()->grabbedAt(now()->subDay())->create(['media_id' => 'GJzweq_VbVc']);
+        Media::factory()->grabbedAt(now()->subDay())->create(['media_id' => 'AyU4u-iQqJ4']);
+        Media::factory()->create(['media_id' => 'hb0Fo1Jqxkc']);
 
         return $playlist;
     }
@@ -193,12 +193,13 @@ abstract class TestCase extends BaseTestCase
 
     protected function addMediasToChannel(Channel $channel, int $numberOfMediasToAdd = 1, bool $grabbed = false)
     {
-        $medias = factory(Media::class, $numberOfMediasToAdd)->create(
-            [
-                'channel_id' => $channel->channel_id,
-                'grabbed_at' => $grabbed == true ? $this->faker->dateTimeBetween(Carbon::now()->startOfMonth(), Carbon::now()) : null,
-            ]
-        );
+        $factory = Media::factory();
+        if ($grabbed === true) {
+            $factory = $factory->grabbedAt(now());
+        }
+        $medias = $factory->count($numberOfMediasToAdd)
+            ->create(['channel_id' => $channel->channel_id])
+        ;
 
         return $medias->count() == 1 ? $medias->first() : $medias;
     }
@@ -218,7 +219,7 @@ abstract class TestCase extends BaseTestCase
             $createContext = ['plan_id' => $plan->id];
         }
 
-        return factory(Subscription::class)->create($createContext)->channel;
+        return Subscription::factory()->create($createContext)->channel;
     }
 
     protected function createDepletedApiKeys(int $nbkeys = 1): EloquentCollection
@@ -228,10 +229,11 @@ abstract class TestCase extends BaseTestCase
 
     protected function createApiKeysWithQuotaUsed(int $quotaUsed, int $nbkeys = 1): EloquentCollection
     {
-        return factory(ApiKey::class, $nbkeys)
+        return ApiKey::factory()
+            ->count($nbkeys)
             ->create()
             ->each(function (ApiKey $apiKey) use ($quotaUsed): void {
-                factory(Quota::class)->create(
+                Quota::factory()->create(
                     [
                         'apikey_id' => $apiKey->id,
                         'quota_used' => $quotaUsed,
@@ -267,7 +269,7 @@ abstract class TestCase extends BaseTestCase
             $createContext = ['plan_id' => $plan->id];
         }
 
-        return factory(Subscription::class, $nbChannels)->create($createContext);
+        return Subscription::factory()->count($nbChannels)->create($createContext);
     }
 
     protected function seedApiKeys(): void
@@ -287,9 +289,9 @@ abstract class TestCase extends BaseTestCase
 
     protected function createMyOwnChannel(Plan $plan): Channel
     {
-        $channel = factory(Channel::class)->create(['channel_id' => self::PERSONAL_CHANNEL_ID]);
+        $channel = Channel::factory()->create(['channel_id' => self::PERSONAL_CHANNEL_ID]);
 
-        factory(Subscription::class)
+        Subscription::factory()
             ->create(
                 [
                     'channel_id' => $channel->channelId(),

@@ -1,15 +1,22 @@
 <?php
 
-/* @var $factory \Illuminate\Database\Eloquent\Factory */
+declare(strict_types=1);
+
+namespace Database\Factories;
 
 use App\Thumb;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Thumb::class, function ($faker, $attributes) {
-    return [
-        'file_name' => $attributes['file_name'] ?? $faker->word() . '.jpg',
-        'file_disk' => $attributes['file_disk'] ?? Thumb::LOCAL_STORAGE_DISK, // where it is stored
-        'file_size' => $attributes['file_size'] ?? rand(25000, 50000),
-        'coverable_type' => $attributes['coverable_type'] ?? null,
-        'coverable_id' => $attributes['coverable_id'] ?? null,
-    ];
-});
+class ThumbFactory extends Factory
+{
+    public function definition(): array
+    {
+        return [
+            'file_name' => fake()->word() . '.jpg',
+            'file_disk' => Thumb::LOCAL_STORAGE_DISK, // where it is stored
+            'file_size' => random_int(25000, 50000),
+            'coverable_type' => null,
+            'coverable_id' => null,
+        ];
+    }
+}

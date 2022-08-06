@@ -31,13 +31,13 @@ class UploadPodcastListenerTest extends TestCase
         parent::setUp();
         $this->seedApiKeys();
         $this->channel = $this->createChannelWithPlan();
-        $this->playlist = factory(Playlist::class)->create([
+        $this->playlist = Playlist::factory()->create([
             'channel_id' => $this->channel->channelId(),
             'youtube_playlist_id' => self::PODMYTUBE_TEST_PLAYLIST_ID,
         ]);
-        factory(Media::class)->create(['media_id' => 'GJzweq_VbVc', 'grabbed_at' => now()->subday()]);
-        factory(Media::class)->create(['media_id' => 'AyU4u-iQqJ4', 'grabbed_at' => now()->subWeek()]);
-        factory(Media::class)->create(['media_id' => 'hb0Fo1Jqxkc']);
+        Media::factory()->grabbedAt(now()->subday())->create(['media_id' => 'GJzweq_VbVc']);
+        Media::factory()->grabbedAt(now()->subWeek())->create(['media_id' => 'AyU4u-iQqJ4']);
+        Media::factory()->create(['media_id' => 'hb0Fo1Jqxkc']);
         Bus::fake();
     }
 

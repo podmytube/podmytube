@@ -1,11 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit;
 
 use App\Category;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class CategoryModelTest extends TestCase
 {
     use RefreshDatabase;
@@ -15,25 +21,25 @@ class CategoryModelTest extends TestCase
         parent::setUp();
     }
 
-    public function testSimpleFeedValueIsCorrect()
+    public function test_simple_feed_value_is_correct(): void
     {
         $categoryName = 'Fashion & Beauty';
-        $category = factory(Category::class)->create(['name' => $categoryName]);
+        $category = Category::factory()->create(['name' => $categoryName]);
         $this->assertEquals(
             htmlentities($categoryName),
             $category->feedValue()
         );
     }
 
-    public function testParentFeedValueIsCorrect()
+    public function test_parent_feed_value_is_correct(): void
     {
         $parentCategoryName = 'Kids & Family';
         $childCategoryName = 'Pets & Animals';
-        $parentCategory = factory(Category::class)->create(['name' => $parentCategoryName]);
-        $category = factory(Category::class)->create(
+        $parentCategory = Category::factory()->create(['name' => $parentCategoryName]);
+        $category = Category::factory()->create(
             [
                 'parent_id' => $parentCategory->id,
-                'name' => $childCategoryName]
+                'name' => $childCategoryName, ]
         );
         $this->assertEquals(
             htmlentities($parentCategoryName),
@@ -46,26 +52,26 @@ class CategoryModelTest extends TestCase
     }
 
     /** @test */
-    public function by_slug_is_null_when_invalid_slug()
+    public function by_slug_is_null_when_invalid_slug(): void
     {
         $this->assertNull(Category::bySlug('not-valid-category-slug'));
     }
 
     /** @test */
-    public function by_slug_is_ok_with_non_parent_category()
+    public function by_slug_is_ok_with_non_parent_category(): void
     {
-        factory(Category::class)->create(['slug' => 'find-me']);
+        Category::factory()->create(['slug' => 'find-me']);
         $result = Category::bySlug('find-me');
         $this->assertNotNull($result);
         $this->assertInstanceOf(Category::class, $result);
     }
 
     /** @test */
-    public function by_slug_is_ok_with_parent_category()
+    public function by_slug_is_ok_with_parent_category(): void
     {
-        $category = factory(Category::class)->create(['slug' => 'find-me']);
-        /** creating sub category */
-        factory(Category::class)->create(['parent_id' => $category->id, 'slug' => 'sub-cat']);
+        $category = Category::factory()->create(['slug' => 'find-me']);
+        // creating sub category
+        Category::factory()->create(['parent_id' => $category->id, 'slug' => 'sub-cat']);
         $result = Category::bySlug('find-me');
         $this->assertNotNull($result);
         $this->assertInstanceOf(Category::class, $result);

@@ -35,7 +35,7 @@ class RemoveAccountJobTest extends TestCase
     /** @test */
     public function removing_account_is_working_fine(): void
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
         $plan = $this->getFreePlan();
 
         $this->createChannel($user, $plan);

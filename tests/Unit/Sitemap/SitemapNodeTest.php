@@ -29,7 +29,7 @@ it('should return xml node with specific priority', function (): void {
 });
 
 it('should return xml node with sitemapable', function (): void {
-    $post = factory(Post::class)->create();
+    $post = Post::factory()->create();
     $result = SitemapNode::withSitemapable($post)->render();
 
     expect($result)->toBe(expectedSitemapNode(loc: $post->sitemapLoc(), lastmod: $post->sitemapLastmod(), changefreq: 'daily', priority: '1.0'));

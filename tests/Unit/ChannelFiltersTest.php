@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit;
 
 use App\Channel;
@@ -7,32 +9,36 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class ChannelFiltersTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var \App\Channel $channel */
+    /** @var \App\Channel */
     protected $channel;
 
-    public function setUp():void
+    public function setUp(): void
     {
         parent::setUp();
-        $this->channel = factory(Channel::class)->create();
+        $this->channel = Channel::factory()->create();
     }
 
-    public function testHasAcceptOnlyTagIsOk()
+    public function test_has_accept_only_tag_is_ok(): void
     {
         $this->assertFalse($this->channel->hasAcceptOnlyTags());
 
-        $this->channel->update(['accept_video_by_tag' => 'poney', ]);
+        $this->channel->update(['accept_video_by_tag' => 'poney']);
         $this->assertTrue($this->channel->hasAcceptOnlyTags());
 
-        $this->channel->update(['accept_video_by_tag' => 'poney, mouse,dog', ]);
+        $this->channel->update(['accept_video_by_tag' => 'poney, mouse,dog']);
         $this->assertTrue($this->channel->hasAcceptOnlyTags());
     }
 
     /** @test */
-    public function is_tag_accepted_is_ok()
+    public function is_tag_accepted_is_ok(): void
     {
         $this->assertTrue(
             $this->channel->isTagAccepted('podcast'),
@@ -51,8 +57,8 @@ class ChannelFiltersTest extends TestCase
             'Channel has no filtering, null should be accepted.'
         );
 
-        /** adding filtering on "podcast" only */
-        $this->channel->update(['accept_video_by_tag' => 'podcast', ]);
+        // adding filtering on "podcast" only
+        $this->channel->update(['accept_video_by_tag' => 'podcast']);
         $this->assertTrue(
             $this->channel->isTagAccepted('podcast'),
             'Channel is filtering on "podcast", "podcast" should be accepted.'
@@ -72,7 +78,7 @@ class ChannelFiltersTest extends TestCase
     }
 
     /** @test */
-    public function is_tag_accepted_on_unwanted_characters_is_ok()
+    public function is_tag_accepted_on_unwanted_characters_is_ok(): void
     {
         $this->assertTrue(
             $this->channel->isTagAccepted(' '),
@@ -84,8 +90,8 @@ class ChannelFiltersTest extends TestCase
             'Channel is not filtering, <newline> should be accepted.'
         );
 
-        /** with filtering */
-        $this->channel->update(['accept_video_by_tag' => 'podcast', ]);
+        // with filtering
+        $this->channel->update(['accept_video_by_tag' => 'podcast']);
         $this->assertFalse(
             $this->channel->isTagAccepted(' '),
             'Channel is filtering on "podcast", <space> should be accepted.'
@@ -98,9 +104,9 @@ class ChannelFiltersTest extends TestCase
     }
 
     /** @test */
-    public function are_tags_accepted_is_ok()
+    public function are_tags_accepted_is_ok(): void
     {
-        /** channel with no filter accept everything */
+        // channel with no filter accept everything
         $this->assertTrue(
             $this->channel->areTagsAccepted(['window', 'house']),
             'Channel is filtering nothing, media with tags ["window", "house"] should be accepted.'
@@ -116,8 +122,8 @@ class ChannelFiltersTest extends TestCase
             'Channel is filtering nothing, media with no tags should be accepted.'
         );
 
-        /** channel with some only tags to accept */
-        $this->channel->update(['accept_video_by_tag' => 'podcast', ]);
+        // channel with some only tags to accept
+        $this->channel->update(['accept_video_by_tag' => 'podcast']);
 
         $this->assertFalse(
             $this->channel->areTagsAccepted(),
@@ -134,8 +140,8 @@ class ChannelFiltersTest extends TestCase
             'Channel is accepting only videos with podcast tag, video with another tag should be rejected.'
         );
 
-        /** channel with some only tags to accept */
-        $this->channel->update(['accept_video_by_tag' => 'poney, cat, dog, chicken', ]);
+        // channel with some only tags to accept
+        $this->channel->update(['accept_video_by_tag' => 'poney, cat, dog, chicken']);
 
         $this->assertTrue(
             $this->channel->areTagsAccepted(['cat', 'mouse']),
@@ -147,7 +153,7 @@ class ChannelFiltersTest extends TestCase
         );
 
         // filtering by date should change nothing
-        $this->channel = factory(Channel::class)->create([
+        $this->channel = Channel::factory()->create([
             'accept_video_by_tag' => 'poney, cat, dog, chicken',
             'reject_video_too_old' => Carbon::parse('10 years ago'),
         ]);
@@ -156,9 +162,9 @@ class ChannelFiltersTest extends TestCase
     }
 
     /** @test */
-    public function is_date_accepted_is_ok()
+    public function is_date_accepted_is_ok(): void
     {
-        /**
+        /*
          * channel does not care about video too old
          * all should be accepted
          */

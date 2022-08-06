@@ -6,10 +6,13 @@ namespace App;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Quota extends Model
 {
+    use HasFactory;
+
     public const LIMIT_PER_DAY = 10000;
     public const START_HOUR = '08:00:00'; // UTC pacific time
     public const END_HOUR = '07:59:59'; // UTC pacific time

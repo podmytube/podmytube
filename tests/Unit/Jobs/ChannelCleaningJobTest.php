@@ -48,7 +48,7 @@ class ChannelCleaningJobTest extends TestCase
         $savedYoutubeId = $this->channelToDelete->youtubeId();
 
         // associate playlist with this channel
-        $playlistThatShouldBeRemoved = factory(Playlist::class)->create(['channel_id' => $this->channelToDelete->youtubeId()]);
+        $playlistThatShouldBeRemoved = Playlist::factory()->create(['channel_id' => $this->channelToDelete->youtubeId()]);
         $this->channelToDelete->refresh();
 
         $this->assertCount(1, $this->channelToDelete->playlists);

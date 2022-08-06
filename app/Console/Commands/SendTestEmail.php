@@ -81,33 +81,33 @@ EOT;
             $this->fakeChannel();
 
             switch ($this->emailIdToSend) {
-            case 1:
-                $mailable = new WelcomeToPodmytube($this->user);
+                case 1:
+                    $mailable = new WelcomeToPodmytube($this->user);
 
-                break;
+                    break;
 
-            case 2:
-                $mailable = new ChannelIsRegistered($this->channel);
+                case 2:
+                    $mailable = new ChannelIsRegistered($this->channel);
 
-                break;
+                    break;
 
-            case 3: // monthly report with upgrade message
-                $this->fakeSubscription(Plan::bySlug('forever_free'));
-                $mailable = new MonthlyReportMail($this->subscription->channel);
+                case 3: // monthly report with upgrade message
+                    $this->fakeSubscription(Plan::bySlug('forever_free'));
+                    $mailable = new MonthlyReportMail($this->subscription->channel);
 
-                break;
+                    break;
 
-            case 4: // monthly report with upgrade message
-                $this->fakeSubscription(Plan::bySlug('weekly_youtuber'));
-                $mailable = new MonthlyReportMail($this->subscription->channel);
+                case 4: // monthly report with upgrade message
+                    $this->fakeSubscription(Plan::bySlug('weekly_youtuber'));
+                    $mailable = new MonthlyReportMail($this->subscription->channel);
 
-                break;
+                    break;
 
-            case 5:
-                $mailable = new ChannelHasReachedItsLimitsMail($this->channel);
+                case 5:
+                    $mailable = new ChannelHasReachedItsLimitsMail($this->channel);
 
-                break;
-        }
+                    break;
+            }
 
             // send it to me with the right locale
             Mail::to($this->user)->queue($mailable);
@@ -131,7 +131,7 @@ EOT;
         // if no user exists
         $this->user = User::byEmail($this->option('email'));
         if ($this->user === null) {
-            $this->user = factory(User::class)->create(['email' => $this->option('email')]);
+            $this->user = User::factory()->create(['email' => $this->option('email')]);
         }
     }
 
@@ -139,7 +139,7 @@ EOT;
     {
         // if this user has no channel
         if (!$this->user->channels->count()) {
-            $this->channel = factory(Channel::class)->create([
+            $this->channel = Channel::factory()->create([
                 'user_id' => $this->user->user_id,
             ]);
 
@@ -151,12 +151,12 @@ EOT;
     protected function fakeSubscription(Plan $plan)
     {
         if ($this->channel->subscription === null) {
-            $this->subscription = factory(Subscription::class)->create([
+            $this->subscription = Subscription::factory()->create([
                 'plan_id' => $plan->id,
                 'channel_id' => $this->channel->channel_id,
             ]);
             $nbMediasToCreate = $plan->nb_episodes_per_month + 1;
-            factory(Media::class, $nbMediasToCreate)->create([
+            Media::factory()->count($nbMediasToCreate)->create([
                 'channel_id' => $this->channel->channel_id,
                 'published_at' => Carbon::now()->subMonth(),
             ]);

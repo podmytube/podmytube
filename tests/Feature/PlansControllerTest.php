@@ -37,7 +37,7 @@ class PlansControllerTest extends TestCase
     /** @test */
     public function plan_upgrade_should_be_denied_to_another_user(): void
     {
-        $notTheOwner = factory(User::class)->create();
+        $notTheOwner = User::factory()->create();
         $this->actingAs($notTheOwner)
             ->get(route('plans.index', $this->channel))
             ->assertForbidden()

@@ -38,7 +38,7 @@ class DownloadMediaJobTest extends TestCase
     /** @test */
     public function download_media_job_is_fine(): void
     {
-        $this->media = factory(Media::class)->create(
+        $this->media = Media::factory()->create(
             [
                 'channel_id' => $this->channel->channel_id,
                 'media_id' => self::MARIO_MUSHROOM_VIDEO,
@@ -57,13 +57,15 @@ class DownloadMediaJobTest extends TestCase
     public function force_download_media_job_is_fine(): void
     {
         // file is already grabbed
-        $this->media = factory(Media::class)->create(
-            [
-                'channel_id' => $this->channel->channel_id,
-                'media_id' => self::MARIO_MUSHROOM_VIDEO,
-                'grabbed_at' => now(),
-            ]
-        );
+        $this->media = Media::factory()
+            ->grabbedAt(now())
+            ->create(
+                [
+                    'channel_id' => $this->channel->channel_id,
+                    'media_id' => self::MARIO_MUSHROOM_VIDEO,
+                ]
+            )
+        ;
         $job = new DownloadMediaJob($this->media, true);
 
         $this->assertNotNull($job);

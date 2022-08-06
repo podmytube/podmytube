@@ -1,22 +1,20 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+declare(strict_types=1);
+
+namespace Database\Factories;
 
 use App\Channel;
 use App\Plan;
-use App\Subscription;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Subscription::class, function (
-    Faker $faker,
-    $attributes = []
-) {
-    return [
-        'channel_id' => $attributes['channel_id'] ?? function () {
-            return factory(Channel::class)->create()->channel_id;
-        },
-        'plan_id' => $attributes['plan_id'] ?? function () {
-            return factory(Plan::class)->create()->id;
-        },
-    ];
-});
+class SubscriptionFactory extends Factory
+{
+    public function definition(): array
+    {
+        return [
+            'channel_id' => Channel::factory(),
+            'plan_id' => Plan::factory(),
+        ];
+    }
+}

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use App\Channel;
+use App\Media;
 use App\Plan;
 use App\Subscription;
 use Carbon\Carbon;
@@ -30,8 +31,8 @@ class ChannelLimitsTest extends TestCase
     {
         parent::setUp();
         $this->seedPlans();
-        $this->channel = factory(Channel::class)->create();
-        factory(Subscription::class)->create([
+        $this->channel = Channel::factory()->create();
+        Subscription::factory()->create([
             'channel_id' => $this->channel->channel_id,
             'plan_id' => Plan::bySlug('forever_free')->id,
         ]);
@@ -55,11 +56,14 @@ class ChannelLimitsTest extends TestCase
     {
         $expectedMonth = 12;
         $expectedYear = 2019;
-        factory(\App\Media::class, 1)->create([
-            'channel_id' => $this->channel->channel_id,
-            'published_at' => null,
-            'grabbed_at' => Carbon::create($expectedYear, $expectedMonth, 1),
-        ]);
+        Media::factory()
+            ->count(1)
+            ->grabbedAt(Carbon::create($expectedYear, $expectedMonth, 1))
+            ->create([
+                'channel_id' => $this->channel->channel_id,
+                'published_at' => null,
+            ])
+        ;
         $this->assertEquals(1, $this->channel->numberOfEpisodesGrabbed($expectedMonth, $expectedYear));
         $this->assertTrue($this->channel->hasReachedItslimit($expectedMonth, $expectedYear));
     }

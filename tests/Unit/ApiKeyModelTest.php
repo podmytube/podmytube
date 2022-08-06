@@ -38,7 +38,7 @@ class ApiKeyModelTest extends TestCase
     {
         $this->assertNull(ApiKey::byApikey(self::APIKEY_NAME));
 
-        factory(ApiKey::class)->create(['apikey' => self::APIKEY_NAME]);
+        ApiKey::factory()->create(['apikey' => self::APIKEY_NAME]);
         $apikey = ApiKey::byApikey(self::APIKEY_NAME);
 
         $this->assertNotNull($apikey);
@@ -57,7 +57,7 @@ class ApiKeyModelTest extends TestCase
     /** @test */
     public function no_quotas_recorded_yet_should_get_one(): void
     {
-        factory(ApiKey::class, 2)->create();
+        ApiKey::factory()->count(2)->create();
         $this->assertNotNull(ApiKey::getOne());
     }
 

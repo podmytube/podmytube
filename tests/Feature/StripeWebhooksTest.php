@@ -81,7 +81,7 @@ class StripeWebhooksTest extends TestCase
     {
         $this->markTestSkipped('TO BE DONE');
 
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
         $this->postJson(
             self::STRIPE_ROUTE,
             [
@@ -101,7 +101,7 @@ class StripeWebhooksTest extends TestCase
     {
         $this->markTestSkipped('TO BE DONE');
 
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
         $this->postJson(
             self::STRIPE_ROUTE,
             [
@@ -128,8 +128,8 @@ class StripeWebhooksTest extends TestCase
     {
         $this->markTestSkipped('TO BE DONE');
 
-        $user = factory(User::class)->create();
-        $channel = factory(Channel::class)->create();
+        $user = User::factory()->create();
+        $channel = Channel::factory()->create();
         $this->postJson(
             self::STRIPE_ROUTE,
             [
@@ -161,7 +161,7 @@ class StripeWebhooksTest extends TestCase
     {
         $this->markTestSkipped('TO BE DONE');
 
-        $channel = factory(Channel::class)->create();
+        $channel = Channel::factory()->create();
         $this->postJson(
             self::STRIPE_ROUTE,
             [
@@ -188,7 +188,7 @@ class StripeWebhooksTest extends TestCase
     {
         $this->markTestSkipped('TO BE DONE');
 
-        $channel = factory(Channel::class)->create();
+        $channel = Channel::factory()->create();
         $this->postJson(
             self::STRIPE_ROUTE,
             [
@@ -216,8 +216,8 @@ class StripeWebhooksTest extends TestCase
     {
         $this->markTestSkipped('TO BE DONE');
         // creating user that will subscribe
-        $user = factory(User::class)->create(['stripe_id' => self::TEST_STRIPE_CUSTOMER_ID]);
-        $channel = factory(Channel::class)->create(['user_id' => $user->user_id]);
+        $user = User::factory()->create(['stripe_id' => self::TEST_STRIPE_CUSTOMER_ID]);
+        $channel = Channel::factory()->create(['user_id' => $user->user_id]);
 
         $this->postJson(
             self::STRIPE_ROUTE,

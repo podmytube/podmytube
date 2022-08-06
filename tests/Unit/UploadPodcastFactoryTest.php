@@ -41,11 +41,11 @@ class UploadPodcastFactoryTest extends TestCase
     public function test_building_podcast_for_playlist_is_good(): void
     {
         $this->seedApiKeys();
-        factory(Media::class)->create(['media_id' => 'GJzweq_VbVc', 'grabbed_at' => now()->subday()]);
-        factory(Media::class)->create(['media_id' => 'AyU4u-iQqJ4', 'grabbed_at' => now()->subWeek()]);
-        factory(Media::class)->create(['media_id' => 'hb0Fo1Jqxkc']);
+        Media::factory()->grabbedAt(now()->subDay())->create(['media_id' => 'GJzweq_VbVc']);
+        Media::factory()->grabbedAt(now()->subDay())->create(['media_id' => 'AyU4u-iQqJ4']);
+        Media::factory()->create(['media_id' => 'hb0Fo1Jqxkc']);
 
-        $this->playlist = factory(Playlist::class)->create(['youtube_playlist_id' => self::PODMYTUBE_TEST_PLAYLIST_ID]);
+        $this->playlist = Playlist::factory()->create(['youtube_playlist_id' => self::PODMYTUBE_TEST_PLAYLIST_ID]);
         $factory = UploadPodcastFactory::for($this->playlist)->run();
 
         $this->assertEquals($this->playlist->remoteFilePath(), $factory->remotePath());
@@ -65,7 +65,7 @@ class UploadPodcastFactoryTest extends TestCase
     /** @test */
     public function prepare_local_path_for_playlist_is_fine(): void
     {
-        $playlist = factory(Playlist::class)->create();
+        $playlist = Playlist::factory()->create();
         $expected = '/tmp/' . now()->format('Y-m-d\TH:i') . '_playlist_' . $playlist->channelId();
         $factory = UploadPodcastFactory::for($playlist);
 

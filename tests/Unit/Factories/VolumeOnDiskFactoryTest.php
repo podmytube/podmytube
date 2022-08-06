@@ -21,16 +21,16 @@ class VolumeOnDiskFactoryTest extends TestCase
     public function raw_volume_on_disk_is_fine(): void
     {
         // non grabbed files are 0
-        factory(Media::class, 2)->create();
+        Media::factory()->count(2)->create();
         $this->assertEquals(0, VolumeOnDiskFactory::init()->raw());
 
         // with one only
-        $media = factory(Media::class)->create(['grabbed_at' => now()]);
+        $media = Media::factory()->grabbedAt(now())->create();
         $expectedVolumeOnDisk = $media->length;
         $this->assertEquals($expectedVolumeOnDisk, VolumeOnDiskFactory::init()->raw());
 
         // with some more
-        $medias = factory(Media::class, 10)->create(['grabbed_at' => now()]);
+        $medias = Media::factory()->count(10)->grabbedAt(now())->create();
         $expectedVolumeOnDisk = $medias->reduce(function ($carry, Media $media) {
             return $carry + $media->length;
         }, $expectedVolumeOnDisk);
@@ -42,16 +42,16 @@ class VolumeOnDiskFactoryTest extends TestCase
     public function formatted_volume_on_disk_is_fine(): void
     {
         // non grabbed files are 0
-        factory(Media::class, 2)->create();
+        Media::factory()->count(2)->create();
         $this->assertEquals(0, VolumeOnDiskFactory::init()->formatted());
 
         // with one only
-        $media = factory(Media::class)->create(['grabbed_at' => now()]);
+        $media = Media::factory()->grabbedAt(now())->create();
         $expectedVolumeOnDisk = formatBytes($media->length);
         $this->assertEquals($expectedVolumeOnDisk, VolumeOnDiskFactory::init()->formatted());
 
         // with some more
-        $medias = factory(Media::class, 10)->create(['grabbed_at' => now()]);
+        $medias = Media::factory()->count(10)->grabbedAt(now())->create();
         $expectedVolumeOnDisk = formatBytes($medias->reduce(function ($carry, Media $media) {
             return $carry + $media->length;
         }, $expectedVolumeOnDisk));

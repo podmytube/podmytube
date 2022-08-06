@@ -38,8 +38,8 @@ class DownloadMediaFactoryTest extends TestCase
         $this->seedApiKeys();
         $this->seedPlans();
         Bus::fake(SendFileBySFTP::class);
-        $this->channel = factory(Channel::class)->create(['channel_id' => 'test']);
-        $this->subscription = factory(Subscription::class)->create(
+        $this->channel = Channel::factory()->create(['channel_id' => 'test']);
+        $this->subscription = Subscription::factory()->create(
             [
                 'channel_id' => $this->channel->channel_id,
                 'plan_id' => Plan::bySlug('forever_free')->id,
@@ -57,7 +57,7 @@ class DownloadMediaFactoryTest extends TestCase
      */
     public function invalid_media_should_be_rejected(): void
     {
-        $this->media = factory(Media::class)->create([
+        $this->media = Media::factory()->create([
             'channel_id' => $this->channel->channel_id,
             'media_id' => 'absolutely-not-valid',
             'title' => null,
@@ -77,7 +77,7 @@ class DownloadMediaFactoryTest extends TestCase
         // channel accept only episode from now
         $this->channel->update(['reject_video_too_old' => now()]);
 
-        $this->media = factory(Media::class)->create(
+        $this->media = Media::factory()->create(
             [
                 'channel_id' => $this->channel->channel_id,
                 'media_id' => self::BEACH_VOLLEY_VIDEO_1,
@@ -95,7 +95,7 @@ class DownloadMediaFactoryTest extends TestCase
         // downloaded file may have various size once transformed in audio
         $expectedMediaLength = [26666, 26898, 27429];
         $expectedDuration = 5;
-        $this->media = factory(Media::class)->create(
+        $this->media = Media::factory()->create(
             [
                 'channel_id' => $this->channel->channel_id,
                 'media_id' => self::MARIO_COIN_VIDEO,
@@ -128,13 +128,15 @@ class DownloadMediaFactoryTest extends TestCase
     public function force_download_should_be_ok(): void
     {
         // adding grabbed media(s) to channel (with free plan)
-        $this->media = factory(Media::class)->create(
-            [
-                'channel_id' => $this->channel->channel_id,
-                'media_id' => self::MARIO_COIN_VIDEO,
-                'grabbed_at' => now(),
-            ]
-        );
+        $this->media = Media::factory()
+            ->grabbedAt(now())
+            ->create(
+                [
+                    'channel_id' => $this->channel->channel_id,
+                    'media_id' => self::MARIO_COIN_VIDEO,
+                ]
+            )
+        ;
 
         DownloadMediaFactory::media($this->media, true)->run();
         $this->assertEquals(Media::STATUS_DOWNLOADED, $this->media->status);

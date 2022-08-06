@@ -31,7 +31,7 @@ class LastMediaCheckerTest extends TestCase
     {
         parent::setUp();
         $this->seedApiKeys();
-        $this->channel = factory(Channel::class)->create(['channel_id' => self::PERSONAL_CHANNEL_ID]);
+        $this->channel = Channel::factory()->create(['channel_id' => self::PERSONAL_CHANNEL_ID]);
     }
 
     /** @test */
@@ -66,7 +66,7 @@ class LastMediaCheckerTest extends TestCase
         ]);
 
         // creating media
-        factory(Media::class)->create([
+        Media::factory()->create([
             'media_id' => self::BEACH_VOLLEY_VIDEO_1,
             'channel_id' => $this->channel->channel_id,
             'published_at' => Carbon::createFromDate(2015, 10, 28), ]);
@@ -86,10 +86,11 @@ class LastMediaCheckerTest extends TestCase
         ]);
 
         // creating media
-        factory(Media::class)->create([
+        Media::factory()
+            ->grabbedAt(now())
+            ->create([
             'media_id' => self::BEACH_VOLLEY_VIDEO_1,
             'channel_id' => $this->channel->channel_id,
-            'grabbed_at' => now(),
         ]);
 
         $this->assertFalse(

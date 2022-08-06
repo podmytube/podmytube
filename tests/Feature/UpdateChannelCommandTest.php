@@ -61,7 +61,7 @@ class UpdateChannelCommandTest extends TestCase
     {
         $mediaId = 'EePwbhMqEh0';
         $channel = $this->createMyOwnChannel($this->starterPlan);
-        factory(Media::class)->create([
+        Media::factory()->create([
             'media_id' => $mediaId,
             'channel_id' => $channel->channelId(),
             'title' => 'foo',

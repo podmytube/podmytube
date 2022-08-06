@@ -27,7 +27,7 @@ class GetPlaylistsForChannelCommandTest extends TestCase
     public function real_channel_id_should_success(): void
     {
         $this->seedApiKeys();
-        $channel = factory(Channel::class)->create(['channel_id' => self::PERSONAL_CHANNEL_ID]);
+        $channel = Channel::factory()->create(['channel_id' => self::PERSONAL_CHANNEL_ID]);
 
         // command should run properly
         $this->artisan('get:playlistsForChannel', ['channel_id' => $channel->channelId()])->assertExitCode(0);

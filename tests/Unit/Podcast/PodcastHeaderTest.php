@@ -26,7 +26,7 @@ class PodcastHeaderTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->channel = factory(Channel::class)->create();
+        $this->channel = Channel::factory()->create();
         $this->seedCategories();
     }
 

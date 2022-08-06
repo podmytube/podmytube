@@ -36,9 +36,9 @@ class UserModelTest extends TestCase
 
         /** with users that want newsletter and have active channel*/
         $nbExpectedUsersWhoWantNewsletter = 10;
-        factory(User::class, $nbExpectedUsersWhoWantNewsletter)->create(['newsletter' => true])
+        User::factory()->count($nbExpectedUsersWhoWantNewsletter)->create(['newsletter' => true])
             ->each(function (User $user): void {
-                factory(Channel::class)->create(['user_id' => $user->userId()]);
+                Channel::factory()->create(['user_id' => $user->userId()]);
             })
         ;
         $result = User::whoWantNewsletter();
@@ -48,16 +48,16 @@ class UserModelTest extends TestCase
         $this->checkRowResult($result);
 
         // adding users that dont want newsletter does not change the result
-        factory(User::class, 3)->create(['newsletter' => false]);
+        User::factory()->count(3)->create(['newsletter' => false]);
         $result = User::whoWantNewsletter();
         $this->assertNotNull($result);
         $this->assertInstanceOf(Collection::class, $result);
         $this->assertCount($nbExpectedUsersWhoWantNewsletter, $result);
 
         // adding user that want newsletter but has inactive channel should not change the result either
-        factory(User::class, 1)->create(['newsletter' => true])
+        User::factory()->count(1)->create(['newsletter' => true])
             ->each(function (User $user): void {
-                factory(Channel::class)->create(['user_id' => $user->userId(), 'active' => false]);
+                Channel::factory()->create(['user_id' => $user->userId(), 'active' => false]);
             })
         ;
         $result = User::whoWantNewsletter();
@@ -72,7 +72,7 @@ class UserModelTest extends TestCase
         $expectedEmail = 'john@connor.com';
         $this->assertNull(User::byEmail($expectedEmail));
 
-        factory(User::class)->create(['email' => $expectedEmail]);
+        User::factory()->create(['email' => $expectedEmail]);
         $user = User::byEmail($expectedEmail);
         $this->assertNotNull($user);
         $this->assertInstanceOf(User::class, $user);
@@ -85,7 +85,7 @@ class UserModelTest extends TestCase
         $expectedStripeId = $this->faker->asciify('cus_************');
         $this->assertNull(User::byStripeId($expectedStripeId));
 
-        factory(User::class)->create(['stripe_id' => $expectedStripeId]);
+        User::factory()->create(['stripe_id' => $expectedStripeId]);
         $user = User::byStripeId($expectedStripeId);
         $this->assertNotNull($user);
         $this->assertInstanceOf(User::class, $user);
@@ -94,20 +94,20 @@ class UserModelTest extends TestCase
 
     public function is_superadmin_should_be_good(): void
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
         $this->assertFalse($user->isSuperAdmin());
 
-        $superadmin = factory(User::class)->create(['superadmin' => true]);
+        $superadmin = User::factory()->create(['superadmin' => true]);
         $this->assertTrue($superadmin->isSuperAdmin());
     }
 
     /** @test */
     public function name_attribute_should_be_good(): void
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
         $this->assertEquals($user->firstname . ' ' . $user->lastname, $user->name);
 
-        $user = factory(User::class)->create(['lastname' => null]);
+        $user = User::factory()->create(['lastname' => null]);
         $this->assertEquals($user->firstname, $user->name);
 
         // firstname cannot be null (DB constraint)
@@ -117,11 +117,11 @@ class UserModelTest extends TestCase
     public function dont_warn_user_for_exceeding_quota_should_be_good(): void
     {
         // user has not checked checkbox
-        $this->user = factory(User::class)->create(['dont_warn_exceeding_quota' => false]);
+        $this->user = User::factory()->create(['dont_warn_exceeding_quota' => false]);
         $this->assertTrue($this->user->wantToBeWarnedForExceedingQuota());
 
         // user has checked dont warn me for exceeding quota.
-        $this->user = factory(User::class)->create(['dont_warn_exceeding_quota' => true]);
+        $this->user = User::factory()->create(['dont_warn_exceeding_quota' => true]);
         $this->assertFalse($this->user->wantToBeWarnedForExceedingQuota());
     }
 

@@ -11,7 +11,7 @@ uses(RefreshDatabase::class);
 uses(TestCase::class);
 
 beforeEach(function (): void {
-    $this->post = factory(Post::class)->create();
+    $this->post = Post::factory()->create();
 });
 
 it('should return post url with sitemapLoc', function (): void {

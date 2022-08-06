@@ -52,11 +52,13 @@ class LastMediaPublishedCheckerTest extends TestCase
         $this->seedPlans();
         $channel = $this->createMyOwnChannel(Plan::bySlug('starter'));
         // creating media
-        factory(Media::class)->create([
-            'media_id' => self::BEACH_VOLLEY_VIDEO_1,
-            'channel_id' => $channel->channel_id,
-            'grabbed_at' => now(),
-        ]);
+        Media::factory()
+            ->grabbedAt(now())
+            ->create([
+                'media_id' => self::BEACH_VOLLEY_VIDEO_1,
+                'channel_id' => $channel->channel_id,
+            ])
+        ;
         $this->artisan('check:lastmedia')->assertExitCode(0);
         Mail::assertNothingQueued();
     }

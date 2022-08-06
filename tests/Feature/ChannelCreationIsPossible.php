@@ -26,7 +26,7 @@ class ChannelCreationIsPossible extends TestCase
         $this->seedPlans();
         $this->seedApiKeys();
         $this->seedCategories();
-        $this->user = factory(User::class)->create();
+        $this->user = User::factory()->create();
     }
 
     /** @test */
@@ -64,7 +64,7 @@ class ChannelCreationIsPossible extends TestCase
                         'owner' => 1,
                     ])
                     ->assertViewIs('channel.create')
-            ;
+                ;
                 $this->assertNull(Channel::byChannelId($invalidChannelId));
             },
             [

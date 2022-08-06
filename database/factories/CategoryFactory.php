@@ -1,19 +1,22 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+declare(strict_types=1);
 
-use App\Category;
-use Faker\Generator as Faker;
+namespace Database\Factories;
+
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
-$factory->define(Category::class, function (
-    Faker $faker,
-    $attributes = []
-) {
-    $name = $attributes['name'] ?? $faker->word();
-    return [
-        'parent_id' => $attributes['parent_id'] ?? 0,
-        'name' => $name,
-        'slug' => Str::slug($name)
-    ];
-});
+class CategoryFactory extends Factory
+{
+    public function definition(): array
+    {
+        $name = fake()->word();
+
+        return [
+            'parent_id' => $attributes['parent_id'] ?? 0,
+            'name' => $name,
+            'slug' => Str::slug($name),
+        ];
+    }
+}

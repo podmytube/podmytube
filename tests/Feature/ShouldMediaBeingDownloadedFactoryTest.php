@@ -31,13 +31,13 @@ class ShouldMediaBeingDownloadedFactoryTest extends TestCase
     {
         parent::setUp();
         $this->seedApiKeys();
-        $this->taggedMedia = factory(Media::class)->create(
+        $this->taggedMedia = Media::factory()->create(
             [
                 'media_id' => self::BEACH_VOLLEY_VIDEO_1,
                 'published_at' => now()->subDays(15),
             ]
         );
-        $this->nonTaggedMedia = factory(Media::class)->create(
+        $this->nonTaggedMedia = Media::factory()->create(
             [
                 'media_id' => self::BEACH_VOLLEY_VIDEO_2,
                 'channel_id' => $this->taggedMedia->channel_id,

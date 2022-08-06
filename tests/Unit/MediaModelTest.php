@@ -32,8 +32,8 @@ class MediaModelTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->channel = factory(Channel::class)->create(['explicit' => false]);
-        $this->media = factory(Media::class)->create(['channel_id' => $this->channel->channel_id]);
+        $this->channel = Channel::factory()->create(['explicit' => false]);
+        $this->media = Media::factory()->create(['channel_id' => $this->channel->channel_id]);
     }
 
     public function tearDown(): void
@@ -47,7 +47,7 @@ class MediaModelTest extends TestCase
     public function test_published_between_should_be_fine(): void
     {
         $expectedNbMedias = 3;
-        factory(Media::class, $expectedNbMedias)->create([
+        Media::factory()->count($expectedNbMedias)->create([
             'channel_id' => $this->channel->channel_id,
             'published_at' => Carbon::createFromDate(2019, 12, 15),
         ]);
@@ -66,9 +66,8 @@ class MediaModelTest extends TestCase
     public function test_published_last_month_should_be_fine(): void
     {
         $expectedNbMedias = 3;
-        factory(Media::class, $expectedNbMedias)->create([
+        Media::factory()->count($expectedNbMedias)->create([
             'channel_id' => $this->channel->channel_id,
-            'grabbed_at' => null,
             'published_at' => now()->startOfMonth()->subMonth(),
         ]);
 
@@ -88,17 +87,18 @@ class MediaModelTest extends TestCase
         $this->assertFalse($this->media->isGrabbed());
 
         $this->media->update(['grabbed_at' => now()]);
-        //$this->media->refresh();
+        // $this->media->refresh();
         $this->assertTrue($this->media->isGrabbed());
     }
 
     public function test_grabbed_at_should_be_fine(): void
     {
         $expectedResult = 3;
-        factory(Media::class, $expectedResult)->create([
-            'channel_id' => $this->channel->channel_id,
-            'grabbed_at' => Carbon::now(),
-        ]);
+        Media::factory()
+            ->grabbedAt(now())
+            ->count($expectedResult)->create([
+                'channel_id' => $this->channel->channel_id,
+            ]);
 
         $this->assertEquals($expectedResult, Media::grabbedAt()->count());
     }
@@ -110,7 +110,7 @@ class MediaModelTest extends TestCase
         $this->assertEquals($this->media->title, Media::byMediaId($this->media->media_id)->title);
 
         /** same with deleted media */
-        $deletedMedia = factory(Media::class)->create(['deleted_at' => now()]);
+        $deletedMedia = Media::factory()->create(['deleted_at' => now()]);
         // that should not be found here
         $this->assertNull(Media::byMediaId($deletedMedia->media_id));
 
@@ -200,8 +200,8 @@ class MediaModelTest extends TestCase
 
     public function test_to_podcast_item_with_explicit_channel(): void
     {
-        $channel = factory(Channel::class)->create(['explicit' => true]);
-        $media = factory(Media::class)->create(['channel_id' => $channel->channel_id]);
+        $channel = Channel::factory()->create(['explicit' => true]);
+        $media = Media::factory()->create(['channel_id' => $channel->channel_id]);
         $result = $media->toPodcastItem();
         $this->assertEquals($result['guid'], $media->media_id);
         $this->assertEquals($result['title'], $media->title);
@@ -225,15 +225,12 @@ class MediaModelTest extends TestCase
             'duration',
             'explicit',
         ];
-        $media = factory(Media::class)->create([
+        $media = Media::factory()->create([
             'media_id' => $this->faker->regexify('[a-zA-Z0-9-_]{8}'),
             'channel_id' => $this->channel->channel_id,
             'title' => null,
             'description' => null,
-            'length' => 0,
-            'duration' => 0,
             'published_at' => $this->faker->dateTimeBetween(Carbon::now()->startOfMonth(), Carbon::now()),
-            'grabbed_at' => null,
             'active' => true,
         ]);
         $result = $media->toPodcastItem();
@@ -280,10 +277,10 @@ class MediaModelTest extends TestCase
     /** @test */
     public function is_uploaded_by_user_is_fine(): void
     {
-        $media = factory(Media::class)->create(['uploaded_by_user' => false]);
+        $media = Media::factory()->create(['uploaded_by_user' => false]);
         $this->assertFalse($media->isUploadedByUser());
 
-        $media = factory(Media::class)->create(['uploaded_by_user' => true]);
+        $media = Media::factory()->create(['uploaded_by_user' => true]);
         $this->assertTrue($media->isUploadedByUser());
     }
 
@@ -323,7 +320,7 @@ class MediaModelTest extends TestCase
         // adding another channel with some ungrabbed medias
         $expectedNumberOfMediasForAnotherChannel = 3;
 
-        $anotherChannel = factory(Channel::class)->create();
+        $anotherChannel = Channel::factory()->create();
         $this->addMediasToChannel($anotherChannel, $expectedNumberOfMediasForAnotherChannel, false);
         $anotherChannel->refresh();
 

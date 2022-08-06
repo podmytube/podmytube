@@ -6,10 +6,12 @@ namespace App;
 
 use App\Interfaces\Sitemapable;
 use App\Traits\IsSitemapable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model implements Sitemapable
 {
+    use HasFactory;
     use IsSitemapable;
 
     public string $sitemapRouteName = 'post.show';

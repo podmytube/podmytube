@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit;
 
 use App\Channel;
@@ -9,6 +11,10 @@ use Illuminate\Http\File;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class UnderstandingStorageTest extends TestCase
 {
     use RefreshDatabase;
@@ -19,7 +25,7 @@ class UnderstandingStorageTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->channel = factory(Channel::class)->create();
+        $this->channel = Channel::factory()->create();
     }
 
     public function tearDown(): void
@@ -30,13 +36,13 @@ class UnderstandingStorageTest extends TestCase
         parent::tearDown();
     }
 
-    public function testFileExists()
+    public function test_file_exists(): void
     {
         $this->assertTrue(Storage::disk(Thumb::LOCAL_STORAGE_DISK)->exists(Thumb::DEFAULT_THUMB_FILE));
         $this->assertFalse(Storage::disk('tmp')->exists(Thumb::DEFAULT_THUMB_FILE));
     }
 
-    public function testPath()
+    public function test_path(): void
     {
         $rootPath = Storage::disk(Thumb::LOCAL_STORAGE_DISK)->path('');
         $this->assertEquals(
@@ -45,11 +51,9 @@ class UnderstandingStorageTest extends TestCase
         );
     }
 
-    public function testPutFileAs()
+    public function test_put_file_as(): void
     {
-        /**
-         * putFileAs('destination folder', $fileHandler, 'destination file name')
-         */
+        // putFileAs('destination folder', $fileHandler, 'destination file name')
         Storage::disk('tmp')->putFileAs(
             '', // mean I will copy the file to the root of disk tmp
             Storage::disk(Thumb::LOCAL_STORAGE_DISK)->path(Thumb::DEFAULT_THUMB_FILE),

@@ -26,9 +26,9 @@ class ThumbModelTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->thumb = factory(Thumb::class)->create();
-        $this->channel = factory(Channel::class)->create();
-        $this->playlist = factory(Playlist::class)->create();
+        $this->thumb = Thumb::factory()->create();
+        $this->channel = Channel::factory()->create();
+        $this->playlist = Playlist::factory()->create();
     }
 
     public function tearDown(): void

@@ -33,8 +33,8 @@ class ChannelHasReachedItsLimitsJobTest extends TestCase
     public function exceeding_quota_mail_should_be_sent(): void
     {
         // user HAS NOT checked it
-        $this->user = factory(User::class)->create(['dont_warn_exceeding_quota' => false]);
-        $this->channel = factory(Channel::class)->create(['user_id' => $this->user->id()]);
+        $this->user = User::factory()->create(['dont_warn_exceeding_quota' => false]);
+        $this->channel = Channel::factory()->create(['user_id' => $this->user->id()]);
 
         $job = new ChannelHasReachedItsLimitsJob($this->channel);
         $job->handle();
@@ -45,8 +45,8 @@ class ChannelHasReachedItsLimitsJobTest extends TestCase
     /** @test */
     public function exceeding_quota_mail_should__not_be_sent(): void
     {
-        $this->user = factory(User::class)->create(['dont_warn_exceeding_quota' => true]);
-        $this->channel = factory(Channel::class)->create(['user_id' => $this->user->id()]);
+        $this->user = User::factory()->create(['dont_warn_exceeding_quota' => true]);
+        $this->channel = Channel::factory()->create(['user_id' => $this->user->id()]);
 
         // running podcast deletion
         $job = new ChannelHasReachedItsLimitsJob($this->channel);

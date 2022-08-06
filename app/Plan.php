@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
 use InvalidArgumentException;
@@ -17,6 +18,8 @@ use Stripe\Stripe;
 
 class Plan extends Model
 {
+    use HasFactory;
+
     public const FREE_PLAN_ID = 1;
     public const EARLY_PLAN_ID = 2;
     public const PROMO_MONTHLY_PLAN_ID = 3; // old 6€/month plan

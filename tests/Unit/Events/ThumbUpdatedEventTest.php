@@ -26,7 +26,7 @@ class ThumbUpdatedEventTest extends TestCase
     {
         parent::setUp();
         $this->channel = $this->createChannelWithPlan();
-        $this->playlist = factory(Playlist::class)->create(['channel_id' => $this->channel->channel_id]);
+        $this->playlist = Playlist::factory()->create(['channel_id' => $this->channel->channel_id]);
     }
 
     /** @test */

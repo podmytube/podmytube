@@ -23,7 +23,7 @@ class ProfileAccessTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->user = factory(User::class)->create();
+        $this->user = User::factory()->create();
     }
 
     /** @test */
@@ -95,7 +95,7 @@ class ProfileAccessTest extends TestCase
     /** @test */
     public function user_should_denied_other_profile_update(): void
     {
-        $anotherUser = factory(User::class)->create();
+        $anotherUser = User::factory()->create();
         $this->followingRedirects()
             ->actingAs($anotherUser)
             ->patch(route('user.update', $this->user), [

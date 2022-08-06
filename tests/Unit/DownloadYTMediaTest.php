@@ -43,7 +43,7 @@ class DownloadYTMediaTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->media = factory(Media::class)->create(['media_id' => self::MARIO_COIN_VIDEO]);
+        $this->media = Media::factory()->create(['media_id' => self::MARIO_COIN_VIDEO]);
         $this->destinationFolder = '/tmp/';
         $this->expectedVideoFile = $this->destinationFolder . self::MARIO_COIN_VIDEO . self::AUDIO_FILE_EXTENSION;
         if (file_exists($this->expectedVideoFile)) {
@@ -105,7 +105,7 @@ class DownloadYTMediaTest extends TestCase
      */
     public function test_that_we_fail_if_media_is_invalid(): void
     {
-        $foolishMedia = factory(Media::class)->create(['media_id' => 'invalid-media-forever']);
+        $foolishMedia = Media::factory()->create(['media_id' => 'invalid-media-forever']);
         $this->expectException(DownloadMediaFailureException::class);
         DownloadYTMedia::init($foolishMedia, $this->destinationFolder)->download();
     }

@@ -46,7 +46,7 @@ class ChannelAccessTest extends TestCase
     /** @test */
     public function channel_edit_is_forbiden_for_another_user(): void
     {
-        $notTheOwner = factory(User::class)->create();
+        $notTheOwner = User::factory()->create();
         $this->actingAs($notTheOwner)
             ->get(route('channel.edit', $this->channel))
             ->assertForbidden()
@@ -72,7 +72,7 @@ class ChannelAccessTest extends TestCase
     /** @test */
     public function channel_view_is_forbiden_for_another_user(): void
     {
-        $notTheOwner = factory(User::class)->create();
+        $notTheOwner = User::factory()->create();
         $this->actingAs($notTheOwner)
             ->get(route('channel.show', $this->channel))
             ->assertForbidden()
