@@ -14,7 +14,7 @@ if [[ ! -L "./public/medias" ]]; then
 fi
 
 # installing php modules
-docker run --rm -v $(pwd):/app composer:latest install --ignore-platform-reqs
+docker run --rm -v $(pwd):/app composer:2.3 install --ignore-platform-reqs --prefer-dist
 
 # building css/js
 npm install && npm run production
