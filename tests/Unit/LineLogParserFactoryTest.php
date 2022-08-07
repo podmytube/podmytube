@@ -78,16 +78,16 @@ class LineLogParserFactoryTest extends TestCase
     public function not_successful_line_provider()
     {
         return [
-            [['logLine' => null], LineLogIsEmptyException::class],
-            [['logLine' => ''], LineLogIsEmptyException::class],
-            [['logLine' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'], LineLogIsInvalidException::class],
+            'logline is null' => [['logLine' => null], LineLogIsEmptyException::class],
+            'logline is empty string' => [['logLine' => ''], LineLogIsEmptyException::class],
+            'logline is nonsense' => [['logLine' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'], LineLogIsInvalidException::class],
         ];
     }
 
     public function successful_line_provider()
     {
         return [
-            [
+            'logline for root' => [
                 [
                     'logLine' => '172.18.0.5 - - [01/Feb/2020:10:01:09 +0200] "GET / HTTP/1.1" 200 2',
                     'method' => 'GET',
@@ -99,7 +99,7 @@ class LineLogParserFactoryTest extends TestCase
                     'weight' => 2,
                 ],
             ],
-            [
+            'logline for robots.txt' => [
                 [
                     'logLine' => '172.18.0.5 - - [29/Mar/2021:16:03:18 +0200] "GET /robots.txt HTTP/1.1" 404 196',
                     'method' => 'GET',
@@ -111,7 +111,7 @@ class LineLogParserFactoryTest extends TestCase
                     'weight' => 196,
                 ],
             ],
-            [
+            'logline for mp3 with http 206 7Mo downloaded' => [
                 [
                     'logLine' => '172.18.0.5 - - [15/Nov/2020:04:59:33 +0200] "GET /UCaUOAMfxMyI6PHQ6t3yeYpQ/pmS9Rv_dxyE.mp3 HTTP/1.1" 206 7774245',
                     'method' => 'GET',
@@ -123,7 +123,7 @@ class LineLogParserFactoryTest extends TestCase
                     'weight' => 7774245,
                 ],
             ],
-            [
+            'logline for mp3 with http 200 51Mo downloaded' => [
                 [
                     'logLine' => '172.18.0.5 - - [09/Aug/2021:16:17:47 +0200] "GET /UCRU38zigLJNtMIh7oRm2hIg/-z42SnrmZgs.mp3 HTTP/1.1" 200 51724605',
                     'method' => 'GET',
@@ -135,7 +135,7 @@ class LineLogParserFactoryTest extends TestCase
                     'weight' => 51724605,
                 ],
             ],
-            [
+            'logline for mp3 with http 200 nothing downloaded' => [
                 [
                     'logLine' => '172.18.0.5 - - [09/Aug/2021:16:51:09 +0200] "HEAD /UCSMzy1n4Arqk_hCCOYOQn9g/B9BHzMWIYLI.mp3 HTTP/1.1" 200 -',
                     'method' => 'HEAD',
