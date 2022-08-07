@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -9,8 +11,9 @@ class SubscriptionResultController extends Controller
 {
     public function success(Request $request)
     {
-        $stripe = new StripeClient(env('STRIPE_SECRET'));
+        $stripe = new StripeClient(config('app.stripe_secret'));
         $stripe->checkout->sessions->retrieve($request->get('session_id'), []);
+
         return view('subscription.success');
     }
 
