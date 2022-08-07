@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit;
+namespace Tests\Unit\Analytics;
 
+use App\Analytics\LineLogParser;
 use App\Exceptions\LineLogIsEmptyException;
 use App\Exceptions\LineLogIsInvalidException;
-use App\Factories\LineLogParserFactory;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -15,7 +15,7 @@ use Tests\TestCase;
  * @internal
  * @coversNothing
  */
-class LineLogParserFactoryTest extends TestCase
+class LineLogParserTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -30,11 +30,15 @@ class LineLogParserFactoryTest extends TestCase
      */
     public function parse_is_fine(array $logData): void
     {
-        $lineLogParser = LineLogParserFactory::read($logData['logLine'])->parse();
+        $lineLogParser = LineLogParser::read($logData['logLine'])->parse();
         $this->assertNotNull($lineLogParser);
-        $this->assertInstanceOf(LineLogParserFactory::class, $lineLogParser);
+        $this->assertInstanceOf(LineLogParser::class, $lineLogParser);
+
+        // we should get proper informations aboyt query
         $this->assertEquals($logData['method'], $lineLogParser->method());
         $this->assertEquals($logData['query'], $lineLogParser->query());
+
+        // status should be set
         $this->assertEquals($logData['status'], $lineLogParser->status());
         if ($logData['status'] === 404) {
             $this->assertFalse($lineLogParser->isSuccessful());
@@ -42,15 +46,19 @@ class LineLogParserFactoryTest extends TestCase
             $this->assertTrue($lineLogParser->isSuccessful());
         }
 
+        // weight should be filled
         if ($logData['weight'] === null) {
             $this->assertNull($lineLogParser->weight());
         } else {
             $this->assertEquals($logData['weight'], $lineLogParser->weight());
         }
 
+        // date should be a Carbon instance
         $this->assertNotNull($lineLogParser->logDate());
         $this->assertInstanceOf(Carbon::class, $lineLogParser->logDate());
         $this->assertEquals($logData['date'], $lineLogParser->logDate()->format('Y-m-d H:i:s'));
+
+        // channel_id & media_id should be set (according to dataset)
         if ($logData['channel_id'] === null) {
             $this->assertNull($lineLogParser->channelId());
             $this->assertNull($lineLogParser->mediaId());
@@ -67,7 +75,7 @@ class LineLogParserFactoryTest extends TestCase
     public function parse_should_throw_exception(array $logData, string $expectedException): void
     {
         $this->expectException($expectedException);
-        LineLogParserFactory::read($logData['logLine'])->parse();
+        LineLogParser::read($logData['logLine'])->parse();
     }
 
     /**
@@ -87,64 +95,64 @@ class LineLogParserFactoryTest extends TestCase
     public function successful_line_provider()
     {
         return [
-            'logline for root' => [
+            'document root status 200' => [
                 [
-                    'logLine' => '172.18.0.5 - - [01/Feb/2020:10:01:09 +0200] "GET / HTTP/1.1" 200 2',
+                    'logLine' => '{"log":"172.18.0.4 - - [06/Aug/2022:18:32:40 +0200] \"GET / HTTP/1.1\" 200 2 \"-\" \"Mozilla/5.0 (Linux; Android 10; VOG-L29) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.79 Mobile Safari/537.36\" \"3.238.76.83, 172.70.175.193\"\n","stream":"stdout","time":"2022-08-06T16:32:40.208637699Z"}',
                     'method' => 'GET',
                     'query' => '/',
                     'status' => 200,
-                    'date' => '2020-02-01 10:01:09',
+                    'date' => '2022-08-06 18:32:40',
                     'channel_id' => null,
                     'media_id' => null,
                     'weight' => 2,
                 ],
             ],
-            'logline for robots.txt' => [
+            'robots.txt not found status 404' => [
                 [
-                    'logLine' => '172.18.0.5 - - [29/Mar/2021:16:03:18 +0200] "GET /robots.txt HTTP/1.1" 404 196',
+                    'logLine' => '{"log":"172.18.0.4 - - [06/Aug/2022:00:18:49 +0200] \"GET /robots.txt HTTP/1.1\" 404 153 \"-\" \"Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)\" \"54.36.149.56, 141.101.68.100\"\n","stream":"stdout","time":"2022-08-05T22:18:49.423635566Z"}',
                     'method' => 'GET',
                     'query' => '/robots.txt',
                     'status' => 404,
-                    'date' => '2021-03-29 16:03:18',
+                    'date' => '2022-08-06 00:18:49',
                     'channel_id' => null,
                     'media_id' => null,
-                    'weight' => 196,
+                    'weight' => 153,
                 ],
             ],
-            'logline for mp3 with http 206 7Mo downloaded' => [
+            'media file successfully downloaded status 200' => [
                 [
-                    'logLine' => '172.18.0.5 - - [15/Nov/2020:04:59:33 +0200] "GET /UCaUOAMfxMyI6PHQ6t3yeYpQ/pmS9Rv_dxyE.mp3 HTTP/1.1" 206 7774245',
+                    'logLine' => '{"log":"172.18.0.4 - - [06/Aug/2022:14:48:59 +0200] \"GET /UCMnHkvrh_1fMWTJA_ru9ATQ/u_MpB2A39S0.mp3 HTTP/1.1\" 200 2211472 \"-\" \"podnods-crawler\" \"18.119.103.206, 172.70.131.57\"\n","stream":"stdout","time":"2022-08-06T12:48:59.041675774Z"}',
                     'method' => 'GET',
-                    'query' => '/UCaUOAMfxMyI6PHQ6t3yeYpQ/pmS9Rv_dxyE.mp3',
-                    'status' => 206,
-                    'date' => '2020-11-15 04:59:33',
-                    'channel_id' => 'UCaUOAMfxMyI6PHQ6t3yeYpQ',
-                    'media_id' => 'pmS9Rv_dxyE',
-                    'weight' => 7774245,
+                    'query' => '/UCMnHkvrh_1fMWTJA_ru9ATQ/u_MpB2A39S0.mp3',
+                    'status' => 200,
+                    'date' => '2022-08-06 14:48:59',
+                    'channel_id' => 'UCMnHkvrh_1fMWTJA_ru9ATQ',
+                    'media_id' => 'u_MpB2A39S0',
+                    'weight' => 2211472,
                 ],
             ],
-            'logline for mp3 with http 200 51Mo downloaded' => [
+            'not updated media file status 304' => [
                 [
-                    'logLine' => '172.18.0.5 - - [09/Aug/2021:16:17:47 +0200] "GET /UCRU38zigLJNtMIh7oRm2hIg/-z42SnrmZgs.mp3 HTTP/1.1" 200 51724605',
+                    'logLine' => '{"log":"172.18.0.4 - - [06/Aug/2022:23:59:44 +0200] \"GET /UCSMzy1n4Arqk_hCCOYOQn9g/bbleNcW2ub8.mp3 HTTP/1.1\" 304 0 \"-\" \"Libsyn4-peek\" \"204.16.243.139, 108.162.241.132\"\n","stream":"stdout","time":"2022-08-06T21:59:44.228601652Z"}',
                     'method' => 'GET',
-                    'query' => '/UCRU38zigLJNtMIh7oRm2hIg/-z42SnrmZgs.mp3',
-                    'status' => 200,
-                    'date' => '2021-08-09 16:17:47',
-                    'channel_id' => 'UCRU38zigLJNtMIh7oRm2hIg',
-                    'media_id' => '-z42SnrmZgs',
-                    'weight' => 51724605,
-                ],
-            ],
-            'logline for mp3 with http 200 nothing downloaded' => [
-                [
-                    'logLine' => '172.18.0.5 - - [09/Aug/2021:16:51:09 +0200] "HEAD /UCSMzy1n4Arqk_hCCOYOQn9g/B9BHzMWIYLI.mp3 HTTP/1.1" 200 -',
-                    'method' => 'HEAD',
-                    'query' => '/UCSMzy1n4Arqk_hCCOYOQn9g/B9BHzMWIYLI.mp3',
-                    'status' => 200,
-                    'date' => '2021-08-09 16:51:09',
+                    'query' => '/UCSMzy1n4Arqk_hCCOYOQn9g/bbleNcW2ub8.mp3',
+                    'status' => 304,
+                    'date' => '2022-08-06 23:59:44',
                     'channel_id' => 'UCSMzy1n4Arqk_hCCOYOQn9g',
-                    'media_id' => 'B9BHzMWIYLI',
-                    'weight' => null,
+                    'media_id' => 'bbleNcW2ub8',
+                    'weight' => 0,
+                ],
+            ],
+            'media file not found status 404' => [
+                [
+                    'logLine' => '{"log":"172.18.0.4 - - [06/Aug/2022:17:16:32 +0200] \"GET /UCRU38zigLJNtMIh7oRm2hIg/z8gqSeShfjQ.mp3 HTTP/1.1\" 404 153 \"-\" \"Go-http-client/2.0\" \"82.212.151.200, 162.158.233.92\"\n","stream":"stdout","time":"2022-08-06T15:16:32.646265551Z"}',
+                    'method' => 'GET',
+                    'query' => '/UCRU38zigLJNtMIh7oRm2hIg/z8gqSeShfjQ.mp3',
+                    'status' => 404,
+                    'date' => '2022-08-06 17:16:32',
+                    'channel_id' => 'UCRU38zigLJNtMIh7oRm2hIg',
+                    'media_id' => 'z8gqSeShfjQ',
+                    'weight' => 153,
                 ],
             ],
         ];
