@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Analytics;
 
-use App\Analytics\LineLogParser;
-use App\Exceptions\LineLogIsEmptyException;
-use App\Exceptions\LineLogIsInvalidException;
+use App\Analytics\LogLineParser;
+use App\Exceptions\LogLineIsEmptyException;
+use App\Exceptions\LogLineIsInvalidException;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -15,7 +15,7 @@ use Tests\TestCase;
  * @internal
  * @coversNothing
  */
-class LineLogParserTest extends TestCase
+class LogLineParserTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -30,41 +30,42 @@ class LineLogParserTest extends TestCase
      */
     public function parse_is_fine(array $logData): void
     {
-        $lineLogParser = LineLogParser::read($logData['logLine'])->parse();
-        $this->assertNotNull($lineLogParser);
-        $this->assertInstanceOf(LineLogParser::class, $lineLogParser);
+        $LoglineParser = LogLineParser::read($logData['logLine'])->parse();
+        $this->assertNotNull($LoglineParser);
+        $this->assertInstanceOf(LogLineParser::class, $LoglineParser);
 
         // we should get proper informations aboyt query
-        $this->assertEquals($logData['method'], $lineLogParser->method());
-        $this->assertEquals($logData['query'], $lineLogParser->query());
+        $this->assertEquals($logData['method'], $LoglineParser->method());
+        $this->assertEquals($logData['query'], $LoglineParser->query());
 
         // status should be set
-        $this->assertEquals($logData['status'], $lineLogParser->status());
+        $this->assertEquals($logData['status'], $LoglineParser->status());
         if ($logData['status'] === 404) {
-            $this->assertFalse($lineLogParser->isSuccessful());
+            $this->assertFalse($LoglineParser->isSuccessful());
         } else {
-            $this->assertTrue($lineLogParser->isSuccessful());
+            $this->assertTrue($LoglineParser->isSuccessful());
         }
 
         // weight should be filled
         if ($logData['weight'] === null) {
-            $this->assertNull($lineLogParser->weight());
+            $this->assertNull($LoglineParser->weight());
         } else {
-            $this->assertEquals($logData['weight'], $lineLogParser->weight());
+            $this->assertEquals($logData['weight'], $LoglineParser->weight());
         }
 
         // date should be a Carbon instance
-        $this->assertNotNull($lineLogParser->logDate());
-        $this->assertInstanceOf(Carbon::class, $lineLogParser->logDate());
-        $this->assertEquals($logData['date'], $lineLogParser->logDate()->format('Y-m-d H:i:s'));
+        $this->assertNotNull($LoglineParser->logDate());
+        $this->assertInstanceOf(Carbon::class, $LoglineParser->logDate());
+        $this->assertEquals($logData['date'], $LoglineParser->logDate()->format('Y-m-d H:i:s'));
+        $this->assertEquals($logData['day'], $LoglineParser->logDay());
 
         // channel_id & media_id should be set (according to dataset)
         if ($logData['channel_id'] === null) {
-            $this->assertNull($lineLogParser->channelId());
-            $this->assertNull($lineLogParser->mediaId());
+            $this->assertNull($LoglineParser->channelId());
+            $this->assertNull($LoglineParser->mediaId());
         } else {
-            $this->assertEquals($logData['channel_id'], $lineLogParser->channelId());
-            $this->assertEquals($logData['media_id'], $lineLogParser->mediaId());
+            $this->assertEquals($logData['channel_id'], $LoglineParser->channelId());
+            $this->assertEquals($logData['media_id'], $LoglineParser->mediaId());
         }
     }
 
@@ -75,7 +76,7 @@ class LineLogParserTest extends TestCase
     public function parse_should_throw_exception(array $logData, string $expectedException): void
     {
         $this->expectException($expectedException);
-        LineLogParser::read($logData['logLine'])->parse();
+        LogLineParser::read($logData['logLine'])->parse();
     }
 
     /**
@@ -86,9 +87,9 @@ class LineLogParserTest extends TestCase
     public function not_successful_line_provider()
     {
         return [
-            'logline is null' => [['logLine' => null], LineLogIsEmptyException::class],
-            'logline is empty string' => [['logLine' => ''], LineLogIsEmptyException::class],
-            'logline is nonsense' => [['logLine' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'], LineLogIsInvalidException::class],
+            'logline is null' => [['logLine' => null], LogLineIsEmptyException::class],
+            'logline is empty string' => [['logLine' => ''], LogLineIsEmptyException::class],
+            'logline is nonsense' => [['logLine' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'], LogLineIsInvalidException::class],
         ];
     }
 
@@ -102,6 +103,7 @@ class LineLogParserTest extends TestCase
                     'query' => '/',
                     'status' => 200,
                     'date' => '2022-08-06 18:32:40',
+                    'day' => '2022-08-06',
                     'channel_id' => null,
                     'media_id' => null,
                     'weight' => 2,
@@ -114,6 +116,7 @@ class LineLogParserTest extends TestCase
                     'query' => '/robots.txt',
                     'status' => 404,
                     'date' => '2022-08-06 00:18:49',
+                    'day' => '2022-08-06',
                     'channel_id' => null,
                     'media_id' => null,
                     'weight' => 153,
@@ -126,6 +129,7 @@ class LineLogParserTest extends TestCase
                     'query' => '/UCMnHkvrh_1fMWTJA_ru9ATQ/u_MpB2A39S0.mp3',
                     'status' => 200,
                     'date' => '2022-08-06 14:48:59',
+                    'day' => '2022-08-06',
                     'channel_id' => 'UCMnHkvrh_1fMWTJA_ru9ATQ',
                     'media_id' => 'u_MpB2A39S0',
                     'weight' => 2211472,
@@ -138,6 +142,7 @@ class LineLogParserTest extends TestCase
                     'query' => '/UCSMzy1n4Arqk_hCCOYOQn9g/bbleNcW2ub8.mp3',
                     'status' => 304,
                     'date' => '2022-08-06 23:59:44',
+                    'day' => '2022-08-06',
                     'channel_id' => 'UCSMzy1n4Arqk_hCCOYOQn9g',
                     'media_id' => 'bbleNcW2ub8',
                     'weight' => 0,
@@ -150,6 +155,7 @@ class LineLogParserTest extends TestCase
                     'query' => '/UCRU38zigLJNtMIh7oRm2hIg/z8gqSeShfjQ.mp3',
                     'status' => 404,
                     'date' => '2022-08-06 17:16:32',
+                    'day' => '2022-08-06',
                     'channel_id' => 'UCRU38zigLJNtMIh7oRm2hIg',
                     'media_id' => 'z8gqSeShfjQ',
                     'weight' => 153,

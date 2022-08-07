@@ -289,4 +289,9 @@ class Media extends Model
             ->get()
         ;
     }
+
+    public function weight(): int
+    {
+        return $this->length;
+    }
 }

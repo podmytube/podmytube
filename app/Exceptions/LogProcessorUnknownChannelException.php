@@ -6,6 +6,6 @@ namespace App\Exceptions;
 
 use Exception;
 
-class LineLogIsEmptyException extends Exception
+class LogProcessorUnknownChannelException extends Exception
 {
 }
