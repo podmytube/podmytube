@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Factories\CreateChannelFactory;
-use App\Plan;
-use App\Subscription;
-use App\User;
+use App\Models\Plan;
+use App\Models\Subscription;
+use App\Models\User;
 use Exception;
 use Illuminate\Console\Command;
 use RuntimeException;
@@ -63,7 +63,7 @@ class CreateChannelCommand extends Command
                         'plan_id' => $plan->id,
                     ]
                 )
-        ;
+            ;
 
             $this->info('Channel 🎉 ' . $channel->nameWithId() . ' 🎉 has been created successfully !');
             $this->line('');

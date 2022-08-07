@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Podcast;
 
-use App\Category;
+use App\Models\Category;
 
 class ItunesCategory implements IsRenderableInterface
 {
@@ -37,8 +39,10 @@ class ItunesCategory implements IsRenderableInterface
         if (!$this->name) {
             return '';
         }
+
         return view('podcast.itunesCategory')
             ->with(['itunesCategory' => $this])
-            ->render();
+            ->render()
+        ;
     }
 }

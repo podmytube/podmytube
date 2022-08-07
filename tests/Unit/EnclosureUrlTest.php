@@ -13,7 +13,7 @@ declare(strict_types=1);
  * @see     Podmytube website, http://www.podmytube.com
  */
 
-use App\Media;
+use App\Models\Media;
 use App\Modules\EnclosureUrl;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

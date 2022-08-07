@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use App\Channel;
 use App\Factories\DownloadMediaFactory;
 use App\Jobs\SendFileBySFTP;
-use App\Media;
-use App\Plan;
-use App\Subscription;
+use App\Models\Channel;
+use App\Models\Media;
+use App\Models\Plan;
+use App\Models\Subscription;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
 use Storage;
@@ -23,13 +23,13 @@ class DownloadMediaFactoryTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var \App\Channel */
+    /** @var \App\Models\Channel */
     protected $channel;
 
-    /** @var \App\Media */
+    /** @var \App\Models\Media */
     protected $media;
 
-    /** \App\Subscription $subscription */
+    /** \App\Models\Subscription $subscription */
     protected $subscription;
 
     public function setUp(): void

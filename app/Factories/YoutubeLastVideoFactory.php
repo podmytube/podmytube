@@ -6,7 +6,7 @@ namespace App\Factories;
 
 use App\Exceptions\YoutubeNoResultsException;
 use App\Interfaces\QuotasConsumer;
-use App\Quota;
+use App\Models\Quota;
 use App\Youtube\YoutubeChannelVideos;
 use App\Youtube\YoutubeQuotas;
 use App\Youtube\YoutubeVideo;

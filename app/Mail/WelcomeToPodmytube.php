@@ -1,23 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Mail;
 
-use App\User;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
 class WelcomeToPodmytube extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
-    /** App\User $user model */
+    /** App\Models\User $user model */
     protected $user;
 
     /**
      * Create a new message instance.
-     *
-     * @return void
      */
     public function __construct(User $user)
     {
@@ -32,8 +33,10 @@ class WelcomeToPodmytube extends Mailable
     public function build()
     {
         $subject = __('emails.welcome_aboard');
+
         return $this->subject($subject)
             ->view('emails.welcome')
-            ->with(['subject' => $subject, 'user' => $this->user]);
+            ->with(['subject' => $subject, 'user' => $this->user])
+        ;
     }
 }

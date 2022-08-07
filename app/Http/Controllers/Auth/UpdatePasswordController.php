@@ -1,22 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\User;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UpdatePasswordController extends Controller
 {
-    /*
-     * Ensure the user is signed in to access this page
-     */
+    // Ensure the user is signed in to access this page
     public function __construct()
     {
         $this->middleware('auth');
     }
+
     /**
      * Show the form to change the user password.
      */
@@ -27,8 +28,6 @@ class UpdatePasswordController extends Controller
 
     /**
      * Update the password for the user.
-     *
-     * @param  Request  $request
      *
      * @return Response
      */
@@ -43,22 +42,26 @@ class UpdatePasswordController extends Controller
         $hashedPassword = $user->password;
 
         if (Hash::check($request->old, $hashedPassword)) {
-            //Change the password
+            // Change the password
             $user
                 ->fill([
                     'password' => Hash::make($request->password),
                 ])
-                ->save();
+                ->save()
+            ;
 
             $request
                 ->session()
-                ->flash('success', 'Your password has been changed.');
+                ->flash('success', 'Your password has been changed.')
+            ;
+
             return back();
         }
 
         $request
             ->session()
-            ->flash('failure', 'Your password has not been changed.');
+            ->flash('failure', 'Your password has not been changed.')
+        ;
 
         return back();
     }

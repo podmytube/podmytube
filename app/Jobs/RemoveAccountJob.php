@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Jobs;
 
 use App\Interfaces\Podcastable;
-use App\User;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -19,7 +19,7 @@ class RemoveAccountJob implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    /** @var \App\User */
+    /** @var \App\Models\User */
     protected $userToRemove;
 
     public function __construct(User $userToRemove)

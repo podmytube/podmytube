@@ -6,8 +6,8 @@ namespace App\Jobs;
 
 use App\Exceptions\ThumbDoesNotExistsException;
 use App\Exceptions\VignetteCreationFromThumbException;
+use App\Models\Thumb;
 use App\Modules\Vignette;
-use App\Thumb;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Events;
 
-use App\Channel;
 use App\Events\MediaUploadedByUser;
-use App\Media;
-use App\Playlist;
+use App\Models\Channel;
+use App\Models\Media;
+use App\Models\Playlist;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

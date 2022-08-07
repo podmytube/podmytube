@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Traits;
 
-use App\Language;
+use App\Models\Language;
 
 trait HasOneLanguage
 {

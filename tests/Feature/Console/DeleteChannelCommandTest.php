@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Console;
 
-use App\Channel;
 use App\Jobs\ChannelCleaningJob;
+use App\Models\Channel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
 use Tests\TestCase;

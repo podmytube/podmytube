@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Plan;
-use App\StripePlan;
+use App\Models\Plan;
+use App\Models\StripePlan;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -12,10 +13,8 @@ class StripePlansTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
-    public function run()
+    public function run(): void
     {
         DB::table('stripe_plans')->delete();
 
@@ -28,12 +27,12 @@ class StripePlansTableSeeder extends Seeder
         $professionalPlan = Plan::bySlug('professional');
         $businessPlan = Plan::bySlug('business');
 
-        /**
+        /*
          * ======================================
          * promo
          * ======================================
          */
-        /** monthly */
+        // monthly
         StripePlan::insert([
             'plan_id' => $promoPlan->id,
             'stripe_live_id' => 'plan_EcuGg9SyUBw97i',
@@ -42,7 +41,7 @@ class StripePlansTableSeeder extends Seeder
             'comment' => 'old one 6€/monthly',
         ]);
 
-        /** yearly */
+        // yearly
         StripePlan::insert([
             'plan_id' => $promoPlan->id,
             'stripe_live_id' => 'plan_EcuJ2npV5EMrCg',
@@ -51,13 +50,13 @@ class StripePlansTableSeeder extends Seeder
             'comment' => 'old one 66€/yearly',
         ]);
 
-        /**
+        /*
          * ======================================
          * weekly
          * ======================================
          */
 
-        /** monthly */
+        // monthly
         StripePlan::insert([
             'plan_id' => $weeklyPlan9->id,
             'stripe_live_id' => 'price_1Gu1YPLrQ8vSqYZERxvBFAgu',
@@ -66,13 +65,13 @@ class StripePlansTableSeeder extends Seeder
             'comment' => 'weekly youtuber 9€/monthly',
         ]);
 
-        /**
+        /*
          * ======================================
          * daily
          * ======================================
          */
 
-        /** monthly */
+        // monthly
         StripePlan::insert([
             'plan_id' => $dailyPlan29->id,
             'stripe_live_id' => 'plan_DFsB9U76WaSaR3',
@@ -81,12 +80,12 @@ class StripePlansTableSeeder extends Seeder
             'comment' => 'daily youtuber 29€/monthly',
         ]);
 
-        /**
+        /*
          * ======================================
          * starter
          * ======================================
          */
-        /** yearly */
+        // yearly
         StripePlan::insert([
             'plan_id' => $starterPlan->id,
             'stripe_live_id' => 'price_1HmxVLLrQ8vSqYZEFlv2SUpd',
@@ -95,7 +94,7 @@ class StripePlansTableSeeder extends Seeder
             'comment' => 'starter 90€/year',
         ]);
 
-        /** monthly */
+        // monthly
         StripePlan::insert([
             'plan_id' => $starterPlan->id,
             'stripe_live_id' => 'price_1HmxVLLrQ8vSqYZEOK2BxHfy',
@@ -104,12 +103,12 @@ class StripePlansTableSeeder extends Seeder
             'comment' => 'starter 9€/month',
         ]);
 
-        /**
+        /*
          * ======================================
          * professional
          * ======================================
          */
-        /** yearly */
+        // yearly
         StripePlan::insert([
             'plan_id' => $professionalPlan->id,
             'stripe_live_id' => 'price_1IcttMLrQ8vSqYZERib3oMYG',
@@ -118,7 +117,7 @@ class StripePlansTableSeeder extends Seeder
             'comment' => 'professional 290€/year',
         ]);
 
-        /** monthly */
+        // monthly
         StripePlan::insert([
             'plan_id' => $professionalPlan->id,
             'stripe_live_id' => 'price_1IcttNLrQ8vSqYZE2xOQ6HGe',
@@ -127,12 +126,12 @@ class StripePlansTableSeeder extends Seeder
             'comment' => 'professional 29€/month',
         ]);
 
-        /**
+        /*
          * ======================================
          * business
          * ======================================
          */
-        /** yearly */
+        // yearly
         StripePlan::insert([
             'plan_id' => $businessPlan->id,
             'stripe_live_id' => 'price_1HmxbYLrQ8vSqYZEdab8H6WN',
@@ -141,7 +140,7 @@ class StripePlansTableSeeder extends Seeder
             'comment' => 'business 790€/year',
         ]);
 
-        /** monthly */
+        // monthly
         StripePlan::insert([
             'plan_id' => $businessPlan->id,
             'stripe_live_id' => 'price_1HmxbYLrQ8vSqYZE1Q3qOMt1',

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Factories;
 
-use App\Subscription;
+use App\Models\Subscription;
 
 class RevenueFactory
 {

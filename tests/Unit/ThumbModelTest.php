@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use App\Channel;
-use App\Playlist;
-use App\Thumb;
+use App\Models\Channel;
+use App\Models\Playlist;
+use App\Models\Thumb;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;

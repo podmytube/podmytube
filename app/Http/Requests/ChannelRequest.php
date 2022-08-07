@@ -1,8 +1,9 @@
 <?php
+
+declare(strict_types=1);
+
 /**
- * the form request for channels forms
- *
- * @package PodMyTube
+ * the form request for channels forms.
  *
  * @author Frederick Tyteca <fred@podmytube.com>
  */
@@ -12,7 +13,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * the channel form request class
+ * the channel form request class.
  */
 class ChannelRequest extends FormRequest
 {
@@ -25,9 +26,9 @@ class ChannelRequest extends FormRequest
             'authors' => 'nullable|max:255',
             'description' => 'nullable|max:65535',
             'email' => 'nullable|email',
-            'category_id' => 'nullable|exists:\App\Category,id',
+            'category_id' => 'nullable|exists:\App\Models\Category,id',
             'link' => 'nullable|URL',
-            'language_id' => 'nullable|exists:\App\Language,id',
+            'language_id' => 'nullable|exists:\App\Models\Language,id',
             'accept_video_by_tag' => 'nullable|max:255',
             'reject_video_by_keyword' => 'nullable|max:255',
             'reject_video_too_old' => 'nullable|date_format:d/m/Y|before:today',

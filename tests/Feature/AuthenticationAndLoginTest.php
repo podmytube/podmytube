@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use App\User;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -18,7 +18,7 @@ class AuthenticationAndLoginTest extends TestCase
 
     protected const RIGHT_PASSWORD = 'secret';
 
-    /** @var \App\User */
+    /** @var \App\Models\User */
     protected $user;
 
     public function setUp(): void

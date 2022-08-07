@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Jobs\PodcastableCleaning;
-use App\Playlist;
+use App\Models\Playlist;
 
 class PlaylistController extends Controller
 {

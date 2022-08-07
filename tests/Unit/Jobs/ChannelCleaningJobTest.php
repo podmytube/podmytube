@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Jobs;
 
-use App\Channel;
 use App\Jobs\ChannelCleaningJob;
 use App\Jobs\MediaCleaning;
 use App\Jobs\SendFileBySFTP;
-use App\Media;
-use App\Playlist;
-use App\Subscription;
+use App\Models\Channel;
+use App\Models\Media;
+use App\Models\Playlist;
+use App\Models\Subscription;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Storage;
@@ -24,7 +24,7 @@ class ChannelCleaningJobTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var \App\Channel */
+    /** @var \App\Models\Channel */
     protected $channelToDelete;
 
     public function setUp(): void

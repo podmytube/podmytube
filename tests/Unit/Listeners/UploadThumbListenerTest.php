@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Listeners;
 
-use App\Channel;
 use App\Events\ThumbUpdated;
 use App\Exceptions\FileUploadUnreadableFileException;
 use App\Interfaces\InteractsWithPodcastable;
 use App\Jobs\SendFileBySFTP;
 use App\Listeners\UploadThumbListener;
+use App\Models\Channel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
 use InvalidArgumentException;

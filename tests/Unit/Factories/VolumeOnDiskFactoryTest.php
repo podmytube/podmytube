@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Factories;
 
 use App\Factories\VolumeOnDiskFactory;
-use App\Media;
+use App\Models\Media;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

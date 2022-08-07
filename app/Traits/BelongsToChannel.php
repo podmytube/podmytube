@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Traits;
 
-use App\Channel;
+use App\Models\Channel;
 
 trait BelongsToChannel
 {
     /**
-     * define the relationship between media and its channel
+     * define the relationship between media and its channel.
      */
     public function channel()
     {

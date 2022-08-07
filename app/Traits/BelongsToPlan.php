@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Traits;
 
-use App\Plan;
+use App\Models\Plan;
 
 trait BelongsToPlan
 {
     /**
-     * define the relationship between media and its channel
+     * define the relationship between media and its channel.
      */
     public function plan()
     {

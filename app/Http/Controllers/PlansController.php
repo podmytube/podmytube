@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Channel;
-use App\Plan;
+use App\Models\Channel;
+use App\Models\Plan;
 use Illuminate\Http\Request;
 
 class PlansController extends Controller

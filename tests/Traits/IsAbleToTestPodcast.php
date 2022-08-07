@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Traits;
 
-use App\Category;
 use App\Interfaces\Podcastable;
+use App\Models\Category;
 use App\Podcast\PodcastItem;
 use Illuminate\Support\Collection;
 
 trait IsAbleToTestPodcast
 {
-    public function podcastHeaderInfosChecking(Podcastable $podcastable, array $podcastInfos)
+    public function podcastHeaderInfosChecking(Podcastable $podcastable, array $podcastInfos): void
     {
         $expectedKeys = [
             'title',
@@ -24,7 +26,7 @@ trait IsAbleToTestPodcast
             'explicit',
         ];
 
-        array_map(function ($key) use ($podcastable, $podcastInfos) {
+        array_map(function ($key) use ($podcastable, $podcastInfos): void {
             $this->assertArrayHasKey($key, $podcastInfos, 'Converting a ' . get_class($podcastable) . " to a podcast header should have key {$key}.");
         }, $expectedKeys);
 
@@ -41,10 +43,10 @@ trait IsAbleToTestPodcast
         $this->assertEquals($podcastInfos['explicit'], $podcastable->podcastExplicit());
     }
 
-    public function podcastItemsChecking(Collection $podcastItems)
+    public function podcastItemsChecking(Collection $podcastItems): void
     {
         $podcastItems->map(
-            function ($podcastItem) {
+            function ($podcastItem): void {
                 $this->assertInstanceOf(
                     PodcastItem::class,
                     $podcastItem,
@@ -54,9 +56,9 @@ trait IsAbleToTestPodcast
         );
     }
 
-    public function itemsChecking(Podcastable $podcastable, string $renderedPodcast)
+    public function itemsChecking(Podcastable $podcastable, string $renderedPodcast): void
     {
-        $podcastable->mediasToPublish()->map(function ($media) use ($podcastable, $renderedPodcast) {
+        $podcastable->mediasToPublish()->map(function ($media) use ($podcastable, $renderedPodcast): void {
             $this->assertStringContainsString('<guid>' . $media->media_id . '</guid>', $renderedPodcast);
             $this->assertStringContainsString('<title>' . $media->title . '</title>', $renderedPodcast);
             $this->assertStringContainsString(
@@ -72,7 +74,7 @@ trait IsAbleToTestPodcast
         });
     }
 
-    public function headerChecking($podcastable, $renderedPodcast)
+    public function headerChecking($podcastable, $renderedPodcast): void
     {
         $this->assertStringContainsString('<?xml version="1.0" encoding="UTF-8"?>', $renderedPodcast);
         $this->assertStringContainsString(
@@ -80,7 +82,7 @@ trait IsAbleToTestPodcast
             $renderedPodcast
         );
 
-        /**
+        /*
          * =======================================
          * Required tags
          * =======================================
@@ -97,7 +99,7 @@ trait IsAbleToTestPodcast
         $this->assertStringContainsString('<itunes:explicit>' . $podcastable->podcastExplicit() . '</itunes:explicit>', $renderedPodcast);
         $this->podcastCategoryChecking($podcastable, $renderedPodcast);
 
-        /**
+        /*
          * =======================================
          * Optionnal tags
          * =======================================
@@ -124,11 +126,11 @@ trait IsAbleToTestPodcast
             }
             $this->assertStringContainsString('</itunes:owner>', $renderedPodcast);
         }
-        //...
+        // ...
         $this->assertStringContainsString('</rss>', $renderedPodcast);
     }
 
-    public function podcastCategoryChecking(Podcastable $podcastable, $renderedPodcast)
+    public function podcastCategoryChecking(Podcastable $podcastable, $renderedPodcast): void
     {
         $this->assertInstanceOf(Category::class, $podcastable->podcastCategory());
         if ($podcastable->podcastCategory()->parent) {

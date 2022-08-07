@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Category;
-use App\Channel;
-use App\Language;
-use App\Plan;
-use App\Subscription;
-use App\User;
+use App\Models\Category;
+use App\Models\Channel;
+use App\Models\Language;
+use App\Models\Plan;
+use App\Models\Subscription;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
@@ -40,7 +40,7 @@ class ChannelsTableSeeder extends Seeder
             'email' => 'jeanviet@example.com',
             'description' => 'lorem',
             'link' => 'https://www.youtube.com/channel/UCu0tUATmSnMMCbCRRYXmVlQ',
-            'category_id' => Category::bySlug('education')->id, //education
+            'category_id' => Category::bySlug('education')->id, // education
             'language_id' => Language::byCode('fr')->id,
             'explicit' => false,
             'active' => true,

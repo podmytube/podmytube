@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
-use App\Channel;
 use App\Interfaces\Podcastable;
-use App\Media;
-use App\Playlist;
+use App\Models\Channel;
+use App\Models\Media;
+use App\Models\Playlist;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -22,7 +22,7 @@ class ChannelCleaningJob implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    /** @var \App\Channel */
+    /** @var \App\Models\Channel */
     protected $channelToDelete;
 
     public function __construct(Channel $channelToDelete)

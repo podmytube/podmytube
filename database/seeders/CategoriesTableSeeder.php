@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Category;
+use App\Models\Category;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -28,6 +28,7 @@ class CategoriesTableSeeder extends Seeder
         } else {
             DB::table('categories')->delete();
         }
+
         /**
          * Parents categories.
          */

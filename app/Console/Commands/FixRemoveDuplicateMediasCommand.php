@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Channel;
-use App\Media;
+use App\Models\Channel;
+use App\Models\Media;
 use App\Modules\ServerRole;
 use Illuminate\Console\Command;
 
@@ -57,6 +57,7 @@ class FixRemoveDuplicateMediasCommand extends Command
 
         $channels->map(function (Channel $channel) use ($deleted, $doIt): void {
             $mediaIdsStorage = [];
+
             /** get all medias */
             $medias = Media::withTrashed()
                 ->where('channel_id', '=', $channel->channel_id)
@@ -80,7 +81,7 @@ class FixRemoveDuplicateMediasCommand extends Command
                 if ($doIt) {
                     $media->forceDelete();
                 }
-                ++$deleted;
+                $deleted++;
             }
         });
 

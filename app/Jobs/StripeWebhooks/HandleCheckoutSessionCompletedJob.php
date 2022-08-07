@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Jobs\StripeWebhooks;
 
-use App\Channel;
 use App\Events\ChannelRegistered;
 use App\Exceptions\CannotIdentifyUserFromStripeException;
 use App\Exceptions\ChannelOwnerMismatchingStripeException;
@@ -17,9 +16,10 @@ use App\Exceptions\InvalidSubscriptionReceivedFromStripeException;
 use App\Exceptions\SubscriptionUpdateFailureException;
 use App\Exceptions\UnknownChannelIdReceivedFromStripeException;
 use App\Exceptions\UnknownStripePlanReceivedFromStripeException;
-use App\StripePlan;
-use App\Subscription;
-use App\User;
+use App\Models\Channel;
+use App\Models\StripePlan;
+use App\Models\Subscription;
+use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Bus\Queueable;

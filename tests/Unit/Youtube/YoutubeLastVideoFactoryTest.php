@@ -6,7 +6,7 @@ namespace Tests\Unit\Youtube;
 
 use App\Exceptions\YoutubeGenericErrorException;
 use App\Factories\YoutubeLastVideoFactory;
-use App\Quota;
+use App\Models\Quota;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -27,6 +27,7 @@ class YoutubeLastVideoFactoryTest extends TestCase
     public function test_getting_last_video_should_be_good(): void
     {
         $expectedQuotaUsed = 12;
+
         /**
          * this factory is getting the last channel media info+tags,
          * then it is storing the total quota consumption.

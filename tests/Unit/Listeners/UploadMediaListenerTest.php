@@ -8,7 +8,7 @@ use App\Events\MediaUploadedByUser;
 use App\Exceptions\FileUploadUnreadableFileException;
 use App\Jobs\SendFileBySFTP;
 use App\Listeners\UploadMediaListener;
-use App\Media;
+use App\Models\Media;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
 use InvalidArgumentException;

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Factories;
 
 use App\Factories\RevenueFactory;
-use App\Subscription;
+use App\Models\Subscription;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

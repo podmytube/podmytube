@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
-use App\Channel;
-use App\Thumb;
-use App\User;
+use App\Models\Channel;
+use App\Models\Thumb;
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ThumbPolicy

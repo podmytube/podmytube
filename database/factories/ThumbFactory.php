@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Thumb;
+use App\Models\Thumb;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ThumbFactory extends Factory

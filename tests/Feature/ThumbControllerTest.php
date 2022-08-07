@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Events\ThumbUpdated;
+use App\Models\Playlist;
+use App\Models\Thumb;
+use App\Models\User;
 use App\Modules\Vignette;
-use App\Playlist;
-use App\Thumb;
-use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Event;
@@ -22,13 +22,13 @@ class ThumbControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var \App\User */
+    /** @var \App\Models\User */
     protected $user;
 
-    /** @var \App\Channel */
+    /** @var \App\Models\Channel */
     protected $channel;
 
-    /** @var \App\Playlist */
+    /** @var \App\Models\Playlist */
     protected $playlist;
 
     public function setUp(): void

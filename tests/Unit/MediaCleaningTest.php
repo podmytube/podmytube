@@ -7,7 +7,7 @@ namespace Tests\Unit;
 use App\Events\ChannelUpdated;
 use App\Jobs\MediaCleaning;
 use App\Jobs\SendFileBySFTP;
-use App\Media;
+use App\Models\Media;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;

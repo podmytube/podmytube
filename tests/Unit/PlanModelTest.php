@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use App\Channel;
-use App\Plan;
-use App\StripePlan;
+use App\Models\Channel;
+use App\Models\Plan;
+use App\Models\StripePlan;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use InvalidArgumentException;

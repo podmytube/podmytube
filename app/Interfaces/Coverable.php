@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Interfaces;
 
-use App\Thumb;
+use App\Models\Thumb;
 use Illuminate\Http\UploadedFile;
 
 interface Coverable

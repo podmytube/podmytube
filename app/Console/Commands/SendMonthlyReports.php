@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Channel;
 use App\Mail\MonthlyReportMail;
+use App\Models\Channel;
 use App\Modules\ServerRole;
 use Carbon\Carbon;
 use Illuminate\Console\Command;

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use App\Channel;
-use App\User;
+use App\Models\Channel;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -17,7 +17,7 @@ class ChannelCreationIsPossible extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var \App\User */
+    /** @var \App\Models\User */
     protected $user;
 
     public function setUp(): void

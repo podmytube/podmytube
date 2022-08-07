@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use App\Channel;
-use App\Thumb;
+use App\Models\Channel;
+use App\Models\Thumb;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\File;
 use Illuminate\Support\Facades\Storage;
@@ -19,7 +19,7 @@ class UnderstandingStorageTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** \App\Channel $channel channel */
+    /** \App\Models\Channel $channel channel */
     protected $channel;
 
     public function setUp(): void

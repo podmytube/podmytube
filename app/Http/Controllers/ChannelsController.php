@@ -10,12 +10,12 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Category;
-use App\Channel;
 use App\Events\ChannelUpdated;
 use App\Http\Requests\ChannelRequest;
 use App\Jobs\ChannelCleaningJob;
-use App\Language;
+use App\Models\Category;
+use App\Models\Channel;
+use App\Models\Language;
 
 /**
  * the channel controller class.

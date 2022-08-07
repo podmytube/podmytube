@@ -6,7 +6,7 @@ namespace App\Console\Commands;
 
 use App\Factories\LineLogParserFactory;
 use App\Jobs\DownloadMediaJob;
-use App\Media;
+use App\Models\Media;
 use App\Modules\ServerRole;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;

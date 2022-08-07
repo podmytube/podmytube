@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use App\ApiKey;
-use App\Channel;
 use App\Interfaces\Coverable;
 use App\Interfaces\Podcastable;
-use App\Media;
-use App\Plan;
-use App\Playlist;
-use App\Quota;
-use App\StripePlan;
-use App\Subscription;
-use App\Thumb;
-use App\User;
+use App\Models\ApiKey;
+use App\Models\Channel;
+use App\Models\Media;
+use App\Models\Plan;
+use App\Models\Playlist;
+use App\Models\Quota;
+use App\Models\StripePlan;
+use App\Models\Subscription;
+use App\Models\Thumb;
+use App\Models\User;
 use Database\Seeders\ApiKeysTableSeeder;
 use Database\Seeders\CategoriesTableSeeder;
 use Database\Seeders\PlansTableSeeder;

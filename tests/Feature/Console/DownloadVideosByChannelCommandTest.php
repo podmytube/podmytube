@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Console;
 
-use App\Channel;
-use App\Plan;
+use App\Models\Channel;
+use App\Models\Plan;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

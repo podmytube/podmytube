@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App;
+namespace App\Models;
 
 use App\Interfaces\Coverable;
 use App\Traits\BelongsToChannel;

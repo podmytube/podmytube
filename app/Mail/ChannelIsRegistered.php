@@ -1,22 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Mail;
 
-use App\Channel;
+use App\Models\Channel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
 class ChannelIsRegistered extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     protected $channel;
 
     /**
      * Create a new message instance.
-     *
-     * @return void
      */
     public function __construct(Channel $channel)
     {
@@ -34,6 +35,7 @@ class ChannelIsRegistered extends Mailable
             ->with([
                 'user' => $this->channel->user,
                 'channel' => $this->channel,
-            ]);
+            ])
+        ;
     }
 }

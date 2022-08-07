@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Channel;
 use App\Events\MediaUploadedByUser;
 use App\Exceptions\NotImplementedException;
 use App\Http\Requests\MediaRequest;
 use App\Http\Requests\UpdateMediaRequest;
 use App\Jobs\MediaCleaning;
-use App\Media;
+use App\Models\Channel;
+use App\Models\Media;
 use App\Modules\MediaProperties;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -34,7 +34,7 @@ class MediasController extends Controller
                 ->medias()
                 ->orderBy('published_at', 'desc')
                 ->simplePaginate($nbItemsPerPage)
-        ;
+            ;
 
             return view('medias.index', compact('channel', 'medias', 'nbItemsPerPage'));
         } catch (Throwable $exception) {
@@ -95,6 +95,7 @@ class MediasController extends Controller
             $mediaProperties = MediaProperties::analyzeFile($request->file('media_file'));
 
             Log::debug(self::LOG_PREFIX . " {$channel->nameWithId()} : media has been analyzed.");
+
             /** getting media_id */
             $mediaId = $channel->nextMediaId();
 
@@ -187,7 +188,7 @@ class MediasController extends Controller
             return redirect()
                 ->route('channel.medias.index', $channel)
                 ->with('success', "Your episode {$validatedParams['title']} has been successfully updated.")
-        ;
+            ;
         } catch (Throwable $exception) {
             Log::error($exception->getMessage());
 
@@ -209,7 +210,7 @@ class MediasController extends Controller
                     'success',
                     "Your episode {$savedTitle} is planned for deletion."
                 )
-        ;
+            ;
         } catch (Throwable $exception) {
             Log::error($exception->getMessage());
 

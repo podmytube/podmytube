@@ -10,10 +10,10 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Channel;
 use App\Factories\RevenueFactory;
 use App\Factories\VolumeOnDiskFactory;
-use App\Media;
+use App\Models\Channel;
+use App\Models\Media;
 
 /**
  * the home controller class.

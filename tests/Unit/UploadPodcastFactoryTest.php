@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use App\Channel;
 use App\Factories\UploadPodcastFactory;
 use App\Jobs\SendFileBySFTP;
-use App\Media;
-use App\Playlist;
+use App\Models\Channel;
+use App\Models\Media;
+use App\Models\Playlist;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
 use Tests\TestCase;

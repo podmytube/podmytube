@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Traits;
 
-use App\Category;
+use App\Models\Category;
 
 trait BelongsToCategory
 {

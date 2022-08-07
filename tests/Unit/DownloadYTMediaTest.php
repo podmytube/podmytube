@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use App\Exceptions\DownloadMediaFailureException;
-use App\Media;
+use App\Models\Media;
 use App\Modules\DownloadYTMedia;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use InvalidArgumentException;
@@ -37,7 +37,7 @@ class DownloadYTMediaTest extends TestCase
     /** @var string */
     protected $destinationFolder;
 
-    /** @var \App\Media */
+    /** @var \App\Models\Media */
     protected $media;
 
     protected function setUp(): void

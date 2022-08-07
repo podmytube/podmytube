@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Models\Post;
 use App\Modules\ServerRole;
-use App\Post;
 use App\Sitemap\Sitemap;
 use App\Sitemap\SitemapNode;
 use Illuminate\Console\Command;

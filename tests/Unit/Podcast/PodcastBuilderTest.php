@@ -1,26 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Podcast;
 
 use App\Podcast\PodcastBuilder;
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TestCase;
 use Tests\Traits\IsAbleToTestPodcast;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class PodcastBuilderTest extends TestCase
 {
-    use RefreshDatabase,
-        WithFaker,
-        IsAbleToTestPodcast;
+    use RefreshDatabase;
+    use WithFaker;
+    use IsAbleToTestPodcast;
 
-    /** @var \App\Channel $channel */
+    /** @var \App\Models\Channel */
     protected $channel;
 
-    /** @var \App\Media $medias */
+    /** @var \App\Models\Media */
     protected $medias;
 
-    /** @var string $renderedPodcast */
+    /** @var string */
     protected $renderedPodcast;
 
     public function setUp(): void
@@ -30,12 +36,12 @@ class PodcastBuilderTest extends TestCase
         $this->createCoverFor($this->channel);
     }
 
-    public function testRenderingPodcastWithoutItemsShouldBeGood()
+    public function test_rendering_podcast_without_items_should_be_good(): void
     {
         $this->headerChecking($this->channel, PodcastBuilder::create($this->channel->toPodcast())->render());
     }
 
-    public function testRenderingPodcastWithItemsShouldBeGoodToo()
+    public function test_rendering_podcast_with_items_should_be_good_too(): void
     {
         $this->addMediasToChannel($this->channel, 5, true);
         $renderedPodcast = PodcastBuilder::create($this->channel->toPodcast())->render();
@@ -43,7 +49,7 @@ class PodcastBuilderTest extends TestCase
         $this->itemsChecking($this->channel, $renderedPodcast);
     }
 
-    public function testRenderingExplicitChannelShouldBeGood()
+    public function test_rendering_explicit_channel_should_be_good(): void
     {
         $this->channel->explicit = true;
         $this->addMediasToChannel($this->channel, 3, true);

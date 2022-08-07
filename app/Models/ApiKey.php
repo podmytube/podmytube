@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App;
+namespace App\Models;
 
 use App\Exceptions\YoutubeNoApiKeyAvailableException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,9 +15,6 @@ class ApiKey extends Model
 
     public const PROD_ENV = 1;
     public const LOCAL_ENV = 2;
-
-    /** @var App\ApiKey selected model */
-    protected $selectedOne;
 
     /**
      * define the relationship between an apikey and its quotas used.

@@ -10,9 +10,9 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Channel;
+use App\Models\Channel;
+use App\Models\Playlist;
 use App\Modules\Vignette;
-use App\Playlist;
 use Illuminate\Support\Facades\Auth;
 
 /**

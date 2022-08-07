@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Channel;
 use App\Mail\ChannelHasReachedItsLimitsMail;
 use App\Mail\ChannelIsRegistered;
 use App\Mail\MonthlyReportMail;
 use App\Mail\WelcomeToPodmytube;
-use App\Media;
-use App\Plan;
-use App\Subscription;
-use App\User;
+use App\Models\Channel;
+use App\Models\Media;
+use App\Models\Plan;
+use App\Models\Subscription;
+use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Console\Command;

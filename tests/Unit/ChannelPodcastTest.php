@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use App\Channel;
-use App\Plan;
-use App\Thumb;
+use App\Models\Channel;
+use App\Models\Plan;
+use App\Models\Thumb;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 use Tests\TestCase;
@@ -21,7 +21,7 @@ class ChannelPodcastTest extends TestCase
     use RefreshDatabase;
     use IsAbleToTestPodcast;
 
-    /** @var \App\Channel */
+    /** @var \App\Models\Channel */
     protected $channel;
 
     public function setUp(): void

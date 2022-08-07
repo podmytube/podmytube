@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
-use App\Language;
+use App\Models\Language;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -10,14 +12,13 @@ class LanguagesTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
-    public function run()
+    public function run(): void
     {
         DB::table('languages')->delete();
+
         /**
-         * Parents categories
+         * Parents categories.
          */
         $data = [
             ['iso_name' => 'Abkhazian', 'native_name' => 'аҧсуа бызшәа, аҧсшәа', 'code' => 'ab'],

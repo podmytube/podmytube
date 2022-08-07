@@ -6,7 +6,7 @@ namespace Tests\Unit\Jobs;
 
 use App\Jobs\DownloadMediaJob;
 use App\Jobs\SendFileBySFTP;
-use App\Media;
+use App\Models\Media;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
@@ -19,10 +19,10 @@ class DownloadMediaJobTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var \App\Channel */
+    /** @var \App\Models\Channel */
     protected $channel;
 
-    /** @var \App\Media */
+    /** @var \App\Models\Media */
     protected $media;
 
     public function setUp(): void

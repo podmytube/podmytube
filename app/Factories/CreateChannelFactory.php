@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Factories;
 
-use App\Category;
-use App\Channel;
 use App\Exceptions\ChannelAlreadyRegisteredException;
 use App\Exceptions\ChannelCreationHasFailedException;
+use App\Models\Category;
+use App\Models\Channel;
 use App\Modules\YoutubeChannelId;
 use App\Youtube\YoutubeChannel;
 use Exception;

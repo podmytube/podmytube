@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Channel;
 use App\Exceptions\NoPayingChannelException;
 use App\Exceptions\YoutubeNoResultsException;
 use App\Mail\ChannelIsInTroubleWarningMail;
+use App\Models\Channel;
 use App\Modules\LastMediaChecker;
 use App\Modules\ServerRole;
 use Illuminate\Console\Command;

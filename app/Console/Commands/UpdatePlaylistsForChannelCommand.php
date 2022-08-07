@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Channel;
 use App\Factories\UploadPodcastFactory;
+use App\Models\Channel;
+use App\Models\Playlist;
 use App\Modules\ServerRole;
-use App\Playlist;
 use Illuminate\Console\Command;
 
 class UpdatePlaylistsForChannelCommand extends Command

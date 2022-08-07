@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Channel;
 use App\Factories\UploadPodcastFactory;
+use App\Models\Channel;
 use App\Modules\ServerRole;
 use Illuminate\Console\Command;
 
@@ -25,7 +25,7 @@ class UpdatePodcastForChannelCommand extends Command
      */
     protected $description = 'This command will build one podcast feed at a time.';
 
-    /** @var \App\Channel */
+    /** @var \App\Models\Channel */
     protected $channel;
 
     /**

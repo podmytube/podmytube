@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Modules;
 
-use App\Channel;
 use App\Exceptions\DownloadMediaTagException;
 use App\Exceptions\MediaAlreadyGrabbedException;
 use App\Exceptions\MediaIsTooOldException;
 use App\Exceptions\YoutubeMediaIsNotAvailableException;
 use App\Factories\ShouldMediaBeingDownloadedFactory;
 use App\Factories\YoutubeLastVideoFactory;
-use App\Media;
+use App\Models\Channel;
+use App\Models\Media;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
@@ -74,7 +74,7 @@ class LastMediaChecker
             YoutubeMediaIsNotAvailableException|
             MediaIsTooOldException|
             DownloadMediaTagException $exception
-            ) {
+        ) {
             return false;
         }
 

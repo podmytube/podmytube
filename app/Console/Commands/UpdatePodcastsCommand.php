@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Channel;
 use App\Factories\UploadPodcastFactory;
+use App\Models\Channel;
 use App\Modules\ServerRole;
 use Exception;
 use Illuminate\Console\Command;

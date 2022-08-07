@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Modules;
 
 use App\Exceptions\VignetteCreationFromMissingThumbException;
-use App\Thumb;
+use App\Models\Thumb;
 use Exception;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -17,7 +17,7 @@ class Vignette
     public const VIGNETTE_SUFFIX = '_vig';
     public const DEFAULT_VIGNETTE_FILE = 'default_vignette.jpg';
 
-    /** @var \App\Thumb used to create vignette */
+    /** @var \App\Models\Thumb used to create vignette */
     protected $thumb;
 
     /** @var \Intervention\Image\Image */
@@ -47,7 +47,7 @@ class Vignette
      */
     public function relativePath(): string
     {
-        return $this->thumb->coverable->channelId().'/'.$this->fileName();
+        return $this->thumb->coverable->channelId() . '/' . $this->fileName();
     }
 
     /**
@@ -59,7 +59,7 @@ class Vignette
     {
         $pathParts = pathinfo($this->thumb->fileName());
 
-        return $pathParts['filename'].self::VIGNETTE_SUFFIX.'.'.$pathParts['extension'];
+        return $pathParts['filename'] . self::VIGNETTE_SUFFIX . '.' . $pathParts['extension'];
     }
 
     /**
@@ -146,8 +146,8 @@ class Vignette
             );
         } catch (Exception $exception) {
             Log::alert(
-                'Deleting vignette '.
-                    $this->relativePath().
+                'Deleting vignette ' .
+                    $this->relativePath() .
                     " has failed with message {{$exception->getMessage()}}."
             );
 
@@ -164,7 +164,7 @@ class Vignette
      */
     public static function defaultUrl()
     {
-        return env('THUMBS_URL').'/'.self::DEFAULT_VIGNETTE_FILE;
+        return env('THUMBS_URL') . '/' . self::DEFAULT_VIGNETTE_FILE;
     }
 
     public function localFilePath()
@@ -174,6 +174,6 @@ class Vignette
 
     public function remoteFilePath()
     {
-        return config('app.thumbs_path').$this->relativePath();
+        return config('app.thumbs_path') . $this->relativePath();
     }
 }

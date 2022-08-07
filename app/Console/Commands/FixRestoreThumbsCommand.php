@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Channel;
+use App\Models\Channel;
+use App\Models\Thumb;
 use App\Modules\ServerRole;
-use App\Thumb;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 
@@ -43,6 +43,7 @@ class FixRestoreThumbsCommand extends Command
         // for each folder
         array_map(function ($folderPath) {
             $this->info("working with {$folderPath}");
+
             /** extracting channel id */
             $channel = $this->getChannelFromPath($folderPath);
             if ($channel === null) {

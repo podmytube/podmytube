@@ -7,7 +7,7 @@ namespace App\Events;
 use App\Interfaces\InteractsWithMedia;
 use App\Interfaces\InteractsWithPodcastable;
 use App\Interfaces\Podcastable;
-use App\Media;
+use App\Models\Media;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Factories;
 
-use App\Channel;
 use App\Exceptions\PodcastSavingFailureException;
 use App\Interfaces\Podcastable;
 use App\Jobs\SendFileBySFTP;
+use App\Models\Channel;
 use App\Podcast\PodcastBuilder;
 use Illuminate\Support\Facades\Log;
 

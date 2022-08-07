@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
-use App\Channel;
+use App\Models\Channel;
+use App\Models\Thumb;
 use App\Modules\Vignette;
-use App\Thumb;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
@@ -26,13 +28,11 @@ class ThumbsTableSeeder extends Seeder
         $filename = 'jeanviet.jpg';
         $filepath = $channel->channelId() . DIRECTORY_SEPARATOR . $filename;
 
-        /**
-         * copying lorem image to its new fake location to be tested
-         */
+        // copying lorem image to its new fake location to be tested
         Storage::disk(Thumb::LOCAL_STORAGE_DISK)->put(
             $filepath,
             file_get_contents(base_path('tests/Fixtures/images/jeanviet.jpg'))
-        ) ;
+        );
         $filesize = Storage::disk(Thumb::LOCAL_STORAGE_DISK)->size($filepath);
 
         /** create thumb */

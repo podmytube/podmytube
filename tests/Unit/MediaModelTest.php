@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use App\Channel;
 use App\Jobs\SendFileBySFTP;
-use App\Media;
+use App\Models\Channel;
+use App\Models\Media;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -23,10 +23,10 @@ class MediaModelTest extends TestCase
     use RefreshDatabase;
     use WithFaker;
 
-    /** @var \App\Channel */
+    /** @var \App\Models\Channel */
     protected $channel;
 
-    /** @var \App\Media */
+    /** @var \App\Models\Media */
     protected $media;
 
     public function setUp(): void

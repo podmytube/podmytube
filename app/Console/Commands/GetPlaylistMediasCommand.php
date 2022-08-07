@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Media;
+use App\Models\Media;
+use App\Models\Playlist;
 use App\Modules\ServerRole;
-use App\Playlist;
 use App\Youtube\YoutubePlaylistItems;
 use Carbon\Carbon;
 use Illuminate\Console\Command;

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Jobs;
 
 use App\Factories\DownloadMediaFactory;
-use App\Media;
+use App\Models\Media;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -19,7 +19,7 @@ class DownloadMediaJob implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    /** @var \App\Media */
+    /** @var \App\Models\Media */
     protected $media;
 
     /** @var bool */

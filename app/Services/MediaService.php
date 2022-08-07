@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
-use App\Channel;
 use App\Helpers\NumberChecker;
-use App\Media;
+use App\Models\Channel;
+use App\Models\Media;
 use Carbon\Carbon;
 
 class MediaService
@@ -25,14 +27,15 @@ class MediaService
         )
             ->whereNotNull('grabbed_at')
             ->where('channel_id', $channel->channel_id)
-            ->count();
+            ->count()
+        ;
     }
 
     /**
-     * Get month first day at midnight
+     * Get month first day at midnight.
      *
-     * @param int $month the numeric version month to get the end
-     * @param int|null $year the numeric version of the end
+     * @param int      $month the numeric version month to get the end
+     * @param null|int $year  the numeric version of the end
      */
     protected static function getMonthBeginning(
         int $month,
@@ -40,14 +43,15 @@ class MediaService
     ): Carbon {
         $year = $yearParam ?? date('Y');
         NumberChecker::isBetween($month, 1, 12);
+
         return Carbon::createMidnightDate($year, $month, 1);
     }
 
     /**
-     * Get month last day at midnight
+     * Get month last day at midnight.
      *
-     * @param int $month the numeric version month to get the end
-     * @param int|null $year the numeric version of the end
+     * @param int      $month the numeric version month to get the end
+     * @param null|int $year  the numeric version of the end
      */
     protected static function getMonthEnding(
         int $month,
@@ -55,8 +59,10 @@ class MediaService
     ): Carbon {
         $year = $yearParam ?? date('Y');
         NumberChecker::isBetween($month, 1, 12);
+
         return (new Carbon("{$year}-{$month}-1"))
             ->modify('last day of this month')
-            ->setTime(23, 59, 59);
+            ->setTime(23, 59, 59)
+        ;
     }
 }

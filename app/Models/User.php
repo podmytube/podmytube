@@ -2,11 +2,7 @@
 
 declare(strict_types=1);
 
-/**
- *   this class is the model class for the User table.
- */
-
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;

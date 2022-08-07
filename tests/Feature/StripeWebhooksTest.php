@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use App\Channel;
 use App\Exceptions\ChannelOwnerMismatchingStripeException;
 use App\Exceptions\EmptyChannelIdReceivedFromStripeException;
 use App\Exceptions\EmptyCustomerReceivedFromStripeException;
@@ -12,7 +11,8 @@ use App\Exceptions\EmptySubscriptionReceivedFromStripeException;
 use App\Exceptions\InvalidSubscriptionReceivedFromStripeException;
 use App\Exceptions\UnknownChannelIdReceivedFromStripeException;
 use App\Jobs\StripeWebhooks\HandleCheckoutSessionCompletedJob;
-use App\User;
+use App\Models\Channel;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Log;
 use Mockery;

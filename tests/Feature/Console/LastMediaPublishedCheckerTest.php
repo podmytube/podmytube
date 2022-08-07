@@ -6,8 +6,8 @@ namespace Tests\Feature\Console;
 
 use App\Exceptions\NoPayingChannelException;
 use App\Mail\ChannelIsInTroubleWarningMail;
-use App\Media;
-use App\Plan;
+use App\Models\Media;
+use App\Models\Plan;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;

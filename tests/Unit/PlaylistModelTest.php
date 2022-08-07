@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use App\Channel;
-use App\Media;
-use App\Playlist;
-use App\Thumb;
-use App\User;
+use App\Models\Channel;
+use App\Models\Media;
+use App\Models\Playlist;
+use App\Models\Thumb;
+use App\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -17,14 +17,14 @@ use Tests\Traits\IsAbleToTestPodcast;
 
 /**
  * @internal
- * @covers \App\Playlist
+ * @covers \App\Models\Playlist
  */
 class PlaylistModelTest extends TestCase
 {
     use RefreshDatabase;
     use IsAbleToTestPodcast;
 
-    /** @var \App\Playlist */
+    /** @var \App\Models\Playlist */
     protected $playlist;
 
     public function setUp(): void

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Mail;
 
-use App\Channel;
+use App\Models\Channel;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
@@ -26,7 +26,6 @@ class MonthlyReportMail extends Mailable
     /**
      * Create a monthly report email.
      *
-     * @param \App\Channel $channel
      * @param \Carbon\Carbon wanted month (start of month)
      */
     public function __construct(protected Channel $channel, protected ?Carbon $wantedMonth = null)

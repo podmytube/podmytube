@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Youtube;
 
-use App\ApiKey;
 use App\Exceptions\YoutubeGenericErrorException;
 use App\Exceptions\YoutubeInvalidEndpointException;
 use App\Exceptions\YoutubeNoResultsException;
 use App\Interfaces\QuotasConsumer;
+use App\Models\ApiKey;
 use App\Traits\YoutubeEndpoints;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;

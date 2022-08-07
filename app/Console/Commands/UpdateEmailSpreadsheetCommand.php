@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Factories\GoogleSpreadsheetFactory;
+use App\Models\User;
 use App\Modules\ServerRole;
-use App\User;
 use Illuminate\Console\Command;
 
 /**

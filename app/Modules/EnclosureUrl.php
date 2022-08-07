@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Modules;
 
-use App\Media;
+use App\Models\Media;
 
 class EnclosureUrl
 {
@@ -21,13 +23,13 @@ class EnclosureUrl
         return new static(...$params);
     }
 
-    protected function build()
-    {
-        $this->enclosureUrl = config('app.mp3_url') . '/' . $this->media->channel_id . '/' . $this->media->media_id . '.mp3';
-    }
-
     public function get(): string
     {
         return $this->enclosureUrl;
+    }
+
+    protected function build(): void
+    {
+        $this->enclosureUrl = config('app.mp3_url') . '/' . $this->media->channel_id . '/' . $this->media->media_id . '.mp3';
     }
 }

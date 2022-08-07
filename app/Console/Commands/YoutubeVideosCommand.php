@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
-use App\Media;
+use App\Models\Media;
 use App\Youtube\YoutubeChannelVideos;
 use Illuminate\Console\Command;
 
@@ -24,8 +26,6 @@ class YoutubeVideosCommand extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
     public function handle(): int
     {
@@ -36,14 +36,16 @@ class YoutubeVideosCommand extends Command
 
         if ($this->option('raw')) {
             print_r($factory->videos());
+
             return 0;
         }
 
-        array_map(function ($item) {
+        array_map(function ($item): void {
             $this->line("{$item['media_id']} - {$item['published_at']->format('d/m/Y H:i')} - {$item['title']}  ");
         }, $factory->videos());
 
         $this->info('Url : ' . Media::YoutubeUrl($this->argument('channelId')));
+
         return 0;
     }
 }

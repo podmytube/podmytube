@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Podcast;
 
-use App\Category;
-use App\Channel;
+use App\Models\Category;
+use App\Models\Channel;
 use App\Podcast\PodcastHeader;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -20,7 +20,7 @@ class PodcastHeaderTest extends TestCase
     use RefreshDatabase;
     use IsAbleToTestPodcast;
 
-    /** @var \App\Channel */
+    /** @var \App\Models\Channel */
     protected $channel;
 
     public function setUp(): void

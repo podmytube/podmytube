@@ -11,7 +11,7 @@ use App\Exceptions\YoutubeAndLocalDurationException;
 use App\Exceptions\YoutubeMediaDoesNotExistException;
 use App\Exceptions\YoutubeMediaIsNotAvailableException;
 use App\Jobs\SendFileBySFTP;
-use App\Media;
+use App\Models\Media;
 use App\Modules\CheckingGrabbedFile;
 use App\Modules\DownloadYTMedia;
 use App\Modules\MediaProperties;
@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Log;
 
 class DownloadMediaFactory
 {
-    /** @var \App\Media */
+    /** @var \App\Models\Media */
     protected $media;
 
     /** @var bool */
@@ -84,10 +84,9 @@ class DownloadMediaFactory
             $status = Media::STATUS_TAG_FILTERED;
         } catch (MediaIsTooOldException $exception) {
             $status = Media::STATUS_AGE_FILTERED;
-        } catch (YoutubeAndLocalDurationException $exception){
+        } catch (YoutubeAndLocalDurationException $exception) {
             $status = Media::STATUS_NOT_DOWNLOADED;
         }
-
 
         // update infos
         Log::notice('Persisting media infos into DB.');

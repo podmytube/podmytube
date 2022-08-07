@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Podcast;
 
-use App\Channel;
 use App\Exceptions\PodcastItemNotValidException;
-use App\Media;
+use App\Models\Channel;
+use App\Models\Media;
 use App\Podcast\PodcastItem;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -19,7 +19,7 @@ class PodcastItemTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var \App\Media */
+    /** @var \App\Models\Media */
     protected $media;
 
     public function setUp(): void

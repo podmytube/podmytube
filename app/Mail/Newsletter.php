@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Mail;
 
-use App\User;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
@@ -15,18 +17,17 @@ use Illuminate\Queue\SerializesModels;
  */
 class Newsletter extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
-    /** @var App\User $user */
+    /** @var App\Models\User */
     protected $user;
 
-    /** @var string $newsletter the body of the newsletter */
+    /** @var string the body of the newsletter */
     protected $newsletterBody;
 
     /**
      * Create a new message instance.
-     *
-     * @return void
      */
     public function __construct(User $user, string $newsletterBody)
     {
@@ -44,12 +45,14 @@ class Newsletter extends Mailable
         $period = Carbon::now()->locale('en')->monthName . ' ' . date('Y');
 
         $subject = "Podmytube Newsletter - {$period}";
+
         return $this->subject($subject)
             ->view('emails.newsletter')
             ->with([
                 'subject' => $subject,
                 'newsletterBody' => $this->newsletterBody,
                 'user' => $this->user,
-            ]);
+            ])
+        ;
     }
 }

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Jobs\MediaCleaning;
-use App\Media;
+use App\Models\Media;
+use App\Models\Plan;
 use App\Modules\ServerRole;
-use App\Plan;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;

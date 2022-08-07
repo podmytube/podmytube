@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author Frederick Tyteca <fred@podmytube.com>
  */
 
-namespace App;
+namespace App\Models;
 
 use App\Interfaces\Coverable;
 use App\Interfaces\Podcastable;

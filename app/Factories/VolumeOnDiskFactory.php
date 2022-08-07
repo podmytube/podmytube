@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Factories;
 
-use App\Media;
+use App\Models\Media;
 
 class VolumeOnDiskFactory
 {
     private function __construct()
     {
-        //code
+        // code
     }
 
     public static function init(...$params)

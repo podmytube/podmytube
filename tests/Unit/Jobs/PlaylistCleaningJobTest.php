@@ -8,8 +8,8 @@ use App\Jobs\MediaCleaning;
 use App\Jobs\PlaylistCleaningJob;
 use App\Jobs\PodcastableCleaning;
 use App\Jobs\SendFileBySFTP;
-use App\Media;
-use App\Playlist;
+use App\Models\Media;
+use App\Models\Playlist;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Storage;
@@ -23,7 +23,7 @@ class PlaylistCleaningJobTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var \App\Playlist */
+    /** @var \App\Models\Playlist */
     protected $playlistToDelete;
 
     public function setUp(): void

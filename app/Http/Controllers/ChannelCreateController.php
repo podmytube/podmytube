@@ -12,10 +12,10 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Channel;
 use App\Factories\CreateChannelFactory;
 use App\Http\Requests\ChannelCreationRequest;
-use App\Plan;
+use App\Models\Channel;
+use App\Models\Plan;
 use Auth;
 use Exception;
 use Illuminate\Http\Request;

@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Channel;
-use App\Media;
+use App\Models\Channel;
+use App\Models\Media;
+use App\Models\Plan;
+use App\Models\Subscription;
 use App\Modules\CheckingGrabbedFile;
 use App\Modules\DownloadYTMedia;
 use App\Modules\MediaProperties;
 use App\Modules\ServerRole;
-use App\Plan;
-use App\Subscription;
 use App\Youtube\YoutubeVideo;
 use Exception;
 use Illuminate\Console\Command;
@@ -70,7 +70,7 @@ class DownloadVideoByMediaIdCommand extends Command
             $downloadedFilePath = DownloadYTMedia::init($media, '/tmp/', false)
                 ->download()
                 ->downloadedFilePath()
-        ;
+            ;
 
             // if empty will throw exception
             $this->info("Media {$media->media_id} has been download successfully from youtube. Analyzing.", 'v');

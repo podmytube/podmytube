@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
-use App\Media;
+use App\Models\Media;
 use App\Youtube\YoutubeVideo;
 use Illuminate\Console\Command;
 
@@ -24,8 +26,6 @@ class YoutubeVideoCommand extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
     public function handle(): int
     {
@@ -36,11 +36,12 @@ class YoutubeVideoCommand extends Command
 
         if ($this->option('raw')) {
             print_r($factory->item());
+
             return 0;
         }
 
         $this->line("Title : {$factory->title()}");
-        //$this->line("Description : {$factory->description()}");
+        // $this->line("Description : {$factory->description()}");
         $this->line("Duration : {$factory->duration()}");
         $this->line("Published : {$factory->publishedAtForHumans()} ({$factory->publishedAt()})");
 
@@ -56,6 +57,7 @@ class YoutubeVideoCommand extends Command
             $this->comment('This video has no tag.');
         }
         $this->info('Url : ' . Media::YoutubeUrl($this->argument('videoId')));
+
         return 0;
     }
 }

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use App\Channel;
-use App\Media;
+use App\Models\Channel;
+use App\Models\Media;
 use App\Modules\LastMediaChecker;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -24,7 +24,7 @@ class LastMediaCheckerTest extends TestCase
 
     public const DELAY_IN_HOURS = 6;
 
-    /** @var \App\Channel */
+    /** @var \App\Models\Channel */
     protected $channel;
 
     public function setUp(): void
@@ -89,9 +89,10 @@ class LastMediaCheckerTest extends TestCase
         Media::factory()
             ->grabbedAt(now())
             ->create([
-            'media_id' => self::BEACH_VOLLEY_VIDEO_1,
-            'channel_id' => $this->channel->channel_id,
-        ]);
+                'media_id' => self::BEACH_VOLLEY_VIDEO_1,
+                'channel_id' => $this->channel->channel_id,
+            ])
+        ;
 
         $this->assertFalse(
             LastMediaChecker::forChannel($this->channel)->run()->shouldMediaBeingGrabbed(),

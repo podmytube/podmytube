@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Channel;
 use App\Exceptions\YoutubeNoResultsException;
 use App\Jobs\ChannelHasReachedItsLimitsJob;
-use App\Media;
+use App\Models\Channel;
+use App\Models\Media;
+use App\Models\Quota;
 use App\Modules\ServerRole;
-use App\Quota;
 use App\Youtube\YoutubeChannelVideos;
 use App\Youtube\YoutubeCore;
 use App\Youtube\YoutubeQuotas;

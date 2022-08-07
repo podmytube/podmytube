@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Podcast;
 
 use InvalidArgumentException;
@@ -9,22 +11,30 @@ class ItunesHeader implements IsRenderableInterface
     public const TYPE_EPISODIC = 'episodic';
     public const TYPE_SERIAL = 'serial';
 
-    /** @var string $title */
+    /** @var string */
     public $title;
-    /** @var string $author */
+
+    /** @var string */
     public $author;
-    /** @var string $email */
+
+    /** @var string */
     public $email;
-    /** @var ?\App\Category $category */
+
+    /** @var ?\App\Models\Category */
     public $category;
-    /** @var string $explicit */
+
+    /** @var string */
     public $explicit = 'false';
-    /** @var string $type (episodic or serial) */
+
+    /** @var string (episodic or serial) */
     public $type;
-    /** @var string $imageUrl */
+
+    /** @var string */
     public $imageUrl;
-    /** @var string $itunesCategory*/
+
+    /** @var string */
     public $itunesCategory;
+
     /** @var ItunesOwner itunesOwner object */
     public $itunesOwner;
 
@@ -50,7 +60,8 @@ class ItunesHeader implements IsRenderableInterface
         $this->itunesCategory = ItunesCategory::prepare($this->category)->render();
 
         $this->itunesOwner = ItunesOwner::prepare(['itunesOwnerName' => $this->author, 'itunesOwnerEmail' => $this->email])
-            ->render();
+            ->render()
+        ;
     }
 
     public static function prepare(...$params)
@@ -65,24 +76,11 @@ class ItunesHeader implements IsRenderableInterface
         }) === false) {
             return '';
         }
+
         return view('podcast.itunesHeader')
             ->with(['itunesHeader' => $this])
-            ->render();
-    }
-
-    protected function setType(string $type = self::TYPE_EPISODIC)
-    {
-        if ($type === self::TYPE_EPISODIC || $type === self::TYPE_SERIAL) {
-            $this->type = $type;
-        }
-    }
-
-    protected function setImageUrl(string $imageUrl)
-    {
-        if (filter_var($imageUrl, FILTER_VALIDATE_URL) === false) {
-            throw new InvalidArgumentException('ImageUrl is not a valid url.');
-        }
-        $this->imageUrl = $imageUrl;
+            ->render()
+        ;
     }
 
     public static function checkExplicit($explicit): string
@@ -93,6 +91,22 @@ class ItunesHeader implements IsRenderableInterface
         if ($explicit === 'true') {
             return 'true';
         }
+
         return 'false';
+    }
+
+    protected function setType(string $type = self::TYPE_EPISODIC): void
+    {
+        if ($type === self::TYPE_EPISODIC || $type === self::TYPE_SERIAL) {
+            $this->type = $type;
+        }
+    }
+
+    protected function setImageUrl(string $imageUrl): void
+    {
+        if (filter_var($imageUrl, FILTER_VALIDATE_URL) === false) {
+            throw new InvalidArgumentException('ImageUrl is not a valid url.');
+        }
+        $this->imageUrl = $imageUrl;
     }
 }

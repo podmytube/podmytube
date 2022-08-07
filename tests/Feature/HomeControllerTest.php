@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use App\Channel;
-use App\Plan;
-use App\User;
+use App\Models\Channel;
+use App\Models\Plan;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -18,10 +18,10 @@ class HomeControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var \App\User */
+    /** @var \App\Models\User */
     protected $user;
 
-    /** @var \App\Channel */
+    /** @var \App\Models\Channel */
     protected $channel;
 
     public function setUp(): void

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Jobs\ChannelHasReachedItsLimitsJob;
-use App\Media;
-use App\Plan;
+use App\Models\Media;
+use App\Models\Plan;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
 use RuntimeException;

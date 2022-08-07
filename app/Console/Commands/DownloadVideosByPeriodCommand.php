@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Channel;
 use App\Exceptions\ChannelHasReachedItsQuotaException;
 use App\Factories\DownloadMediaFactory;
-use App\Media;
+use App\Models\Channel;
+use App\Models\Media;
 use App\Modules\PeriodsHelper;
 use App\Modules\ServerRole;
 use Carbon\Carbon;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Podcast;
 
 use App\Podcast\PodcastItems;
@@ -8,11 +10,16 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class PodcastItemsTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+    use RefreshDatabase;
+    use WithFaker;
 
-    /** @var \App\Channel $channel */
+    /** @var \App\Models\Channel */
     protected $channel;
 
     public function setUp(): void
@@ -22,15 +29,15 @@ class PodcastItemsTest extends TestCase
         Artisan::call('view:clear');
     }
 
-    public function testNoItemsShouldRenderEmpty()
+    public function test_no_items_should_render_empty(): void
     {
         $podcastItems = $this->channel->podcastItems();
         $this->assertEmpty(PodcastItems::with($podcastItems)->render());
     }
 
-    public function testRenderingPodcastIsWorkingFine()
+    public function test_rendering_podcast_is_working_fine(): void
     {
-        /** adding some medias */
+        // adding some medias
         $this->addMediasToChannel($this->channel, 5, true);
 
         $podcastItems = $this->channel->podcastItems();

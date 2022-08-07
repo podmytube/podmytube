@@ -1,18 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
-use App\Channel;
-use App\Subscription;
+use App\Models\Channel;
+use App\Models\Subscription;
 
 class SubscriptionService
 {
     /**
-     * This function will return active plan for Channel object
+     * This function will return active plan for Channel object.
      *
-     * @param object App\Channel $channel
+     * @param object App\Models\Channel $channel
      *
-     * @return object App\Subscription
+     * @return object App\Models\Subscription
      */
     public static function getActiveSubscription(Channel $channel)
     {
@@ -21,34 +23,34 @@ class SubscriptionService
                 "Channel {{$channel->channel_id}} has no subscription and it is not normal"
             );
         }
+
         return $channel->subscription;
     }
 
     /**
-     * This function will return active plan for Channel object
+     * This function will return active plan for Channel object.
      *
-     * @param object App\Channel $channel
+     * @param object App\Models\Channel $channel
      *
-     * @return object App\Plan
+     * @return object App\Models\Plan
      */
     public static function getActivePlan(Channel $channel)
     {
         if (
-            !isset($channel->subscription) ||
-            !isset($channel->subscription->plan)
+            !isset($channel->subscription)
+            || !isset($channel->subscription->plan)
         ) {
             throw new \Exception(
                 "Channel {{$channel->channel_id}} has no subscription and it is not normal"
             );
         }
+
         return $channel->subscription->plan;
     }
 
     /**
      * This function will return true if channel has subscription.
      * If no subscription it means that channel is free.
-     *
-     * @param Channel $channel
      *
      * @return bool
      */

@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Traits;
 
-use App\Media;
+use App\Models\Media;
 
 trait HasManyMedias
 {
     /**
-     * define the relationship between one channel and its medias
+     * define the relationship between one channel and its medias.
      */
     public function medias()
     {

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use App\Channel;
-use App\Playlist;
-use App\Thumb;
+use App\Models\Channel;
+use App\Models\Playlist;
+use App\Models\Thumb;
 use App\Traits\HasCover;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -21,10 +21,10 @@ class HasCoverTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var \App\Channel */
+    /** @var \App\Models\Channel */
     protected $channel;
 
-    /** @var \App\Playlist */
+    /** @var \App\Models\Playlist */
     protected $playlist;
 
     public function setUp(): void

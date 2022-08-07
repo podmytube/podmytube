@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Events\MediaUploadedByUser;
-use App\User;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
@@ -21,10 +21,10 @@ class MediasControllerTest extends TestCase
     use RefreshDatabase;
     use WithFaker;
 
-    /** @var \App\Channel */
+    /** @var \App\Models\Channel */
     protected $channel;
 
-    /** @var \App\Media */
+    /** @var \App\Models\Media */
     protected $media;
 
     public function setUp(): void

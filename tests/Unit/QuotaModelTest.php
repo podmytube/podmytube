@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use App\ApiKey;
-use App\Quota;
+use App\Models\ApiKey;
+use App\Models\Quota;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -17,8 +17,7 @@ class QuotaModelTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var \App\ApiKey */
-    protected $apikey;
+    protected ApiKey $apikey;
 
     public function setUp(): void
     {

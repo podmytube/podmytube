@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Mail\Newsletter;
-use App\User;
+use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -68,8 +68,8 @@ class SendNewsletter extends Command
         $this->comment('Here are the mails you can send :');
         $i = 0;
         foreach ($this->availableNewsletters as $newsletter) {
-            $this->info($i.' - '.$newsletter);
-            ++$i;
+            $this->info($i . ' - ' . $newsletter);
+            $i++;
         }
 
         $answer = $this->ask('Which one do you want to send ?');

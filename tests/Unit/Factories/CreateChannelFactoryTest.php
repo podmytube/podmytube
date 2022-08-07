@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Factories;
 
-use App\Channel;
 use App\Exceptions\ChannelAlreadyRegisteredException;
 use App\Factories\CreateChannelFactory;
-use App\User;
+use App\Models\Channel;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

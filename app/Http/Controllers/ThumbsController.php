@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Channel;
 use App\Events\ThumbUpdated;
 use App\Http\Requests\ThumbRequest;
 use App\Interfaces\Coverable;
+use App\Models\Channel;
+use App\Models\Playlist;
 use App\Modules\Vignette;
-use App\Playlist;
 use Exception;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Podcast;
 
-use App\Category;
+use App\Models\Category;
 use App\Podcast\ItunesCategory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

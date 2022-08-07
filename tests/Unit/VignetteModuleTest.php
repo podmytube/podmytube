@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use App\Channel;
 use App\Exceptions\VignetteCreationFromMissingThumbException;
+use App\Models\Channel;
+use App\Models\Thumb;
 use App\Modules\Vignette;
-use App\Thumb;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Image;
@@ -21,10 +21,10 @@ class VignetteModuleTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var \App\Thumb */
+    /** @var \App\Models\Thumb */
     protected $thumb;
 
-    /** @var \App\Channel */
+    /** @var \App\Models\Channel */
     protected $channel;
 
     /** @var \App\Modules\Vignette */

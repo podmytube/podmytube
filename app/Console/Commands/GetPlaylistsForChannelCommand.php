@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Channel;
+use App\Models\Channel;
+use App\Models\Playlist;
 use App\Modules\ServerRole;
-use App\Playlist;
 use App\Youtube\YoutubePlaylists;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -67,7 +67,7 @@ class GetPlaylistsForChannelCommand extends Command
         $nbPlaylists = 0;
         $this->comment('======================================================================', 'v');
         $this->comment("Getting playlists (from youtube) for {$channel->nameWithId()}", 'v');
-        $playlists = ((new YoutubePlaylists())->forChannel($channel->channelId())->playlists());
+        $playlists = (new YoutubePlaylists())->forChannel($channel->channelId())->playlists();
         $nbPlaylists += count($playlists);
         array_map(function ($playlistItem) use ($channel): void {
             $this->line("Getting {$playlistItem['title']}");

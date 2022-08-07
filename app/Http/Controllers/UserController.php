@@ -6,7 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRequest;
 use App\Jobs\RemoveAccountJob;
-use App\User;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
