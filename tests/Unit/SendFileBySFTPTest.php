@@ -25,6 +25,7 @@ class SendFileBySFTPTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+
         $this->destFolder = 'tests/' . $this->faker->word();
         // I do not want to delete fixture file so I copy it.
         $fixtureFile = __DIR__ . '/../Fixtures/images/sampleVig.jpg';
@@ -52,6 +53,7 @@ class SendFileBySFTPTest extends TestCase
     /** @test */
     public function sending_file_then_clean_local_should_succeed(): void
     {
+        Storage::fake('remote');
         $job = new SendFileBySFTP($this->sourceFile, $this->remoteFile, true);
         $job->handle();
         $this->assertTrue(Storage::disk('remote')->exists($this->remoteFile));
@@ -61,6 +63,11 @@ class SendFileBySFTPTest extends TestCase
     /** @test */
     public function sending_file_on_protected_folder_should_throw_exception(): void
     {
+        /*
+         * cannot really write protect folder through Storage facade
+         * cannot fake this one
+         * using real remote configured
+         */
         $this->remoteFile = 'protected/' . $this->filename;
         $this->expectException(FileUploadFailureException::class);
         $job = new SendFileBySFTP($this->sourceFile, $this->remoteFile, false);
