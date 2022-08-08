@@ -108,7 +108,7 @@ return [
             'host' => config('app.sftp_host'),
             'username' => config('app.sftp_user'),
             'privateKey' => config('app.sftp_key_path'),
-            'root' => '/home/www',
+            'root' => config('app.sftp_root'),
             'timeout' => 30,
             'visibility' => 'public',
             'permPublic' => 0644,

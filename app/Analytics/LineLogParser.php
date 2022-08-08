@@ -2,46 +2,29 @@
 
 declare(strict_types=1);
 
-namespace App\Factories;
+namespace App\Analytics;
 
 use App\Exceptions\LineLogInvalidDateException;
 use App\Exceptions\LineLogIsEmptyException;
 use App\Exceptions\LineLogIsInvalidException;
 use Carbon\Carbon;
 
-class LineLogParserFactory
+class LineLogParser
 {
-    public const DATE_FORMAT = 'd/M/Y:H:i:s';
+    public const DATE_FORMAT = 'd/M/Y:H:i:s O';
     public const QUERY_CHANNEL_ID_INDEX = 1;
     public const QUERY_MEDIA_ID_INDEX = 2;
 
-    /** @var string */
-    protected $logLine;
+    protected Carbon $logDate;
+    protected string $method;
+    protected string $query;
+    protected int $status;
+    protected int $weight;
+    protected ?string $channelId = null;
+    protected ?string $mediaId = null;
 
-    /** @var Carbon */
-    protected $logDate;
-
-    /** @var string */
-    protected $method;
-
-    /** @var string */
-    protected $query;
-
-    /** @var int */
-    protected $status;
-
-    /** @var int */
-    protected $weight;
-
-    /** @var string */
-    protected $channelId;
-
-    /** @var string */
-    protected $mediaId;
-
-    private function __construct(?string $logLine)
+    private function __construct(protected ?string $logLine)
     {
-        $this->logLine = $logLine;
     }
 
     public static function read(...$params)
@@ -55,7 +38,14 @@ class LineLogParserFactory
             throw new LineLogIsEmptyException('Line log parser is doing nothing with empty logs.');
         }
 
-        $regexp = '#^(?P<ip>\S+) (\S+) (\S+) \[(?P<date>[^ ]+) [^\]]+\] \"(?P<method>GET|HEAD) (?P<query>[^ ]+) [^\"]+\" (?P<status>\d+) (?P<weight>\S+)$#';
+        // ============================================
+        // Old log line (apache)
+        // 172.18.0.5 - - [09/Aug/2021:15:54:09 +0200] "GET / HTTP/1.1" 200 2
+        // $regexp = '#^(?P<ip>\S+) (\S+) (\S+) \[(?P<date>[^ ]+) [^\]]+\] \"(?P<method>GET|HEAD) (?P<query>[^ ]+) [^\"]+\" (?P<status>\d+) (?P<weight>\S+)$#';
+        // ============================================
+        // new log line (nginx)
+        // {"log":"172.18.0.4 - - [06/Aug/2022:18:32:40 +0200] \"GET / HTTP/1.1\" 200 2 \"-\" \"Mozilla/5.0 (Linux; Android 10; VOG-L29) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.79 Mobile Safari/537.36\" \"3.238.76.83, 172.70.175.193\"\n","stream":"stdout","time":"2022-08-06T16:32:40.208637699Z"}
+        $regexp = '#\{"log":"(?P<ip>\S+) (\S+) (\S+) \[(?P<date>[^\]]+)\] \\\"(?P<method>GET|HEAD) (?P<query>[^ ]+) (?P<HTTP>[^"]+)" (?P<status>\d+) (?P<weight>\d+) (.*)#';
         if (!preg_match($regexp, $this->logLine, $matches)) {
             throw new LineLogIsInvalidException("This logline {{$this->logLine}} is invalid.");
         }
@@ -77,7 +67,7 @@ class LineLogParserFactory
 
     public function extractPodmytubeData(): bool
     {
-        //172.18.0.5 - - [09/Aug/2021:16:51:09 +0200] "HEAD /UCSMzy1n4Arqk_hCCOYOQn9g/B9BHzMWIYLI.mp3 HTTP/1.1" 200 -
+        // 172.18.0.5 - - [09/Aug/2021:16:51:09 +0200] "HEAD /UCSMzy1n4Arqk_hCCOYOQn9g/B9BHzMWIYLI.mp3 HTTP/1.1" 200 -
         $explodedQuery = explode(DIRECTORY_SEPARATOR, $this->query);
         if (count($explodedQuery) < 3) {
             return false;
@@ -91,7 +81,7 @@ class LineLogParserFactory
 
     public function isSuccessful(): bool
     {
-        $successfulStatus = [200, 206];
+        $successfulStatus = [200, 206, 304];
 
         return in_array($this->status, $successfulStatus);
     }

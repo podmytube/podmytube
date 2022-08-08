@@ -61,26 +61,25 @@ class ChannelUpdateTest extends TestCase
     public function provideValidData()
     {
         return [
-            [['podcast_title' => 'Great podcast means great responsibilities']],
-            [['explicit' => 0]],
-            [['description' => 'Lorem ipsum dolore sit amet.']],
-            [['lang' => 'FR']],
-            [['podcast_title' => 'Great podcast means great responsibilities', 'explicit' => 1]],
-            [['category_id' => 1]],
+            'podcat title' => [['podcast_title' => 'Great podcast means great responsibilities']],
+            'explicit' => [['explicit' => 0]],
+            'description' => [['description' => 'Lorem ipsum dolore sit amet.']],
+            'lang' => [['lang' => 'FR']],
+            'podcast_title' => [['podcast_title' => 'Great podcast means great responsibilities', 'explicit' => 1]],
+            'category_id' => [['category_id' => 1]],
         ];
     }
 
     public function provideInvalidData()
     {
-        // format is message, data to PATCH, field in error
         return [
-            [['link' => 'invalid url'], 'link'],
-            [['link' => 'google.com'], 'link'],
-            [['link' => 'https://'], 'link'],
-            [['email' => 'invalid email'], 'email'],
-            [['language_id' => 9999], 'language_id'],
-            [['category_id' => 'not a category'], 'category_id'],
-            [['explicit' => 'not a boolean'], 'explicit'],
+            'not an url should fail' => [['link' => 'invalid url'], 'link'],
+            'not a complete url' => [['link' => 'google.com'], 'link'],
+            'not a complete url' => [['link' => 'https://'], 'link'],
+            'invalid email' => [['email' => 'invalid email'], 'email'],
+            'unknown language id' => [['language_id' => 9999], 'language_id'],
+            'unknown category id' => [['category_id' => 'not a category'], 'category_id'],
+            'explicit not a boolean' => [['explicit' => 'not a boolean'], 'explicit'],
         ];
     }
 }
