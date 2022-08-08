@@ -11,6 +11,12 @@ class StorageSftpTest extends TestCase
     /** @var array $filesToDelete */
     protected $filesToDelete = [];
 
+    public function setUp(): void
+    {
+        parent::setUp();
+        Storage::fake('remote');
+    }
+
     public function tearDown(): void
     {
         if (!count($this->filesToDelete)) {
