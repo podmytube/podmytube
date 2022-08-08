@@ -84,8 +84,9 @@ return [
 
     'google_spreadsheet_auth_file' => env('GOOGLE_SPREADSHEET_AUTH_FILE', null),
 
-    'sftp_user' => env('SFTP_USER', 'fred'),
-    'sftp_host' => env('SFTP_HOST', 'ns3363684.ip-37-187-100.eu'),
+    'sftp_user' => env('SFTP_USER'),
+    'sftp_host' => env('SFTP_HOST'),
+    'sftp_root' => env('SFTP_ROOT'),
     'sftp_key_path' => base_path() . '/.ssh/kimUpload',
 
     'audio_container_name' => 'mp3',
