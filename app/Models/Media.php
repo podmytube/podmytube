@@ -53,6 +53,7 @@ class Media extends Model
 
     protected $casts = [
         'duration' => 'integer',
+        'length' => 'integer',
         'uploaded_by_user' => 'boolean',
     ];
 

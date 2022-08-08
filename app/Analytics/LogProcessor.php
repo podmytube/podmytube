@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Analytics;
 
+use App\Analytics\Traits\IsCachable;
+use App\Exceptions\LogLineIsEmptyException;
 use App\Exceptions\LogLineIsInvalidException;
 use App\Exceptions\LogProcessorUnknownChannelException;
 use App\Exceptions\LogProcessorUnknownMediaException;
@@ -14,14 +16,19 @@ use Throwable;
 
 class LogProcessor
 {
+    use IsCachable;
+
     public const RATIO_TO_BE_DOWNLOADED = 0.80; // file being downloaded at 80% is considered as downloaded
-    public const CACHE_PREFIX = 'Log';
-    public const SEPARATOR = '_';
+
+    protected string $cacheKeySeparator = '_';
+    protected string $cachePrefix = 'Log';
 
     protected $fileHandle; // no typehint for resource at this day (2022-08-07 tyteck)
+    protected string $logLine = '';
     protected int $nbProcessedLines = 0;
     protected int $nbValidLines = 0;
     protected array $channelsAlreadyMet = [];
+    protected array $errors = [];
 
     private function __construct(protected ?string $logFileToProcess = null)
     {
@@ -39,10 +46,14 @@ class LogProcessor
         while (!feof($this->fileHandle)) {
             try {
                 $logLine = fgets($this->fileHandle);
-                throw_if($logLine === false, new LogLineIsInvalidException('logline is unreadable ' . $logLine));
 
-                $this->processLine($logLine);
+                throw_if($logLine === false, new LogLineIsInvalidException('logline is unreadable probably empty ' . $logLine));
+
+                $this->logLine = $logLine;
+                $this->processLine();
                 $this->nbValidLines++;
+            } catch (LogLineIsEmptyException $exception) {
+                ray('empty log line')->green();
             } catch (Throwable $throwable) {
                 ray($throwable->getMessage())->red();
             } finally {
@@ -65,32 +76,7 @@ class LogProcessor
         return $this->nbValidLines;
     }
 
-    public function isChannelMarkedUnknown(string $channelId): bool
-    {
-        return Cache::has(self::CACHE_PREFIX . self::SEPARATOR . 'UNKNOWN' . self::SEPARATOR . $channelId);
-    }
-
-    public function markChannelAsUnknownAndStore(string $channelId): void
-    {
-        Cache::put(self::CACHE_PREFIX . self::SEPARATOR . 'UNKNOWN' . self::SEPARATOR . $channelId, true);
-    }
-
-    public function hasChannelBeenMet(string $channelId)
-    {
-        return Cache::has(self::CACHE_PREFIX . self::SEPARATOR . 'CHANNEL' . self::SEPARATOR . $channelId);
-    }
-
-    public function markChannelAsMetAndStoreModel(Channel $channel): void
-    {
-        Cache::put(self::CACHE_PREFIX . self::SEPARATOR . 'CHANNEL' . self::SEPARATOR . $channel->channelId(), $channel);
-    }
-
-    public function recoverKnownChannelModel(string $channelId): Channel
-    {
-        return Cache::get(self::CACHE_PREFIX . self::SEPARATOR . 'CHANNEL' . self::SEPARATOR . $channelId);
-    }
-
-    public function recoverChannel(string $channelId): Channel
+    protected function recoverChannelModel(string $channelId): ?Channel
     {
         if ($this->hasChannelBeenMet($channelId)) {
             // we alreay met this channel => retrieve from cache
@@ -98,43 +84,60 @@ class LogProcessor
         } else {
             // check channel exists
             $channel = Channel::byChannelId($channelId);
-            if ($channel === null) {
-                $this->markChannelAsUnknownAndStore($channelId);
 
-                throw new LogProcessorUnknownChannelException('Channel ' . $channelId . ' is unknown');
-            }
             // caching channel model
-            $this->markChannelAsMetAndStoreModel($channel);
+            $this->markChannelAsMetAndStoreResult($channelId, $channel);
         }
 
         return $channel;
     }
 
-    public function processLine(string $logLine): void
+    protected function recoverMediaModel(string $mediaId): ?Media
     {
-        $logLineParser = LogLineParser::read($logLine)->parse();
+        if ($this->hasMediaBeenMet($mediaId)) {
+            // we alreay met this channel => retrieve from cache
+            $media = $this->recoverKnownMediaModel($mediaId);
+        } else {
+            // check channel exists
+            $media = Media::byMediaId($mediaId);
 
-        // we already met this channel and it is probably still unknown
-        if ($this->isChannelMarkedUnknown($logLineParser->channelId())) {
-            return; // skip
+            // caching result
+            $this->markMediaAsMetAndStoreResult($mediaId, $media);
         }
 
-        $channel = $this->recoverChannel($logLineParser->channelId());
+        return $media;
+    }
 
-        // check media exists
-        $media = Media::byMediaId($logLineParser->mediaId());
+    protected function processLine(): void
+    {
+        $logLineParser = LogLineParser::read($this->logLine)->parse();
 
-        throw_if($media === false, new LogProcessorUnknownMediaException('Media ' . $logLineParser->mediaId() . ' is unknown'));
+        // recover channel model from cache or db
+        $channel = $this->recoverChannelModel($logLineParser->channelId());
+        throw_if($channel === null, new LogProcessorUnknownChannelException('Channel {' . $logLineParser->channelId() . '} is unknown'));
+
+        // recover channel model from cache or db
+        $media = $this->recoverMediaModel($logLineParser->mediaId());
+        throw_if($media === null, new LogProcessorUnknownMediaException('Media {' . $logLineParser->mediaId() . '} is unknown'));
 
         // according to status media should be downloaded or not
+        if ($logLineParser->status() !== 200 || $logLineParser->weight() <= 0) {
+            ray('not a download only a touch');
+
+            return;
+        }
 
         // check if media has been partially/totally downloaded
-        $fully = $this->hasMediaBeenFullyDownloaded($media->weight(), $logLineParser->weight());
+        if (!$this->hasMediaBeenDownloaded($media->weight(), $logLineParser->weight())) {
+            ray('bytes_sent is lower than 80%');
+
+            return;
+        }
 
         /* the thing I want to store
             DAY --- CHANNEL_ID --- MEDIA_ID --- nb of downloads
         */
-        Cache::increment(self::CACHE_PREFIX . self::SEPARATOR . $logLineParser->logDay() . self::SEPARATOR . $logLineParser->channelId() . self::SEPARATOR . $logLineParser->mediaId());
+        $this->incrementDownloads(logDay: $logLineParser->logDay(), channelId: $logLineParser->channelId(), mediaId: $logLineParser->mediaId());
     }
 
     protected function startProcess(): void
@@ -147,7 +150,7 @@ class LogProcessor
         fclose($this->fileHandle);
     }
 
-    protected function hasMediaBeenFullyDownloaded(int $mediaSize, int $downloadedWeight)
+    protected function hasMediaBeenDownloaded(int $mediaSize, int $downloadedWeight)
     {
         return $downloadedWeight > $mediaSize * self::RATIO_TO_BE_DOWNLOADED;
     }

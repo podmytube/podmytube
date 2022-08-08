@@ -101,9 +101,9 @@ class LogLineParser
         return $this->status;
     }
 
-    public function weight(): ?int
+    public function weight(): int
     {
-        return $this->weight;
+        return $this->weight ?? 0;
     }
 
     public function logDate(): Carbon
