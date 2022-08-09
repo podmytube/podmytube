@@ -79,12 +79,8 @@ class LogProcessor
         return $this->nbValidLines;
     }
 
-    public function nbDownloadsByChannel(Carbon $date, Channel $channel): int
+    public function nbDownloadsByChannel(Carbon $date, Channel $channel): void
     {
-        return Download::where(
-            ['log_day','=', $date->toDateString()]
-            ['channel','=', $date->toDateString()]
-            )->get()->count
     }
 
     protected function recoverChannelModel(string $channelId): ?Channel
