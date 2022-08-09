@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use App\Exceptions\FileUploadFailureException;
 use App\Jobs\SendFileBySFTP;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Storage;
@@ -58,20 +57,5 @@ class SendFileBySFTPTest extends TestCase
         $job->handle();
         $this->assertTrue(Storage::disk('remote')->exists($this->remoteFile));
         $this->assertFileDoesNotExist($this->sourceFile);
-    }
-
-    /** @test */
-    public function sending_file_on_protected_folder_should_throw_exception(): void
-    {
-        /*
-         * cannot really write protect folder through Storage facade
-         * cannot fake this one
-         * using real remote configured
-         */
-        $this->remoteFile = 'protected/' . $this->filename;
-        $this->expectException(FileUploadFailureException::class);
-        $job = new SendFileBySFTP($this->sourceFile, $this->remoteFile, false);
-        $job->handle();
-        $this->assertFalse(Storage::disk('remote')->exists($this->remoteFile));
     }
 }
