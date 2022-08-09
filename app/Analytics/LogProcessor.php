@@ -10,8 +10,11 @@ use App\Exceptions\LogLineIsInvalidException;
 use App\Exceptions\LogProcessorUnknownChannelException;
 use App\Exceptions\LogProcessorUnknownMediaException;
 use App\Models\Channel;
+use App\Models\Download;
 use App\Models\Media;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Throwable;
 
 class LogProcessor
@@ -76,6 +79,14 @@ class LogProcessor
         return $this->nbValidLines;
     }
 
+    public function nbDownloadsByChannel(Carbon $date, Channel $channel): int
+    {
+        return Download::where(
+            ['log_day','=', $date->toDateString()]
+            ['channel','=', $date->toDateString()]
+            )->get()->count
+    }
+
     protected function recoverChannelModel(string $channelId): ?Channel
     {
         if ($this->hasChannelBeenMet($channelId)) {
@@ -137,7 +148,14 @@ class LogProcessor
         /* the thing I want to store
             DAY --- CHANNEL_ID --- MEDIA_ID --- nb of downloads
         */
-        $this->incrementDownloads(logDay: $logLineParser->logDay(), channelId: $logLineParser->channelId(), mediaId: $logLineParser->mediaId());
+        Download::query()->updateOrCreate(
+            [
+                'log_day' => $logLineParser->logDate(),
+                'channel_id' => $logLineParser->channelId(),
+                'media_id' => $logLineParser->mediaId(),
+            ],
+            ['count' => DB::raw('count + 1')]
+        );
     }
 
     protected function startProcess(): void
