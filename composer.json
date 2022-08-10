@@ -32,7 +32,7 @@
         "spatie/laravel-ray": "^1.30",
         "spatie/laravel-stripe-webhooks": "^3.0",
         "spatie/laravel-webhook-client": "^3.0",
-        "spatie/ssh": "^1.6",
+        "spatie/ssh": "^1.7",
         "stripe/stripe-php": "^7.0",
         "wapmorgan/mp3info": "^0.0.5"
     },
