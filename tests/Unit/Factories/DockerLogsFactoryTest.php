@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Factories;
 
-use App\Exceptions\DockerLogsCommandHasFailedException;
 use App\Factories\DockerLogsFactory;
+use Carbon\Carbon;
 use Tests\TestCase;
 
 /**
@@ -15,80 +15,98 @@ use Tests\TestCase;
 class DockerLogsFactoryTest extends TestCase
 {
     protected string $containerName;
-    protected string $sshUser;
-    protected string $sshHost;
-    protected string $sshPrivateKeyPath;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->containerName = config('app.audio_container_name');
-        $this->sshUser = config('app.sftp_user');
-        $this->sshHost = config('app.sftp_host');
-        $this->sshPrivateKeyPath = config('app.sftp_key_path');
+        $this->containerName = 'mp3';
     }
 
     /** @test */
-    public function everything_should_be_fine(): void
+    public function since_should_be_utc(): void
     {
-        $expectedNumberOfLogs = 10;
-        $dockerLogs = DockerLogsFactory::forContainer($this->containerName, $this->sshUser, $this->sshHost, $this->sshPrivateKeyPath)
-            ->defineTail(10)
-        ;
-        $this->assertNotNull($dockerLogs);
-        $this->assertInstanceOf(DockerLogsFactory::class, $dockerLogs);
-
-        array_map(function ($property) use ($dockerLogs): void {
-            $this->assertEquals($this->{$property}, $dockerLogs->{$property}());
-        }, [
-            'containerName',
-            'sshUser',
-            'sshHost',
-            'sshPrivateKeyPath',
-        ]);
-
-        $output = $dockerLogs->run()->output();
-        $this->assertNotNull($output);
-        $this->assertIsString($output);
-        $this->assertGreaterThan($expectedNumberOfLogs, $output);
+        $now = now();
+        $nowUtc = clone $now;
+        $expectedSince = $nowUtc->setTimezone('utc')->toDateTimeLocalString();
+        $dockerLogsFactory = DockerLogsFactory::withParams($this->containerName, since: $now);
+        $this->assertEquals($expectedSince, $dockerLogsFactory->since());
     }
 
     /** @test */
-    public function invalid_ssh_user_should_fail(): void
+    public function simple_command_line_should_be_good(): void
     {
-        $this->markAsRisky('This test will cause you to be jailed by fail2ban');
-        $this->expectException(DockerLogsCommandHasFailedException::class);
-        DockerLogsFactory::forContainer($this->containerName, 'invalid-user', $this->sshHost, $this->sshPrivateKeyPath)
-            ->run()
-        ;
+        $expectedCommand = 'docker logs ' . $this->containerName;
+        $command = DockerLogsFactory::withParams($this->containerName)->command();
+        $this->assertEquals($expectedCommand, $command);
     }
 
     /** @test */
-    public function invalid_ssh_host_should_fail(): void
+    public function command_line_with_tail_should_be_good(): void
     {
-        $this->markAsRisky('This test will cause you to be jailed by fail2ban');
-        $this->expectException(DockerLogsCommandHasFailedException::class);
-        DockerLogsFactory::forContainer($this->containerName, $this->sshUser, 'invalid-host', $this->sshPrivateKeyPath)
-            ->run()
-        ;
+        $expectedCommand = "docker logs --tail 10 {$this->containerName}";
+        $command = DockerLogsFactory::withParams(
+            containerName: $this->containerName,
+            tail: 10,
+        )->command();
+        $this->assertEquals($expectedCommand, $command);
     }
 
     /** @test */
-    public function invalid_private_key_should_fail(): void
+    public function command_line_with_since_should_be_good(): void
     {
-        $this->markAsRisky('This test will cause you to be jailed by fail2ban');
-        $this->expectException(DockerLogsCommandHasFailedException::class);
-        DockerLogsFactory::forContainer($this->containerName, $this->sshUser, $this->sshHost, '/this/is/not/valid/private/key')
-            ->run()
-        ;
+        $expectedDate = now();
+        $expectedUtc = clone $expectedDate;
+        $expectedSinceUtc = $expectedUtc->setTimezone('UTC')->toDateTimeLocalString();
+        $expectedCommand = "docker logs --since {$expectedSinceUtc} {$this->containerName}";
+        $command = DockerLogsFactory::withParams(
+            containerName: $this->containerName,
+            since: $expectedDate,
+        )->command();
+        $this->assertEquals($expectedCommand, $command);
     }
 
     /** @test */
-    public function invalid_container_name_should_fail(): void
+    public function command_line_with_until_should_be_good(): void
     {
-        $this->expectException(DockerLogsCommandHasFailedException::class);
-        DockerLogsFactory::forContainer('this-will-never-be-a-container-name', $this->sshUser, $this->sshHost, $this->sshPrivateKeyPath)
-            ->run()
-        ;
+        $expectedDate = now();
+        $expectedUtc = clone $expectedDate;
+        $expectedUntilUtc = $expectedUtc->setTimezone('UTC')->toDateTimeLocalString();
+        $expectedCommand = "docker logs --until {$expectedUntilUtc} {$this->containerName}";
+        $command = DockerLogsFactory::withParams(
+            containerName: $this->containerName,
+            until: $expectedDate,
+        )->command();
+        $this->assertEquals($expectedCommand, $command);
+    }
+
+    /** @test */
+    public function command_line_with_all_should_be_good(): void
+    {
+        $now = now();
+        $twoHoursAgo = clone $now;
+        $twoHoursAgo->subHours(2);
+
+        $expectedSinceUtc = $this->toExpectedUtc($twoHoursAgo);
+        $expectedUntilUtc = $this->toExpectedUtc($now);
+        $expectedTail = 10;
+
+        $expectedCommand = "docker logs --since {$expectedSinceUtc} --until {$expectedUntilUtc} --tail {$expectedTail} {$this->containerName}";
+        $command = DockerLogsFactory::withParams(
+            containerName: $this->containerName,
+            since: $twoHoursAgo,
+            until: $now,
+            tail: $expectedTail,
+        )->command();
+        $this->assertEquals($expectedCommand, $command);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | helpers & providers
+    |--------------------------------------------------------------------------
+    */
+    public function toExpectedUtc(Carbon $date): string
+    {
+        return $date->setTimezone('UTC')->toDateTimeLocalString();
     }
 }
