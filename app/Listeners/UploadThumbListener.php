@@ -45,10 +45,10 @@ class UploadThumbListener implements ShouldQueue
         }
 
         if (!is_readable($localPath)) {
-            $message = "File on {$localPath} does not exists.";
+            $message = "File on {$localPath} is not readable.";
             Log::error($message);
 
-            throw new FileUploadUnreadableFileException("File on {$localPath} does not exists.");
+            throw new FileUploadUnreadableFileException($message);
         }
 
         SendFileBySFTP::dispatchSync($localPath, $remotePath);
