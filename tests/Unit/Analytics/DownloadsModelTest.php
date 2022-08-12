@@ -67,7 +67,7 @@ it('should count downloads (1 per day) for one channel properly', function (): v
     $medias = Media::factory()->channel($channel)->count($expectedNumberOfMedias)->create();
 
     // creating one download per media (count is 1)
-    $medias->each(fn (Media $media) => Download::factory()->media($media)->create(['count' => 1]));
+    $medias->each(fn (Media $media) => Download::factory()->media($media)->create(['counted' => 1]));
 
     $result = Download::forChannelThisDay($channel, now());
     expect($result)->not()->toBeNull();
@@ -86,7 +86,7 @@ it('should count downloads (random per day) for one channel properly', function 
     $expectedNumberOfDownloads = 0;
     $medias->each(function (Media $media) use (&$expectedNumberOfDownloads): void {
         $download = Download::factory()->media($media)->create();
-        $expectedNumberOfDownloads += $download->count;
+        $expectedNumberOfDownloads += $download->counted;
     });
 
     $result = Download::forChannelThisDay($channel, now());
@@ -103,7 +103,7 @@ it('should count downloads only for specific channel', function (): void {
         ->count(2)
         ->create()
     ;
-    $otherMedias->each(fn (Media $media) => Download::factory()->media($media)->create(['count' => 1]));
+    $otherMedias->each(fn (Media $media) => Download::factory()->media($media)->create(['counted' => 1]));
 
     // creating one channel and some medias
     $channel = Channel::factory()->create();
@@ -113,7 +113,7 @@ it('should count downloads only for specific channel', function (): void {
     $expectedNumberOfDownloads = 0;
     $medias->each(function (Media $media) use (&$expectedNumberOfDownloads): void {
         $download = Download::factory()->media($media)->create();
-        $expectedNumberOfDownloads += $download->count;
+        $expectedNumberOfDownloads += $download->counted;
     });
 
     $result = Download::forChannelThisDay($channel, now());
@@ -130,12 +130,18 @@ it('should count downloads only for specific media', function (): void {
     // selecting one media
     $selectedMedia = $medias->first();
 
+    // should be 0 --- before any download
+    $result = Download::forMediaThisDay($selectedMedia, now());
+    expect($result)->not()->toBeNull();
+    expect($result)->toBeInt();
+    expect($result)->toBe(0);
+
     // creating some downloads for all medias
     $expectedNumberOfDownloads = 0;
     $medias->each(function (Media $media) use (&$expectedNumberOfDownloads, $selectedMedia): void {
         $download = Download::factory()->media($media)->create();
         if ($media->is($selectedMedia)) {
-            $expectedNumberOfDownloads = $download->count;
+            $expectedNumberOfDownloads = $download->counted;
         }
     });
 

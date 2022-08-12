@@ -16,36 +16,41 @@ class Download extends Model
     use BelongsToMedia;
     use HasFactory;
 
+    // protected $table = 'downloads';
+
     protected $dates = [];
 
     protected $casts = [
         'log_day' => 'datetime:Y-m-d',
-        'count' => 'integer',
+        'counted' => 'integer',
     ];
 
     protected $guarded = ['id'];
 
     public static function forChannelThisDay(Channel $channel, Carbon $date): int
     {
-        return self::where(
-            [
-                ['log_day', '=', $date->toDateString()],
-                ['channel_id', '=', $channel->channel_id],
-            ]
-        )
-            ->sum('count')
+        return self::query()
+            ->where(
+                [
+                    ['log_day', '=', $date->toDateString()],
+                    ['channel_id', '=', $channel->channel_id],
+                ]
+            )
+            ->sum('counted')
         ;
     }
 
     public static function forMediaThisDay(Media $media, Carbon $date): int
     {
-        return self::where(
+        $download = self::where(
             [
                 ['log_day', '=', $date->toDateString()],
                 ['media_id', '=', $media->id],
             ]
         )
-            ->first()->count
+            ->first()
         ;
+
+        return $download !== null ? $download->counted : 0;
     }
 }

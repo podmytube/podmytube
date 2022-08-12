@@ -25,14 +25,14 @@ class VolumeOnDiskFactoryTest extends TestCase
         $this->assertEquals(0, VolumeOnDiskFactory::init()->raw());
 
         // with one only
-        $media = Media::factory()->grabbedAt(now())->create();
+        $media = Media::factory()->create();
         $expectedVolumeOnDisk = $media->length;
         $this->assertEquals($expectedVolumeOnDisk, VolumeOnDiskFactory::init()->raw());
 
         // with some more
         $medias = Media::factory()->count(10)->grabbedAt(now())->create();
         $expectedVolumeOnDisk = $medias->reduce(function ($carry, Media $media) {
-            return $carry + $media->length;
+            return $carry + $media->weight();
         }, $expectedVolumeOnDisk);
 
         $this->assertEquals($expectedVolumeOnDisk, VolumeOnDiskFactory::init()->raw());
@@ -47,15 +47,19 @@ class VolumeOnDiskFactoryTest extends TestCase
 
         // with one only
         $media = Media::factory()->grabbedAt(now())->create();
-        $expectedVolumeOnDisk = formatBytes($media->length);
-        $this->assertEquals($expectedVolumeOnDisk, VolumeOnDiskFactory::init()->formatted());
+        $expectedVolumeOnDisk = $media->weight();
+        $this->assertEquals(formatBytes($media->weight()), VolumeOnDiskFactory::init()->formatted());
 
         // with some more
-        $medias = Media::factory()->count(10)->grabbedAt(now())->create();
-        $expectedVolumeOnDisk = formatBytes($medias->reduce(function ($carry, Media $media) {
-            return $carry + $media->length;
-        }, $expectedVolumeOnDisk));
+        $medias = Media::factory()->grabbedAt(now())->count(10)->create();
 
-        $this->assertEquals($expectedVolumeOnDisk, VolumeOnDiskFactory::init()->formatted());
+        $expectedVolumeOnDisk = $medias->reduce(
+            fn ($carry, Media $media) => $carry + $media->weight(),
+            $expectedVolumeOnDisk
+        );
+
+        $expectedVolumeOnDiskFormatted = formatBytes($expectedVolumeOnDisk);
+
+        $this->assertEquals($expectedVolumeOnDiskFormatted, VolumeOnDiskFactory::init()->formatted());
     }
 }

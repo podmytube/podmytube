@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Factories;
 
-use App\Exceptions\DockerLogsCommandHasFailedException;
 use Carbon\Carbon;
 
 class DockerLogsFactory
@@ -64,28 +63,7 @@ class DockerLogsFactory
         }
 
         $commandLine .= " {$this->containerName()}";
-        ray($commandLine);
 
         return $commandLine; // 'docker logs --since=' . $this->since() . ' ' . $this->containerName();
     }
-
-    /* public function run(): self
-    {
-        $sshProcess = Ssh::create($this->sshUser(), $this->sshHost())
-            ->usePrivateKey($this->sshPrivateKeyPath())
-            ->disableStrictHostKeyChecking()
-            ->execute($this->commandToRun())
-        ;
-
-        if (!$sshProcess->isSuccessful()) {
-            $message = 'docker logs command over ssh has failed with error ' . $sshProcess->getErrorOutput();
-            Log::error($message);
-
-            throw new DockerLogsCommandHasFailedException($message);
-        }
-
-        $this->output = $sshProcess->getOutput();
-
-        return $this;
-    } */
 }

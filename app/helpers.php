@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 if (!function_exists('formatBytes')) {
-    function formatBytes($size, $precision = 2): string
+    function formatBytes(int $size, ?int $precision = 2): string
     {
         if ($size === 0) {
             return '0';

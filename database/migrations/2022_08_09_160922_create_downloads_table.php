@@ -17,9 +17,11 @@ return new class() extends Migration {
             $table->date('log_day');
             $table->string('channel_id');
             $table->unsignedBigInteger('media_id');
-            $table->unsignedBigInteger('count');
+            $table->unsignedBigInteger('counted');
             $table->timestamps();
 
+            // cleaner and required for upserts
+            $table->unique(['log_day', 'channel_id', 'media_id']);
             $table->foreign('media_id')->references('id')->on('medias');
             $table->foreign('channel_id')->references('channel_id')->on('channels');
         });

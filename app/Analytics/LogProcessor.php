@@ -6,14 +6,13 @@ namespace App\Analytics;
 
 use App\Analytics\Traits\IsCachable;
 use App\Exceptions\LogLineIsEmptyException;
-use App\Exceptions\LogLineIsInvalidException;
+use App\Exceptions\LogProcessorMediaNotFoundException;
 use App\Exceptions\LogProcessorUnknownChannelException;
 use App\Exceptions\LogProcessorUnknownMediaException;
 use App\Models\Channel;
 use App\Models\Download;
 use App\Models\Media;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
@@ -30,10 +29,11 @@ class LogProcessor
     protected string $logLine = '';
     protected int $nbProcessedLines = 0;
     protected int $nbValidLines = 0;
+    protected int $nbMediasNotFound = 0;
     protected array $channelsAlreadyMet = [];
     protected array $errors = [];
 
-    private function __construct(protected ?string $logFileToProcess = null)
+    private function __construct(protected ?string $logsToParse = null)
     {
     }
 
@@ -42,18 +42,23 @@ class LogProcessor
         return new static(...$params);
     }
 
+    public static function withFile(?string $logFileToProcess)
+    {
+        return new static(file_get_contents($logFileToProcess));
+    }
+
     public function process(): self
     {
-        $this->startProcess();
-
-        while (!feof($this->fileHandle)) {
+        $separator = PHP_EOL;
+        $logLine = strtok($this->logsToParse, PHP_EOL);
+        while ($logLine !== false) {
             try {
-                $logLine = fgets($this->fileHandle);
-
-                throw_if($logLine === false, new LogLineIsInvalidException('logline is unreadable probably empty ' . $logLine));
-
                 $this->logLine = $logLine;
                 $this->processLine();
+                $this->nbValidLines++;
+            } catch (LogProcessorMediaNotFoundException $exception) {
+                // log line is valid but media file is not found
+                $this->nbMediasNotFound++;
                 $this->nbValidLines++;
             } catch (LogLineIsEmptyException $exception) {
                 ray('empty log line')->green();
@@ -62,9 +67,11 @@ class LogProcessor
             } finally {
                 $this->nbProcessedLines++;
             }
-        }
 
-        $this->endProcess();
+            $logLine = strtok($separator);
+        }
+        // clean ram used by strtok
+        strtok('', '');
 
         return $this;
     }
@@ -79,8 +86,19 @@ class LogProcessor
         return $this->nbValidLines;
     }
 
-    public function nbDownloadsByChannel(Carbon $date, Channel $channel): void
+    public function nbMediasNotFound()
     {
+        return $this->nbMediasNotFound;
+    }
+
+    public function nbDownloadsByChannel(Channel $channel, Carbon $date): int
+    {
+        return Download::forChannelThisDay($channel, $date);
+    }
+
+    public function nbDownloadsByMedia(Media $media, Carbon $date): int
+    {
+        return Download::forMediaThisDay($media, $date);
     }
 
     protected function recoverChannelModel(string $channelId): ?Channel
@@ -127,6 +145,9 @@ class LogProcessor
         $media = $this->recoverMediaModel($logLineParser->mediaId());
         throw_if($media === null, new LogProcessorUnknownMediaException('Media {' . $logLineParser->mediaId() . '} is unknown'));
 
+        // 404 media not found
+        throw_if($logLineParser->status() === 404, new LogProcessorMediaNotFoundException('Media {' . $logLineParser->mediaId() . '} is not found'));
+
         // according to status media should be downloaded or not
         if ($logLineParser->status() !== 200 || $logLineParser->weight() <= 0) {
             ray('not a download only a touch');
@@ -144,24 +165,17 @@ class LogProcessor
         /* the thing I want to store
             DAY --- CHANNEL_ID --- MEDIA_ID --- nb of downloads
         */
-        Download::query()->updateOrCreate(
+
+        Download::query()->upsert(
             [
-                'log_day' => $logLineParser->logDate(),
-                'channel_id' => $logLineParser->channelId(),
-                'media_id' => $logLineParser->mediaId(),
+                'log_day' => $logLineParser->logDay(),
+                'channel_id' => $channel->channelId(),
+                'media_id' => $media->id,
+                'counted' => 1,
             ],
-            ['count' => DB::raw('count + 1')]
+            ['log_day', 'channel_id', 'media_id'],
+            ['counted' => DB::raw('counted + 1')]
         );
-    }
-
-    protected function startProcess(): void
-    {
-        $this->fileHandle = fopen($this->logFileToProcess, 'r');
-    }
-
-    protected function endProcess(): void
-    {
-        fclose($this->fileHandle);
     }
 
     protected function hasMediaBeenDownloaded(int $mediaSize, int $downloadedWeight)

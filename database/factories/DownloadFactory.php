@@ -25,7 +25,7 @@ class DownloadFactory extends Factory
             'log_day' => now()->toDateString(),
             'channel_id' => Channel::factory(),
             'media_id' => Media::factory(),
-            'count' => fake()->numberBetween(0, 100),
+            'counted' => fake()->numberBetween(0, 100),
         ];
     }
 
