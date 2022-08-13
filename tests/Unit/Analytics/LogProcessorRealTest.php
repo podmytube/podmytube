@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Factories;
+namespace Tests\Unit\Analytics;
 
 use App\Analytics\LogProcessor;
 use App\Models\Channel;
