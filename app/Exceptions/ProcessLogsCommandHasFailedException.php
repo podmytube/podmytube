@@ -6,6 +6,6 @@ namespace App\Exceptions;
 
 use Exception;
 
-class LineLogInvalidDateException extends Exception
+class ProcessLogsCommandHasFailedException extends Exception
 {
 }

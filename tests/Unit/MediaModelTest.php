@@ -332,4 +332,22 @@ class MediaModelTest extends TestCase
         $medias = Media::ungrabbedMediasForChannel($someChannel);
         $this->assertCount($expectedNumberOfMediasForSomeChannel, $medias);
     }
+
+    /** @test */
+    public function weight_is_fine(): void
+    {
+        $expectedWeight = 0;
+        $media = Media::factory()->create();
+        $result = $media->weight();
+        $this->assertNotNull($result);
+        $this->assertIsInt($result);
+        $this->assertEquals($expectedWeight, $result);
+
+        $expectedWeight = 455;
+        $media = Media::factory()->grabbedAt(now())->create(['length' => $expectedWeight]);
+        $result = $media->weight();
+        $this->assertNotNull($result);
+        $this->assertIsInt($result);
+        $this->assertEquals($expectedWeight, $result);
+    }
 }

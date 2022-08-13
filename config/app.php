@@ -89,7 +89,10 @@ return [
     'sftp_root' => env('SFTP_ROOT'),
     'sftp_key_path' => base_path() . '/.ssh/kimUpload',
 
-    'audio_container_name' => 'mp3',
+    'podhost_ssh_user' => env('PODHOST_SSH_USER'),
+    'podhost_ssh_host' => env('PODHOST_SSH_HOST'),
+
+    'audio_container_name' => env('AUDIO_CONTAINER_NAME'),
 
     'stripe_secret' => env('STRIPE_SECRET'),
     'users_spreadsheet_id' => env('USERS_SPREADSHEET_ID', '1kvW6tTjN11hblybVY28o7z7qpjBSwEMySopCluf4gFE'),

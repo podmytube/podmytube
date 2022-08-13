@@ -40,8 +40,8 @@ EOT,
     {
         return $this->state(
             [
-                'length' => 355,
-                'duration' => 2500,
+                'length' => fake()->numberBetween(100, 900000),
+                'duration' => fake()->numberBetween(900000, 90000000),
                 'grabbed_at' => $grabbedAt,
             ]
         );

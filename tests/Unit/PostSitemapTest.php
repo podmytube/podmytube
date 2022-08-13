@@ -21,7 +21,6 @@ it('should return post url with sitemapLoc', function (): void {
 
 it('should return updated_at with sitemapLastmod', function (): void {
     $result = $this->post->sitemapLastmod();
-    ray($this->post->updated_at, $result);
     expect($result)->not()->toBeNull();
     expect($result)->toBeInstanceOf(Carbon::class);
     expect($result->toDateTimeString())->toBe($this->post->updated_at->toDateTimeString());

@@ -12,7 +12,7 @@ use App\Models\Plan;
 use App\Models\Subscription;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
-use Storage;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 /**

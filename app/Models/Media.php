@@ -53,6 +53,7 @@ class Media extends Model
 
     protected $casts = [
         'duration' => 'integer',
+        'length' => 'integer',
         'uploaded_by_user' => 'boolean',
     ];
 
@@ -288,5 +289,10 @@ class Media extends Model
             ->orderBy('published_at', 'desc')
             ->get()
         ;
+    }
+
+    public function weight(): int
+    {
+        return $this->length ?? 0;
     }
 }
