@@ -25,8 +25,7 @@ class UpdatePodcastForChannelCommand extends Command
      */
     protected $description = 'This command will build one podcast feed at a time.';
 
-    /** @var \App\Models\Channel */
-    protected $channel;
+    protected ?Channel $channel;
 
     /**
      * Execute the console command.

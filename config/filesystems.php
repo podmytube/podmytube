@@ -113,6 +113,7 @@ return [
             'visibility' => 'public',
             'permPublic' => 0644,
             'directoryPerm' => 0755,
+            'throw' => true,
         ],
 
         'tmp' => [

@@ -1,28 +1,30 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Podcast;
 
 class PodcastHeader
 {
-    /** @var string $url */
+    /** @var string */
     public $link;
 
     /** @var string title */
     public $title;
 
-    /** @var string $language */
+    /** @var string */
     public $language;
 
-    /** @var string $copyright */
+    /** @var string */
     public $copyright;
 
-    /** @var string $description the show description */
+    /** @var string the show description */
     public $description;
 
-    /** @var string $podcastCover */
+    /** @var string */
     public $podcastCover;
 
-    /** @var string $itunesHeader */
+    /** @var string */
     public $itunesHeader;
 
     private function __construct(array $attributes = [])
@@ -33,11 +35,11 @@ class PodcastHeader
         $this->copyright = $attributes['copyright'] ?? null;
         $this->description = $attributes['description'] ?? null;
 
-        $this->podcastCover = PodcastCover::prepare([
-            'url' => $attributes['imageUrl'] ?? null,
-            'link' => $attributes['link'] ?? null,
-            'title' => $attributes['title'] ?? null,
-        ])->render();
+        $this->podcastCover = PodcastCover::prepare(
+            url: $attributes['imageUrl'] ?? null,
+            link: $attributes['link'] ?? null,
+            title: $attributes['title'] ?? null,
+        )->render();
 
         $this->itunesHeader = ItunesHeader::prepare([
             'author' => $attributes['author'] ?? null,
@@ -62,12 +64,15 @@ class PodcastHeader
             if (isset($property)) {
                 return true;
             }
+
             return false;
         }) === false) {
             return '';
         }
+
         return view('podcast.header')
             ->with(['podcastHeader' => $this])
-            ->render();
+            ->render()
+        ;
     }
 }
