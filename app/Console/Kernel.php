@@ -9,11 +9,11 @@ use App\Console\Commands\DownloadVideosByPeriodCommand;
 use App\Console\Commands\GetPlaylistMediasCommand;
 use App\Console\Commands\GetPlaylistsCommand;
 use App\Console\Commands\LastMediaPublishedChecker;
+use App\Console\Commands\ProcessLogsCommand;
 use App\Console\Commands\SendMonthlyReports;
 use App\Console\Commands\UpdateBlogPostsCommand;
 use App\Console\Commands\UpdateChannelsCommand;
 use App\Console\Commands\UpdatePlaylistsForPayingChannelsCommand;
-use App\Console\Commands\UpdatePodcastsCommand;
 use App\Console\Commands\UpdateSitemapCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -42,20 +42,6 @@ class Kernel extends ConsoleKernel
         // grabbing non grabbed videos
         $schedule->command(DownloadVideosByPeriodCommand::class)->hourlyAt(12);
 
-        /* 
-         * Building podcasts
-         * this command is now useless because DownloadVideosByPeriodCommand is
-         * dispatching podcast generation.
-         * DownloadVideosByPeriodCommand 
-         *   DownloadMediaFactory
-         *     ChannelUpdated
-         *       UploadPodcast
-         *         UploadPodcastFactory
-         * UpdatePodcastsCommand
-         *   UploadPodcastFactory
-         * $schedule->command(UpdatePodcastsCommand::class, ['all'])->hourlyAt(30);
-         */
-
         // get playlists from paying channels
         $schedule->command(GetPlaylistsCommand::class)->hourlyAt(35);
 
@@ -63,10 +49,17 @@ class Kernel extends ConsoleKernel
         $schedule->command(UpdatePlaylistsForPayingChannelsCommand::class)->hourlyAt(45);
 
         /*
-         * ===============================================================
-         * Specials
-         * ===============================================================
-         */
+        |--------------------------------------------------------------------------
+        | Analytics
+        |--------------------------------------------------------------------------
+        */
+        $schedule->command(ProcessLogsCommand::class)->hourlyAt(55);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Specials
+        |--------------------------------------------------------------------------
+        */
         // generating sitemap
         $schedule->command(UpdateSitemapCommand::class)->daily();
 
@@ -77,10 +70,10 @@ class Kernel extends ConsoleKernel
         $schedule->command(UpdateBlogPostsCommand::class)->dailyAt('23h27');
 
         /*
-         * ===============================================================
-         * Monthly
-         * ===============================================================
-         */
+        |--------------------------------------------------------------------------
+        | Monthly
+        |--------------------------------------------------------------------------
+        */
         // cleaning free medias old episodes - 12h
         $schedule->command(CleanFreeChannelMedias::class)->monthlyOn($day = 1, $time = '12:0');
 
