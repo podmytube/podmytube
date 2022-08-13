@@ -15,7 +15,7 @@ use Spatie\Ssh\Ssh;
 class ProcessLogsCommand extends Command
 {
     /** @var string The name and signature of the console command. */
-    protected $signature = 'process:logs';
+    protected $signature = 'process:logs {--check-ssh-only}';
 
     /** @var string The console command description. */
     protected $description = 'This command is getting logs from a container over ssh';
@@ -49,7 +49,9 @@ class ProcessLogsCommand extends Command
             throw new ProcessLogsCommandHasFailedException($message);
         }
 
-        LogProcessor::with($sshProcess->getOutput())->process();
+        if (!$this->option('check-ssh-only')) {
+            LogProcessor::with($sshProcess->getOutput())->process();
+        }
 
         return 0;
     }

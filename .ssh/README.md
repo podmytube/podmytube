@@ -14,5 +14,5 @@ and finally give rights to apache user on this file
 
 ```
 sudo chown www-data:$USER .ssh/kimUpload*
-sudo chmod ug+rw .ssh/kimUpload*
+sudo chmod 600 .ssh/kimUpload*
 ```
