@@ -20,11 +20,11 @@ class PodcastCoverTest extends TestCase
         $imageUrl = 'https://thumbs.podmytube.com/UCf2ZTuey5uT8hN3ESe-ZCPQ/KjxVJazWLmuLsOdiQ0w0u0iHVTT7jqMCgKlIjCyQ.png';
         $imageLink = 'https://www.podmytube.com';
         $imageTitle = 'Lorem ipsum';
-        $renderedResult = PodcastCover::prepare([
-            'url' => $imageUrl,
-            'link' => $imageLink,
-            'title' => $imageTitle,
-        ])->render();
+        $renderedResult = PodcastCover::prepare(
+            url: $imageUrl,
+            link: $imageLink,
+            title: $imageTitle,
+        )->render();
         $this->assertStringContainsString('<image>', $renderedResult);
         $this->assertStringContainsString("<url>{$imageUrl}</url>", $renderedResult);
         $this->assertStringContainsString("<link>{$imageLink}</link>", $renderedResult);
@@ -37,10 +37,7 @@ class PodcastCoverTest extends TestCase
     {
         $imageUrl = 'https://thumbs.podmytube.com/UCf2ZTuey5uT8hN3ESe-ZCPQ/KjxVJazWLmuLsOdiQ0w0u0iHVTT7jqMCgKlIjCyQ.png';
         $imageTitle = 'Lorem ipsum';
-        $renderedResult = PodcastCover::prepare([
-            'url' => $imageUrl,
-            'title' => $imageTitle,
-        ])->render();
+        $renderedResult = PodcastCover::prepare(url: $imageUrl, title: $imageTitle)->render();
         $this->assertStringContainsString('<image>', $renderedResult);
         $this->assertStringContainsString("<url>{$imageUrl}</url>", $renderedResult);
         $this->assertStringContainsString("<title>{$imageTitle}</title>", $renderedResult);
@@ -53,9 +50,7 @@ class PodcastCoverTest extends TestCase
     public function partial_informations_should_render_properly(): void
     {
         $imageUrl = 'https://thumbs.podmytube.com/UCf2ZTuey5uT8hN3ESe-ZCPQ/KjxVJazWLmuLsOdiQ0w0u0iHVTT7jqMCgKlIjCyQ.png';
-        $renderedResult = PodcastCover::prepare([
-            'url' => $imageUrl,
-        ])->render();
+        $renderedResult = PodcastCover::prepare(url: $imageUrl)->render();
         $this->assertStringContainsString('<image>', $renderedResult);
         $this->assertStringContainsString("<url>{$imageUrl}</url>", $renderedResult);
         $this->assertStringContainsString('</image>', $renderedResult);
@@ -75,19 +70,13 @@ class PodcastCoverTest extends TestCase
     public function invalid_url_should_throw_exception(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        PodcastCover::prepare([
-            'title' => 'Lorem ipsum',
-            'url' => 'Invalid url.',
-        ]);
+        PodcastCover::prepare(title: 'Lorem ipsum', url: 'Invalid url.');
     }
 
     /** @test */
     public function invalid_link_should_throw_exception(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        PodcastCover::prepare([
-            'title' => 'Lorem ipsum',
-            'link' => 'Invalid link.',
-        ]);
+        PodcastCover::prepare(title: 'Lorem ipsum', link: 'Invalid link.');
     }
 }

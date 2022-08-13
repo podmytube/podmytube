@@ -42,7 +42,7 @@ class FixRestoreThumbsCommand extends Command
 
         // for each folder
         array_map(function ($folderPath) {
-            $this->info("working with {$folderPath}");
+            $this->info("working with {$folderPath}", 'v');
 
             /** extracting channel id */
             $channel = $this->getChannelFromPath($folderPath);
@@ -51,20 +51,20 @@ class FixRestoreThumbsCommand extends Command
                 return false;
             }
 
-            $this->info("for channel {$channel->nameWithId()}, setting candidate thumbs ");
+            $this->info("for channel {$channel->nameWithId()}, setting candidate thumbs", 'v');
 
             /** get all files in folder */
             $filesInChannelFolder = Storage::disk('remote')->files($folderPath);
             array_map(function ($thumbFilePath) use ($channel) {
                 $filename = $this->lastPartFromPath($thumbFilePath);
                 $thumb = Thumb::where('file_name', '=', $filename)->first();
-                $this->info("Looking for {$filename} in thumbs.");
+                $this->info("Looking for {$filename} in thumbs.", 'v');
                 if ($thumb === null) {
                     // this filename is not a thumb
                     return false;
                 }
 
-                $this->info("let's associate thumb {$filename} with {$thumb->id}");
+                $this->info("let's associate thumb {$filename} with {$thumb->id}", 'v');
                 $thumb->update([
                     'coverable_type' => get_class($channel),
                     'coverable_id' => $channel->id(),
