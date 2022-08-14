@@ -12,6 +12,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class SendFileBySFTP implements ShouldQueue
 {
@@ -49,8 +50,9 @@ class SendFileBySFTP implements ShouldQueue
         $destFolder = pathinfo($this->remoteFilePath, PATHINFO_DIRNAME);
         $destFilename = pathinfo($this->remoteFilePath, PATHINFO_BASENAME);
 
-        $result = Storage::disk(self::REMOTE_DISK)->putFileAs($destFolder, $this->localFilePath, $destFilename);
-        if ($result === false) {
+        try {
+            Storage::disk(self::REMOTE_DISK)->putFileAs($destFolder, $this->localFilePath, $destFilename);
+        } catch (Throwable $thrown) {
             $exception = new FileUploadFailureException();
 
             $message = 'date : ' . now()->toDateTimeString() . PHP_EOL;
@@ -60,6 +62,7 @@ class SendFileBySFTP implements ShouldQueue
             $message .= "remoteFilePath : {$this->remoteFilePath}" . PHP_EOL;
             $message .= "destFolder : {$destFolder}" . PHP_EOL;
             $message .= "destFilename : {$destFilename}" . PHP_EOL;
+            $message .= 'error was ' . $thrown->getMessage() . PHP_EOL;
             $exception->addInformations($message);
             Log::debug($exception->getMessage());
 

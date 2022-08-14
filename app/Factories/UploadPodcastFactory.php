@@ -38,7 +38,7 @@ class UploadPodcastFactory
          * if I dispatch the job, with the delay, temporary file may be reused by another podcast.
          * if I dispatchSync it, file is transfered immediately so no usurpation.
          */
-        SendFileBySFTP::dispatchSync($this->localPath, $this->remotePath(), $cleanAfter = true);
+        SendFileBySFTP::dispatch($this->localPath, $this->remotePath(), $cleanAfter = true);
 
         Log::notice("Podcast {$this->podcastable->podcastTitle()} has been successfully updated. You can check it here : {$this->podcastable->podcastUrl()}");
 
