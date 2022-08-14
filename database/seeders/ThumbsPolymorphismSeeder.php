@@ -17,7 +17,7 @@ class ThumbsPolymorphismSeeder extends Seeder
         /** transforming all existing thumbs into coverables */
         $existingThumbs = Thumb::all();
         if ($existingThumbs->count()) {
-            $existingThumbs->map(
+            $existingThumbs->each(
                 function (Thumb $thumb): void {
                     $status = $thumb->update(
                         [

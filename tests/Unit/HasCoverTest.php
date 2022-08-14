@@ -39,6 +39,13 @@ class HasCoverTest extends TestCase
     }
 
     /** @test */
+    public function morphed_name_is_valid(): void
+    {
+        $this->assertEquals('morphedPlaylist', $this->playlist->morphedName());
+        $this->assertEquals('morphedChannel', $this->channel->morphedName());
+    }
+
+    /** @test */
     public function playlist_cover_should_be_null(): void
     {
         $this->assertNull($this->playlist->cover);
@@ -50,7 +57,7 @@ class HasCoverTest extends TestCase
     {
         Thumb::factory()->create(
             [
-                'coverable_type' => get_class($this->playlist),
+                'coverable_type' => $this->playlist->morphedName(),
                 'coverable_id' => $this->playlist->id,
             ]
         );
@@ -70,7 +77,7 @@ class HasCoverTest extends TestCase
     {
         Thumb::factory()->create(
             [
-                'coverable_type' => get_class($this->channel),
+                'coverable_type' => $this->channel->morphedName(),
                 'coverable_id' => $this->channel->channelId(),
             ]
         );

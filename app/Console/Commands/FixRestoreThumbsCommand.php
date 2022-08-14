@@ -66,7 +66,7 @@ class FixRestoreThumbsCommand extends Command
 
                 $this->info("let's associate thumb {$filename} with {$thumb->id}", 'v');
                 $thumb->update([
-                    'coverable_type' => get_class($channel),
+                    'coverable_type' => $channel->morphedName(),
                     'coverable_id' => $channel->id(),
                 ]);
             }, $filesInChannelFolder);

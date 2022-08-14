@@ -77,7 +77,7 @@ abstract class TestCase extends BaseTestCase
     public function createCoverFor(Coverable $coverable): Thumb
     {
         $thumb = Thumb::factory()->create([
-            'coverable_type' => get_class($coverable),
+            'coverable_type' => $coverable->morphedName(),
             'coverable_id' => $coverable->id(),
         ]);
         $this->createFakeCoverFor($thumb);

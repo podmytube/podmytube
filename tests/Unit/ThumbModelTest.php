@@ -53,7 +53,7 @@ class ThumbModelTest extends TestCase
     public function relative_path_for_channel_is_good(): void
     {
         $this->thumb->update([
-            'coverable_type' => get_class($this->channel),
+            'coverable_type' => $this->channel->morphedName(),
             'coverable_id' => $this->channel->id(),
         ]);
         $this->thumb->refresh();
@@ -119,7 +119,7 @@ class ThumbModelTest extends TestCase
     public function coverable_label_is_fine(): void
     {
         $this->thumb->setCoverable($this->channel);
-        $expectedLabel = get_class($this->channel) . "::find({$this->channel->id()})";
+        $expectedLabel = "Channel with id {$this->channel->id()}";
         $this->assertEquals($expectedLabel, $this->thumb->coverableLabel());
     }
 }

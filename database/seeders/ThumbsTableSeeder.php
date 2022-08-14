@@ -42,7 +42,7 @@ class ThumbsTableSeeder extends Seeder
             'file_size' => $filesize,
             'created_at' => now(),
             'updated_at' => now(),
-            'coverable_type' => get_class($channel),
+            'coverable_type' => $channel->morphedName(),
             'coverable_id' => $channel->channelId(),
         ]);
 

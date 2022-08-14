@@ -72,7 +72,7 @@ class PlaylistModelTest extends TestCase
 
         $thumb = Thumb::factory()->create(
             [
-                'coverable_type' => get_class($this->playlist),
+                'coverable_type' => $this->playlist->morphedName(),
                 'coverable_id' => $this->playlist->id(),
             ]
         );

@@ -20,4 +20,6 @@ interface Coverable
     public function nameWithId(): string;
 
     public function setCoverFromUploadedFile(UploadedFile $uploadedFile): Thumb;
+
+    public function morphedName(): string;
 }

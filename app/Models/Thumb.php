@@ -9,6 +9,7 @@ use App\Traits\BelongsToChannel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use ReflectionClass;
 
 class Thumb extends Model
 {
@@ -107,7 +108,7 @@ class Thumb extends Model
     {
         return $this->update(
             [
-                'coverable_type' => get_class($coverable),
+                'coverable_type' => $coverable->morphedName(),
                 'coverable_id' => $coverable->id(),
             ]
         );
@@ -118,6 +119,8 @@ class Thumb extends Model
      */
     public function coverableLabel(): string
     {
-        return get_class($this->coverable) . "::find({$this->coverable->id()})";
+        $reflect = new ReflectionClass($this->coverable);
+
+        return $reflect->getShortName() . ' with id ' . $this->coverable->id();
     }
 }

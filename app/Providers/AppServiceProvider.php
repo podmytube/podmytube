@@ -1,7 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
+use App\Models\Channel;
+use App\Models\Playlist;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\URL;
@@ -11,16 +16,27 @@ class AppServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         Paginator::useTailwind();
 
         if (App::environment('production')) {
             URL::forceScheme('https');
         }
+
+        /*
+         * those morphedNames are used in polymorphic relation (DB)
+         * you can retrieve morphedName with $coverable->morphedName()
+         * check App\Traits\hasCover
+         * $channel->morphedName() => 'morphedChannel'
+         * $playlist->morphedName() => 'morphedPlaylist'
+         */
+
+        Relation::enforceMorphMap([
+            'morphedChannel' => Channel::class,
+            'morphedPlaylist' => Playlist::class,
+        ]);
 
         /*
         Collection::macro('recursive', function () {
@@ -49,10 +65,8 @@ class AppServiceProvider extends ServiceProvider
 
     /**
      * Register any application services.
-     *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
         if (!App::environment('production')) {
             $this->app->register(

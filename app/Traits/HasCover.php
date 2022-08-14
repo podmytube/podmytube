@@ -6,6 +6,7 @@ namespace App\Traits;
 
 use App\Models\Thumb;
 use Illuminate\Http\UploadedFile;
+use ReflectionClass;
 
 trait HasCover
 {
@@ -23,7 +24,7 @@ trait HasCover
     {
         return Thumb::updateOrCreate(
             [
-                'coverable_type' => get_class($this),
+                'coverable_type' => $this->morphedName(),
                 'coverable_id' => $this->id(),
             ],
             [
@@ -38,8 +39,15 @@ trait HasCover
     public function setCoverFromThumb(Thumb $thumb): bool
     {
         return $thumb->update([
-            'coverable_type' => get_class($this),
+            'coverable_type' => $this->morphedName(),
             'coverable_id' => $this->id(),
         ]);
+    }
+
+    public function morphedName(): string
+    {
+        $reflect = new ReflectionClass(static::class);
+
+        return 'morphed' . $reflect->getShortName();
     }
 }

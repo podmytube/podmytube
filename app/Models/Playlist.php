@@ -44,6 +44,8 @@ class Playlist extends Model implements Podcastable, Coverable
         'active' => 'boolean',
     ];
 
+    
+
     /**
      * mediasToPublish is getting medias that are grabbed.
      * - get all the videos that are in the playlist.

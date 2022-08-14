@@ -21,14 +21,11 @@ class VignetteModuleTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var \App\Models\Thumb */
-    protected $thumb;
+    protected Thumb $thumb;
 
-    /** @var \App\Models\Channel */
-    protected $channel;
+    protected Channel $channel;
 
-    /** @var \App\Modules\Vignette */
-    protected $vignette;
+    protected Vignette $vignette;
 
     public function setUp(): void
     {
