@@ -24,8 +24,7 @@ abstract class YoutubeCore implements QuotasConsumer
     public const SEARCH_ENDPOINT = '/youtube/v3/search';
     public const VIDEOS_ENDPOINT = '/youtube/v3/videos';
 
-    /** @var string */
-    protected $apikey;
+    protected string $apikey;
 
     /** @var string */
     protected $endpoint;
@@ -33,20 +32,19 @@ abstract class YoutubeCore implements QuotasConsumer
     /** @var array contain the whole response */
     protected $jsonDecoded = [];
 
-    /** @var array contains only the items */
-    protected $items = [];
+    protected array $items = [];
 
     /** @var int max number of items to get */
-    protected $limit = 0;
+    protected int $limit = 0;
 
     /** @var array query parameters */
-    protected $params = [];
+    protected array $params = [];
 
     /** @var array youtube part parameters */
-    protected $partParams = [];
+    protected array $partParams = [];
 
     /** @var array list of valid queries used */
-    protected $queries = [];
+    protected array $queries = [];
     protected bool $cacheHasBeenUsed = false;
 
     public function __construct()
@@ -55,17 +53,17 @@ abstract class YoutubeCore implements QuotasConsumer
         $this->params['part'] = [];
     }
 
-    public static function init(...$params)
+    public static function init(...$params): static
     {
         return new static(...$params);
     }
 
-    public function apikey()
+    public function apikey(): string
     {
         return $this->apikey;
     }
 
-    public function defineEndpoint(string $endpoint)
+    public function defineEndpoint(string $endpoint): static
     {
         $this->checkEndpoint($endpoint);
         $this->endpoint = $endpoint;
@@ -97,7 +95,7 @@ abstract class YoutubeCore implements QuotasConsumer
     /**
      * run the query(ies) and get results.
      */
-    public function run(): self
+    public function run(): static
     {
         do {
             $rawResults = $this->getRawResults();
@@ -119,7 +117,6 @@ abstract class YoutubeCore implements QuotasConsumer
 
                 throw $exception;
             }
-            ray($this->url(), $rawResults);
 
             if (!isset($this->jsonDecoded['items'])) {
                 throw new YoutubeNoResultsException('No results for ' . $this->url());
@@ -142,7 +139,7 @@ abstract class YoutubeCore implements QuotasConsumer
      *
      * @param int $limit maximum number of items we need. 0=unlimited.
      */
-    public function setLimit(int $limit)
+    public function setLimit(int $limit): static
     {
         if ($limit >= 0) {
             $this->limit = $limit;
@@ -156,7 +153,7 @@ abstract class YoutubeCore implements QuotasConsumer
      * Because part params are different for every endpoint,
      * this one should be set before.
      */
-    public function addParts(array $parts): self
+    public function addParts(array $parts): static
     {
         if (!isset($this->endpoint)) {
             throw new YoutubeInvalidEndpointException(
@@ -178,14 +175,14 @@ abstract class YoutubeCore implements QuotasConsumer
         return $this;
     }
 
-    public function addParams(array $attributes = [])
+    public function addParams(array $attributes = []): static
     {
         $this->params = array_merge($this->params, $attributes);
 
         return $this;
     }
 
-    public function params()
+    public function params(): array
     {
         $this->params['part'] = implode(',', $this->partParams());
         ksort($this->params);
@@ -193,22 +190,22 @@ abstract class YoutubeCore implements QuotasConsumer
         return $this->params;
     }
 
-    public function results()
+    public function results(): array
     {
         return $this->jsonDecoded;
     }
 
-    public function totalResults()
+    public function totalResults(): int
     {
         return $this->jsonDecoded['pageInfo']['totalResults'];
     }
 
-    public function items()
+    public function items(): array
     {
         return $this->items;
     }
 
-    public function partParams()
+    public function partParams(): array
     {
         return $this->partParams;
     }
@@ -228,6 +225,11 @@ abstract class YoutubeCore implements QuotasConsumer
         return $this->cacheHasBeenUsed === true;
     }
 
+    public function channelId(): string
+    {
+        return $this->items[0]['snippet']['channelId'];
+    }
+
     /**
      * return if we are qyuerying youtube api next page.
      * According to an eventual limit set or the presence of a nextPageToken
@@ -242,7 +244,7 @@ abstract class YoutubeCore implements QuotasConsumer
         return isset($this->jsonDecoded['nextPageToken']);
     }
 
-    protected function nbItemsGrabbed()
+    protected function nbItemsGrabbed(): int
     {
         return count($this->items());
     }
@@ -287,14 +289,14 @@ abstract class YoutubeCore implements QuotasConsumer
         return $this->nbItemsGrabbed() > 0;
     }
 
-    protected function setPageToken($pageToken)
+    protected function setPageToken($pageToken): static
     {
         $this->params['pageToken'] = $pageToken;
 
         return $this;
     }
 
-    protected function cacheKey()
+    protected function cacheKey(): string
     {
         $separator = '_';
 

@@ -7,34 +7,28 @@ namespace Tests\Unit\Youtube;
 use App\Exceptions\YoutubeGenericErrorException;
 use App\Youtube\YoutubePlaylistItems;
 use App\Youtube\YoutubeQuotas;
-use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
 /**
  * @internal
  * @coversNothing
  */
-class YoutubePlaylistItemsTest extends TestCase
+class YoutubePlaylistItemsTest extends YoutubeTestCase
 {
     use RefreshDatabase;
 
-    protected const MY_PERSONAL_UPLOADS_PLAYLIST_ID = YoutubeCoreTest::PERSONAL_UPLOADS_PLAYLIST_ID;
-
-    public function setUp(): void
+    /** @test */
+    public function having_the_right_number_of_items_in_playlist(): void
     {
-        parent::setUp();
-        $this->seedApiKeys();
-    }
-
-    public function test_having_the_right_number_of_items_in_playlist(): void
-    {
+        $this->fakePlaylistItemsResponse(
+            expectedPlaylistId: 'UUw6bU9JT_Lihb2pbtqAUGQw',
+        );
         $expectedVideosOnMyChannel = 2;
         $expectedQuotaConsumed = 5;
         $videos = new YoutubePlaylistItems();
         $this->assertCount(
             $expectedVideosOnMyChannel,
-            $videos->forPlaylist(self::MY_PERSONAL_UPLOADS_PLAYLIST_ID)->videos(),
+            $videos->forPlaylist('UUw6bU9JT_Lihb2pbtqAUGQw')->videos(),
             "I should have only {$expectedVideosOnMyChannel} uploaded videos on my personnal channel."
         );
         /*
@@ -49,20 +43,10 @@ class YoutubePlaylistItemsTest extends TestCase
         );
     }
 
-    public function test_published_at(): void
+    /** @test */
+    public function getting_playlist_that_does_not_exist_should_throw_exception(): void
     {
-        $this->assertInstanceOf(Carbon::class, (new Carbon(''))->setTimezone('UTC'));
-        $this->assertInstanceOf(Carbon::class, Carbon::parse('2012-06-24T21:42:04Z'));
-
-        $this->assertInstanceOf(Carbon::class, Carbon::parse());
-
-        $this->assertInstanceOf(Carbon::class, Carbon::parse('2012-06-24T21:42:04Z'));
-
-        //$this->assertInstanceOf(Carbon::class, Carbon::parse('2012-06-24T21:42:04Z'));
-    }
-
-    public function test_getting_playlist_that_does_not_exist_should_throw_exception(): void
-    {
+        $this->fakeYoutubeItemNotFound();
         $this->expectException(YoutubeGenericErrorException::class);
         (new YoutubePlaylistItems())->forPlaylist('UUEmWzBUF53cVPhHTnUnsNMw');
     }

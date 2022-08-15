@@ -15,11 +15,9 @@ class YoutubeLastVideoFactory implements QuotasConsumer
 {
     public const SCRIPT_NAME = 'YoutubeLastVideoFactory.php';
 
-    /** @var array */
-    protected $lastMedia = [];
+    protected array $lastMedia = [];
 
-    /** @var array */
-    protected $queries = [];
+    protected array $queries = [];
 
     private function __construct(protected string $channel_id)
     {
@@ -70,10 +68,8 @@ class YoutubeLastVideoFactory implements QuotasConsumer
 
     protected function obtainTagsForMedia(): void
     {
-        $factory = YoutubeVideo::forMedia(
-            $this->lastMedia['media_id'],
-            ['id', 'status']
-        );
+        $factory = YoutubeVideo::forMedia($this->lastMedia['media_id'], ['id', 'status']);
+
         $this->lastMedia['tags'] = $factory->tags();
         $this->lastMedia['available'] = $factory->isAvailable();
         $this->queries = array_merge($this->queries, $factory->queriesUsed());

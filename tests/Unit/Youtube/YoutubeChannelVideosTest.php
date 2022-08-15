@@ -8,23 +8,17 @@ use App\Exceptions\YoutubeGenericErrorException;
 use App\Youtube\YoutubeChannelVideos;
 use App\Youtube\YoutubeQuotas;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
 /**
  * @internal
  * @coversNothing
  */
-class YoutubeChannelVideosTest extends TestCase
+class YoutubeChannelVideosTest extends YoutubeTestCase
 {
     use RefreshDatabase;
 
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->seedApiKeys();
-    }
-
-    public function test_having_the_right_number_of_videos(): void
+    /** @test */
+    public function having_the_right_number_of_videos(): void
     {
         $expectedConsumedQuota = 5;
         $factory = YoutubeChannelVideos::forChannel(YoutubeCoreTest::PERSONAL_CHANNEL_ID, 50);

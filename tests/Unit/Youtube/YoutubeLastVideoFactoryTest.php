@@ -8,27 +8,21 @@ use App\Exceptions\YoutubeGenericErrorException;
 use App\Factories\YoutubeLastVideoFactory;
 use App\Models\Quota;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
 /**
  * @internal
  * @coversNothing
  */
-class YoutubeLastVideoFactoryTest extends TestCase
+class YoutubeLastVideoFactoryTest extends YoutubeTestCase
 {
     use RefreshDatabase;
 
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->seedApiKeys();
-    }
-
-    public function test_getting_last_video_should_be_good(): void
+    /** @test */
+    public function getting_last_video_should_be_good(): void
     {
         $expectedQuotaUsed = 12;
 
-        /**
+        /*
          * this factory is getting the last channel media info+tags,
          * then it is storing the total quota consumption.
          */
@@ -49,7 +43,8 @@ class YoutubeLastVideoFactoryTest extends TestCase
         $this->assertEquals(YoutubeLastVideoFactory::SCRIPT_NAME, $quotaModel->script);
     }
 
-    public function test_getting_invalid_media_should_fail(): void
+    /** @test */
+    public function getting_invalid_media_should_fail(): void
     {
         $this->expectException(YoutubeGenericErrorException::class);
         YoutubeLastVideoFactory::forChannel('ChannelWhichWillNeverExists');

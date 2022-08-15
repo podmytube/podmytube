@@ -9,13 +9,12 @@ use App\Exceptions\YoutubeNoResultsException;
 use App\Youtube\YoutubeCore;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use InvalidArgumentException;
-use Tests\TestCase;
 
 /**
  * @internal
  * @coversNothing
  */
-class YoutubeCoreTest extends TestCase
+class YoutubeCoreTest extends YoutubeTestCase
 {
     use RefreshDatabase;
 
@@ -26,13 +25,11 @@ class YoutubeCoreTest extends TestCase
     public const NOWTECH_UPLOADS_PLAYLIST_ID = 'UUVwG9JHqGLfEO-4TkF-lf2g';
     public const NOWTECH_PLAYLIST_ID = 'PLhQHoIKUR5vD0vq6Jwns89QAz9OZWTvpx';
 
-    /** @var \App\Youtube\YoutubeCore */
-    protected $abstractCore;
+    protected YoutubeCore $abstractCore;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->seedApiKeys();
         // Create a new instance from the Abstract Class
         $this->abstractCore = new class() extends YoutubeCore {};
     }
@@ -61,6 +58,8 @@ class YoutubeCoreTest extends TestCase
     /** @test */
     public function invalid_channel_should_throw_exception(): void
     {
+        $this->fakeEmptyChannelResponse();
+
         $this->expectException(YoutubeNoResultsException::class);
         $this->abstractCore
             ->defineEndpoint(YoutubeCore::CHANNELS_ENDPOINT)
@@ -73,6 +72,8 @@ class YoutubeCoreTest extends TestCase
     /** @test */
     public function getting_proper_id_for_channel_list_should_be_ok(): void
     {
+        $this->fakeChannelResponse(expectedChannelId: self::PEWDIEPIE_CHANNEL_ID);
+
         $items = $this->abstractCore
             ->defineEndpoint(YoutubeCore::CHANNELS_ENDPOINT)
             ->addParts(['id'])
@@ -81,13 +82,15 @@ class YoutubeCoreTest extends TestCase
             ->items()
         ;
 
-        $this->assertEquals('UC-lHJZR3Gqxm24_Vd_AJ5Yw', $items[0]['id']);
+        $this->assertEquals(self::PEWDIEPIE_CHANNEL_ID, $items[0]['id']);
     }
 
     /** @test */
     public function getting_proper_id_for_playlist_list_should_be_ok(): void
     {
-        $items = $this->abstractCore
+        $this->fakePlaylistResponse(expectedChannelId: self::NOWTECH_CHANNEL_ID);
+
+        $youtubeCore = $this->abstractCore
             ->defineEndpoint(YoutubeCore::PLAYLISTS_ENDPOINT)
             ->addParts(['id', 'snippet'])
             ->addParams([
@@ -95,18 +98,18 @@ class YoutubeCoreTest extends TestCase
                 'maxResults' => 50,
             ])
             ->run()
-            ->items()
         ;
 
-        $this->assertEquals(
-            self::NOWTECH_CHANNEL_ID,
-            $items[0]['snippet']['channelId']
-        );
+        $this->assertEquals(self::NOWTECH_CHANNEL_ID, $youtubeCore->channelId());
     }
 
     /** @test */
     public function getting_proper_id_for_playlist_items_list_should_be_ok(): void
     {
+        $this->fakePlaylistItemsResponse(
+            expectedPlaylistId: self::PERSONAL_UPLOADS_PLAYLIST_ID,
+            expectedChannelId: self::PERSONAL_CHANNEL_ID,
+        );
         $items = $this->abstractCore
             ->defineEndpoint(YoutubeCore::PLAYLIST_ITEMS_ENDPOINT)
             ->addParts(['id', 'snippet'])
@@ -127,26 +130,10 @@ class YoutubeCoreTest extends TestCase
     }
 
     /** @test */
-    public function getting_only_first_pew_die_pie_playlists_should_be_quick(): void
-    {
-        $items = $this->abstractCore
-            ->defineEndpoint(YoutubeCore::PLAYLISTS_ENDPOINT)
-            ->setLimit(1)
-            ->addParts(['id', 'snippet'])
-            ->addParams(['channelId' => self::PEWDIEPIE_CHANNEL_ID])
-            ->run()
-            ->items()
-        ;
-
-        $this->assertEquals(
-            self::PEWDIEPIE_CHANNEL_ID,
-            $items[0]['snippet']['channelId']
-        );
-    }
-
-    /** @test */
     public function getting_all_playlist_items_by_page_is_ok(): void
     {
+        $this->markTestSkipped('TO BE DONE');
+
         /*
          * nowtech has more then 15 playlists.
          * this function is testing pagination
@@ -170,6 +157,8 @@ class YoutubeCoreTest extends TestCase
     /** @test */
     public function combining_limits_and_max_results(): void
     {
+        $this->markTestSkipped('TO BE DONE');
+
         $uploadsId = self::PEWDIEPIE_CHANNEL_ID;
         $uploadsId[1] = 'U';
         /*

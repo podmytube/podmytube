@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 
 class YoutubePlaylistItems extends YoutubeCore
 {
-    /** @var string $youtube playlist id */
+    /** @var string playlist id */
     protected $playlistId;
 
     /** @var array pile of video obtained from youtube api */
@@ -39,7 +39,7 @@ class YoutubePlaylistItems extends YoutubeCore
             if (
                 !isset($item['contentDetails']['videoPublishedAt'])
                 || !strlen($item['contentDetails']['videoPublishedAt'])
-                ) {
+            ) {
                 Log::notice('========> REJECTED ========> ', $item);
 
                 return false;

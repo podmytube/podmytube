@@ -7,36 +7,37 @@ namespace Tests\Unit\Youtube;
 use App\Exceptions\YoutubeGenericErrorException;
 use App\Youtube\YoutubePlaylists;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
 /**
  * @internal
  * @coversNothing
  */
-class YoutubePlaylistsTest extends TestCase
+class YoutubePlaylistsTest extends YoutubeTestCase
 {
     use RefreshDatabase;
 
-    public function setUp(): void
+    /** @test */
+    public function invalid_channel_id_should_throw_an_exception(): void
     {
-        parent::setUp();
-        $this->seedApiKeys();
-    }
-
-    public function test_invalid_channel_id_should_throw_an_exception(): void
-    {
+        $this->fakeYoutubeItemNotFound();
         $this->expectException(YoutubeGenericErrorException::class);
         (new YoutubePlaylists())
             ->forChannel('ForSureThisChannelWillNeverEverExist')
         ;
     }
 
-    public function test_playlists_is_ok(): void
+    /** @test */
+    public function playlists_is_ok(): void
     {
+        $expectedPlaylistId = 'PLQz1j9ftwaG0h5LWWnqgMYPo31PlXZcko';
+        $this->fakePlaylistResponse(
+            expectedChannelId: self::PERSONAL_CHANNEL_ID,
+            expectedPlaylistId: $expectedPlaylistId
+        );
         $playlists = (new YoutubePlaylists())->forChannel(self::PERSONAL_CHANNEL_ID)->playlists();
         $this->assertCount(2, $playlists);
-        $this->assertArrayHasKey('PLQz1j9ftwaG0h5LWWnqgMYPo31PlXZcko', $playlists);
-        $this->assertEquals('testPmt', $playlists['PLQz1j9ftwaG0h5LWWnqgMYPo31PlXZcko']['title']);
-        $this->assertEquals(0, $playlists['PLQz1j9ftwaG0h5LWWnqgMYPo31PlXZcko']['nbVideos']);
+        $this->assertArrayHasKey($expectedPlaylistId, $playlists);
+        $this->assertEquals('testPmt', $playlists[$expectedPlaylistId]['title']);
+        $this->assertEquals(0, $playlists[$expectedPlaylistId]['nbVideos']);
     }
 }
