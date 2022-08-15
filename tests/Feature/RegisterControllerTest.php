@@ -65,45 +65,45 @@ class RegisterControllerTest extends TestCase
     public function invalid_firstname_provider()
     {
         return [
-            [['firstname' => null], 'firstname'],
+            'firstname is required' => [['firstname' => null], 'firstname'],
         ];
     }
 
     public function invalid_lastname_provider()
     {
         return [
-            [['lastname' => null], 'lastname'],
+            'lastname is required' => [['lastname' => null], 'lastname'],
         ];
     }
 
     public function invalid_email_provider()
     {
         return [
-            [['email' => null], 'email'], // email is required
-            [['email' => 'not an email'], 'email'], // email is invalid
+            'email is required' => [['email' => null], 'email'], // email is required
+            'email must be valid' => [['email' => 'not an email'], 'email'], // email is invalid
         ];
     }
 
     public function invalid_password_provider()
     {
         return [
-            [['password' => null, 'password_confirmation' => null], 'password'], // email and confirmation are required
-            [['password' => 'short', 'password_confirmation' => 'short'], 'password'], // password too short
-            [['password' => 'passwordIs', 'password_confirmation' => 'mismatching'], 'password'], // password mismatch
+            'email and confirmation are required' => [['password' => null, 'password_confirmation' => null], 'password'],
+            'password too short' => [['password' => 'short', 'password_confirmation' => 'short'], 'password'],
+            'password mismatch' => [['password' => 'passwordIs', 'password_confirmation' => 'mismatching'], 'password'],
         ];
     }
 
     public function invalid_terms_provider()
     {
         return [
-            [['terms' => null], 'terms'], // owner checkbox required
+            'owner checkbos is required' => [['terms' => null], 'terms'], // owner checkbox required
         ];
     }
 
     public function valid_data_provider()
     {
         return [
-            [[
+            'gerard bouchard should register properly' => [[
                 'firstname' => 'Gerard',
                 'lastname' => 'Bouchard',
                 'email' => 'gerard@bouchard.com',
@@ -111,7 +111,7 @@ class RegisterControllerTest extends TestCase
                 'password_confirmation' => 'loremIpsum$',
                 'terms' => 1,
             ]],
-            [[
+            'geraldine lamy should register properly' => [[
                 'firstname' => 'Geraldine',
                 'lastname' => 'Lamy',
                 'email' => 'geraldine@lamy.com',
