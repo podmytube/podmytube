@@ -30,7 +30,7 @@ class LogProcessorRealTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->mp3SampleLogFile = $this->getFixturesPath('Logs/mp3-sample.log');
+        $this->mp3SampleLogFile = $this->fixturesPath('Logs/mp3-sample.log');
         $this->createChannelsAndMedia();
     }
 

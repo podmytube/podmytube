@@ -1,0 +1,75 @@
+{
+    "kind": "youtube#videoListResponse",
+    "etag": "p6oEjeZZwdNqgx3qdYi6aV1oYZo",
+    "items": [
+        {
+            "kind": "youtube#video",
+            "etag": "4eFBvAbKuUh5ERefj2PmBAh_xWs",
+            "id": "EXPECTED_MEDIA_ID",
+            "snippet": {
+                "publishedAt": "2015-10-28T22:23:26Z",
+                "channelId": "EXPECTED_CHANNEL_ID",
+                "title": "EXPECTED_TITLE",
+                "description": "EXPECTED_DESCRIPTION",
+                "thumbnails": {
+                    "default": {
+                        "url": "https: //i.ytimg.com/vi/EXPECTED_MEDIA_ID/default.jpg",
+                        "width": 120,
+                        "height": 90
+                    },
+                    "medium": {
+                        "url": "https://i.ytimg.com/vi/EXPECTED_MEDIA_ID/mqdefault.jpg",
+                        "width": 320,
+                        "height": 180
+                    },
+                    "high": {
+                        "url": "https://i.ytimg.com/vi/EXPECTED_MEDIA_ID/hqdefault.jpg",
+                        "width": 480,
+                        "height": 360
+                    },
+                    "standard": {
+                        "url": "https://i.ytimg.com/vi/EXPECTED_MEDIA_ID/sddefault.jpg",
+                        "width": 640,
+                        "height": 480
+                    },
+                    "maxres": {
+                        "url": "https://i.ytimg.com/vi/EXPECTED_MEDIA_ID/maxresdefault.jpg",
+                        "width": 1280,
+                        "height": 720
+                    }
+                },
+                "channelTitle": "Frédérick Tyteca",
+                "tags": [
+                    EXPECTED_TAGS
+                ],
+                "categoryId": "17",
+                "liveBroadcastContent": "none",
+                "localized": {
+                    "title": "EXPECTED_TITLE",
+                    "description": "EXPECTED_DESCRIPTION"
+                }
+            },
+            "contentDetails": {
+                "duration": "EXPECTED_DURATION",
+                "dimension": "2d",
+                "definition": "hd",
+                "caption": "false",
+                "licensedContent": false,
+                "contentRating": {},
+                "projection": "rectangular"
+            },
+            "status": {
+                "uploadStatus": "processed",
+                "privacyStatus": "public",
+                "license": "youtube",
+                "embeddable": true,
+                "publicStatsViewable": true,
+                "madeForKids": false
+            }
+        }
+    ],
+    "pageInfo": {
+        "totalResults": EXPECTED_TOTAL_RESULTS,
+        "resultsPerPage": EXPECTED_RESULTS_PER_PAGE
+    }
+}

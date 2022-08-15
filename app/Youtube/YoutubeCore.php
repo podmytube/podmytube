@@ -119,6 +119,7 @@ abstract class YoutubeCore implements QuotasConsumer
 
                 throw $exception;
             }
+            ray($this->url(), $rawResults);
 
             if (!isset($this->jsonDecoded['items'])) {
                 throw new YoutubeNoResultsException('No results for ' . $this->url());

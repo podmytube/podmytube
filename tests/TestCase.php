@@ -243,7 +243,7 @@ abstract class TestCase extends BaseTestCase
         ;
     }
 
-    protected function getFixturesPath(string $relativePath): string
+    protected function fixturesPath(string $relativePath): string
     {
         return __DIR__ . '/Fixtures/' . $relativePath;
     }
