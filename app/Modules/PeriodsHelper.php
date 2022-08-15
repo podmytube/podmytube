@@ -28,8 +28,8 @@ class PeriodsHelper
         protected ?int $month = null,
         protected ?int $year = null
     ) {
-        $this->month = $this->month ?? intval(date('n'));
-        $this->year = $this->year ?? intval(date('Y'));
+        $this->month ??= intval(date('n'));
+        $this->year ??= intval(date('Y'));
 
         NumberChecker::isBetween($this->month, self::MONTH_MIN, self::MONTH_MAX);
         NumberChecker::isBetween($this->year, self::YEAR_MIN, self::YEAR_MAX);
