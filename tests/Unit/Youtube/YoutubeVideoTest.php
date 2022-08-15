@@ -31,7 +31,7 @@ class YoutubeVideoTest extends TestCase
     {
         Http::fake([
             self::VIDEOS_ENDPOINT . '*' => Http::response(
-                file_get_contents($this->fixturesPath('Youtube/empty-response.json')),
+                file_get_contents($this->fixturesPath('Youtube/empty-videos-response.json')),
                 200
             ),
         ]);
@@ -139,7 +139,7 @@ class YoutubeVideoTest extends TestCase
         $expectedJson = str_replace(
             ['EXPECTED_MEDIA_ID', 'EXPECTED_CHANNEL_ID', 'EXPECTED_TITLE', 'EXPECTED_DESCRIPTION', 'EXPECTED_TOTAL_RESULTS', 'EXPECTED_RESULTS_PER_PAGE', 'EXPECTED_TAGS', 'EXPECTED_DURATION'],
             [$expectedMediaId, $expectedChannelId, $expectedTitle, $expectedDescription, $totalResults, $resultsPerPage, $tags, $expectedDuration],
-            file_get_contents($this->fixturesPath('Youtube/classic-response.json'))
+            file_get_contents($this->fixturesPath('Youtube/videos-response.json'))
         );
 
         Http::fake([
