@@ -1,0 +1,15 @@
+{
+    "error": {
+        "code": 404,
+        "message": "MOCKED Channel not found.",
+        "errors": [
+            {
+                "message": "Channel not found.",
+                "domain": "youtube.playlist",
+                "reason": "channelNotFound",
+                "location": "channelId",
+                "locationType": "parameter"
+            }
+        ]
+    }
+}
