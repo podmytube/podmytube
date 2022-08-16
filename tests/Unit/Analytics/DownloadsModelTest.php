@@ -230,11 +230,11 @@ it('wip should count downloads for the right item', function (): void {
     ))->toBe($expectedDownloadsCountedForMedia);
 
     // for this media should be good
-    /* expect(Download::downloadsForMediaDuringPeriod(
+    expect(Download::downloadsForMediaDuringPeriod(
         media: $media,
         startDate: $wantedPeriod->startDate(),
         endDate: $wantedPeriod->endDate(),
-    ))->toBe(); */
+    ))->toBe($expectedDownloadsCountedForMedia);
 
     // all the counted downloads
     expect(Download::downloadsDuringPeriod(startDate: $wantedPeriod->startDate(), endDate: $wantedPeriod->endDate()))
