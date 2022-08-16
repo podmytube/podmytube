@@ -18,12 +18,7 @@ class YoutubeCoreTest extends YoutubeTestCase
 {
     use RefreshDatabase;
 
-    public const PERSONAL_UPLOADS_PLAYLIST_ID = 'UUw6bU9JT_Lihb2pbtqAUGQw';
-    public const PERSONAL_CHANNEL_NB_OF_PLAYLISTS = 2;
-    public const PEWDIEPIE_CHANNEL_ID = 'UC-lHJZR3Gqxm24_Vd_AJ5Yw';
-    public const PEWDIEPIE_UPLOADS_PLAYLIST_ID = 'UU-lHJZR3Gqxm24_Vd_AJ5Yw';
-    public const NOWTECH_UPLOADS_PLAYLIST_ID = 'UUVwG9JHqGLfEO-4TkF-lf2g';
-    public const NOWTECH_PLAYLIST_ID = 'PLhQHoIKUR5vD0vq6Jwns89QAz9OZWTvpx';
+    
 
     protected YoutubeCore $abstractCore;
 

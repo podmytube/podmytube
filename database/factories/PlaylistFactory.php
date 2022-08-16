@@ -24,4 +24,9 @@ EOD,
             'active' => false,
         ];
     }
+
+    public function channel(Channel $channel): static
+    {
+        return $this->state(['channel_id' => $channel->channel_id]);
+    }
 }

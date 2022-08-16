@@ -38,13 +38,11 @@ class Playlist extends Model implements Podcastable, Coverable
     use HasCover;
     use HasFactory;
 
-    protected $guarded = [];
+    protected $guarded = ['id'];
 
     protected $casts = [
         'active' => 'boolean',
     ];
-
-    
 
     /**
      * mediasToPublish is getting medias that are grabbed.
@@ -203,7 +201,7 @@ class Playlist extends Model implements Podcastable, Coverable
         return config('app.playlists_path') . $this->relativeFeedPath();
     }
 
-    public function scopeActive(Builder $query)
+    public function scopeActive(Builder $query): Builder
     {
         return $query->where('active', '=', 1);
     }

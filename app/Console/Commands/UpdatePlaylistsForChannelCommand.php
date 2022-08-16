@@ -26,18 +26,6 @@ class UpdatePlaylistsForChannelCommand extends Command
      */
     protected $description = 'This will update playlists podcast for specific channel';
 
-    /** @var \App\Youtube\YoutubeCore */
-    protected $youtubeCore;
-
-    /** @var array list of channel models */
-    protected $channels = [];
-
-    /** @var array list of errors that occured */
-    protected $errors = [];
-
-    /** @var \Symfony\Component\Console\Helper\ProgressBar */
-    protected $bar;
-
     /**
      * Execute the console command.
      *
@@ -67,7 +55,7 @@ class UpdatePlaylistsForChannelCommand extends Command
          */
         $playlists = $channelToUpdate->playlists()->where('active', '=', 1)->get();
         if ($playlists->count() <= 0) {
-            $this->error("This channel ({$this->argument('channel_id')}) has no active playlists.");
+            $this->error("This channel ({$this->argument('channel_id')}) has no active playlists.", 'v');
 
             return 1;
         }

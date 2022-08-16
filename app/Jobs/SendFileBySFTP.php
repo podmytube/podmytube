@@ -51,6 +51,16 @@ class SendFileBySFTP implements ShouldQueue
         $destFilename = pathinfo($this->remoteFilePath, PATHINFO_BASENAME);
 
         try {
+            /*
+            |--------------------------------------------------------------------------
+            | IMPORTANT
+            |--------------------------------------------------------------------------
+            | when creating both folder & file with putFileAs, folder is
+            | sometimes created with perms like `drwx------`.
+            | adding makeDirectory seems to use config dir perms or at least
+            | is creating folder with perms drwxr-xr-x which is better
+            */
+            Storage::disk(self::REMOTE_DISK)->makeDirectory($destFolder);
             Storage::disk(self::REMOTE_DISK)->putFileAs($destFolder, $this->localFilePath, $destFilename);
         } catch (Throwable $thrown) {
             $exception = new FileUploadFailureException();
