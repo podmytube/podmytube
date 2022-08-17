@@ -212,7 +212,7 @@ class Playlist extends Model implements Podcastable, Coverable
      *
      * @param \App\Models\User $user
      */
-    public static function userPlaylists(User $user)
+    public static function userPlaylists(Authenticatable $user)
     {
         /** get user channels */
         $channels = Channel::userChannels($user);

@@ -11,8 +11,10 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Models\Channel;
+use App\Models\Download;
 use App\Models\Playlist;
 use App\Modules\Vignette;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -38,6 +40,18 @@ class HomeController extends Controller
                 if ($channel->cover) {
                     $channel->vignetteUrl = Vignette::fromThumb($channel->cover)->url();
                 }
+
+                $channel->thisWeekDownloads = Download::downloadsForChannelDuringPeriod(
+                    $channel,
+                    now()->startOfWeek(weekStartsAt: Carbon::MONDAY),
+                    now()->endOfWeek(weekEndsAt: Carbon::SUNDAY),
+                );
+
+                $channel->thisMonthDownloads = Download::downloadsForChannelDuringPeriod(
+                    $channel,
+                    now()->startOfMonth(),
+                    now()->endOfMonth(),
+                );
 
                 return $channel;
             })

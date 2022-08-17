@@ -9,7 +9,11 @@
     </div>
 @else
     <h2 class="h2">
-        Your @if ($channels->count() > 1)podcasts @else podcast @endif
+        Your @if ($channels->count() > 1)
+            podcasts
+        @else
+            podcast
+        @endif
     </h2>
 
     <div class="flex flex-col sm:flex-row">
@@ -17,8 +21,8 @@
             <div class="mx-auto md:mx-1 max-w-md rounded-lg overflow-hidden shadow-lg bg-gray-100 mt-4 py-4 md:pt-10 ">
                 <img class="mx-auto shadow-lg rounded-lg" src="{{ $channel->vignetteUrl }}"
                     alt="Your best cover for {{ $channel->title() }}">
-                <div class="px-2 md:px-6 py-4 text-center">
-                    <div class="font-bold text-xl text-gray-900 leading-tight mb-2">{{ $channel->title() }}</div>
+                <div class="px-2 md:px-6 pt-4 py-2 text-center">
+                    <div class="font-bold text-xl text-gray-900 leading-tight">{{ $channel->title() }}</div>
                 </div>
 
                 @if (!$channel->hasSubscription() || $channel->isFree())
@@ -31,10 +35,18 @@
                         </a>
                     </p>
                 @else
-                    <p class="text-gray-700 text-base">Your plan :
-                        {{ $channel?->subscription?->plan?->name ?? 'none' }}
+                    <p class="text-gray-700 text-base text-center">Your plan :
+                        {{ $channel->subscription?->plan?->name ?? 'none' }}
                     </p>
                 @endif
+
+                <p class="text-center py-2">
+                <div class="font-bold text-xl text-gray-900 leading-tight text-center">Downloads</div>
+                <ul class="text-gray-700 text-center list-disc">
+                    <li>this week : {{ $channel->thisWeekDownloads }}</li>
+                    <li>this month : {{ $channel->thisMonthDownloads }}</li>
+                </ul>
+                </p>
 
                 <div class="text-center pb-6">
                     <a href="{{ $channel->podcastUrl() }}" target="_blank">

@@ -53,22 +53,22 @@ class Download extends Model
             ->first()
         ;
 
-        return $download !== null ? $download->counted : 0;
+        return $download !== null ? intval($download->counted) : 0;
     }
 
     public static function downloadsForChannelDuringPeriod(Channel $channel, Carbon $startDate, Carbon $endDate): int
     {
-        return Download::query()->where('channel_id', '=', $channel->channel_id)
+        return intval(Download::query()->where('channel_id', '=', $channel->channel_id)
             ->duringPeriod($startDate, $endDate)
-            ->sum('counted')
+            ->sum('counted'))
         ;
     }
 
     public static function downloadsForMediaDuringPeriod(Media $media, Carbon $startDate, Carbon $endDate): int
     {
-        return Download::query()->where('media_id', '=', $media->id)
+        return intval(Download::query()->where('media_id', '=', $media->id)
             ->duringPeriod($startDate, $endDate)
-            ->sum('counted')
+            ->sum('counted'))
         ;
     }
 
