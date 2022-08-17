@@ -74,9 +74,14 @@ class Download extends Model
 
     public static function downloadsDuringPeriod(Carbon $startDate, Carbon $endDate): int
     {
-        return Download::query()->duringPeriod($startDate, $endDate)
-            ->sum('counted')
-        ;
+        $query = Download::query();
+        if ($startDate->toDateString() === $endDate->toDateString()) {
+            $query->where('log_day', '=', $startDate->toDateString());
+        } else {
+            $query->duringPeriod($startDate, $endDate);
+        }
+
+        return intval($query->sum('counted'));
     }
 
     public function scopeDuringPeriod(Builder $query, Carbon $startDate, Carbon $endDate): Builder

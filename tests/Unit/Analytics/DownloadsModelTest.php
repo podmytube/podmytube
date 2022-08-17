@@ -189,7 +189,7 @@ it('should count downloads during one month', function (): void {
     ;
 });
 
-it('wip should count downloads for the right item', function (): void {
+it('should count downloads for the right item', function (): void {
     // basic test
     $media = $this->addMediasToChannel($this->channel);
 
@@ -240,6 +240,18 @@ it('wip should count downloads for the right item', function (): void {
     expect(Download::downloadsDuringPeriod(startDate: $wantedPeriod->startDate(), endDate: $wantedPeriod->endDate()))
         ->toBe($totalCounted)
     ;
+});
+
+it('wip should count all downloads day', function (): void {
+    $expectedDownloads = 100;
+    Download::factory()->channel($this->channel)->create(['counted' => 75]);
+    Download::factory()->channel(Channel::factory()->create())->create(['counted' => 25]);
+
+    ray(Download::all()->toArray())->showQueries();
+    $result = Download::downloadsDuringPeriod(now()->startOfDay(), now()->endOfDay());
+    expect($result)->not()->toBeNull();
+    expect($result)->toBeInt();
+    expect($result)->toBe($expectedDownloads);
 });
 
 /*

@@ -13,19 +13,16 @@ namespace App\Http\Controllers;
 use App\Factories\RevenueFactory;
 use App\Factories\VolumeOnDiskFactory;
 use App\Models\Channel;
+use App\Models\Download;
 use App\Models\Media;
+use Illuminate\Contracts\View\View;
 
 /**
  * the home controller class.
  */
 class CockpitController extends Controller
 {
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function index(): View
     {
         $lastRegisteredChannel = Channel::orderBy('channel_createdAt', 'desc')->first();
 
@@ -38,6 +35,8 @@ class CockpitController extends Controller
 
         $volumeOnDisk = VolumeOnDiskFactory::init()->formatted();
 
+        $todayDownloads = Download::downloadsDuringPeriod(now()->startOfDay(), now()->endOfDay());
+
         return view('cockpit.index', compact(
             'lastRegisteredChannel',
             'nbPodcasts',
@@ -45,6 +44,7 @@ class CockpitController extends Controller
             'nbMedias',
             'revenues',
             'volumeOnDisk',
+            'todayDownloads',
         ));
     }
 }
