@@ -78,7 +78,7 @@ class Channel extends Model implements Podcastable, Coverable
     /**
      * the field that are guarded.
      */
-    protected $guarded = [];
+    protected $guarded = ['id'];
 
     public function channelId(): string
     {
@@ -509,5 +509,10 @@ class Channel extends Model implements Podcastable, Coverable
         return self::whereHas('medias', function (Builder $query) use ($nbMinutesAgo): void {
             $query->where('created_at', '>', now()->subMinutes($nbMinutesAgo));
         })->exists();
+    }
+
+    public function wasUpdatedOn(Carbon $updatedOnDate): bool
+    {
+        return $this->update(['podcast_updatedAt' => $updatedOnDate]);
     }
 }

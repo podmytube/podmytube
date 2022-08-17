@@ -311,4 +311,15 @@ class ChannelModelTest extends TestCase
         Media::factory()->create(['channel_id' => $channel->channel_id, 'created_at' => now()->subMinutes(1)]);
         $this->assertTrue($channel->hasRecentlyAddedMedias());
     }
+
+    /** @test */
+    public function should_update_podcast_updated_at(): void
+    {
+        $channel = Channel::factory()->create(['podcast_updatedAt' => null]);
+        $this->assertNull($channel->podcast_updatedAt);
+
+        $now = now();
+        $channel->wasUpdatedOn($now);
+        $this->assertEquals($now->toDateString(), $channel->podcast_updatedAt->toDateString());
+    }
 }

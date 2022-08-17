@@ -243,4 +243,15 @@ class PlaylistModelTest extends TestCase
         $this->assertInstanceOf(Collection::class, $results);
         $this->assertTrue($results->contains($expectedPlaylist->id));
     }
+
+    /** @test */
+    public function should_update_updated_at(): void
+    {
+        $playlist = Playlist::factory()->create(['updated_at' => null]);
+        $this->assertNull($playlist->updated_at);
+
+        $now = now();
+        $playlist->wasUpdatedOn($now);
+        $this->assertEquals($now->toDateString(), $playlist->updated_at->toDateString());
+    }
 }

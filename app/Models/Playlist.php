@@ -21,6 +21,7 @@ use App\Podcast\PodcastItem;
 use App\Traits\BelongsToChannel;
 use App\Traits\HasCover;
 use App\Youtube\YoutubePlaylistItems;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
@@ -288,5 +289,10 @@ class Playlist extends Model implements Podcastable, Coverable
     public static function byChannelId(string $channelId): Collection
     {
         return self::where('channel_id', '=', $channelId)->get();
+    }
+
+    public function wasUpdatedOn(Carbon $updatedOnDate): bool
+    {
+        return $this->update(['updated_at' => $updatedOnDate]);
     }
 }

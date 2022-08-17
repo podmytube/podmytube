@@ -32,13 +32,9 @@ class UploadPodcastFactory
         // defining where to render local path
         $this->localPath = $this->saveRenderedFile($renderedPodcast);
 
-        /* WARNING
-         * You MUST keep dispatchSync
-         * the problem : Im generating a temporary file with the podcast content.
-         * if I dispatch the job, with the delay, temporary file may be reused by another podcast.
-         * if I dispatchSync it, file is transfered immediately so no usurpation.
-         */
         SendFileBySFTP::dispatch($this->localPath, $this->remotePath(), $cleanAfter = true);
+
+        $this->podcastable->wasUpdatedOn(now());
 
         Log::notice("Podcast {$this->podcastable->podcastTitle()} has been successfully updated. You can check it here : {$this->podcastable->podcastUrl()}");
 
@@ -71,9 +67,7 @@ class UploadPodcastFactory
 
         // saving podcast locally
         $status = file_put_contents($localPath, $renderedPodcast);
-        if ($status === false) {
-            throw new PodcastSavingFailureException("Saving rendered podcast to {$localPath} has failed.");
-        }
+        throw_if($status === false, new PodcastSavingFailureException("Saving rendered podcast to {$localPath} has failed."));
 
         return $localPath;
     }
