@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 class PricingController extends Controller
@@ -20,7 +22,7 @@ class PricingController extends Controller
                 ],
             ],
             'Professionnal' => [
-                'title' => 'Professionnal',
+                'title' => 'Professional',
                 'monthly_price' => 29,
                 'features' => [
                     ['desc' => '<span class="text-2xl font-extrabold">12</span> episodes / month', 'value' => true],
@@ -44,6 +46,7 @@ class PricingController extends Controller
                 ],
             ],
         ];
+
         return view('pricing', compact('plans'));
     }
 }
