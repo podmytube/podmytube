@@ -9,6 +9,7 @@ use App\Traits\BelongsToChannel;
 use App\Traits\BelongsToMedia;
 use Carbon\Carbon;
 use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -92,6 +93,17 @@ class Download extends Model
 
         return $query
             ->whereBetween('log_day', [$startDate->toDateString(), $endDate->toDateString()])
+        ;
+    }
+
+    public static function downloadsForChannelByDay(Channel $channel, Carbon $startDate, Carbon $endDate): Collection
+    {
+        ray()->showQueries();
+
+        return Download::query()
+            ->where('channel_id', '=', $channel->channel_id)
+            ->duringPeriod($startDate, $endDate)
+            ->get()
         ;
     }
 }

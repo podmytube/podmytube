@@ -9,6 +9,7 @@ use App\Models\Download;
 use App\Models\Media;
 use App\Modules\PeriodsHelper;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -242,7 +243,7 @@ it('should count downloads for the right item', function (): void {
     ;
 });
 
-it('wip should count all downloads day', function (): void {
+it('should count all downloads day', function (): void {
     $expectedDownloads = 100;
     Download::factory()->channel($this->channel)->create(['counted' => 75]);
     Download::factory()->channel(Channel::factory()->create())->create(['counted' => 25]);
@@ -252,6 +253,26 @@ it('wip should count all downloads day', function (): void {
     expect($result)->not()->toBeNull();
     expect($result)->toBeInt();
     expect($result)->toBe($expectedDownloads);
+});
+
+it('wip should get downloads day by day for one channel', function (): void {
+    $this->addMediasToChannel($this->channel);
+
+    // I want 4 download rows
+    $expectedRows = 4;
+    $startDate = Carbon::create(2022, 8, 15);
+    $endDate = (clone $startDate)->addDays($expectedRows);
+
+    addDownloadsForChannelMediasDuringPeriod($this->channel, $startDate, $endDate);
+
+    $results = Download::downloadsForChannelByDay(
+        channel: $this->channel,
+        startDate: Carbon::create('first day of august 2022', 'Europe/Paris'),
+        endDate: Carbon::create('last day of august 2022', 'Europe/Paris')
+    );
+    expect($results)->not()->toBeNull();
+    expect($results)->toBeInstanceOf(Collection::class);
+    expect($expectedRows)->toBe($results->count());
 });
 
 /*
