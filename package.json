@@ -26,6 +26,7 @@
         "vue-template-compiler": "^2.6.12"
     },
     "dependencies": {
+        "alpinejs": "^3.10.3",
         "autoprefixer": "^10.1.0",
         "chart.js": "^3.9.1",
         "tailwindcss": "^2.1.2"

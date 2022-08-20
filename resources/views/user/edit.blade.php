@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="max-w-screen-xl mx-auto py-6 md:py-12 px-4">
-        <h2 class="text-3xl md:text-5xl text-white font-semibold">Your account</h2>
+        <h2 class="text-3xl md:text-5xl text-white font-semibold">Your account 💬</h2>
 
         <p class="text-sm pb-4 text-gray-100">
             This is the place where you can edit your account informations.
@@ -51,8 +51,8 @@
 
                 <div class="pb-4 pl-7">
                     <label class="block py-1" for="dont_warn_exceeding_quota">
-                        <input type="checkbox" id="dont_warn_exceeding_quota" name="dont_warn_exceeding_quota" value="1"
-                            class="form-checkbox" @if ($user->dont_warn_exceeding_quota) checked @endif>
+                        <input type="checkbox" id="dont_warn_exceeding_quota" name="dont_warn_exceeding_quota"
+                            value="1" class="form-checkbox" @if ($user->dont_warn_exceeding_quota) checked @endif>
                         <span class="ml-2">Don't warn me for exceeding quota.</span><br>
                         <small class="pl-4">You won't be warned for exceeding quota</small>
                     </label>
@@ -112,7 +112,8 @@
                     </div>
 
                     <div class="flex mt-4 justify-center items-center">
-                        <a href="#" onclick="event.preventDefault(); document.getElementById('delete-user-form').submit();">
+                        <a href="#"
+                            onclick="event.preventDefault(); document.getElementById('delete-user-form').submit();">
                             <button type="submit"
                                 class="flex-1 bg-red-800 text-gray-100 hover:bg-red-700 font-bold py-2 px-4 rounded-lg">Delete
                                 my account !</button>

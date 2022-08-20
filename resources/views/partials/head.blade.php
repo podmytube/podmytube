@@ -13,7 +13,8 @@
     <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 
-    <script type="text/javascript" src="{{ asset('js/app.js') }}"></script>
+    <script defer type="text/javascript" src="{{ asset('js/app.js') }}"></script>
+
     <link rel="stylesheet" type="text/css" href="{{ asset('css/app.css') }}">
 
     @yield('recaptcha')
