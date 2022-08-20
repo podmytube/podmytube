@@ -27,6 +27,7 @@
     },
     "dependencies": {
         "autoprefixer": "^10.1.0",
+        "chart.js": "^3.9.1",
         "tailwindcss": "^2.1.2"
     },
     "name": "dashboard.podmytube.com"

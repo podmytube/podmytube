@@ -8,6 +8,7 @@ declare(strict_types=1);
  * @author Frederick Tyteca <fred@podmytube.com>
  */
 
+use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\ThumbsController;
 
 Route::get('test', function () {
@@ -126,6 +127,8 @@ Route::domain('dashboard.' . config('app.domain'))->group(function (): void {
         // ================================================
         // User profile
         Route::resource('user', 'UserController')->only(['index', 'update', 'destroy']);
+
+        Route::get('analytics/{channel}', [AnalyticsController::class, 'show'])->name('analytics');
 
         // ================================================
         // Impersonate

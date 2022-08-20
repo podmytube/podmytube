@@ -14,17 +14,10 @@ let mix = require('laravel-mix');
 const tailwindcss = require('tailwindcss');
 
 mix.js('resources/js/app.js', 'public/js')
-   .sass('resources/sass/app.scss', 'public/css')
-   .options({
-      processCssUrls: false,
-      postCss: [tailwindcss('./tailwind.config.js')],
-   });
-/* mix.postCss('resources/css/app.css', 'public/css', [
-   require('tailwindcss'),
-]).disableSuccessNotifications(); */
-
-
-/* mix.js('resources/js/app.js', 'public/js')
-   .sass('resources/sass/app.scss', 'public/css')
-   .disableSuccessNotifications();
- */
+    .copy('node_modules/chart.js/dist/chart.js', 'public/js/chart.js')
+    .sass('resources/sass/app.scss', 'public/css')
+    .options({
+        processCssUrls: false,
+        postCss: [tailwindcss('./tailwind.config.js')],
+    })
+    .disableSuccessNotifications();

@@ -98,8 +98,6 @@ class Download extends Model
 
     public static function downloadsForChannelByDay(Channel $channel, Carbon $startDate, Carbon $endDate): Collection
     {
-        ray()->showQueries();
-
         return Download::query()
             ->where('channel_id', '=', $channel->channel_id)
             ->duringPeriod($startDate, $endDate)
