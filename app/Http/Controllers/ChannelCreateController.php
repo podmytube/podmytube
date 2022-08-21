@@ -71,13 +71,11 @@ class ChannelCreateController extends Controller
         });
 
         $buttonLabel = 'Register';
+        $routeName = 'channel.step2';
 
-        return view('channel.step2')->with([
-            'routeName' => 'channel.step2',
-            'channel' => $channel,
-            'plans' => $plans,
-            'isYearly' => $isYearly,
-            'buttonLabel' => $buttonLabel,
-        ]);
+        return view(
+            'channel.step2',
+            compact('routeName', 'channel', 'plans', 'isYearly', 'buttonLabel')
+        );
     }
 }

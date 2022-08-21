@@ -1,4 +1,4 @@
-@push('javascripts')
+@push('scripts')
     <script type="text/javascript" src="https://js.stripe.com/v3"></script>
 @endpush
 
@@ -10,13 +10,13 @@
         <div class="inline-flex">
             <a href="{{ route($routeName, ['channel' => $channel, 'yearly' => false]) }}">
                 <button id="monthly-button"
-                    class="rounded-l-lg border-gray-700 border-2 @if ($isYearly === false)bg-gray-700 text-gray-100 @else text-gray-700 @endif focus:outline-none text-sm font-semibold py-1 px-4">
+                    class="rounded-l-lg border-gray-700 border-2 @if ($isYearly === false) bg-gray-700 text-gray-100 @else text-gray-700 @endif focus:outline-none text-sm font-semibold py-1 px-4">
                     Monthly
                 </button>
             </a>
             <a href="{{ route($routeName, ['channel' => $channel, 'yearly' => true]) }}">
                 <button id="yearly-button"
-                    class="rounded-r-lg border-gray-700 border-2 @if ($isYearly === true)bg-gray-700 text-gray-100 @else text-gray-700 @endif focus:outline-none text-sm font-semibold py-1 px-4">
+                    class="rounded-r-lg border-gray-700 border-2 @if ($isYearly === true) bg-gray-700 text-gray-100 @else text-gray-700 @endif focus:outline-none text-sm font-semibold py-1 px-4">
                     Yearly
                 </button>
             </a>
@@ -51,11 +51,19 @@
                                     class="inline-flex items-center font-display text-4xl md:text-5xl font-bold text-black mr-2 sm:mr-3">
                                     <span class="text-xl text-gray-600 md:text-2xl mr-2">&euro;</span>
                                     <span class="billing-price">
-                                        @if ($isYearly) {{ $plan->price * 10 }} @else {{ $plan->price }} @endif
+                                        @if ($isYearly)
+                                            {{ $plan->price * 10 }}
+                                        @else
+                                            {{ $plan->price }}
+                                        @endif
                                     </span>
                                 </span>
                                 <span class="text-gray-600 billing-period">
-                                    @if ($isYearly) /yr @else /mo @endif
+                                    @if ($isYearly)
+                                        /yr
+                                    @else
+                                        /mo
+                                    @endif
                                 </span>
                             </div>
                             <!-- core features -->
@@ -66,7 +74,8 @@
                                             <svg class="h-5 w-5 block" xmlns="http://www.w3.org/2000/svg"
                                                 viewBox="0 0 20 20">
                                                 <g fill="none" fill-rule="evenodd">
-                                                    <circle cx="10" cy="10" r="10" fill="#9CE2B6"></circle>
+                                                    <circle cx="10" cy="10" r="10" fill="#9CE2B6">
+                                                    </circle>
                                                     <polyline stroke="#126D34" stroke-linecap="round"
                                                         stroke-linejoin="round" stroke-width="2"
                                                         points="6 10 8.667 12.667 14 7.333"></polyline>
@@ -81,7 +90,8 @@
                                             <svg class="h-5 w-5 block" xmlns="http://www.w3.org/2000/svg"
                                                 viewBox="0 0 20 20">
                                                 <g fill="none" fill-rule="evenodd">
-                                                    <circle cx="10" cy="10" r="10" fill="#9CE2B6"></circle>
+                                                    <circle cx="10" cy="10" r="10" fill="#9CE2B6">
+                                                    </circle>
                                                     <polyline stroke="#126D34" stroke-linecap="round"
                                                         stroke-linejoin="round" stroke-width="2"
                                                         points="6 10 8.667 12.667 14 7.333"></polyline>
@@ -96,7 +106,8 @@
                                             <svg class="h-5 w-5 block" xmlns="http://www.w3.org/2000/svg"
                                                 viewBox="0 0 20 20">
                                                 <g fill="none" fill-rule="evenodd">
-                                                    <circle cx="10" cy="10" r="10" fill="#9CE2B6"></circle>
+                                                    <circle cx="10" cy="10" r="10" fill="#9CE2B6">
+                                                    </circle>
                                                     <polyline stroke="#126D34" stroke-linecap="round"
                                                         stroke-linejoin="round" stroke-width="2"
                                                         points="6 10 8.667 12.667 14 7.333"></polyline>
@@ -110,7 +121,8 @@
                                             <svg class="h-5 w-5 block" xmlns="http://www.w3.org/2000/svg"
                                                 viewBox="0 0 20 20">
                                                 <g fill="none" fill-rule="evenodd">
-                                                    <circle cx="10" cy="10" r="10" fill="#9CE2B6"></circle>
+                                                    <circle cx="10" cy="10" r="10" fill="#9CE2B6">
+                                                    </circle>
                                                     <polyline stroke="#126D34" stroke-linecap="round"
                                                         stroke-linejoin="round" stroke-width="2"
                                                         points="6 10 8.667 12.667 14 7.333"></polyline>
@@ -124,7 +136,8 @@
                                             <svg class="h-5 w-5 block" xmlns="http://www.w3.org/2000/svg"
                                                 viewBox="0 0 20 20">
                                                 <g fill="none" fill-rule="evenodd">
-                                                    <circle cx="10" cy="10" r="10" fill="#9CE2B6"></circle>
+                                                    <circle cx="10" cy="10" r="10"
+                                                        fill="#9CE2B6"></circle>
                                                     <polyline stroke="#126D34" stroke-linecap="round"
                                                         stroke-linejoin="round" stroke-width="2"
                                                         points="6 10 8.667 12.667 14 7.333"></polyline>
