@@ -1,3 +1,4 @@
+<svg class="{{ $cssClass }}" id="310c3e5b-d44f-464b-a9f2-e9edade79978" data-name="Layer 1"
     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1140.21 776">
     <defs>
         <linearGradient id="1dd6dc0b-ad1e-451b-b90e-ab2e972949f2" x1="623.53" y1="767.89" x2="623.53" y2="127.97"

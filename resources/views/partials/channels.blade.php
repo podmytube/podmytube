@@ -41,7 +41,8 @@
                 @endif
 
                 <p class="text-center py-2">
-                <div class="font-bold text-xl text-gray-900 leading-tight text-center">Downloads</div>
+                <p class="m-2 p-2 rounded-lg text-xl bg-gray-900 text-gray-100 text-center">⚡ <a
+                        href="{{ route('analytics', $channel) }}">Downloads</a> ⚡</p>
                 <ul class="text-gray-700 text-center list-disc">
                     <li>this week : {{ $channel->thisWeekDownloads }}</li>
                     <li>this month : {{ $channel->thisMonthDownloads }}</li>
