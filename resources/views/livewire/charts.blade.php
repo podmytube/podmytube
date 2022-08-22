@@ -1,16 +1,49 @@
 <div>
     <div>
-        <label id="listbox-label" class="block text-sm font-medium text-gray-700"> Assigned to </label>
         <div x-data="{
             open: false,
+            selectedPeriod: @entangle('selectedPeriod'),
+            selectedPeriodLabel: @entangle('selectedPeriodLabel'),
+            abscissa: @entangle('abscissa'),
+            ordinate: @entangle('ordinate'),
             init() {
-                console.log('foo');
+                const ctx = document.getElementById('analytics');
+        
+                const config = {
+                    type: 'line',
+                    data: {
+                        labels: this.abscissa,
+                        datasets: [{
+                            label: `${this.selectedPeriodLabel} downloads`,
+                            data: this.ordinate,
+                            cubicInterpolationMode: 'monotone',
+                            backgroundColor: 'rgba(255, 172, 51, 1)',
+                            borderColor: 'rgba(255, 172, 51, 1)',
+                            borderWidth: 3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                };
+        
+                const myChart = new Chart(ctx, config);
+        
+                Livewire.on('updateChartsData', () => {
+                    myChart.data.labels = this.abscissa;
+                    myChart.data.datasets[0].label = `${this.selectedPeriodLabel} downloads`;
+                    myChart.data.datasets[0].data = this.ordinate;
+        
+                    myChart.update();
+                });
             }
         }" class="mt-1 relative">
-            <span class="text-white">
-                selectedPeriod : {{ $selectedPeriod }}<br>
-            </span>
-            <button wire:model="selectedPeriod" type="button" x-on:click="open = ! open"
+            <button type="button" x-on:click="open = ! open"
                 class="bg-white relative w-full border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label">
                 <span class="block truncate"> {{ $selectedPeriodLabel }} </span>
@@ -41,12 +74,6 @@
                         id="listbox-option-0" role="option">
                         <!-- Selected: "font-semibold", Not Selected: "font-normal" -->
                         <span class="font-normal block truncate"> {{ $label }} </span>
-
-                        <!--
-          Checkmark, only display for selected option.
-
-          Highlighted: "text-white", Not Highlighted: "text-indigo-600"
-        -->
                         @if ($selectedPeriod === $index)
                             <span
                                 class="text-indigo-600 hover:text-white absolute inset-y-0 right-0 flex items-center pr-4">
@@ -61,57 +88,14 @@
                         @endif
                     </li>
                 @endforeach
-                <!-- More items... -->
             </ul>
         </div>
     </div>
-
     <canvas id="analytics"></canvas>
 </div>
-
 
 @once
     @push('scripts')
         <script src="{{ asset('js/chart.js') }}"></script>
     @endpush
 @endOnce
-@push('scripts')
-    <script>
-        window.addEventListener('chartsDataUpdated', () => {
-            console.log('chartsDataUpdated');
-            const ctx = document.getElementById('analytics').getContext('2d');
-        });
-        document.addEventListener('DOMContentLoaded', () => {
-            const ctx = document.getElementById('analytics').getContext('2d');
-
-            const config = {
-                type: 'line',
-                data: {
-                    labels: {!! $jsAbscissa !!},
-                    datasets: [{
-                        label: '# of downloads',
-                        data: {!! $jsOrdinate !!},
-                        cubicInterpolationMode: 'monotone',
-                        backgroundColor: [
-                            'rgba(255, 206, 86, 1)'
-                        ],
-                        borderColor: [
-                            'rgba(255, 206, 86, 1)'
-                        ],
-                        borderWidth: 3
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            };
-
-            const myChart = new Chart(ctx, config);
-        });
-    </script>
-@endpush

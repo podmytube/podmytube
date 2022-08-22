@@ -19,9 +19,9 @@ class Charts extends Component
     public const DEFAULT_PERIOD = 0;
 
     public Channel $channel;
-    public string $jsAbscissa;
-    public string $jsOrdinate;
-    public mixed $selectedPeriod = 0;
+    public array $abscissa = [];
+    public array $ordinate = [];
+    public int $selectedPeriod = 0;
     public string $selectedPeriodLabel;
 
     public array $periods = [];
@@ -46,7 +46,7 @@ class Charts extends Component
         $this->selectedPeriodLabel = $this->periods[$this->selectedPeriod];
         $this->buildCoordinates();
 
-        $this->dispatchBrowserEvent('chartsDataUpdated');
+        $this->emit('updateChartsData');
     }
 
     public function render()
@@ -73,16 +73,13 @@ class Charts extends Component
 
         $downloads = Download::downloadsForChannelByDay($this->channel, $startDate, $endDate);
 
-        $abscissa = $ordinate = [];
+        $this->abscissa = $this->ordinate = [];
         while ($startDate->lessThan($endDate)) {
-            $abscissa[] = $startDate->format('j M');
+            $this->abscissa[] = $startDate->format('j M');
 
             $result = $downloads->first(fn (Download $download) => $startDate->toDateString() === $download->log_day->toDateString());
-            $ordinate[] = $result !== null ? $result->counted : 0;
+            $this->ordinate[] = $result !== null ? $result->counted : 0;
             $startDate->addDay();
         }
-
-        $this->jsAbscissa = json_encode($abscissa);
-        $this->jsOrdinate = json_encode($ordinate);
     }
 }

@@ -32,6 +32,7 @@ class DatabaseSeeder extends Seeder
                 UsersTableSeeder::class,
                 ChannelsTableSeeder::class,
                 PlaylistsTableSeeder::class,
+                DownloadsTableSeeder::class,
             ];
         }
 
