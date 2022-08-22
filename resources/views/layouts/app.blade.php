@@ -13,6 +13,7 @@
 
     @include ('partials.footer')
 
+    @livewireScripts
 </body>
 
 @if (App::environment('testing'))
