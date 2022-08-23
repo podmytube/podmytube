@@ -255,7 +255,7 @@ it('should count all downloads day', function (): void {
     expect($result)->toBe($expectedDownloads);
 });
 
-it('wip should get downloads day by day for one channel', function (): void {
+it('should get downloads day by day for one channel', function (): void {
     $this->addMediasToChannel($this->channel);
 
     // I want 4 download rows

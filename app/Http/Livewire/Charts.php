@@ -21,6 +21,7 @@ class Charts extends Component
     public Channel $channel;
     public array $abscissa = [];
     public array $ordinate = [];
+    public array $datasets = [];
     public int $selectedPeriod = 0;
     public string $selectedPeriodLabel;
 
@@ -36,7 +37,6 @@ class Charts extends Component
             static::PERIOD_LAST_WEEK => 'Last week',
         ];
         $this->selectedPeriodLabel = $this->periods[$this->selectedPeriod];
-
         $this->buildCoordinates();
     }
 
@@ -67,7 +67,7 @@ class Charts extends Component
         };
     }
 
-    public function buildCoordinates(): void
+    /* public function buildCoordinates(): void
     {
         [$startDate, $endDate] = $this->fromPeriodToDates($this->selectedPeriod);
 
@@ -79,7 +79,37 @@ class Charts extends Component
 
             $result = $downloads->first(fn (Download $download) => $startDate->toDateString() === $download->log_day->toDateString());
             $this->ordinate[] = $result !== null ? $result->counted : 0;
+
             $startDate->addDay();
         }
+    } */
+
+    public function buildCoordinates(): void
+    {
+        [$startDateToKeep, $endDate] = $this->fromPeriodToDates($this->selectedPeriod);
+
+        // filling fake downloads with 0
+        $startDate = clone $startDateToKeep;
+        $paddedDownloads = [];
+        while ($startDate->lessThan($endDate)) {
+            $paddedDownloads[$startDate->toDateString()] = 0;
+            $startDate->addDay();
+        }
+
+        // reset startDate
+        $startDate = clone $startDateToKeep;
+
+        // getting downloads
+        $downloads = Download::downloadsForChannelByDay($this->channel, $startDate, $endDate)->pluck('counted', 'log_day')->toArray();
+
+        // merging with padded
+        $downloads = array_merge($paddedDownloads, $downloads);
+
+        // building datasets
+        $datasets = [];
+        foreach ($downloads as $date => $counted) {
+            $datasets[] = ['x' => $date, 'y' => $counted];
+        }
+        $this->datasets = json_encode($datasets);
     }
 }

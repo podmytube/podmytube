@@ -9,6 +9,7 @@ use App\Traits\BelongsToChannel;
 use App\Traits\BelongsToMedia;
 use Carbon\Carbon;
 use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -24,7 +25,7 @@ class Download extends Model
     protected $dates = [];
 
     protected $casts = [
-        'log_day' => 'datetime:Y-m-d',
+        // 'log_day' => 'date:Y-m-d', // mutated below
         'counted' => 'integer',
     ];
 
@@ -99,9 +100,18 @@ class Download extends Model
     public static function downloadsForChannelByDay(Channel $channel, Carbon $startDate, Carbon $endDate): Collection
     {
         return Download::query()
+            ->select('log_day', 'counted')
             ->where('channel_id', '=', $channel->channel_id)
             ->duringPeriod($startDate, $endDate)
             ->get()
         ;
+    }
+
+    protected function logDay(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => Carbon::parse($value)->toDateString(),
+            set: fn ($value) => Carbon::parse($value)->toDateString(),
+        );
     }
 }
