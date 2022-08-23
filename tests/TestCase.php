@@ -191,6 +191,9 @@ abstract class TestCase extends BaseTestCase
         return $this->getPlanBySlug('forever_free');
     }
 
+    /**
+     * @return Collection|Media
+     */
     protected function addMediasToChannel(Channel $channel, int $numberOfMediasToAdd = 1, bool $grabbed = false)
     {
         $factory = Media::factory();

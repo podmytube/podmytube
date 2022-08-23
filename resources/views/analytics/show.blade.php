@@ -9,6 +9,5 @@
 
         <livewire:charts :channel="$channel" />
 
-        <canvas id="analytics"></canvas>
     </div>
 @endsection

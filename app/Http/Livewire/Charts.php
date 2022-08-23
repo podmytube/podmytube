@@ -36,7 +36,6 @@ class Charts extends Component
             static::PERIOD_LAST_WEEK => 'Last week',
         ];
         $this->selectedPeriodLabel = $this->periods[$this->selectedPeriod];
-
         $this->buildCoordinates();
     }
 
@@ -69,17 +68,27 @@ class Charts extends Component
 
     public function buildCoordinates(): void
     {
-        [$startDate, $endDate] = $this->fromPeriodToDates($this->selectedPeriod);
+        [$startDateToKeep, $endDate] = $this->fromPeriodToDates($this->selectedPeriod);
 
-        $downloads = Download::downloadsForChannelByDay($this->channel, $startDate, $endDate);
-
-        $this->abscissa = $this->ordinate = [];
+        // filling fake downloads with 0
+        $startDate = clone $startDateToKeep;
+        $paddedDownloads = [];
         while ($startDate->lessThan($endDate)) {
-            $this->abscissa[] = $startDate->format('j M');
-
-            $result = $downloads->first(fn (Download $download) => $startDate->toDateString() === $download->log_day->toDateString());
-            $this->ordinate[] = $result !== null ? $result->counted : 0;
+            $paddedDownloads[$startDate->toDateString()] = 0;
             $startDate->addDay();
+        }
+
+        // getting downloads
+        $downloads = Download::downloadsForChannelByDay($this->channel, $startDateToKeep, $endDate)->pluck('counted', 'log_day')->toArray();
+
+        // merging with padded
+        $downloads = array_merge($paddedDownloads, $downloads);
+
+        // building datasets
+        $this->abscissa = $this->ordinate = [];
+        foreach ($downloads as $dateKey => $counted) {
+            $this->abscissa[] = $dateKey;
+            $this->ordinate[] = $counted;
         }
     }
 }
