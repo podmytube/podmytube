@@ -21,7 +21,6 @@ class Charts extends Component
     public Channel $channel;
     public array $abscissa = [];
     public array $ordinate = [];
-    public array $datasets = [];
     public int $selectedPeriod = 0;
     public string $selectedPeriodLabel;
 
@@ -67,23 +66,6 @@ class Charts extends Component
         };
     }
 
-    /* public function buildCoordinates(): void
-    {
-        [$startDate, $endDate] = $this->fromPeriodToDates($this->selectedPeriod);
-
-        $downloads = Download::downloadsForChannelByDay($this->channel, $startDate, $endDate);
-
-        $this->abscissa = $this->ordinate = [];
-        while ($startDate->lessThan($endDate)) {
-            $this->abscissa[] = $startDate->format('j M');
-
-            $result = $downloads->first(fn (Download $download) => $startDate->toDateString() === $download->log_day->toDateString());
-            $this->ordinate[] = $result !== null ? $result->counted : 0;
-
-            $startDate->addDay();
-        }
-    } */
-
     public function buildCoordinates(): void
     {
         [$startDateToKeep, $endDate] = $this->fromPeriodToDates($this->selectedPeriod);
@@ -96,20 +78,17 @@ class Charts extends Component
             $startDate->addDay();
         }
 
-        // reset startDate
-        $startDate = clone $startDateToKeep;
-
         // getting downloads
-        $downloads = Download::downloadsForChannelByDay($this->channel, $startDate, $endDate)->pluck('counted', 'log_day')->toArray();
+        $downloads = Download::downloadsForChannelByDay($this->channel, $startDateToKeep, $endDate)->pluck('counted', 'log_day')->toArray();
 
         // merging with padded
         $downloads = array_merge($paddedDownloads, $downloads);
 
         // building datasets
-        $datasets = [];
-        foreach ($downloads as $date => $counted) {
-            $datasets[] = ['x' => $date, 'y' => $counted];
+        $this->abscissa = $this->ordinate = [];
+        foreach ($downloads as $dateKey => $counted) {
+            $this->abscissa[] = $dateKey;
+            $this->ordinate[] = $counted;
         }
-        $this->datasets = json_encode($datasets);
     }
 }

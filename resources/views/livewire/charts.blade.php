@@ -2,7 +2,6 @@
     <div x-data="{
         selectedPeriod: @entangle('selectedPeriod'),
         selectedPeriodLabel: @entangle('selectedPeriodLabel'),
-        datasets: @entangle('datasets'),
         abscissa: @entangle('abscissa'),
         ordinate: @entangle('ordinate'),
         init() {
@@ -11,8 +10,10 @@
             const config = {
                 type: 'line',
                 data: {
+                    labels: this.abscissa,
                     datasets: [{
-                        data: this.datasets,
+                        label: `${this.selectedPeriodLabel} downloads`,
+                        data: this.ordinate,
                         cubicInterpolationMode: 'monotone',
                         backgroundColor: 'rgba(255, 172, 51, 1)',
                         borderColor: 'rgba(255, 172, 51, 1)',
@@ -21,7 +22,6 @@
                 },
                 options: {
                     responsive: true,
-                    parsing: false,
                     scales: {
                         y: {
                             beginAtZero: true
