@@ -24,6 +24,7 @@ class SendFileBySFTPTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+        Storage::fake('remote');
 
         $this->destFolder = 'tests/' . $this->faker->word();
         // I do not want to delete fixture file so I copy it.
@@ -52,7 +53,6 @@ class SendFileBySFTPTest extends TestCase
     /** @test */
     public function sending_file_then_clean_local_should_succeed(): void
     {
-        Storage::fake('remote');
         $job = new SendFileBySFTP($this->sourceFile, $this->remoteFile, true);
         $job->handle();
         $this->assertTrue(Storage::disk('remote')->exists($this->remoteFile));

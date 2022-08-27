@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Jobs;
 
 use App\Exceptions\FileUploadFailureException;
+use App\Exceptions\FileUploadUnreadableFileException;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -47,6 +48,11 @@ class SendFileBySFTP implements ShouldQueue
      */
     public function handle()
     {
+        throw_unless(
+            is_readable($this->localFilePath),
+            new FileUploadUnreadableFileException("File {$this->localFilePath} is not readable.")
+        );
+
         $destFolder = pathinfo($this->remoteFilePath, PATHINFO_DIRNAME);
         $destFilename = pathinfo($this->remoteFilePath, PATHINFO_BASENAME);
 
@@ -72,6 +78,7 @@ class SendFileBySFTP implements ShouldQueue
             $message .= "remoteFilePath : {$this->remoteFilePath}" . PHP_EOL;
             $message .= "destFolder : {$destFolder}" . PHP_EOL;
             $message .= "destFilename : {$destFilename}" . PHP_EOL;
+            $message .= 'as user : ' . get_current_user() . PHP_EOL;
             $message .= 'error was ' . $thrown->getMessage() . PHP_EOL;
             $exception->addInformations($message);
             Log::debug($exception->getMessage());

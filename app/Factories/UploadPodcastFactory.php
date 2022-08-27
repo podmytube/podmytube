@@ -32,7 +32,9 @@ class UploadPodcastFactory
         // defining where to render local path
         $this->localPath = $this->saveRenderedFile($renderedPodcast);
 
-        SendFileBySFTP::dispatch($this->localPath, $this->remotePath(), $cleanAfter = true);
+        SendFileBySFTP::dispatch($this->localPath, $this->remotePath(), $cleanAfter = true)
+            ->delay(now()->addSeconds(3))
+        ;
 
         $this->podcastable->wasUpdatedOn(now());
 
@@ -54,7 +56,7 @@ class UploadPodcastFactory
     public function prepareLocalPath(): string
     {
         $localPath = '/tmp/';
-        $localPath .= now()->format('Y-m-d\TH:i') . '_';
+        $localPath .= now()->format('Y-m-d\THis') . '_';
         $localPath .= $this->podcastable instanceof Channel ? 'channel' : 'playlist';
         $localPath .= '_' . $this->podcastable->channelId();
 

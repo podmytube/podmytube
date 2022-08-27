@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use App\Factories\UploadPodcastFactory;
+use App\Interfaces\Podcastable;
 use App\Jobs\SendFileBySFTP;
 use App\Models\Channel;
 use App\Models\Media;
@@ -45,10 +46,11 @@ class UploadPodcastFactoryTest extends TestCase
         Media::factory()->grabbedAt(now()->subDay())->create(['media_id' => 'AyU4u-iQqJ4']);
         Media::factory()->create(['media_id' => 'hb0Fo1Jqxkc']);
 
-        $this->playlist = Playlist::factory()->create(['youtube_playlist_id' => self::PODMYTUBE_TEST_PLAYLIST_ID]);
-        $factory = UploadPodcastFactory::for($this->playlist)->run();
+        /** @var Podcastable $playlist */
+        $playlist = Playlist::factory()->create(['youtube_playlist_id' => self::PODMYTUBE_TEST_PLAYLIST_ID]);
+        $factory = UploadPodcastFactory::for($playlist)->run();
 
-        $this->assertEquals($this->playlist->remoteFilePath(), $factory->remotePath());
+        $this->assertEquals($playlist->remoteFilePath(), $factory->remotePath());
         Bus::assertDispatched(SendFileBySFTP::class);
     }
 
@@ -56,7 +58,7 @@ class UploadPodcastFactoryTest extends TestCase
     public function prepare_local_path_for_channel_is_fine(): void
     {
         $this->channel = $this->createChannelWithPlan();
-        $expected = '/tmp/' . now()->format('Y-m-d\TH:i') . '_channel_' . $this->channel->channelId();
+        $expected = '/tmp/' . now()->format('Y-m-d\THis') . '_channel_' . $this->channel->channelId();
         $factory = UploadPodcastFactory::for($this->channel);
 
         $this->assertEquals($expected, $factory->prepareLocalPath());
@@ -65,8 +67,9 @@ class UploadPodcastFactoryTest extends TestCase
     /** @test */
     public function prepare_local_path_for_playlist_is_fine(): void
     {
+        /** @var Podcastable $playlist */
         $playlist = Playlist::factory()->create();
-        $expected = '/tmp/' . now()->format('Y-m-d\TH:i') . '_playlist_' . $playlist->channelId();
+        $expected = '/tmp/' . now()->format('Y-m-d\THis') . '_playlist_' . $playlist->channelId();
         $factory = UploadPodcastFactory::for($playlist);
 
         $this->assertEquals($expected, $factory->prepareLocalPath());
