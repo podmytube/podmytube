@@ -22,8 +22,7 @@ class ChannelCleaningJob implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    /** @var \App\Models\Channel */
-    protected $channelToDelete;
+    protected Channel $channelToDelete;
 
     public function __construct(Channel $channelToDelete)
     {
@@ -45,15 +44,12 @@ class ChannelCleaningJob implements ShouldQueue
         }
 
         // delete medias
-        $this->channelToDelete->medias->map(function (Media $media): void {
-            MediaCleaning::dispatch($media);
-        });
+        $this->channelToDelete->medias->each(fn (Media $media) => MediaCleaning::dispatch($media));
 
         // delete playlists
-        $this->channelToDelete->playlists->map(function (Playlist $playlist): void {
-            $playlist->delete();
-        });
+        $this->channelToDelete->playlists->map(fn (Playlist $playlist) => $playlist->delete());
 
+        // delete subscription
         $this->channelToDelete->subscription->delete();
 
         // delete podcastable (channel/playlist)
