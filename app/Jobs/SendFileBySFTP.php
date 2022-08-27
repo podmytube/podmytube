@@ -48,7 +48,7 @@ class SendFileBySFTP implements ShouldQueue
      */
     public function handle()
     {
-        ray($this->localFilePath, $this->remoteFilePath);
+        Log::debug(__CLASS__ . '::' . __FUNCTION__ . ' starting');
         throw_unless(
             is_readable($this->localFilePath),
             new FileUploadUnreadableFileException("File {$this->localFilePath} is not readable.")
