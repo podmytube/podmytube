@@ -118,9 +118,10 @@ abstract class YoutubeCore implements QuotasConsumer
                 throw $exception;
             }
 
-            if (!isset($this->jsonDecoded['items'])) {
-                throw new YoutubeNoResultsException('No results for ' . $this->url());
-            }
+            throw_unless(
+                isset($this->jsonDecoded['items']),
+                new YoutubeNoResultsException('No results for ' . $this->url())
+            );
 
             // adding them to previous results
             $this->items = array_merge($this->items, $this->jsonDecoded['items']);
@@ -272,9 +273,12 @@ abstract class YoutubeCore implements QuotasConsumer
         // this test exists for those cases
         if (strlen($rawResults)) {
             Cache::put($this->cacheKey(), $rawResults, now()->addHour());
+
+            return $rawResults;
         }
 
-        return $rawResults;
+        // strange case when we have nothing.
+        return '';
     }
 
     /**
