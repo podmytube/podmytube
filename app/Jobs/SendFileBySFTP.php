@@ -29,9 +29,6 @@ class SendFileBySFTP implements ShouldQueue
         public string $remoteFilePath,
         public bool $cleanAfter = false
     ) {
-        $this->localFilePath = $localFilePath;
-        $this->remoteFilePath = $remoteFilePath;
-        $this->cleanAfter = $cleanAfter;
     }
 
     /**
