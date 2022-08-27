@@ -48,7 +48,7 @@ class SendFileBySFTP implements ShouldQueue
      */
     public function handle()
     {
-        Log::alert(__CLASS__ . '::' . __FUNCTION__ . " Moving File {$this->localFilePath} to {$this->remoteFilePath}");
+        Log::debug(__CLASS__ . '::' . __FUNCTION__ . " Moving File {$this->localFilePath} to {$this->remoteFilePath}");
         throw_unless(
             is_readable($this->localFilePath),
             new FileUploadUnreadableFileException("File {$this->localFilePath} is not readable.")
@@ -97,7 +97,7 @@ class SendFileBySFTP implements ShouldQueue
             // Log::notice("Cleaning {$this->localFilePath}.");
             unlink($this->localFilePath);
         }
-        Log::alert("File {$this->localFilePath} has been moved to {$this->remoteFilePath}");
+        Log::debug("File {$this->localFilePath} has been moved to {$this->remoteFilePath}");
 
         return 0;
     }
