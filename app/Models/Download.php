@@ -86,6 +86,27 @@ class Download extends Model
         return intval($query->sum('counted'));
     }
 
+    public static function downloadsForChannelsDuringPeriod(Carbon $startDate, Carbon $endDate, ?int $moreThan = null): Collection
+    {
+        $query = Download::query()
+            ->select('channel_id')
+            ->selectRaw('sum(counted) as aggregate')
+        ;
+
+        if ($startDate->toDateString() === $endDate->toDateString()) {
+            $query->where('log_day', '=', $startDate->toDateString());
+        } else {
+            $query->duringPeriod($startDate, $endDate);
+        }
+        $query->groupBy('channel_id');
+
+        if ($moreThan != null) {
+            $query->having('aggregate', '>=', $moreThan);
+        }
+
+        return $query->get();
+    }
+
     public function scopeDuringPeriod(Builder $query, Carbon $startDate, Carbon $endDate): Builder
     {
         if ($startDate > $endDate) {

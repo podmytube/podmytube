@@ -248,7 +248,6 @@ it('should count all downloads day', function (): void {
     Download::factory()->channel($this->channel)->create(['counted' => 75]);
     Download::factory()->channel(Channel::factory()->create())->create(['counted' => 25]);
 
-    ray(Download::all()->toArray())->showQueries();
     $result = Download::downloadsDuringPeriod(now()->startOfDay(), now()->endOfDay());
     expect($result)->not()->toBeNull();
     expect($result)->toBeInt();
@@ -273,6 +272,80 @@ it('should get downloads day by day for one channel', function (): void {
     expect($results)->not()->toBeNull();
     expect($results)->toBeInstanceOf(Collection::class);
     expect($expectedRows)->toBe($results->count());
+});
+
+it('should get downloads by period group by channel', function (): void {
+    $channels = Channel::factory()->count(3)->create();
+
+    $channels->each(fn (Channel $channel) => Media::factory()->channel($channel)->create());
+
+    $august2022 = Carbon::create(2022, 8, 01);
+    $startDate = clone $august2022;
+    $endDate = (clone $startDate)->endOfMonth();
+
+    $hugeChannel = $channels->get(0);
+    $bigChannel = $channels->get(1);
+    $smallChannel = $channels->get(2);
+
+    $hugeMedia = $hugeChannel->medias->first();
+    $bigMedia = $bigChannel->medias->first();
+    $smallMedia = $smallChannel->medias->first();
+    Download::factory()->media($hugeMedia)->logDate(Carbon::create(2022, 8, 11))->create(['counted' => 1_000_000]);
+    Download::factory()->media($bigMedia)->logDate(Carbon::create(2022, 8, 10))->create(['counted' => 100_000]);
+    Download::factory()->media($smallMedia)->logDate(Carbon::create(2022, 8, 21))->create(['counted' => 1000]);
+
+    $results = Download::downloadsForChannelsDuringPeriod($startDate, $endDate);
+    expect($results)->toBeInstanceOf(Collection::class);
+    expect(3)->toBe($results->count());
+
+    $expectedResult = [
+        [
+            'channel_id' => $smallChannel->channel_id,
+            'aggregate' => 1000,
+        ],
+        [
+            'channel_id' => $hugeChannel->channel_id,
+            'aggregate' => 1000000,
+        ],
+        [
+            'channel_id' => $bigChannel->channel_id,
+            'aggregate' => 100000,
+        ],
+    ];
+    expect($expectedResult)->toEqualCanonicalizing($results->toArray());
+});
+
+it('should get only channel having more than', function (): void {
+    $channels = Channel::factory()->count(3)->create();
+
+    $channels->each(fn (Channel $channel) => Media::factory()->channel($channel)->create());
+
+    $august2022 = Carbon::create(2022, 8, 01);
+    $startDate = clone $august2022;
+    $endDate = (clone $startDate)->endOfMonth();
+
+    $hugeChannel = $channels->get(0);
+    $bigChannel = $channels->get(1);
+    $smallChannel = $channels->get(2);
+
+    $hugeMedia = $hugeChannel->medias->first();
+    $bigMedia = $bigChannel->medias->first();
+    $smallMedia = $smallChannel->medias->first();
+    Download::factory()->media($hugeMedia)->logDate(Carbon::create(2022, 8, 11))->create(['counted' => 1_000_000]);
+    Download::factory()->media($bigMedia)->logDate(Carbon::create(2022, 8, 10))->create(['counted' => 100_000]);
+    Download::factory()->media($smallMedia)->logDate(Carbon::create(2022, 8, 21))->create(['counted' => 1000]);
+
+    $results = Download::downloadsForChannelsDuringPeriod($startDate, $endDate, 150_000);
+    expect($results)->toBeInstanceOf(Collection::class);
+    expect(1)->toBe($results->count());
+
+    $expectedResult = [
+        [
+            'channel_id' => $hugeChannel->channel_id,
+            'aggregate' => 1000000,
+        ],
+    ];
+    expect($expectedResult)->toEqualCanonicalizing($results->toArray());
 });
 
 /*
