@@ -27,7 +27,6 @@ class SendFileBySFTPTest extends TestCase
         Storage::fake('remote');
 
         $this->destFolder = 'tests/' . $this->faker->word();
-        // I do not want to delete fixture file so I copy it.
         $fixtureFile = __DIR__ . '/../Fixtures/images/sampleVig.jpg';
         $this->filename = $this->faker->word() . '.jpg';
         $this->sourceFile = '/tmp/' . $this->filename;

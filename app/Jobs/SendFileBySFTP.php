@@ -48,6 +48,7 @@ class SendFileBySFTP implements ShouldQueue
      */
     public function handle()
     {
+        ray($this->localFilePath, $this->remoteFilePath);
         throw_unless(
             is_readable($this->localFilePath),
             new FileUploadUnreadableFileException("File {$this->localFilePath} is not readable.")
@@ -57,6 +58,12 @@ class SendFileBySFTP implements ShouldQueue
         $destFilename = pathinfo($this->remoteFilePath, PATHINFO_BASENAME);
 
         try {
+            $content = file_get_contents($this->localFilePath);
+            throw_if(
+                $content === false,
+                new FileUploadUnreadableFileException("Cannot get content of file {$this->localFilePath}.")
+            );
+
             /*
             |--------------------------------------------------------------------------
             | IMPORTANT
@@ -67,7 +74,7 @@ class SendFileBySFTP implements ShouldQueue
             | is creating folder with perms drwxr-xr-x which is better
             */
             Storage::disk(self::REMOTE_DISK)->makeDirectory($destFolder);
-            Storage::disk(self::REMOTE_DISK)->putFileAs($destFolder, $this->localFilePath, $destFilename);
+            Storage::disk(self::REMOTE_DISK)->put($this->remoteFilePath, $content);
         } catch (Throwable $thrown) {
             $exception = new FileUploadFailureException();
 
