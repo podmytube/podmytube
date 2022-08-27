@@ -24,6 +24,8 @@ class SendFileBySFTP implements ShouldQueue
 
     public const REMOTE_DISK = 'remote';
 
+    public $tries = 3;
+
     public function __construct(
         public string $localFilePath,
         public string $remoteFilePath,
