@@ -49,15 +49,21 @@ class SendFileBySFTP implements ShouldQueue
     public function handle()
     {
         Log::info(__CLASS__ . '::' . __FUNCTION__ . " Moving File {$this->localFilePath} to {$this->remoteFilePath}");
-        throw_unless(
-            is_readable($this->localFilePath),
-            new FileUploadUnreadableFileException("File {$this->localFilePath} is not readable.")
-        );
-
-        $destFolder = pathinfo($this->remoteFilePath, PATHINFO_DIRNAME);
-        $destFilename = pathinfo($this->remoteFilePath, PATHINFO_BASENAME);
 
         try {
+            throw_unless(
+                file_exists($this->localFilePath),
+                new FileUploadUnreadableFileException("File {$this->localFilePath} do not exists.")
+            );
+
+            throw_unless(
+                is_readable($this->localFilePath),
+                new FileUploadUnreadableFileException("File {$this->localFilePath} is not readable.")
+            );
+
+            $destFolder = pathinfo($this->remoteFilePath, PATHINFO_DIRNAME);
+            $destFilename = pathinfo($this->remoteFilePath, PATHINFO_BASENAME);
+
             $content = file_get_contents($this->localFilePath);
             throw_if(
                 $content === false,
