@@ -40,7 +40,7 @@
 
             <div class="mt-2 py-2 px-4 rounded border bg-gray-800 text-gray-100">
                 <h3 class="h3 text-center">downloads </h3>
-                <p class="text-center">today : {{ $todayDownloads }}</p>
+                <p class="text-center">this month : {{ $monthDownloads }}</p>
             </div>
         </div>
     </div>

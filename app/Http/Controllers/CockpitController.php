@@ -35,7 +35,7 @@ class CockpitController extends Controller
 
         $volumeOnDisk = VolumeOnDiskFactory::init()->formatted();
 
-        $todayDownloads = Download::downloadsDuringPeriod(now()->startOfDay(), now()->endOfDay());
+        $monthDownloads = Download::downloadsDuringPeriod(now()->startOfmonth(), now());
 
         return view('cockpit.index', compact(
             'lastRegisteredChannel',
@@ -44,7 +44,7 @@ class CockpitController extends Controller
             'nbMedias',
             'revenues',
             'volumeOnDisk',
-            'todayDownloads',
+            'monthDownloads',
         ));
     }
 }
