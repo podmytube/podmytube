@@ -24,19 +24,10 @@ class SendFileBySFTP implements ShouldQueue
 
     public const REMOTE_DISK = 'remote';
 
-    /** @var string */
-    public $localFilePath;
-
-    /** @var string */
-    public $remoteFilePath;
-
-    /** @var bool clean local file if true */
-    public $cleanAfter = false;
-
     public function __construct(
-        string $localFilePath,
-        string $remoteFilePath,
-        bool $cleanAfter = false
+        public string $localFilePath,
+        public string $remoteFilePath,
+        public bool $cleanAfter = false
     ) {
         $this->localFilePath = $localFilePath;
         $this->remoteFilePath = $remoteFilePath;
