@@ -33,7 +33,7 @@ class UploadPodcastFactory
         $this->localPath = $this->saveRenderedFile($renderedPodcast);
 
         SendFileBySFTP::dispatch($this->localPath, $this->remotePath(), $cleanAfter = true)
-            ->delay(now()->addSeconds(3))
+            ->delay(now()->addSeconds(30))
         ;
 
         $this->podcastable->wasUpdatedOn(now());
