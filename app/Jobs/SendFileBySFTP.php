@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
-use App\Exceptions\FileUploadFailureException;
 use App\Exceptions\FileUploadUnreadableFileException;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Http\File;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Throwable;
 
 class SendFileBySFTP implements ShouldQueue
@@ -33,47 +34,41 @@ class SendFileBySFTP implements ShouldQueue
     ) {
     }
 
-    /**
-     * Execute the job.
-     */
-    public function handle()
+    public function handle(): bool
     {
         Log::info(__CLASS__ . '::' . __FUNCTION__ . " Moving File {$this->localFilePath} to {$this->remoteFilePath}");
+        $destFolder = pathinfo($this->remoteFilePath, PATHINFO_DIRNAME);
+        $destFilename = pathinfo($this->remoteFilePath, PATHINFO_BASENAME);
 
         try {
-            throw_unless(
-                file_exists($this->localFilePath),
-                new FileUploadUnreadableFileException("File {$this->localFilePath} do not exists.")
-            );
+            $sourceFile = new File($this->localFilePath, checkPath: true);
 
             throw_unless(
-                is_readable($this->localFilePath),
+                $sourceFile->isReadable(),
                 new FileUploadUnreadableFileException("File {$this->localFilePath} is not readable.")
             );
 
-            $destFolder = pathinfo($this->remoteFilePath, PATHINFO_DIRNAME);
-            $destFilename = pathinfo($this->remoteFilePath, PATHINFO_BASENAME);
-
-            $content = file_get_contents($this->localFilePath);
+            /* $content = file_get_contents($this->localFilePath);
             throw_if(
                 $content === false,
                 new FileUploadUnreadableFileException("Cannot get content of file {$this->localFilePath}.")
-            );
+            ); */
 
-            /*
-            |--------------------------------------------------------------------------
-            | IMPORTANT
-            |--------------------------------------------------------------------------
-            | when creating both folder & file with putFileAs, folder is
-            | sometimes created with perms like `drwx------`.
-            | adding makeDirectory seems to use config dir perms or at least
-            | is creating folder with perms drwxr-xr-x which is better
-            */
             Storage::disk(self::REMOTE_DISK)->makeDirectory($destFolder);
-            Storage::disk(self::REMOTE_DISK)->put($this->remoteFilePath, $content);
-        } catch (Throwable $thrown) {
-            $exception = new FileUploadFailureException();
+            Storage::disk(self::REMOTE_DISK)
+                ->putFileAs(
+                    $destFolder,
+                    $sourceFile,
+                    $destFilename
+                )
+            ;
 
+            // Storage::disk(self::REMOTE_DISK)->put($this->remoteFilePath, $content);
+        } catch (FileNotFoundException $thrown) {
+            Log::alert($thrown->getMessage());
+
+            throw $thrown;
+        } catch (Throwable $thrown) {
             $message = 'date : ' . now()->toDateTimeString() . PHP_EOL;
             $message .= 'user : ' . config('filesystems.disks.' . self::REMOTE_DISK . '.username') . PHP_EOL;
             $message .= 'host : ' . config('filesystems.disks.' . self::REMOTE_DISK . '.host') . PHP_EOL;
@@ -83,10 +78,10 @@ class SendFileBySFTP implements ShouldQueue
             $message .= "destFilename : {$destFilename}" . PHP_EOL;
             $message .= 'as user : ' . get_current_user() . PHP_EOL;
             $message .= 'error was ' . $thrown->getMessage() . PHP_EOL;
-            $exception->addInformations($message);
-            Log::alert($exception->getMessage());
+            $thrown->addInformations($message);
+            Log::alert($thrown->getMessage());
 
-            throw $exception;
+            throw $thrown;
         }
 
         if ($this->cleanAfter === true) {
@@ -95,6 +90,6 @@ class SendFileBySFTP implements ShouldQueue
         }
         Log::info("File {$this->localFilePath} has been moved to {$this->remoteFilePath}");
 
-        return 0;
+        return true;
     }
 }

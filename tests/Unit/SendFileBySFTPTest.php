@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use App\Exceptions\FileUploadUnreadableFileException;
 use App\Jobs\SendFileBySFTP;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Tests\TestCase;
 
 /**
@@ -41,10 +43,27 @@ class SendFileBySFTPTest extends TestCase
     }
 
     /** @test */
+    public function not_existing_source_file_should_throw_exception(): void
+    {
+        $this->expectException(FileNotFoundException::class);
+        $job = new SendFileBySFTP('/this/file/do/not/exists', $this->remoteFile, false);
+        $job->handle();
+    }
+
+     /** @test */
+     public function not_readable_source_file_should_throw_exception(): void
+     {
+         $this->expectException(FileUploadUnreadableFileException::class);
+         $job = new SendFileBySFTP('/etc/shadow', $this->remoteFile, false);
+         $job->handle();
+     }
+
+    /** @test */
     public function sending_file_should_succeed_and_local_should_be_still_present(): void
     {
         $job = new SendFileBySFTP($this->sourceFile, $this->remoteFile, false);
-        $job->handle();
+        $result = $job->handle();
+        $this->assertTrue($result);
         $this->assertTrue(Storage::disk('remote')->exists($this->remoteFile));
         $this->assertFileExists($this->sourceFile);
     }
@@ -53,8 +72,22 @@ class SendFileBySFTPTest extends TestCase
     public function sending_file_then_clean_local_should_succeed(): void
     {
         $job = new SendFileBySFTP($this->sourceFile, $this->remoteFile, true);
-        $job->handle();
+        $result = $job->handle();
+        $this->assertTrue($result);
         $this->assertTrue(Storage::disk('remote')->exists($this->remoteFile));
         $this->assertFileDoesNotExist($this->sourceFile);
+    }
+
+    /** @test */
+    public function sending_file_over_existing_file_should_work(): void
+    {
+        $job = new SendFileBySFTP($this->sourceFile, $this->remoteFile);
+        $job->handle();
+
+        // sending it again
+        $job = new SendFileBySFTP($this->sourceFile, $this->remoteFile);
+        $result = $job->handle();
+
+        $this->assertTrue($result);
     }
 }
