@@ -94,6 +94,8 @@ COPY --from=node /app/mix-manifest.json /app/mix-manifest.json
 COPY . /app
 WORKDIR /app
 
+RUN mkdir /var/www/.ssh && chown -R www-data:www-data /var/www && chmod 600 /var/www/.ssh
+
 # symlink for storage (the same that is created with "artisan storage:link")
 RUN     if [ ! -L public/storage ]; then ln -s /app/storage/app/public public/storage; fi
 
