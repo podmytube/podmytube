@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Listeners;
 
-use App\Exceptions\FileUploadUnreadableFileException;
+use App\Exceptions\NotReadableFileException;
 use App\Interfaces\InteractsWithPodcastable;
 use App\Interfaces\Podcastable;
 use App\Jobs\SendFileBySFTP;
@@ -48,7 +48,7 @@ class UploadThumbListener implements ShouldQueue
             $message = "File on {$localPath} is not readable.";
             Log::error($message);
 
-            throw new FileUploadUnreadableFileException($message);
+            throw new NotReadableFileException($message);
         }
 
         SendFileBySFTP::dispatchSync($localPath, $remotePath);

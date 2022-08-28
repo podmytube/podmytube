@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Listeners;
 
 use App\Events\MediaUploadedByUser;
-use App\Exceptions\FileUploadUnreadableFileException;
+use App\Exceptions\NotReadableFileException;
 use App\Jobs\SendFileBySFTP;
 use App\Listeners\UploadMediaListener;
 use App\Models\Media;
@@ -56,7 +56,7 @@ class UploadMediaListenerTest extends TestCase
         touch($this->media->uploadedFilePath());
         chmod($this->media->uploadedFilePath(), 0300);
         $job = new UploadMediaListener();
-        $this->expectException(FileUploadUnreadableFileException::class);
+        $this->expectException(NotReadableFileException::class);
         $job->handle($this->event);
     }
 

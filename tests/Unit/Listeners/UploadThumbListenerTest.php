@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Listeners;
 
 use App\Events\ThumbUpdated;
-use App\Exceptions\FileUploadUnreadableFileException;
+use App\Exceptions\NotReadableFileException;
 use App\Interfaces\InteractsWithPodcastable;
 use App\Jobs\SendFileBySFTP;
 use App\Listeners\UploadThumbListener;
@@ -58,7 +58,7 @@ class UploadThumbListenerTest extends TestCase
     public function upload_thumb_should_fail_if_file_not_readable(): void
     {
         chmod($this->channel->cover->localFilePath(), 0300);
-        $this->expectException(FileUploadUnreadableFileException::class);
+        $this->expectException(NotReadableFileException::class);
         $this->job->handle($this->event);
     }
 

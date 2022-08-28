@@ -25,7 +25,7 @@ class SendFileBySFTPTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Storage::fake('remote');
+        //Storage::fake('remote');
 
         $this->destFolder = 'tests/' . $this->faker->word();
         $fixtureFile = __DIR__ . '/../Fixtures/images/sampleVig.jpg';
@@ -37,7 +37,7 @@ class SendFileBySFTPTest extends TestCase
 
     public function tearDown(): void
     {
-        Storage::disk('remote')->deleteDirectory($this->destFolder);
+        //Storage::disk('remote')->deleteDirectory($this->destFolder);
         parent::tearDown();
     }
 

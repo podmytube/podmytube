@@ -51,16 +51,8 @@ class SendFileBySFTP implements ShouldQueue
                 new Exception("File {$this->localFilePath} is not readable.")
             );
 
-            $content = file_get_contents($this->localFilePath);
-            throw_if(
-                $content === false,
-                new Exception("Cannot get content of file {$this->localFilePath}.")
-            );
 
-            if (!Storage::disk(self::REMOTE_DISK)->directoryExists($destFolder)) {
-                Storage::disk(self::REMOTE_DISK)->makeDirectory($destFolder);
-            }
-
+            Storage::disk(self::REMOTE_DISK)->makeDirectory($destFolder);
             Storage::disk(self::REMOTE_DISK)
                 ->putFileAs(
                     $destFolder,
