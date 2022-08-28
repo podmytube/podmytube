@@ -57,7 +57,10 @@ class SendFileBySFTP implements ShouldQueue
                 new Exception("Cannot get content of file {$this->localFilePath}.")
             );
 
-            Storage::disk(self::REMOTE_DISK)->makeDirectory($destFolder);
+            if (!Storage::disk(self::REMOTE_DISK)->directoryExists($destFolder)) {
+                Storage::disk(self::REMOTE_DISK)->makeDirectory($destFolder);
+            }
+
             Storage::disk(self::REMOTE_DISK)
                 ->putFileAs(
                     $destFolder,
