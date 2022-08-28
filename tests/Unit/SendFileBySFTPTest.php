@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use App\Exceptions\FileUploadNotExistingFileException;
-use App\Exceptions\FileUploadUnreadableFileException;
+use App\Exceptions\FileUploadFailureException;
 use App\Jobs\SendFileBySFTP;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Storage;
@@ -45,7 +44,7 @@ class SendFileBySFTPTest extends TestCase
     /** @test */
     public function not_existing_source_file_should_throw_exception(): void
     {
-        $this->expectException(FileUploadNotExistingFileException::class);
+        $this->expectException(FileUploadFailureException::class);
         $job = new SendFileBySFTP('/this/file/do/not/exists', $this->remoteFile, false);
         $job->handle();
     }
@@ -53,7 +52,7 @@ class SendFileBySFTPTest extends TestCase
      /** @test */
      public function not_readable_source_file_should_throw_exception(): void
      {
-         $this->expectException(FileUploadUnreadableFileException::class);
+         $this->expectException(FileUploadFailureException::class);
          $job = new SendFileBySFTP('/etc/shadow', $this->remoteFile, false);
          $job->handle();
      }

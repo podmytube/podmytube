@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
-use App\Exceptions\FileUploadNotExistingFileException;
-use App\Exceptions\FileUploadUnreadableFileException;
+use App\Exceptions\FileUploadFailureException;
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -43,18 +43,18 @@ class SendFileBySFTP implements ShouldQueue
         try {
             throw_unless(
                 file_exists($this->localFilePath),
-                new FileUploadNotExistingFileException("File {$this->localFilePath} do not exists.")
+                new Exception("File {$this->localFilePath} do not exists.")
             );
 
             throw_unless(
                 is_readable($this->localFilePath),
-                new FileUploadUnreadableFileException("File {$this->localFilePath} is not readable.")
+                new Exception("File {$this->localFilePath} is not readable.")
             );
 
             $content = file_get_contents($this->localFilePath);
             throw_if(
                 $content === false,
-                new FileUploadUnreadableFileException("Cannot get content of file {$this->localFilePath}.")
+                new Exception("Cannot get content of file {$this->localFilePath}.")
             );
 
             Storage::disk(self::REMOTE_DISK)->makeDirectory($destFolder);
@@ -68,6 +68,7 @@ class SendFileBySFTP implements ShouldQueue
 
             // Storage::disk(self::REMOTE_DISK)->put($this->remoteFilePath, $content);
         } catch (Throwable $thrown) {
+            $exception = new FileUploadFailureException();
             $message = 'date : ' . now()->toDateTimeString() . PHP_EOL;
             $message .= 'user : ' . config('filesystems.disks.' . self::REMOTE_DISK . '.username') . PHP_EOL;
             $message .= 'host : ' . config('filesystems.disks.' . self::REMOTE_DISK . '.host') . PHP_EOL;
@@ -77,10 +78,10 @@ class SendFileBySFTP implements ShouldQueue
             $message .= "destFilename : {$destFilename}" . PHP_EOL;
             $message .= 'as user : ' . get_current_user() . PHP_EOL;
             $message .= 'error was ' . $thrown->getMessage() . PHP_EOL;
-            $thrown->addInformations($message);
-            Log::alert($thrown->getMessage());
+            $exception->addInformations($message);
+            Log::alert($message);
 
-            throw $thrown;
+            throw $exception;
         }
 
         if ($this->cleanAfter === true) {
