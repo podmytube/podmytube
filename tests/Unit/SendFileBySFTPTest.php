@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use App\Exceptions\FileUploadNotExistingFileException;
 use App\Exceptions\FileUploadUnreadableFileException;
 use App\Jobs\SendFileBySFTP;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Tests\TestCase;
 
 /**
@@ -45,7 +45,7 @@ class SendFileBySFTPTest extends TestCase
     /** @test */
     public function not_existing_source_file_should_throw_exception(): void
     {
-        $this->expectException(FileNotFoundException::class);
+        $this->expectException(FileUploadNotExistingFileException::class);
         $job = new SendFileBySFTP('/this/file/do/not/exists', $this->remoteFile, false);
         $job->handle();
     }
