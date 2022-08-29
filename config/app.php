@@ -91,6 +91,7 @@ return [
 
     'podhost_ssh_user' => env('PODHOST_SSH_USER'),
     'podhost_ssh_host' => env('PODHOST_SSH_HOST'),
+    'podhost_ssh_root' => env('PODHOST_SSH_ROOT'),
 
     'audio_container_name' => env('AUDIO_CONTAINER_NAME'),
 
