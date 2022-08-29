@@ -32,6 +32,9 @@
         <server name="QUEUE_CONNECTION" value="sync"/>
         <server name="QUEUE_DRIVER" value="sync"/>
         <server name="SESSION_DRIVER" value="array"/>
+        <server name="PODHOST_SSH_USER" value="freebox"/>
+        <server name="PODHOST_SSH_HOST" value="192.168.1.4"/>
+        <server name="PODHOST_SSH_ROOT" value="/home/www"/>
         <ini name="memory_limit" value="512M" />
     </php>
 </phpunit>

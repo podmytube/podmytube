@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Carbon\CarbonInterval;
+use Spatie\Ssh\Ssh;
 
 if (!function_exists('formatBytes')) {
     function formatBytes(int $size, ?int $precision = 2): string
@@ -21,5 +22,15 @@ if (!function_exists('secondsToYoutubeFormat')) {
     function secondsToYoutubeFormat(int $seconds): string
     {
         return CarbonInterval::seconds($seconds)->cascade()->spec();
+    }
+}
+
+if (!function_exists('sshPod')) {
+    function sshPod(): Ssh
+    {
+        return Ssh::create(config('app.podhost_ssh_user'), config('app.podhost_ssh_host'))
+            ->disableStrictHostKeyChecking()
+            ->usePrivateKey(config('app.sftp_key_path'))
+        ;
     }
 }

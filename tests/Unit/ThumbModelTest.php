@@ -66,7 +66,11 @@ class ThumbModelTest extends TestCase
     /** @test */
     public function set_coverable_is_good(): void
     {
+        $this->assertNull($this->thumb->coverable);
+
         $this->thumb->setCoverable($this->channel);
+        $this->thumb->refresh();
+
         $this->assertNotNull($this->thumb->coverable);
         $this->assertInstanceOf(Channel::class, $this->thumb->coverable);
         $this->assertEquals($this->channel->channelId(), $this->thumb->coverable->channelId());

@@ -51,6 +51,7 @@ RUN     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezo
 # supervisor is used to manage backgroud processes and queues
 # sqlite is for tests
 # ssh is for connecting on remote with shell_exec commands
+# rsync to transfer files
 # python is useful to run youtube-dl
 RUN apt-get update -y && \
     apt-get install -y -qq libpng-dev \
@@ -60,7 +61,8 @@ RUN apt-get update -y && \
     supervisor \
     sqlite \
     python3 \
-    ssh && \
+    ssh \
+    rsync && \
     rm -rf /var/lib/apt/lists/*;
 
 # Set the locale
@@ -94,7 +96,7 @@ COPY --from=node /app/mix-manifest.json /app/mix-manifest.json
 COPY . /app
 WORKDIR /app
 
-RUN mkdir /var/www/.ssh && chown -R www-data:www-data /var/www && chmod 600 /var/www/.ssh
+RUN mkdir /var/www/.ssh && chown -R www-data:www-data /var/www && chmod 700 /var/www/.ssh
 
 # symlink for storage (the same that is created with "artisan storage:link")
 RUN     if [ ! -L public/storage ]; then ln -s /app/storage/app/public public/storage; fi

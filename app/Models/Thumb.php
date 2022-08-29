@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Interfaces\Coverable;
-use App\Traits\BelongsToChannel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -13,7 +12,6 @@ use ReflectionClass;
 
 class Thumb extends Model
 {
-    use BelongsToChannel;
     use HasFactory;
 
     public const LOCAL_STORAGE_DISK = 'thumbs';

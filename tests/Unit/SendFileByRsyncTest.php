@@ -5,16 +5,15 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use App\Exceptions\FileUploadFailureException;
-use App\Jobs\SendFileBySFTP;
+use App\Jobs\SendFileByRsync;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 /**
  * @internal
  * @coversNothing
  */
-class SendFileBySFTPTest extends TestCase
+class SendFileByRsyncTest extends TestCase
 {
     use WithFaker;
 
@@ -25,10 +24,9 @@ class SendFileBySFTPTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Storage::fake('remote');
 
         $this->destFolder = 'tests/' . $this->faker->word();
-        $fixtureFile = __DIR__ . '/../Fixtures/images/sampleVig.jpg';
+        $fixtureFile = $this->fixturesPath('images/sampleVig.jpg');
         $this->filename = $this->faker->word() . '.jpg';
         $this->sourceFile = '/tmp/' . $this->filename;
         $this->remoteFile = $this->destFolder . '/' . $this->filename;
@@ -37,7 +35,6 @@ class SendFileBySFTPTest extends TestCase
 
     public function tearDown(): void
     {
-        Storage::disk('remote')->deleteDirectory($this->destFolder);
         parent::tearDown();
     }
 
@@ -45,7 +42,7 @@ class SendFileBySFTPTest extends TestCase
     public function not_existing_source_file_should_throw_exception(): void
     {
         $this->expectException(FileUploadFailureException::class);
-        $job = new SendFileBySFTP('/this/file/do/not/exists', $this->remoteFile, false);
+        $job = new SendFileByRsync('/this/file/do/not/exists', $this->remoteFile, false);
         $job->handle();
     }
 
@@ -53,38 +50,36 @@ class SendFileBySFTPTest extends TestCase
      public function not_readable_source_file_should_throw_exception(): void
      {
          $this->expectException(FileUploadFailureException::class);
-         $job = new SendFileBySFTP('/etc/shadow', $this->remoteFile, false);
+         $job = new SendFileByRsync('/etc/shadow', $this->remoteFile, false);
          $job->handle();
      }
 
     /** @test */
     public function sending_file_should_succeed_and_local_should_be_still_present(): void
     {
-        $job = new SendFileBySFTP($this->sourceFile, $this->remoteFile, false);
+        $job = new SendFileByRsync($this->sourceFile, $this->remoteFile, false);
         $result = $job->handle();
         $this->assertTrue($result);
-        $this->assertTrue(Storage::disk('remote')->exists($this->remoteFile));
         $this->assertFileExists($this->sourceFile);
     }
 
     /** @test */
     public function sending_file_then_clean_local_should_succeed(): void
     {
-        $job = new SendFileBySFTP($this->sourceFile, $this->remoteFile, true);
+        $job = new SendFileByRsync($this->sourceFile, $this->remoteFile, true);
         $result = $job->handle();
         $this->assertTrue($result);
-        $this->assertTrue(Storage::disk('remote')->exists($this->remoteFile));
         $this->assertFileDoesNotExist($this->sourceFile);
     }
 
     /** @test */
     public function sending_file_over_existing_file_should_work(): void
     {
-        $job = new SendFileBySFTP($this->sourceFile, $this->remoteFile);
+        $job = new SendFileByRsync($this->sourceFile, $this->remoteFile);
         $job->handle();
 
         // sending it again
-        $job = new SendFileBySFTP($this->sourceFile, $this->remoteFile);
+        $job = new SendFileByRsync($this->sourceFile, $this->remoteFile);
         $result = $job->handle();
 
         $this->assertTrue($result);

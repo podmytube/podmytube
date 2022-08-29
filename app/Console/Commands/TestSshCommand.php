@@ -6,7 +6,6 @@ namespace App\Console\Commands;
 
 use App\Modules\ServerRole;
 use Illuminate\Console\Command;
-use Spatie\Ssh\Ssh;
 
 class TestSshCommand extends Command
 {
@@ -35,11 +34,7 @@ class TestSshCommand extends Command
             return 0;
         }
 
-        $sshProcess = Ssh::create(config('app.podhost_ssh_user'), config('app.podhost_ssh_host'))
-            ->usePrivateKey(config('app.sftp_key_path'))
-            ->disableStrictHostKeyChecking()
-            ->execute('whoami')
-        ;
+        $sshProcess = sshPod()->execute('whoami');
 
         if ($sshProcess->isSuccessful()) {
             $this->comment("It's a success.");
