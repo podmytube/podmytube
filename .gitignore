@@ -15,6 +15,7 @@ node_modules
 .env.local
 .env.testing
 .env-testing
+.ssh
 
 # ===============================================
 # Bothering me
