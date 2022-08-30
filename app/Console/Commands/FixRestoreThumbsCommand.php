@@ -9,6 +9,7 @@ use App\Models\Thumb;
 use App\Modules\ServerRole;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Ssh\Ssh;
 
 class FixRestoreThumbsCommand extends Command
 {
@@ -47,18 +48,23 @@ class FixRestoreThumbsCommand extends Command
             /** extracting channel id */
             $channel = $this->getChannelFromPath($folderPath);
             if ($channel === null) {
-                // this channel id has no channel
+                $this->info("this channel is unknown {$folderPath}", 'v');
+
                 return false;
             }
+
+            // if channels has thumb check if file exists
 
             $this->info("for channel {$channel->nameWithId()}, setting candidate thumbs", 'v');
 
             /** get all files in folder */
-            $filesInChannelFolder = Storage::disk('remote')->files($folderPath);
+            // $filesInChannelFolder = Storage::disk('remote')->files($folderPath);
+
+            $filesInChannelFolder = $this->getFilesFromFolder($folderPath);
             array_map(function ($thumbFilePath) use ($channel) {
                 $filename = $this->lastPartFromPath($thumbFilePath);
-                $thumb = Thumb::where('file_name', '=', $filename)->first();
                 $this->info("Looking for {$filename} in thumbs.", 'v');
+                $thumb = Thumb::where('file_name', '=', $filename)->first();
                 if ($thumb === null) {
                     // this filename is not a thumb
                     return false;
@@ -75,7 +81,7 @@ class FixRestoreThumbsCommand extends Command
         return 0;
     }
 
-    public function getChannelFromPath(string $folderPath)
+    public function getChannelFromPath(string $folderPath): ?Channel
     {
         $channelId = $this->lastPartFromPath($folderPath);
 
@@ -87,5 +93,24 @@ class FixRestoreThumbsCommand extends Command
         $explodedPath = explode(DIRECTORY_SEPARATOR, $path);
 
         return $explodedPath[count($explodedPath) - 1];
+    }
+
+    protected function getFilesFromFolder(string $folderPath): string
+    {
+        $sshProcess = Ssh::create(config('app.podhost_ssh_user'), config('app.podhost_ssh_host'))
+            ->disableStrictHostKeyChecking()
+            ->usePrivateKey(config('app.sftp_key_path'))
+            ->execute('ls -lsa /home/www/' . $folderPath)
+        ;
+        dd($sshProcess->getErrorOutput());
+        /*
+        if (!$sshProcess->isSuccessful()) {
+            $message = 'docker logs command over ssh has failed with error ' . $sshProcess->getErrorOutput();
+            Log::error($message);
+
+            throw new ProcessLogsCommandHasFailedException($message);
+        } */
+
+        return '';
     }
 }
