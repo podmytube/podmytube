@@ -6,7 +6,7 @@ namespace Tests\Unit;
 
 use App\Factories\UploadPodcastFactory;
 use App\Interfaces\Podcastable;
-use App\Jobs\SendFileBySFTP;
+use App\Jobs\SendFileByRsync;
 use App\Models\Channel;
 use App\Models\Media;
 use App\Models\Playlist;
@@ -27,19 +27,21 @@ class UploadPodcastFactoryTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Bus::fake(SendFileBySFTP::class);
+        Bus::fake(SendFileByRsync::class);
     }
 
-    public function test_building_podcast_for_channel_is_good(): void
+    /** @test */
+    public function building_podcast_for_channel_is_good(): void
     {
         $this->channel = $this->createChannelWithPlan();
         $factory = UploadPodcastFactory::for($this->channel)->run();
 
         $this->assertEquals($this->channel->remoteFilePath(), $factory->remotePath());
-        Bus::assertDispatched(SendFileBySFTP::class);
+        Bus::assertDispatched(SendFileByRsync::class);
     }
 
-    public function test_building_podcast_for_playlist_is_good(): void
+    /** @test */
+    public function building_podcast_for_playlist_is_good(): void
     {
         $this->seedApiKeys();
         Media::factory()->grabbedAt(now()->subDay())->create(['media_id' => 'GJzweq_VbVc']);
@@ -51,7 +53,7 @@ class UploadPodcastFactoryTest extends TestCase
         $factory = UploadPodcastFactory::for($playlist)->run();
 
         $this->assertEquals($playlist->remoteFilePath(), $factory->remotePath());
-        Bus::assertDispatched(SendFileBySFTP::class);
+        Bus::assertDispatched(SendFileByRsync::class);
     }
 
     /** @test */

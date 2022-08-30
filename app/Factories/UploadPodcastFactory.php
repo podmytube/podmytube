@@ -6,7 +6,7 @@ namespace App\Factories;
 
 use App\Exceptions\PodcastSavingFailureException;
 use App\Interfaces\Podcastable;
-use App\Jobs\SendFileBySFTP;
+use App\Jobs\SendFileByRsync;
 use App\Models\Channel;
 use App\Podcast\PodcastBuilder;
 use Illuminate\Support\Facades\Log;
@@ -32,7 +32,9 @@ class UploadPodcastFactory
         // defining where to render local path
         $this->localPath = $this->saveRenderedFile($renderedPodcast);
 
-        SendFileBySFTP::dispatchSync($this->localPath, $this->remotePath(), $cleanAfter = true);
+        SendFileByRsync::dispatch($this->localPath, $this->remotePath(), $cleanAfter = true)
+            ->delay(now()->addSeconds(3)
+        );
 
         $this->podcastable->wasUpdatedOn(now());
 

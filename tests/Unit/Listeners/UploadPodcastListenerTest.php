@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Listeners;
 
 use App\Events\ThumbUpdated;
+use App\Jobs\SendFileByRsync;
 use App\Jobs\SendFileBySFTP;
 use App\Listeners\UploadPodcastListener;
 use App\Models\Channel;
@@ -38,7 +39,7 @@ class UploadPodcastListenerTest extends TestCase
         Media::factory()->grabbedAt(now()->subday())->create(['media_id' => 'GJzweq_VbVc']);
         Media::factory()->grabbedAt(now()->subWeek())->create(['media_id' => 'AyU4u-iQqJ4']);
         Media::factory()->create(['media_id' => 'hb0Fo1Jqxkc']);
-        Bus::fake();
+        Bus::fake(SendFileByRsync::class);
     }
 
     /** @test */
@@ -46,7 +47,7 @@ class UploadPodcastListenerTest extends TestCase
     {
         $thumbUpdatedEvent = new ThumbUpdated($this->channel);
         $this->assertTrue((new UploadPodcastListener())->handle($thumbUpdatedEvent));
-        Bus::assertDispatched(function (SendFileBySFTP $job) {
+        Bus::assertDispatched(function (SendFileByRsync $job) {
             return config('app.feed_path') . $this->channel->channelId() . '/' . config('app.feed_filename') === $job->remoteFilePath;
         });
     }
@@ -56,8 +57,7 @@ class UploadPodcastListenerTest extends TestCase
     {
         $thumbUpdatedEvent = new ThumbUpdated($this->playlist);
         $this->assertTrue((new UploadPodcastListener())->handle($thumbUpdatedEvent));
-        // Bus::assertDispatched(SendFileBySFTP::class); // useless
-        Bus::assertDispatched(function (SendFileBySFTP $job) {
+        Bus::assertDispatched(function (SendFileByRsync $job) {
             return config('app.playlists_path') . $this->playlist->channelId() . '/' . $this->playlist->youtube_playlist_id . '.xml' === $job->remoteFilePath;
         });
     }
