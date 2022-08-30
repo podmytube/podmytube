@@ -2,9 +2,7 @@
 
 namespace App\Exceptions;
 
-use Exception;
-
-class SshConnectionFailedException extends Exception
+class SshConnectionFailedException extends PodmytubeException
 {
     //
 }

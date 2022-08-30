@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Models\Channel;
 use App\Models\Thumb;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -18,5 +19,13 @@ class ThumbFactory extends Factory
             'coverable_type' => null,
             'coverable_id' => null,
         ];
+    }
+
+    public function channel(Channel $channel): static
+    {
+        return $this->state([
+            'coverable_id' => $channel->id(),
+            'coverable_type' => $channel->morphedName(),
+        ]);
     }
 }

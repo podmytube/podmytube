@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Exceptions\SshConnectionFailedException;
 use App\Models\Channel;
 use App\Models\Thumb;
 use App\Modules\ServerRole;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Storage;
-use Spatie\Ssh\Ssh;
 
 class FixRestoreThumbsCommand extends Command
 {
@@ -18,65 +17,96 @@ class FixRestoreThumbsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'fix:restore-thumbs';
+    protected $signature = 'fix:restore-thumbs {channel_id?}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = '';
+    protected $description = 'Restore thumb if any';
 
     /**
      * Execute the console command.
      */
     public function handle(): int
     {
+        $this->error('you should filter vignettes before using it.');
+
+        return 1;
         if (!ServerRole::isWorker()) {
             $this->info('This server is not a worker.', 'v');
 
             return 0;
         }
 
-        /** scan directory where thumbs are located */
-        $folders = Storage::disk('remote')->directories('thumbs.podmytube.com/www');
+        if ($this->argument('channel_id')) {
+            $channels = Channel::with('cover')->where('channel_id', '=', $this->argument('channel_id'))->get();
+        } else {
+            $channels = Channel::allActiveChannels();
+        }
 
-        // for each folder
-        array_map(function ($folderPath) {
-            $this->info("working with {$folderPath}", 'v');
+        $channels->each(function (Channel $channel): void {
+            $this->info('Restoring thumb for channel ' . $channel->channel_id, 'v');
 
-            /** extracting channel id */
-            $channel = $this->getChannelFromPath($folderPath);
-            if ($channel === null) {
-                $this->info("this channel is unknown {$folderPath}", 'v');
+            $folderPath = 'thumbs.podmytube.com/www/' . $channel->channel_id;
 
-                return false;
-            }
+            $filesWithSize = $this->getFilesFromFolder($folderPath);
 
-            // if channels has thumb check if file exists
+            // channel has cover
+            if ($channel->cover !== null) {
+                if (!count($filesWithSize)) {
+                    // and no thumbs in folder => remove existing cover
+                    $channel->cover->delete();
+                    $this->info("Channel {$channel->channel_id} has no files, invalid cover removed.", 'v');
 
-            $this->info("for channel {$channel->nameWithId()}, setting candidate thumbs", 'v');
-
-            /** get all files in folder */
-            // $filesInChannelFolder = Storage::disk('remote')->files($folderPath);
-
-            $filesInChannelFolder = $this->getFilesFromFolder($folderPath);
-            array_map(function ($thumbFilePath) use ($channel) {
-                $filename = $this->lastPartFromPath($thumbFilePath);
-                $this->info("Looking for {$filename} in thumbs.", 'v');
-                $thumb = Thumb::where('file_name', '=', $filename)->first();
-                if ($thumb === null) {
-                    // this filename is not a thumb
-                    return false;
+                    return;
                 }
 
-                $this->info("let's associate thumb {$filename} with {$thumb->id}", 'v');
-                $thumb->update([
-                    'coverable_type' => $channel->morphedName(),
-                    'coverable_id' => $channel->id(),
-                ]);
-            }, $filesInChannelFolder);
-        }, $folders);
+                if (array_key_exists($channel->cover->file_name, $filesWithSize)) {
+                    // ...and remote file exists => OK no need to change
+                    $this->info("Channel {$channel->channel_id} cover is fine.", 'v');
+
+                    return;
+                }
+
+                // existing cover file is missing
+                // ...and there are covers in folder => assign the most recent one
+                $mostRecentFileName = array_key_first($filesWithSize);
+                $mostRecentFileSize = $filesWithSize[$mostRecentFileName];
+
+                $result = $channel->cover->update(
+                    [
+                        'file_size' => $mostRecentFileSize,
+                        'file_name' => $mostRecentFileName,
+                    ]
+                );
+                $this->info("Channel {$channel->channel_id} cover been updated with most recent file", 'v');
+
+                return;
+            }
+
+            // channel has no cover
+            if (!count($filesWithSize)) {
+                // and no thumbs in folder => no change
+                $this->info("Channel {$channel->channel_id} has no cover, and there is no files.", 'v');
+
+                return;
+            }
+
+            // ...and there are covers in folder => assign the most recent one
+            $mostRecentFileName = array_key_first($filesWithSize);
+            $mostRecentFileSize = $filesWithSize[$mostRecentFileName];
+
+            $channel->cover()->create([
+                'coverable_type' => $channel->morphedName(),
+                'coverable_id' => $channel->id(),
+                'file_size' => $mostRecentFileSize,
+                'file_name' => $mostRecentFileName,
+                'file_disk' => Thumb::LOCAL_STORAGE_DISK,
+            ]);
+            $this->info("Channel {$channel->channel_id} cover been updated with most recent file", 'v');
+        });
 
         return 0;
     }
@@ -95,22 +125,26 @@ class FixRestoreThumbsCommand extends Command
         return $explodedPath[count($explodedPath) - 1];
     }
 
-    protected function getFilesFromFolder(string $folderPath): string
+    protected function getFilesFromFolder(string $folderPath): array
     {
-        $sshProcess = Ssh::create(config('app.podhost_ssh_user'), config('app.podhost_ssh_host'))
-            ->disableStrictHostKeyChecking()
-            ->usePrivateKey(config('app.sftp_key_path'))
-            ->execute('ls -lsa /home/www/' . $folderPath)
-        ;
-        dd($sshProcess->getErrorOutput());
-        /*
-        if (!$sshProcess->isSuccessful()) {
-            $message = 'docker logs command over ssh has failed with error ' . $sshProcess->getErrorOutput();
-            Log::error($message);
+        $sshProcess = sshPod()->execute('ls -Ati ' . config('app.podhost_ssh_root') . '/' . $folderPath);
 
-            throw new ProcessLogsCommandHasFailedException($message);
-        } */
+        throw_unless($sshProcess->isSuccessful(), new SshConnectionFailedException());
 
-        return '';
+        $output = trim($sshProcess->getOutput());
+
+        $filesWithSize = [];
+        if (!strlen($output)) {
+            return $filesWithSize;
+        }
+
+        $lines = explode(PHP_EOL, trim($output));
+
+        array_map(function (string $line) use (&$filesWithSize): void {
+            list($filesize, $filename) = explode(' ', $line);
+            $filesWithSize[$filename] = $filesize;
+        }, $lines);
+
+        return $filesWithSize;
     }
 }
