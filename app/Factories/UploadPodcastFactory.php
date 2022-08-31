@@ -32,9 +32,7 @@ class UploadPodcastFactory
         // defining where to render local path
         $this->localPath = $this->saveRenderedFile($renderedPodcast);
 
-        SendFileByRsync::dispatch($this->localPath, $this->remotePath(), $cleanAfter = true)
-            ->delay(now()->addSeconds(3)
-        );
+        SendFileByRsync::dispatch($this->localPath, $this->remotePath(), $cleanAfter = true)->delay(now()->addSecond());
 
         $this->podcastable->wasUpdatedOn(now());
 

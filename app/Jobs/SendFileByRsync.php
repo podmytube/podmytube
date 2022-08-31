@@ -30,7 +30,7 @@ class SendFileByRsync implements ShouldQueue
 
     public function handle(): bool
     {
-        Log::info(__CLASS__ . '::' . __FUNCTION__ . " Moving File {$this->localFilePath} to {$this->remoteFilePath}");
+        Log::info(__CLASS__ . '::' . __FUNCTION__ . " Rsync File {$this->localFilePath} to {$this->remoteFilePath} on " . config('app.podhost_ssh_host'));
         $destFolder = pathinfo($this->remoteFilePath, PATHINFO_DIRNAME);
         $destFilename = pathinfo($this->remoteFilePath, PATHINFO_BASENAME);
         $command = 'not defined yet';
@@ -80,7 +80,7 @@ class SendFileByRsync implements ShouldQueue
             // Log::notice("Cleaning {$this->localFilePath}.");
             unlink($this->localFilePath);
         }
-        Log::info("File {$this->localFilePath} has been moved to {$this->remoteFilePath}");
+        Log::info("File {$this->localFilePath} has been moved to {$this->remoteFilePath} on " . config('app.podhost_ssh_host'));
 
         return true;
     }

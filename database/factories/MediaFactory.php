@@ -41,7 +41,7 @@ EOT,
         return $this->state(
             [
                 'length' => fake()->numberBetween(100, 900000),
-                'duration' => fake()->numberBetween(900000, 90000000),
+                'duration' => fake()->numberBetween(0, 65535), // duration is smallint
                 'grabbed_at' => $grabbedAt,
             ]
         );

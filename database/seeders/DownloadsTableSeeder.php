@@ -19,8 +19,9 @@ class DownloadsTableSeeder extends Seeder
         if (!App::environment('local')) {
             return true;
         }
+
         $channel = Channel::byChannelId(static::JEANVIET_CHANNEL_ID);
-        $media = Media::factory()->channel($channel)->create();
+        $media = Media::query()->where('channel_id', '=', static::JEANVIET_CHANNEL_ID)->first();
 
         $startDate = now()->subdays(40);
         while ($startDate->lessThan(now())) {
