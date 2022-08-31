@@ -6,11 +6,11 @@ git pull
 
 # creating symlink from public to storage
 if [[ ! -L "./public/storage" ]]; then
-	docker exec -it --user www-data $containerName php artisan storage:link
+    docker exec -it --user www-data $containerName php artisan storage:link
 fi
 
 if [[ ! -L "./public/medias" ]]; then
-	ln -s public/storage public/medias
+    ln -s public/storage public/medias
 fi
 
 # installing php modules

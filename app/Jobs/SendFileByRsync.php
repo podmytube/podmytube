@@ -21,14 +21,21 @@ class SendFileByRsync implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
+    // The number of times the job may be attempted.
+    public int $tries = 3;
+
+    // The number of seconds to wait before retrying the job.
+    public int $backoff = 10;
+
     public function __construct(
         public string $localFilePath,
         public string $remoteFilePath,
         public bool $cleanAfter = false
     ) {
+        Log::info(__CLASS__ . '::' . __FUNCTION__ . " Local : {$this->localFilePath} Remote {$this->remoteFilePath} ");
     }
 
-    public function handle(): bool
+    public function handle(): void
     {
         Log::info(__CLASS__ . '::' . __FUNCTION__ . " Rsync File {$this->localFilePath} to {$this->remoteFilePath} on " . config('app.podhost_ssh_host'));
         $destFolder = pathinfo($this->remoteFilePath, PATHINFO_DIRNAME);
@@ -52,7 +59,7 @@ class SendFileByRsync implements ShouldQueue
             $sshOptions = "-e 'ssh -i .ssh/kimUpload -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'";
             $rsyncPath = '--rsync-path="mkdir -p ' . $parentFolder . ' && rsync"';
 
-            $command = "rsync -avz --quiet {$rsyncPath} {$sshOptions} {$this->localFilePath} {$userAndHost}:{$absoluteRemoteFilePath} 2>/dev/null";
+            $command = "rsync -avz --quiet --timeout=10 {$rsyncPath} {$sshOptions} {$this->localFilePath} {$userAndHost}:{$absoluteRemoteFilePath} 2>/dev/null";
             $result = exec($command);
             throw_if(
                 $result === false,
@@ -81,7 +88,5 @@ class SendFileByRsync implements ShouldQueue
             unlink($this->localFilePath);
         }
         Log::info("File {$this->localFilePath} has been moved to {$this->remoteFilePath} on " . config('app.podhost_ssh_host'));
-
-        return true;
     }
 }
