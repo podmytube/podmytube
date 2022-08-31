@@ -6,7 +6,7 @@ namespace Tests\Unit\Listeners;
 
 use App\Events\MediaUploadedByUser;
 use App\Exceptions\NotReadableFileException;
-use App\Jobs\SendFileBySFTP;
+use App\Jobs\SendFileByRsync;
 use App\Listeners\UploadMediaListener;
 use App\Models\Media;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -28,7 +28,7 @@ class UploadMediaListenerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Bus::fake(SendFileBySFTP::class);
+        Bus::fake(SendFileByRsync::class);
         $this->media = Media::factory()->create();
 
         $this->event = new MediaUploadedByUser($this->media);
@@ -66,6 +66,6 @@ class UploadMediaListenerTest extends TestCase
         touch($this->media->uploadedFilePath());
         $job = new UploadMediaListener();
         $job->handle($this->event);
-        Bus::assertDispatched(SendFileBySFTP::class);
+        Bus::assertDispatched(SendFileByRsync::class);
     }
 }

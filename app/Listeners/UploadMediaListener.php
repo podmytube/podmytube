@@ -6,7 +6,7 @@ namespace App\Listeners;
 
 use App\Exceptions\NotReadableFileException;
 use App\Interfaces\InteractsWithMedia;
-use App\Jobs\SendFileBySFTP;
+use App\Jobs\SendFileByRsync;
 use Carbon\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -48,7 +48,7 @@ class UploadMediaListener implements ShouldQueue
             throw new NotReadableFileException("File on {$localPath} does not exists.");
         }
 
-        SendFileBySFTP::dispatchSync($localPath, $remotePath, true);
+        SendFileByRsync::dispatchSync($localPath, $remotePath, true);
     }
 
     public function retryUntil(): Carbon

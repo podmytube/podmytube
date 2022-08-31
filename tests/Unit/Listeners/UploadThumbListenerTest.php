@@ -7,7 +7,7 @@ namespace Tests\Unit\Listeners;
 use App\Events\ThumbUpdated;
 use App\Exceptions\NotReadableFileException;
 use App\Interfaces\InteractsWithPodcastable;
-use App\Jobs\SendFileBySFTP;
+use App\Jobs\SendFileByRsync;
 use App\Listeners\UploadThumbListener;
 use App\Models\Channel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -30,7 +30,7 @@ class UploadThumbListenerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Bus::fake(SendFileBySFTP::class);
+        Bus::fake(SendFileByRsync::class);
         $this->job = new UploadThumbListener();
         $this->channel = $this->createChannelWithPlan();
         $this->createCoverFor($this->channel);
@@ -66,6 +66,6 @@ class UploadThumbListenerTest extends TestCase
     public function upload_media_should_success(): void
     {
         $this->job->handle($this->event);
-        Bus::assertDispatched(SendFileBySFTP::class);
+        Bus::assertDispatched(SendFileByRsync::class);
     }
 }

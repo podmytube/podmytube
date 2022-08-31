@@ -7,7 +7,7 @@ namespace App\Listeners;
 use App\Exceptions\NotReadableFileException;
 use App\Interfaces\InteractsWithPodcastable;
 use App\Interfaces\Podcastable;
-use App\Jobs\SendFileBySFTP;
+use App\Jobs\SendFileByRsync;
 use Carbon\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -51,7 +51,7 @@ class UploadThumbListener implements ShouldQueue
             throw new NotReadableFileException($message);
         }
 
-        SendFileBySFTP::dispatchSync($localPath, $remotePath);
+        SendFileByRsync::dispatchSync($localPath, $remotePath);
     }
 
     public function retryUntil(): Carbon

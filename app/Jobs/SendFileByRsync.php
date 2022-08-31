@@ -52,7 +52,7 @@ class SendFileByRsync implements ShouldQueue
             $sshOptions = "-e 'ssh -i .ssh/kimUpload -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'";
             $rsyncPath = '--rsync-path="mkdir -p ' . $parentFolder . ' && rsync"';
 
-            $command = "rsync -avz --quiet {$rsyncPath} {$sshOptions} {$this->localFilePath} {$userAndHost}:{$absoluteRemoteFilePath}";
+            $command = "rsync -avz --quiet {$rsyncPath} {$sshOptions} {$this->localFilePath} {$userAndHost}:{$absoluteRemoteFilePath} 2>/dev/null";
             $result = exec($command);
             throw_if(
                 $result === false,

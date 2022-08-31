@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace Tests\Unit\Jobs;
 
 use App\Jobs\DownloadMediaJob;
-use App\Jobs\SendFileBySFTP;
+use App\Jobs\SendFileByRsync;
+use App\Models\Channel;
 use App\Models\Media;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Bus;
 use Tests\TestCase;
 
 /**
@@ -19,18 +20,15 @@ class DownloadMediaJobTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var \App\Models\Channel */
-    protected $channel;
-
-    /** @var \App\Models\Media */
-    protected $media;
+    protected Channel $channel;
+    protected Media $media;
 
     public function setUp(): void
     {
         parent::setUp();
         $this->seedApiKeys();
         $this->seedPlans();
-        Storage::fake(SendFileBySFTP::REMOTE_DISK);
+        Bus::fake(SendFileByRsync::class);
 
         $this->channel = $this->createChannelWithPlan();
     }
@@ -50,7 +48,7 @@ class DownloadMediaJobTest extends TestCase
         $this->assertInstanceOf(DownloadMediaJob::class, $job);
 
         $job->handle();
-        Storage::disk(SendFileBySFTP::REMOTE_DISK)->assertExists($this->media->remoteFilePath());
+        Bus::assertDispatched(SendFileByRsync::class);
     }
 
     /** @test */
@@ -72,6 +70,6 @@ class DownloadMediaJobTest extends TestCase
         $this->assertInstanceOf(DownloadMediaJob::class, $job);
 
         $job->handle();
-        Storage::disk(SendFileBySFTP::REMOTE_DISK)->assertExists($this->media->remoteFilePath());
+        Bus::assertDispatched(SendFileByRsync::class);
     }
 }

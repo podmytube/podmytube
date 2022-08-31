@@ -10,7 +10,7 @@ use App\Exceptions\MediaIsTooOldException;
 use App\Exceptions\YoutubeAndLocalDurationException;
 use App\Exceptions\YoutubeMediaDoesNotExistException;
 use App\Exceptions\YoutubeMediaIsNotAvailableException;
-use App\Jobs\SendFileBySFTP;
+use App\Jobs\SendFileByRsync;
 use App\Models\Media;
 use App\Modules\CheckingGrabbedFile;
 use App\Modules\DownloadYTMedia;
@@ -70,7 +70,7 @@ class DownloadMediaFactory
 
             // upload it
             Log::debug("Uploading media {$this->media->media_id} duration.");
-            SendFileBySFTP::dispatchSync($downloadedFilePath, $this->media->remoteFilePath(), $cleanAfter = true);
+            SendFileByRsync::dispatchSync($downloadedFilePath, $this->media->remoteFilePath(), $cleanAfter = true);
 
             /**
              * setting status.

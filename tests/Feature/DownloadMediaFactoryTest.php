@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Factories\DownloadMediaFactory;
-use App\Jobs\SendFileBySFTP;
+use App\Jobs\SendFileByRsync;
 use App\Models\Channel;
 use App\Models\Media;
 use App\Models\Plan;
@@ -37,7 +37,7 @@ class DownloadMediaFactoryTest extends TestCase
         parent::setUp();
         $this->seedApiKeys();
         $this->seedPlans();
-        Bus::fake(SendFileBySFTP::class);
+        Bus::fake(SendFileByRsync::class);
         $this->channel = Channel::factory()->create(['channel_id' => 'test']);
         $this->subscription = Subscription::factory()->create(
             [
@@ -110,7 +110,7 @@ class DownloadMediaFactoryTest extends TestCase
         $this->assertEquals($expectedDuration, $this->media->duration);
         $this->assertEquals(Media::STATUS_DOWNLOADED, $this->media->status);
         $this->assertEquals(5, $this->media->duration);
-        Bus::assertDispatched(SendFileBySFTP::class);
+        Bus::assertDispatched(SendFileByRsync::class);
     }
 
     public function someChecksWhenNotDowloaded(): void
