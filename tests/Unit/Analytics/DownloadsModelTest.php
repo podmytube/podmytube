@@ -171,14 +171,14 @@ it('should count downloads during one month', function (): void {
     $wantedPeriod = PeriodsHelper::create(7, 2022);
 
     // for this channel should be good
-    expect(Download::downloadsForChannelDuringPeriod(
+    expect(Download::sumOfDownloadsForChannelDuringPeriod(
         channel: $this->channel,
         startDate: $wantedPeriod->startDate(),
         endDate: $wantedPeriod->endDate(),
     ))->toBe($expectedDownloadsCounted);
 
     // for this media should be good
-    expect(Download::downloadsForMediaDuringPeriod(
+    expect(Download::sumOfDownloadsForMediaDuringPeriod(
         media: $media,
         startDate: $wantedPeriod->startDate(),
         endDate: $wantedPeriod->endDate(),
@@ -224,14 +224,14 @@ it('should count downloads for the right item', function (): void {
     $wantedPeriod = PeriodsHelper::create(7, 2022);
 
     // for this channel should be good
-    expect(Download::downloadsForChannelDuringPeriod(
+    expect(Download::sumOfDownloadsForChannelDuringPeriod(
         channel: $this->channel,
         startDate: $wantedPeriod->startDate(),
         endDate: $wantedPeriod->endDate(),
     ))->toBe($expectedDownloadsCountedForMedia);
 
     // for this media should be good
-    expect(Download::downloadsForMediaDuringPeriod(
+    expect(Download::sumOfDownloadsForMediaDuringPeriod(
         media: $media,
         startDate: $wantedPeriod->startDate(),
         endDate: $wantedPeriod->endDate(),
@@ -264,7 +264,7 @@ it('should get downloads day by day for one channel', function (): void {
 
     addDownloadsForChannelMediasDuringPeriod($this->channel, $startDate, $endDate);
 
-    $results = Download::downloadsForChannelByDay(
+    $results = Download::downloadsByInterval(
         channel: $this->channel,
         startDate: Carbon::create('first day of august 2022', 'Europe/Paris'),
         endDate: Carbon::create('last day of august 2022', 'Europe/Paris')
@@ -348,12 +348,48 @@ it('should get only channel having more than', function (): void {
     expect($expectedResult)->toEqualCanonicalizing($results->toArray());
 });
 
+it('should get all downloads day by day', function (): void {
+    // preparing
+    $channels = Channel::factory()->count(2)->create();
+    $channels->each(fn (Channel $channel) => $this->addMediasToChannel($channel));
+
+    // I want 4 download rows per channel
+    $expectedRows = 4;
+    $startDate = Carbon::create(2022, 8, 15);
+    $endDate = (clone $startDate)->addDays($expectedRows);
+
+    addDownloadsForChannelsMediasDuringPeriod($channels, $startDate, $endDate);
+
+    // test
+    $results = Download::downloadsByInterval(
+        interval: Download::INTERVAL_PER_DAY,
+        startDate: Carbon::create('first day of august 2022', 'Europe/Paris'),
+        endDate: Carbon::create('last day of august 2022', 'Europe/Paris')
+    );
+    expect($results)->not()->toBeNull();
+    expect($results)->toBeInstanceOf(Collection::class);
+    expect($expectedRows)->toBe($results->count());
+
+    // checking day by day
+    $startDate = Carbon::create(2022, 8, 15);
+    $index = 0;
+    while ($startDate->lessThan($endDate)) {
+        $expectedResult = Download::query()
+            ->where('log_day', '=', $startDate->toDateString())
+            ->sum('counted')
+        ;
+        expect($expectedResult)->toBe($results->get($index)->counted);
+
+        $index++;
+        $startDate->addDay();
+    }
+});
+
 /*
 |--------------------------------------------------------------------------
 | helpers & providers
 |--------------------------------------------------------------------------
 */
-
 /**
  * @return int nb of counted downloads
  */
@@ -385,6 +421,30 @@ function addDownloadsForChannelMediasDuringPeriod(Channel $channel, Carbon $star
 
             return $carry + $download->counted;
         }, $totalDownloads);
+        $startDate->addDay();
+    }
+
+    return $totalDownloads;
+}
+
+function addDownloadsForChannelsMediasDuringPeriod(Collection $channels, Carbon $startDate, Carbon $endDate): int
+{
+    $totalDownloads = 0;
+    while ($startDate->lessThan($endDate)) {
+        $totalDownloads = $channels->reduce(function (?int $carry, Channel $channel) use ($startDate): int {
+            $downloads = $channel->medias->reduce(function ($carry, Media $media) use ($startDate) {
+                $download = Download::factory()
+                    ->media($media)
+                    ->logDate($startDate)
+                    ->create()
+                ;
+
+                return $carry + $download->counted;
+            });
+
+            return $carry + $downloads;
+        }, $totalDownloads);
+
         $startDate->addDay();
     }
 

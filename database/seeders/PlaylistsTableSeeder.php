@@ -6,28 +6,21 @@ namespace Database\Seeders;
 
 use App\Models\Channel;
 use App\Models\Playlist;
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\DB;
 
-class PlaylistsTableSeeder extends Seeder
+class PlaylistsTableSeeder extends LocalSeeder
 {
     public const GAGNER_DE_L_ARGENT_SUR_INTERNET = 'PL8hP2MDWYfPzeDQFgMvcGjJIm3kZqT2BS';
 
     /**
      * Run the database seeds.
      */
-    public function run()
+    public function run(): void
     {
-        if (!App::environment('local')) {
-            return false;
-        }
-
-        DB::table('playlists')->delete();
+        $this->truncateTables('playlists');
 
         // create channel
         Playlist::create([
-            'channel_id' => ChannelsTableSeeder::JEANVIET_CHANNEL_ID,
+            'channel_id' => static::JEANVIET_CHANNEL_ID,
             'youtube_playlist_id' => self::GAGNER_DE_L_ARGENT_SUR_INTERNET,
             'title' => "Gagner de l'argent sur internet.",
             'description' => 'lorem ipsum',

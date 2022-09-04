@@ -15,10 +15,11 @@ class Charts extends Component
     public const PERIOD_THIS_WEEK = 1;
     public const PERIOD_LAST_MONTH = 2;
     public const PERIOD_LAST_WEEK = 3;
+    public const PERIOD_LAST_QUARTER = 4;
 
     public const DEFAULT_PERIOD = 0;
 
-    public Channel $channel;
+    public ?Channel $channel = null;
     public array $abscissa = [];
     public array $ordinate = [];
     public int $selectedPeriod = 0;
@@ -26,7 +27,7 @@ class Charts extends Component
 
     public array $periods = [];
 
-    public function mount(Channel $channel): void
+    public function mount($channel = null): void
     {
         $this->channel = $channel;
         $this->periods = [
@@ -34,6 +35,7 @@ class Charts extends Component
             static::PERIOD_THIS_WEEK => 'This week',
             static::PERIOD_LAST_MONTH => 'Last month',
             static::PERIOD_LAST_WEEK => 'Last week',
+            static::PERIOD_LAST_QUARTER => 'Last quarter',
         ];
         $this->selectedPeriodLabel = $this->periods[$this->selectedPeriod];
         $this->buildCoordinates();
@@ -62,6 +64,9 @@ class Charts extends Component
             static::PERIOD_LAST_WEEK => [now()->subWeek()->startOfWeek(weekStartsAt: Carbon::MONDAY), now()->subWeek()->endOfWeek(weekEndsAt: Carbon::SUNDAY)],
             static::PERIOD_LAST_MONTH => [now()->subMonth()->startOfMonth(), now()->subMonth()->endOfMonth()],
             static::PERIOD_THIS_WEEK => [now()->startOfWeek(weekStartsAt: Carbon::MONDAY), now()->endOfWeek(weekEndsAt: Carbon::SUNDAY)],
+            static::PERIOD_THIS_MONTH => [now()->startOfMonth(), now()->endOfMonth()],
+            static::PERIOD_LAST_QUARTER => [now()->startOfMonth()->subMonth(3), now()->endOfMonth()],
+            // this month
             default => [now()->startOfMonth(), now()->endOfMonth()],
         };
     }
@@ -79,7 +84,11 @@ class Charts extends Component
         }
 
         // getting downloads
-        $downloads = Download::downloadsForChannelByDay($this->channel, $startDateToKeep, $endDate)->pluck('counted', 'log_day')->toArray();
+        $downloads = Download::downloadsByInterval(
+            startDate: $startDateToKeep,
+            endDate: $endDate,
+            channel: $this->channel,
+        )->pluck('counted', 'log_day')->toArray();
 
         // merging with padded
         $downloads = array_merge($paddedDownloads, $downloads);

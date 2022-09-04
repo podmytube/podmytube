@@ -6,17 +6,15 @@ namespace Database\Seeders;
 
 use App\Models\Plan;
 use App\Models\StripePlan;
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
-class StripePlansTableSeeder extends Seeder
+class StripePlansTableSeeder extends LocalSeeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        DB::table('stripe_plans')->delete();
+        $this->truncateTables('stripe_plans');
 
         $freePlan = Plan::bySlug('forever_free');
         $earlyPlan = Plan::bySlug('early_bird');

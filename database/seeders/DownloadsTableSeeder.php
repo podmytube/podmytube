@@ -6,31 +6,34 @@ namespace Database\Seeders;
 
 use App\Models\Channel;
 use App\Models\Download;
-use App\Models\Media;
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\App;
 
-class DownloadsTableSeeder extends Seeder
+class DownloadsTableSeeder extends LocalSeeder
 {
-    public const JEANVIET_CHANNEL_ID = 'UCu0tUATmSnMMCbCRRYXmVlQ';
-
-    public function run()
+    public function run(): void
     {
-        if (!App::environment('local')) {
-            return true;
-        }
+        $this->truncateTables('downloads');
 
-        $channel = Channel::byChannelId(static::JEANVIET_CHANNEL_ID);
-        $media = Media::query()->where('channel_id', '=', static::JEANVIET_CHANNEL_ID)->first();
+        $jeanVietChannel = Channel::byChannelId(static::JEANVIET_CHANNEL_ID);
+        $ftytecaChannel = Channel::byChannelId(static::FTYTECA_CHANNEL_ID);
 
         $startDate = now()->subdays(40);
         while ($startDate->lessThan(now())) {
             Download::factory()
-                ->channel($channel)
-                ->media($media)
+                ->channel($jeanVietChannel)
+                ->media($jeanVietChannel->medias->first())
                 ->logDate($startDate)
                 ->create()
             ;
+
+            if (fake()->boolean(20)) {
+                Download::factory()
+                    ->channel($ftytecaChannel)
+                    ->media($ftytecaChannel->medias->first())
+                    ->logDate($startDate)
+                    ->create()
+                ;
+            }
+
             $startDate->addDay();
         }
     }

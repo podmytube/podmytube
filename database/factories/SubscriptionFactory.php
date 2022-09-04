@@ -17,4 +17,9 @@ class SubscriptionFactory extends Factory
             'plan_id' => Plan::factory(),
         ];
     }
+
+    public function plan(Plan $plan): static
+    {
+        return $this->state(['plan_id' => $plan->id]);
+    }
 }

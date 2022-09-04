@@ -26,7 +26,6 @@ class CockpitController extends Controller
     {
         $lastRegisteredChannel = Channel::orderBy('channel_createdAt', 'desc')->first();
 
-        $nbActiveChannels = Channel::nbReallyActiveChannels();
         $nbPodcasts = Channel::active()->count();
 
         $nbMedias = Media::whereNotNull('grabbed_at')->count();
@@ -40,7 +39,6 @@ class CockpitController extends Controller
         return view('cockpit.index', compact(
             'lastRegisteredChannel',
             'nbPodcasts',
-            'nbActiveChannels',
             'nbMedias',
             'revenues',
             'volumeOnDisk',

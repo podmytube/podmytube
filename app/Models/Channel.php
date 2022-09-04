@@ -486,21 +486,6 @@ class Channel extends Model implements Podcastable, Coverable
         return 'https://www.youtube.com/channel/' . $this->channelId();
     }
 
-    public static function nbReallyActiveChannels()
-    {
-        return Channel::active()
-            ->whereHas('medias', function ($query): void {
-                $query->whereNotNull('grabbed_at')
-                    ->whereBetween('grabbed_at', [
-                        now()->startOfMonth(),
-                        now(),
-                    ])
-                ;
-            })
-            ->count()
-        ;
-    }
-
     /**
      * tell if channel has medias added in the last 5 minutes.
      */

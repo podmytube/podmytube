@@ -20,7 +20,9 @@ class Download extends Model
     use BelongsToMedia;
     use HasFactory;
 
-    // protected $table = 'downloads';
+    public const INTERVAL_PER_DAY = 0;
+    public const INTERVAL_PER_WEEK = 1;
+    public const INTERVAL_PER_MONTHG = 2;
 
     protected $dates = [];
 
@@ -34,12 +36,8 @@ class Download extends Model
     public static function forChannelThisDay(Channel $channel, Carbon $date): int
     {
         return self::query()
-            ->where(
-                [
-                    ['log_day', '=', $date->toDateString()],
-                    ['channel_id', '=', $channel->channel_id],
-                ]
-            )
+            ->forChannel($channel)
+            ->where('log_day', '=', $date->toDateString())
             ->sum('counted')
         ;
     }
@@ -58,20 +56,50 @@ class Download extends Model
         return $download !== null ? intval($download->counted) : 0;
     }
 
-    public static function downloadsForChannelDuringPeriod(Channel $channel, Carbon $startDate, Carbon $endDate): int
+    public static function sumOfDownloadsForChannelDuringPeriod(Channel $channel, Carbon $startDate, Carbon $endDate): int
     {
-        return intval(Download::query()->where('channel_id', '=', $channel->channel_id)
+        return intval(Download::query()
+            ->forChannel($channel)
             ->duringPeriod($startDate, $endDate)
             ->sum('counted'))
         ;
     }
 
-    public static function downloadsForMediaDuringPeriod(Media $media, Carbon $startDate, Carbon $endDate): int
+    public static function sumOfDownloadsForMediaDuringPeriod(Media $media, Carbon $startDate, Carbon $endDate): int
     {
         return intval(Download::query()->where('media_id', '=', $media->id)
             ->duringPeriod($startDate, $endDate)
             ->sum('counted'))
         ;
+    }
+
+    public static function downloadsByInterval(
+        Carbon $startDate,
+        Carbon $endDate,
+        ?Channel $channel = null,
+        ?int $interval = null,
+    ): Collection {
+        $interval ??= static::INTERVAL_PER_DAY;
+
+        $query = Download::query()
+            ->select('log_day')
+        ;
+
+        $query->selectRaw('sum(counted) as counted');
+
+        if ($startDate->toDateString() === $endDate->toDateString()) {
+            $query->where('log_day', '=', $startDate->toDateString());
+        } else {
+            $query->duringPeriod($startDate, $endDate);
+        }
+
+        $groupsBy = ['log_day'];
+        if ($channel !== null) {
+            $groupsBy[] = 'channel_id';
+        }
+        $query->groupBy($groupsBy);
+
+        return $query->get();
     }
 
     public static function downloadsDuringPeriod(Carbon $startDate, Carbon $endDate): int
@@ -107,6 +135,11 @@ class Download extends Model
         return $query->get();
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | scopes
+    |--------------------------------------------------------------------------
+    */
     public function scopeDuringPeriod(Builder $query, Carbon $startDate, Carbon $endDate): Builder
     {
         if ($startDate > $endDate) {
@@ -118,14 +151,9 @@ class Download extends Model
         ;
     }
 
-    public static function downloadsForChannelByDay(Channel $channel, Carbon $startDate, Carbon $endDate): Collection
+    public function scopeForChannel(Builder $query, Channel $channel): Builder
     {
-        return Download::query()
-            ->select('log_day', 'counted')
-            ->where('channel_id', '=', $channel->channel_id)
-            ->duringPeriod($startDate, $endDate)
-            ->get()
-        ;
+        return $query->where('Channel_id', '=', $channel->channel_id);
     }
 
     protected function logDay(): Attribute

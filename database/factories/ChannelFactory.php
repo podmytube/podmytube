@@ -41,4 +41,19 @@ Duis quis velit dictum mauris lobortis porta et sollicitudin ante.
 EOD,
         ];
     }
+
+    public function user(User $user): static
+    {
+        return $this->state(['user_id' => $user->user_id]);
+    }
+
+    public function category(Category $category): static
+    {
+        return $this->state(['category_id' => $category->id]);
+    }
+
+    public function language(Language $language): static
+    {
+        return $this->state(['language_id' => $language->id]);
+    }
 }

@@ -10,53 +10,44 @@ use App\Models\Language;
 use App\Models\Plan;
 use App\Models\Subscription;
 use App\Models\User;
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\DB;
 
-class ChannelsTableSeeder extends Seeder
+class ChannelsTableSeeder extends LocalSeeder
 {
-    public const JEANVIET_CHANNEL_ID = 'UCu0tUATmSnMMCbCRRYXmVlQ';
-
     /**
      * Run the database seeds.
      */
-    public function run()
+    public function run(): void
     {
-        if (!App::environment('local')) {
-            return true;
-        }
+        $this->truncateTables('channels');
 
-        DB::table('channels')->delete();
+        // create channel jean viet
+        Channel::factory()
+            ->user(User::byEmail('frederick@podmytube.com'))
+            ->category(Category::bySlug('education'))
+            ->language(Language::byCode('fr'))
+            ->has(Subscription::factory()->plan(Plan::bySlug('starter')))
+            ->create([
+                'channel_id' => self::JEANVIET_CHANNEL_ID,
+                'channel_name' => 'Jean Viet',
+                'authors' => 'Jean Baptiste Viet',
+                'email' => 'jeanviet@example.com',
+                'link' => 'https://www.youtube.com/channel/UCu0tUATmSnMMCbCRRYXmVlQ',
+            ])
+        ;
 
-        /** create channel */
-        $channel = Channel::create([
-            'channel_id' => self::JEANVIET_CHANNEL_ID,
-            'user_id' => User::byEmail('frederick@podmytube.com')->user_id,
-            'channel_name' => 'Jean Viet',
-            'podcast_title' => null,
-            'podcast_copyright' => '',
-            'authors' => 'Jean Baptiste Viet',
-            'email' => 'jeanviet@example.com',
-            'description' => 'lorem',
-            'link' => 'https://www.youtube.com/channel/UCu0tUATmSnMMCbCRRYXmVlQ',
-            'category_id' => Category::bySlug('education')->id, // education
-            'language_id' => Language::byCode('fr')->id,
-            'explicit' => false,
-            'active' => true,
-            'reject_video_too_old' => null,
-            'reject_video_by_keyword' => null,
-            'accept_video_by_tag' => null,
-            'channel_createdAt' => now(),
-            'channel_updatedAt' => now(),
-            'podcast_updatedAt' => now(),
-        ]);
-
-        Subscription::create(
-            [
-                'channel_id' => $channel->channel_id,
-                'plan_id' => Plan::bySlug('starter')->id,
-            ]
-        );
+        // create another channel
+        Channel::factory()
+            ->user(User::byEmail('frederick@podmytube.com'))
+            ->category(Category::bySlug('technology'))
+            ->language(Language::byCode('fr'))
+            ->has(Subscription::factory()->plan(Plan::bySlug('starter')))
+            ->create([
+                'channel_id' => static::FTYTECA_CHANNEL_ID,
+                'channel_name' => 'Frederick Tyteca',
+                'authors' => 'Frederick Tyteca',
+                'email' => 'frederick@tyteca.net',
+                'link' => 'https://www.tyteca.net',
+            ])
+        ;
     }
 }

@@ -8,7 +8,8 @@
     @include('partials.cockpit.header')
 
     @yield('content')
-    
+
+    @livewireScripts
 </body>
 
 </html>

@@ -41,13 +41,13 @@ class HomeController extends Controller
                     $channel->vignetteUrl = Vignette::fromThumb($channel->cover)->url();
                 }
 
-                $channel->thisWeekDownloads = Download::downloadsForChannelDuringPeriod(
+                $channel->thisWeekDownloads = Download::sumOfDownloadsForChannelDuringPeriod(
                     $channel,
                     now()->startOfWeek(weekStartsAt: Carbon::MONDAY),
                     now()->endOfWeek(weekEndsAt: Carbon::SUNDAY),
                 );
 
-                $channel->thisMonthDownloads = Download::downloadsForChannelDuringPeriod(
+                $channel->thisMonthDownloads = Download::sumOfDownloadsForChannelDuringPeriod(
                     $channel,
                     now()->startOfMonth(),
                     now()->endOfMonth(),

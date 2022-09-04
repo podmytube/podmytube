@@ -9,6 +9,7 @@ use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class CockpitAccessTest extends TestCase
@@ -18,7 +19,6 @@ class CockpitAccessTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->seedStripePlans(true);
     }
 
     public function test_everyone_is_allowed(): void

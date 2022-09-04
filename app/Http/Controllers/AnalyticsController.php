@@ -12,6 +12,8 @@ class AnalyticsController extends Controller
     public function show(Request $request, Channel $channel)
     {
         $this->authorize($channel);
+        
+        
         // nothing here take a look to
         // app/Http/Livewire/Charts.php
 

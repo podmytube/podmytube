@@ -6,29 +6,16 @@ namespace Database\Seeders;
 
 use App\Models\Channel;
 use App\Models\Media;
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 
-class MediasTableSeeder extends Seeder
+class MediasTableSeeder extends LocalSeeder
 {
-    public const JEANVIET_CHANNEL_ID = 'UCu0tUATmSnMMCbCRRYXmVlQ';
-
     /**
      * Run the database seeds.
      */
-    public function run()
+    public function run(): void
     {
-        if (!App::environment('local')) {
-            return true;
-        }
+        $this->truncateTables('medias');
 
-        Schema::disableForeignKeyConstraints();
-        DB::table('medias')->truncate();
-        Schema::enableForeignKeyConstraints();
-
-        /** create channel */
         $channel = Channel::byChannelId(self::JEANVIET_CHANNEL_ID);
 
         // adding known medias to jean viet playlist
@@ -42,6 +29,12 @@ class MediasTableSeeder extends Seeder
                     ])
                 ;
             })
+        ;
+
+        Media::factory()
+            ->channel(Channel::byChannelId(self::FTYTECA_CHANNEL_ID))
+            ->grabbedAt(now()->subday())
+            ->create()
         ;
     }
 }

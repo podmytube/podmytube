@@ -7,23 +7,16 @@ namespace Database\Seeders;
 use App\Models\Channel;
 use App\Models\Thumb;
 use App\Modules\Vignette;
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
-class ThumbsTableSeeder extends Seeder
+class ThumbsTableSeeder extends LocalSeeder
 {
-    public function run()
+    public function run(): void
     {
-        if (!App::environment('local')) {
-            return false;
-        }
-
-        DB::table('thumbs')->delete();
+        $this->truncateTables('thumbs');
 
         /** getting channel */
-        $channel = Channel::byChannelId(ChannelsTableSeeder::JEANVIET_CHANNEL_ID);
+        $channel = Channel::byChannelId(static::JEANVIET_CHANNEL_ID);
 
         $filename = 'jeanviet.jpg';
         $filepath = $channel->channelId() . DIRECTORY_SEPARATOR . $filename;
