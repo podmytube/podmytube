@@ -2,6 +2,5 @@
 ./vendor
 .git
 .env
-.ssh/*
 storage/app/*.podmytube.com
 storage/framework/testing

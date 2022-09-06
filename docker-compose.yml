@@ -5,6 +5,9 @@ services:
     build:
       context: .
       dockerfile: .docker/Dockerfile
+      args:
+        USER_ID: ${USER_ID:-0}
+        GROUP_ID: ${GROUP_ID:-0}
     image: podmytube:$PODMYTUBE_VERSION
     restart: always
     expose:

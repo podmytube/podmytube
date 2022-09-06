@@ -10,8 +10,8 @@ then
 ssh-copy-id -i .ssh/kimUpload.pub <HOST>
 ```
 
-and finally give rights to apache user on this file
+and finally give rights to ~~apache~~ user on this file
 
 ```
-sudo chown -R www-data:$USER .ssh && sudo chmod -R 700 .ssh
+sudo chown -R $USER:$USER .ssh && sudo chmod -R 700 .ssh
 ```

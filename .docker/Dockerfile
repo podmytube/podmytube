@@ -36,6 +36,9 @@ RUN npm install && npm run production
 #
 FROM    php:8.1.8-apache-buster
 
+ARG USER_ID
+ARG GROUP_ID
+
 # enabling mod rewrite
 RUN     a2enmod rewrite
 
@@ -77,17 +80,23 @@ ENV LC_ALL en_US.UTF-8
 RUN     docker-php-ext-configure gd --with-jpeg && \
     docker-php-ext-install pdo_mysql gd
 
+RUN if [ ${USER_ID:-0} -ne 0 ] && [ ${GROUP_ID:-0} -ne 0 ]; then \
+    userdel -f www-data &&\
+    if getent group www-data ; then groupdel www-data; fi &&\
+    groupadd -g ${GROUP_ID} www-data &&\
+    useradd -l -u ${USER_ID} -g www-data www-data &&\
+    install -d -m 0755 -o www-data -g www-data /home/www-data &&\
+    chown --changes --silent --no-dereference --recursive \
+    --from=33:33 ${USER_ID}:${GROUP_ID} \
+    /home/www-data \
+    ;fi
+
 # default vhost replaced by custom one                                                                                                                                                                                          
 # mainly documentRoot /app/public       
 COPY    .docker/vhost.conf /etc/apache2/sites-available/000-default.conf
-# copying supervisor conf for queue worker
-COPY    .docker/laravel-worker.conf /etc/supervisor/conf.d/
 
 # disabling php short tags (IE : <? ?>)
 COPY    .docker/additionnalConf.ini /usr/local/etc/php/conf.d/
-
-# this script will launch supervisor then apache on the foreground
-COPY    .docker/run-on-start.sh /etc/init.d/run-on-start.sh
 
 COPY --from=composer /app/vendor/ /app/vendor/
 COPY --from=node /app/public/js/ /app/public/js/
@@ -96,9 +105,9 @@ COPY --from=node /app/mix-manifest.json /app/mix-manifest.json
 COPY . /app
 WORKDIR /app
 
-RUN mkdir /var/www/.ssh && chown -R www-data:www-data /var/www && chmod 700 /var/www/.ssh
+USER www-data
 
 # symlink for storage (the same that is created with "artisan storage:link")
 RUN     if [ ! -L public/storage ]; then ln -s /app/storage/app/public public/storage; fi
 
-CMD     ["/etc/init.d/run-on-start.sh"]
+ENTRYPOINT [ "apache2-foreground" ]

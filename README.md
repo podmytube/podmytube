@@ -61,5 +61,6 @@ This service uses several tools for its development.
 1. Install nginx-proxy
 1. Install YT-DLP
 1. git clone podmytube
+1. install supervisor
 
 
