@@ -21,7 +21,7 @@ trait IsFakingYoutube
     {
         Http::fake([
             YoutubeTestCase::CHANNELS_ENDPOINT . '*' => Http::response(
-                file_get_contents($this->fixturesPath('Youtube/empty-channels-response.json')),
+                file_get_contents(fixtures_path('Youtube/empty-channels-response.json')),
                 200
             ),
         ]);
@@ -31,11 +31,11 @@ trait IsFakingYoutube
     {
         Http::fake([
             YoutubeTestCase::PLAYLIST_ITEMS_ENDPOINT . '*' => Http::response(
-                file_get_contents($this->fixturesPath('Youtube/playlist-not-found.json')),
+                file_get_contents(fixtures_path('Youtube/playlist-not-found.json')),
                 200
             ),
             YoutubeTestCase::PLAYLISTS_ENDPOINT . '*' => Http::response(
-                file_get_contents($this->fixturesPath('Youtube/channel-not-found.json')),
+                file_get_contents(fixtures_path('Youtube/channel-not-found.json')),
                 200
             ),
         ]);
@@ -111,7 +111,7 @@ trait IsFakingYoutube
         $expectedJson = str_replace(
             ['EXPECTED_MEDIA_ID', 'EXPECTED_CHANNEL_ID', 'EXPECTED_PLAYLIST_ID', 'EXPECTED_TITLE', 'EXPECTED_DESCRIPTION', 'EXPECTED_TOTAL_RESULTS', 'EXPECTED_RESULTS_PER_PAGE', 'EXPECTED_TAGS', 'EXPECTED_DURATION'],
             [$expectedMediaId, $expectedChannelId, $expectedPlaylistId, $expectedTitle, $expectedDescription, $totalResults, $resultsPerPage, $tags, $expectedDuration],
-            file_get_contents($this->fixturesPath('Youtube/' . $endpoint . '-response.json'))
+            file_get_contents(fixtures_path('Youtube/' . $endpoint . '-response.json'))
         );
 
         Http::fake([

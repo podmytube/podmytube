@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Models\Channel;
+use Database\Factories\Traits\HasChannel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PlaylistFactory extends Factory
 {
+    use HasChannel;
+
     public function definition(): array
     {
         return [
@@ -23,10 +26,5 @@ Duis quis velit dictum mauris lobortis porta et sollicitudin ante.
 EOD,
             'active' => false,
         ];
-    }
-
-    public function channel(Channel $channel): static
-    {
-        return $this->state(['channel_id' => $channel->channel_id]);
     }
 }

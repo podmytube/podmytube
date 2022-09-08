@@ -7,10 +7,13 @@ namespace Database\Factories;
 use App\Models\Channel;
 use App\Models\Media;
 use Carbon\Carbon;
+use Database\Factories\Traits\HasChannel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class MediaFactory extends Factory
 {
+    use HasChannel;
+
     public function definition(): array
     {
         return [
@@ -29,11 +32,6 @@ EOT,
             'deleted_at' => null,
             'uploaded_by_user' => false,
         ];
-    }
-
-    public function channel(Channel $channel): static
-    {
-        return $this->state(['channel_id' => $channel->channel_id]);
     }
 
     public function grabbedAt(Carbon $grabbedAt): static

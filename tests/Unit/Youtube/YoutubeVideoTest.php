@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Http;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class YoutubeVideoTest extends YoutubeTestCase
@@ -28,7 +29,7 @@ class YoutubeVideoTest extends YoutubeTestCase
     {
         Http::fake([
             self::VIDEOS_ENDPOINT . '*' => Http::response(
-                file_get_contents($this->fixturesPath('Youtube/empty-videos-response.json')),
+                file_get_contents(fixtures_path('Youtube/empty-videos-response.json')),
                 200
             ),
         ]);
@@ -116,6 +117,4 @@ class YoutubeVideoTest extends YoutubeTestCase
         $this->fakeVideoResponse(expectedMediaId: self::BEACH_VOLLEY_VIDEO_1);
         $this->assertEquals(self::BEACH_VOLLEY_VIDEO_1, YoutubeVideo::forMedia(self::BEACH_VOLLEY_VIDEO_1)->videoId());
     }
-
-    
 }

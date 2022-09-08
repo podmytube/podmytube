@@ -11,6 +11,7 @@ use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class SendFileByRsyncTest extends TestCase
@@ -26,7 +27,7 @@ class SendFileByRsyncTest extends TestCase
         parent::setUp();
 
         $this->destFolder = 'tests/' . $this->faker->word();
-        $fixtureFile = $this->fixturesPath('images/sampleVig.jpg');
+        $fixtureFile = fixtures_path('images/sampleVig.jpg');
         $this->filename = $this->faker->word() . '.jpg';
         $this->sourceFile = '/tmp/' . $this->filename;
         $this->remoteFile = $this->destFolder . '/' . $this->filename;

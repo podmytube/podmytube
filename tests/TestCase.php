@@ -94,7 +94,7 @@ abstract class TestCase extends BaseTestCase
         Storage::disk(Thumb::LOCAL_STORAGE_DISK)
             ->put(
                 $filePath,
-                file_get_contents(base_path('tests/Fixtures/images/sampleThumb.jpg'))
+                file_get_contents(fixtures_path('/images/sampleThumb.jpg'))
             )
         ;
 
@@ -163,7 +163,7 @@ abstract class TestCase extends BaseTestCase
     {
         Storage::put(
             $media->remoteFilePath(),
-            file_get_contents(base_path('tests/Fixtures/Audio/l8i4O7_btaA.mp3'))
+            file_get_contents(fixtures_path('/Audio/l8i4O7_btaA.mp3'))
         );
     }
 
@@ -171,7 +171,7 @@ abstract class TestCase extends BaseTestCase
     {
         Storage::put(
             $podcastable->remoteFilePath(),
-            file_get_contents(base_path('tests/Fixtures/lemug.xml'))
+            file_get_contents(fixtures_path('/lemug.xml'))
         );
     }
 
@@ -244,11 +244,6 @@ abstract class TestCase extends BaseTestCase
                 );
             })
         ;
-    }
-
-    protected function fixturesPath(string $relativePath): string
-    {
-        return __DIR__ . '/Fixtures/' . $relativePath;
     }
 
     protected function seedStripePlans(bool $plansAreRequired = true): void

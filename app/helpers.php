@@ -34,3 +34,17 @@ if (!function_exists('sshPod')) {
         ;
     }
 }
+
+if (!function_exists('youtubeChannelUrl')) {
+    function youtubeChannelUrl(string $channelId): string
+    {
+        return 'https://www.youtube.com/channel/' . $channelId;
+    }
+}
+
+if (!function_exists('fixtures_path')) {
+    function fixtures_path(string $relativePath): string
+    {
+        return base_path('tests/Fixtures/' . ltrim($relativePath, '/'));
+    }
+}

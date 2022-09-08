@@ -14,11 +14,7 @@ use Tests\TestCase;
 
 /**
  * @internal
- * @coversNothing
- */
-
-/**
- * @internal
+ *
  * @coversNothing
  */
 class LogProcessorRealTest extends TestCase
@@ -30,7 +26,7 @@ class LogProcessorRealTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->mp3SampleLogFile = $this->fixturesPath('Logs/mp3-sample.log');
+        $this->mp3SampleLogFile = fixtures_path('Logs/mp3-sample.log');
         $this->createChannelsAndMedia();
     }
 

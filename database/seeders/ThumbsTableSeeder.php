@@ -24,7 +24,7 @@ class ThumbsTableSeeder extends LocalSeeder
         // copying lorem image to its new fake location to be tested
         Storage::disk(Thumb::LOCAL_STORAGE_DISK)->put(
             $filepath,
-            file_get_contents(base_path('tests/Fixtures/images/jeanviet.jpg'))
+            file_get_contents(fixtures_path('/images/jeanviet.jpg'))
         );
         $filesize = Storage::disk(Thumb::LOCAL_STORAGE_DISK)->size($filepath);
 

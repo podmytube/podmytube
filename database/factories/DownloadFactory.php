@@ -7,6 +7,7 @@ namespace Database\Factories;
 use App\Models\Channel;
 use App\Models\Media;
 use Carbon\Carbon;
+use Database\Factories\Traits\HasChannel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -14,6 +15,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class DownloadFactory extends Factory
 {
+    use HasChannel;
+
     /**
      * Define the model's default state.
      *
@@ -32,11 +35,6 @@ class DownloadFactory extends Factory
     public function logDate(Carbon $date): static
     {
         return $this->state(['log_day' => $date->toDateString()]);
-    }
-
-    public function channel(Channel $channel): static
-    {
-        return $this->state(['channel_id' => $channel->channel_id]);
     }
 
     public function media(Media $media): static
