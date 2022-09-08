@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Modules\ServerRole;
 use Illuminate\Console\Command;
 
 class TestSshCommand extends Command
@@ -28,12 +27,6 @@ class TestSshCommand extends Command
      */
     public function handle(): int
     {
-        if (!ServerRole::isWorker()) {
-            $this->info('This server is not a worker.', 'v');
-
-            return 0;
-        }
-
         $sshProcess = sshPod()->execute('whoami');
 
         if ($sshProcess->isSuccessful()) {
