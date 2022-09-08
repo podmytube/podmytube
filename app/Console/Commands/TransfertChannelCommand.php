@@ -18,7 +18,7 @@ use InvalidArgumentException;
 
 class TransfertChannelCommand extends Command
 {
-    protected $signature = 'transfert:channel {from_channel_id} {dest_channel_id} {--user_id} {--plan_id}';
+    protected $signature = 'transfert:channel {from_channel_id} {dest_channel_id} {--user_id} {--plan_id} {--copy}';
     protected $description = 'transfer one channel';
 
     protected ?Channel $fromChannel;
@@ -62,11 +62,13 @@ class TransfertChannelCommand extends Command
             $this->destChannel->cover()->save($newThumb);
             $this->destChannel->refresh();
 
-            // copy thumb file
-            Storage::disk('remote')->copy(
-                from: $this->fromChannel->cover->remoteFilePath(),
-                to: $this->destChannel->cover->remoteFilePath(),
-            );
+            if ($this->option('copy')) {
+                // copy thumb file
+                Storage::disk('remote')->copy(
+                    from: $this->fromChannel->cover->remoteFilePath(),
+                    to: $this->destChannel->cover->remoteFilePath(),
+                );
+            }
         }
 
         /*
@@ -75,16 +77,18 @@ class TransfertChannelCommand extends Command
         |--------------------------------------------------------------------------
         */
         if ($this->fromChannel->medias->count()) {
-            $fromChannelMediasFolder = config('app.mp3_path') . $this->fromChannel->channel_id;
-            $destChannelMediasFolder = config('app.mp3_path') . $this->destChannel->channel_id;
-            // copy media files
-            array_map(
-                fn (string $filePath) => Storage::disk('remote')->copy(
-                    from: $filePath,
-                    to: $destChannelMediasFolder . '/' . basename($filePath),
-                ),
-                Storage::disk('remote')->files($fromChannelMediasFolder)
-            );
+            if ($this->option('copy')) {
+                $fromChannelMediasFolder = config('app.mp3_path') . $this->fromChannel->channel_id;
+                $destChannelMediasFolder = config('app.mp3_path') . $this->destChannel->channel_id;
+                // copy media files
+                array_map(
+                    fn (string $filePath) => Storage::disk('remote')->copy(
+                        from: $filePath,
+                        to: $destChannelMediasFolder . '/' . basename($filePath),
+                    ),
+                    Storage::disk('remote')->files($fromChannelMediasFolder)
+                );
+            }
 
             // update all medias (cannot copy, media_id is unique)
             Media::query()

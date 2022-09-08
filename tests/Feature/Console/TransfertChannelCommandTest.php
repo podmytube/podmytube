@@ -128,7 +128,7 @@ class TransfertChannelCommandTest extends TestCase
     }
 
     /** @test */
-    public function thumb_should_have_been_copied(): void
+    public function thumb_should_have_been_created(): void
     {
         $this->createCoverFor($this->fromChannel);
         // pushing cover on remote
@@ -146,11 +146,34 @@ class TransfertChannelCommandTest extends TestCase
         $this->assertTrue($destChannel->hasCover(), 'Destination channel should have cover');
         $this->assertEquals($this->fromChannel->cover->file_name, $destChannel->cover->file_name);
 
+        $this->assertFalse(Storage::disk('remote')->exists($destChannel->cover->remoteFilePath()));
+    }
+
+    /** @test */
+    public function thumb_files_should_have_been_copied(): void
+    {
+        $this->createCoverFor($this->fromChannel);
+        // pushing cover on remote
+        Storage::disk('remote')->put(
+            path: $this->fromChannel->cover->remoteFilePath(),
+            contents: Storage::disk('thumbs')->get($this->fromChannel->cover->relativePath())
+        );
+
+        $this->artisan('transfert:channel', [
+            'from_channel_id' => $this->fromChannel->id(),
+            'dest_channel_id' => $this->destChannelId,
+            '--copy' => true,
+        ])->assertExitCode(0);
+
+        $destChannel = Channel::byChannelId($this->destChannelId);
+        $this->assertTrue($destChannel->hasCover(), 'Destination channel should have cover');
+        $this->assertEquals($this->fromChannel->cover->file_name, $destChannel->cover->file_name);
+
         $this->assertTrue(Storage::disk('remote')->exists($destChannel->cover->remoteFilePath()));
     }
 
     /** @test */
-    public function medias_should_have_been_copied(): void
+    public function medias_should_have_been_transferred(): void
     {
         // adding medias to from channel and pushing them on remote
         $expectedMediasNumber = 3;
@@ -166,6 +189,39 @@ class TransfertChannelCommandTest extends TestCase
         $this->artisan('transfert:channel', [
             'from_channel_id' => $this->fromChannel->id(),
             'dest_channel_id' => $this->destChannelId,
+        ])->assertExitCode(0);
+
+        // old channel should have no more medias
+        $this->fromChannel->refresh();
+        $this->assertCount(0, $this->fromChannel->medias);
+
+        $destChannel = Channel::byChannelId($this->destChannelId);
+        $this->assertNotNull($destChannel->medias);
+        $this->assertCount($expectedMediasNumber, $destChannel->medias);
+
+        $destChannelMediasFolder = config('app.mp3_path') . $destChannel->channel_id;
+
+        $this->assertCount(0, Storage::disk('remote')->files($destChannelMediasFolder));
+    }
+
+    /** @test */
+    public function medias_should_have_been_transferred_and_files_copied(): void
+    {
+        // adding medias to from channel and pushing them on remote
+        $expectedMediasNumber = 3;
+        $this->addGrabbedMediasToChannel($this->fromChannel, $expectedMediasNumber);
+        $this->fromChannel->medias->each(
+            fn (Media $media) => Storage::disk('remote')
+                ->put(
+                    path: $media->remoteFilePath(),
+                    contents: fixtures_path('Audio/l8i4O7_btaA.mp3')
+                )
+        );
+
+        $this->artisan('transfert:channel', [
+            'from_channel_id' => $this->fromChannel->id(),
+            'dest_channel_id' => $this->destChannelId,
+            '--copy' => true,
         ])->assertExitCode(0);
 
         // old channel should have no more medias
