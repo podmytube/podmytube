@@ -1,11 +1,12 @@
-<image>
-    @if ($podcastCover->url())<url>{{$podcastCover->url()}}</url>
-    @endif
-    @if ($podcastCover->title())<title>{{$podcastCover->title()}}</title>
-    @endif
-    @if ($podcastCover->link())<link>{{$podcastCover->link()}}</link>
-    @endif
-</image>
 @if ($podcastCover->url())
-<itunes:image href="{{$podcastCover->url()}}" />
+    <image>
+        <url>{{ $podcastCover->url() }}</url>
+        @if ($podcastCover->title())
+            <title>{{ $podcastCover->title() }}</title>
+        @endif
+        @if ($podcastCover->link())
+            <link>{{ $podcastCover->link() }}</link>
+        @endif
+    </image>
+    <itunes:image href="{{ $podcastCover->url() }}" />
 @endif
