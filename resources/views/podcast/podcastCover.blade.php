@@ -6,3 +6,6 @@
     @if ($podcastCover->link())<link>{{$podcastCover->link()}}</link>
     @endif
 </image>
+@if ($podcastCover->url())
+<itunes:image href="{{$podcastCover->url()}}" />
+@endif

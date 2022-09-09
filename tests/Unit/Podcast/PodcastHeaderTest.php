@@ -20,8 +20,7 @@ class PodcastHeaderTest extends TestCase
     use RefreshDatabase;
     use IsAbleToTestPodcast;
 
-    /** @var \App\Models\Channel */
-    protected $channel;
+    protected Channel $channel;
 
     public function setUp(): void
     {

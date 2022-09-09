@@ -10,6 +10,7 @@ use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class PodcastCoverTest extends TestCase
@@ -30,6 +31,7 @@ class PodcastCoverTest extends TestCase
         $this->assertStringContainsString("<link>{$imageLink}</link>", $renderedResult);
         $this->assertStringContainsString("<title>{$imageTitle}</title>", $renderedResult);
         $this->assertStringContainsString('</image>', $renderedResult);
+        $this->assertStringContainsString('<itunes:image href="' . $imageUrl . '" />', $renderedResult);
     }
 
     /** @test */
@@ -42,6 +44,7 @@ class PodcastCoverTest extends TestCase
         $this->assertStringContainsString("<url>{$imageUrl}</url>", $renderedResult);
         $this->assertStringContainsString("<title>{$imageTitle}</title>", $renderedResult);
         $this->assertStringContainsString('</image>', $renderedResult);
+        $this->assertStringContainsString('<itunes:image href="' . $imageUrl . '" />', $renderedResult);
 
         $this->assertStringNotContainsString('<link>', $renderedResult);
     }
@@ -51,9 +54,11 @@ class PodcastCoverTest extends TestCase
     {
         $imageUrl = 'https://thumbs.podmytube.com/UCf2ZTuey5uT8hN3ESe-ZCPQ/KjxVJazWLmuLsOdiQ0w0u0iHVTT7jqMCgKlIjCyQ.png';
         $renderedResult = PodcastCover::prepare(url: $imageUrl)->render();
+
         $this->assertStringContainsString('<image>', $renderedResult);
         $this->assertStringContainsString("<url>{$imageUrl}</url>", $renderedResult);
         $this->assertStringContainsString('</image>', $renderedResult);
+        $this->assertStringContainsString('<itunes:image href="' . $imageUrl . '" />', $renderedResult);
 
         $this->assertStringNotContainsString('<link>', $renderedResult);
         $this->assertStringNotContainsString('<title>', $renderedResult);
