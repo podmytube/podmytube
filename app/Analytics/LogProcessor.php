@@ -20,7 +20,7 @@ class LogProcessor
 {
     use IsCachable;
 
-    public const RATIO_TO_BE_DOWNLOADED = 0.80; // file being downloaded at 80% is considered as downloaded
+    public const RATIO_TO_BE_DOWNLOADED = 0.10; // file being downloaded at ~~80%~~ 10% is considered as downloaded
 
     protected string $cacheKeySeparator = '_';
     protected string $cachePrefix = 'Log';
