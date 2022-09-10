@@ -6,6 +6,7 @@ namespace Database\Seeders;
 
 use App\Models\Channel;
 use App\Models\Media;
+use Carbon\Carbon;
 
 class MediasTableSeeder extends LocalSeeder
 {
@@ -20,15 +21,14 @@ class MediasTableSeeder extends LocalSeeder
 
         // adding known medias to jean viet playlist
         collect(['GCEMmbhfPFU', 'Qd15PfStCxI', 'E0sjQ5FxEHw', '0B-aAnUFO8I', 'v9_ARxG2aVQ', '9FcOlmabjZA', '3N9QMMYazdk', '0PuR-R6p2cg', 'JY1WUzazY98'])
-            ->each(function (string $mediaId) use ($channel): void {
-                Media::factory()
+            ->each(
+                fn (string $mediaId) => Media::factory()
                     ->channel($channel)
-                    ->grabbedAt(now()->subday())
+                    ->grabbedAt(Carbon::createFromDate(2022, 8, fake()->numberBetween(1, 31)))
                     ->create([
                         'media_id' => $mediaId,
                     ])
-                ;
-            })
+            )
         ;
 
         Media::factory()

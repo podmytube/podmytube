@@ -16,6 +16,9 @@ use InvalidArgumentException;
 use Stripe\Checkout\Session;
 use Stripe\Stripe;
 
+/**
+ * @property Subscription $subscription;
+ */
 class Plan extends Model
 {
     use HasFactory;

@@ -29,6 +29,7 @@ class ChannelsTableSeeder extends LocalSeeder
             ->create([
                 'channel_id' => self::JEANVIET_CHANNEL_ID,
                 'channel_name' => 'Jean Viet',
+                'podcast_title' => 'Jean Viet',
                 'authors' => 'Jean Baptiste Viet',
                 'email' => 'jeanviet@example.com',
                 'link' => 'https://www.youtube.com/channel/UCu0tUATmSnMMCbCRRYXmVlQ',
@@ -44,6 +45,7 @@ class ChannelsTableSeeder extends LocalSeeder
             ->create([
                 'channel_id' => static::FTYTECA_CHANNEL_ID,
                 'channel_name' => 'Frederick Tyteca',
+                'podcast_title' => 'Frederick Tyteca',
                 'authors' => 'Frederick Tyteca',
                 'email' => 'frederick@tyteca.net',
                 'link' => 'https://www.tyteca.net',

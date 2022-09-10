@@ -10,6 +10,10 @@ use App\Traits\IsRelatedToOneChannel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property Channel $channel
+ * @property Plan    $plan
+ */
 class Subscription extends Model
 {
     use BelongsToChannel;

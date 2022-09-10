@@ -31,7 +31,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection as SupportCollection;
 
 /**
- * the Playlist class and its functions.
+ * @property Channel $channel
  */
 class Playlist extends Model implements Podcastable, Coverable
 {

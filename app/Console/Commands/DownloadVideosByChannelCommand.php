@@ -15,6 +15,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
+use Symfony\Component\Console\Helper\ProgressBar;
 
 class DownloadVideosByChannelCommand extends Command
 {
@@ -25,7 +26,7 @@ class DownloadVideosByChannelCommand extends Command
     protected $description = 'This command will get all ungrabbed videos from specified channel \\
         on specified period. Current period by default.';
 
-    protected $progressBar;
+    protected ProgressBar $progressBar;
 
     /**
      * Execute the console command.
@@ -81,7 +82,7 @@ class DownloadVideosByChannelCommand extends Command
         }
 
         // for every medias in db
-        foreach ($medias as $media) {
+        $medias->each(function(Media $media){
             try {
                 DownloadMediaFactory::media($media, $this->getOutput()->isVerbose())->run();
             } catch (YoutubeMediaIsNotAvailableException|DownloadMediaTagException $exception) {
@@ -92,7 +93,9 @@ class DownloadVideosByChannelCommand extends Command
             if ($this->getOutput()->isVerbose()) {
                 $this->progressBar->advance();
             }
-        }
+
+        });
+        
         if ($this->getOutput()->isVerbose()) {
             $this->progressBar->finish();
             $this->line('');

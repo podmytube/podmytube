@@ -34,7 +34,9 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 /**
- * the channel model and its functions.
+ * @property Category     $category
+ * @property Subscription $subscription
+ * @property User         $user
  */
 class Channel extends Model implements Podcastable, Coverable
 {

@@ -5,17 +5,29 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Exceptions\YoutubeNoApiKeyAvailableException;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @property string $apikey     token
+ * @property string $comment
+ * @property bool   $active
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ */
 class ApiKey extends Model
 {
     use HasFactory;
 
     public const PROD_ENV = 1;
     public const LOCAL_ENV = 2;
+
+    protected $casts = [
+        'active' => 'boolean',
+    ];
 
     /**
      * define the relationship between an apikey and its quotas used.

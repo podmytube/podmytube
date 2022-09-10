@@ -21,19 +21,10 @@ use Illuminate\Support\Facades\Log;
 
 class DownloadMediaFactory
 {
-    /** @var \App\Models\Media */
-    protected $media;
+    protected bool $verbose;
 
-    /** @var bool */
-    protected $force;
-
-    /** @var bool */
-    protected $verbose;
-
-    private function __construct(Media $media, bool $force = false)
+    private function __construct(protected Media $media, protected bool $force = false)
     {
-        $this->media = $media;
-        $this->force = $force;
     }
 
     public static function media(Media $media, bool $force = false)
