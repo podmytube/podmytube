@@ -12,6 +12,7 @@ use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class ApiKeyModelTest extends TestCase
@@ -50,6 +51,14 @@ class ApiKeyModelTest extends TestCase
     public function all_keys_are_depleted_get_one_should_throw_exception(): void
     {
         $this->createDepletedApiKeys(2);
+        $this->expectException(YoutubeNoApiKeyAvailableException::class);
+        ApiKey::getOne();
+    }
+
+    /** @test */
+    public function with_no_active_key_get_one_should_throw_exception(): void
+    {
+        ApiKey::factory()->create(['active' => false]);
         $this->expectException(YoutubeNoApiKeyAvailableException::class);
         ApiKey::getOne();
     }

@@ -227,7 +227,10 @@ abstract class TestCase extends BaseTestCase
 
     protected function createDepletedApiKeys(int $nbkeys = 1): EloquentCollection
     {
-        return $this->createApiKeysWithQuotaUsed(Quota::LIMIT_PER_DAY + 1, $nbkeys);
+        return $this->createApiKeysWithQuotaUsed(
+            quotaUsed: Quota::LIMIT_PER_DAY + 1,
+            nbkeys: $nbkeys
+        );
     }
 
     protected function createApiKeysWithQuotaUsed(int $quotaUsed, int $nbkeys = 1): EloquentCollection

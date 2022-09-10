@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Exceptions\YoutubeNoApiKeyAvailableException;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -37,6 +38,7 @@ class ApiKey extends Model
         // filtering depleted ones
 
         $apikeys = self::query()
+            ->active()
             ->with(['quotas' => function ($query): void {
                 $query->select(DB::raw('apikey_id, sum(quotas.quota_used) as consumed'))
                     ->whereBetween('created_at', [today(), now()])
@@ -74,5 +76,10 @@ class ApiKey extends Model
     public static function byApikey(string $apikey): ?self
     {
         return self::where('apikey', '=', $apikey)->first();
+    }
+
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('active', '=', true);
     }
 }
