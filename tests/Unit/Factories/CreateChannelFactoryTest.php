@@ -10,13 +10,16 @@ use App\Models\Channel;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Tests\Traits\IsFakingYoutube;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class CreateChannelFactoryTest extends TestCase
 {
+    use IsFakingYoutube;
     use RefreshDatabase;
 
     public function setUp(): void

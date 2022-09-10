@@ -55,9 +55,6 @@ class LastMediaPublishedChecker extends Command
         // add now tech
         $this->addNowTech();
 
-        // remove accropolis
-        $this->removeChannel('UCq80IvL314jsE7PgYsTdw7Q');
-
         if (!$this->channelsToCheck->count()) {
             throw new NoPayingChannelException();
 
@@ -103,16 +100,5 @@ class LastMediaPublishedChecker extends Command
         if ($nowtech !== null) {
             $this->channelsToCheck->push($nowtech);
         }
-    }
-
-    /**
-     * remove channel
-     * typically, accropolis has a problem on his channel but he does not answer my emails.
-     */
-    protected function removeChannel(string $channelIdToRemove): void
-    {
-        $this->channelsToCheck->filter(function ($channel) use ($channelIdToRemove) {
-            return $channel->channel_id === $channelIdToRemove;
-        });
     }
 }

@@ -5,7 +5,6 @@ return [
     'early_bird_2017' => 'Early bird',
     'promo_monthly' => "Old monthly plans",
     'promo_yearly' => "Old yearly plans",
-    'accropolis_6_euros' => "Accropolis Special ",
     'weekly_youtuber' => 'Weekly Youtuber',
     'weekly_youtuber_promo' =>
     'Weekly Youtuber <del class="text-muted">(9€/month)</del>',

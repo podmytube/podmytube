@@ -16,9 +16,12 @@ use App\Factories\CreateChannelFactory;
 use App\Http\Requests\ChannelCreationRequest;
 use App\Models\Channel;
 use App\Models\Plan;
+use App\Models\Subscription;
 use Auth;
 use Exception;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class ChannelCreateController extends Controller
@@ -40,19 +43,34 @@ class ChannelCreateController extends Controller
     /**
      * Validate the youtube url received and create inactive channel.
      */
-    public function step1Validate(ChannelCreationRequest $request)
+    public function step1Validate(ChannelCreationRequest $request): RedirectResponse
     {
         $validatedParams = $request->validated();
         $youtubeUrl = $validatedParams['channel_url'];
 
         try {
-            $channel = CreateChannelFactory::fromYoutubeUrl(Auth::user(), $youtubeUrl);
+            $channel = DB::transaction(function () use ($youtubeUrl) {
+                $channel = CreateChannelFactory::fromYoutubeUrl(Auth::user(), $youtubeUrl);
+
+                Subscription::query()
+                    ->updateOrCreate(
+                        ['channel_id' => $channel->channelId()],
+                        [
+                            'channel_id' => $channel->channelId(),
+                            'plan_id' => Plan::bySlug('forever_free')->id,
+                            'ends_at' => null,
+                        ]
+                    )
+                ;
+
+                return $channel;
+            });
 
             return redirect()->route('channel.step2', $channel);
         } catch (Exception $exception) {
             Log::error($exception->getMessage());
 
-            return redirect()->back()->withErrors(['danger' => $exception->getMessage()]);
+            return redirect()->back()->withErrors(['danger' => 'Podcast registration has failed. Please send me an email about it at fred@podmytube.com']);
         }
     }
 

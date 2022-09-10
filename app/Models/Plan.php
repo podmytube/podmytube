@@ -26,7 +26,6 @@ class Plan extends Model
     public const PROMO_YEARLY_PLAN_ID = 4; // old 66€/month plan
     public const WEEKLY_PLAN_ID = 5;
     public const DAILY_PLAN_ID = 6;
-    public const ACCROPOLIS_PLAN_ID = 7; // to be removed one day
     public const DEFAULT_PLAN_ID = self::FREE_PLAN_ID;
     public const WEEKLY_PLAN_PROMO_ID = 8;
     public const DAILY_PLAN_PROMO_ID = 9;

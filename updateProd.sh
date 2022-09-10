@@ -31,4 +31,6 @@ docker exec -it --user www-data $containerName php artisan queue:restart
 # clearing all cache
 docker exec -it --user www-data $containerName php artisan optimize:clear
 
+echo "=================================================="
+echo "                   Test SSH"
 docker exec -it --user www-data $containerName php artisan test:ssh
