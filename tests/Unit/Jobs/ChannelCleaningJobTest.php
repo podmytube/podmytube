@@ -18,14 +18,14 @@ use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class ChannelCleaningJobTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var \App\Models\Channel */
-    protected $channelToDelete;
+    protected Channel $channelToDelete;
 
     public function setUp(): void
     {
