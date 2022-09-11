@@ -119,6 +119,9 @@ return [
         'tmp' => [
             'driver' => 'local',
             'root' => base_path('tmp'),
+            'visibility' => 'public',
+            'permPublic' => 0644,
+            'directoryPerm' => 0755,
         ],
     ],
 ];

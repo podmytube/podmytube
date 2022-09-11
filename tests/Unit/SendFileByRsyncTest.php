@@ -34,11 +34,6 @@ class SendFileByRsyncTest extends TestCase
         file_put_contents($this->sourceFile, file_get_contents($fixtureFile));
     }
 
-    public function tearDown(): void
-    {
-        parent::tearDown();
-    }
-
     /** @test */
     public function not_existing_source_file_should_throw_exception(): void
     {

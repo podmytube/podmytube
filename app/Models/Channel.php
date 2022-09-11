@@ -502,4 +502,9 @@ class Channel extends Model implements Podcastable, Coverable
     {
         return $this->update(['podcast_updatedAt' => $updatedOnDate]);
     }
+
+    public function relativeFolderPath(): string
+    {
+        return $this->channelId();
+    }
 }
