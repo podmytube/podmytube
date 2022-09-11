@@ -59,8 +59,9 @@ class TransferFileJob implements ShouldQueue
                 $this->destinationFilePath,
                 Storage::disk($this->sourceDisk)->get($this->sourceFilePath),
             ),
-            new TransferFileFailureException("Transferring file from {$this->sourceDisk}:{$this->sourceFilePath} to {$this->destinationDisk}:{$destinationFolder} has failed.")
-        )
-        ;
+            new TransferFileFailureException(
+                "Transferring file from {$this->sourceDisk}:{$this->sourceFilePath} to {$this->destinationDisk}:{$destinationFolder} has failed."
+            )
+        );
     }
 }
