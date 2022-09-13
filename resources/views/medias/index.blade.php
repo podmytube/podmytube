@@ -68,18 +68,29 @@
                                     {{ $media->publishedAt() }}
                                 </td>
                                 <td class="text-center">
-                                    @include('svg.media_status_'.$media->status, [
-                                    'cssClass' => 'h-6 w-auto inline fill-current',
-                                    'comment' => $media->statusComment()
-                                    ])
+                                    @if ($media->isDisabled())
+                                        🔇
+                                    @else
+                                        @include('svg.media_status_' . $media->realStatus, [
+                                            'cssClass' => 'h-6 w-auto inline fill-current',
+                                            'comment' => $media->statusComment(),
+                                        ])
+                                    @endif
                                 </td>
                                 <td class="text-center">
-                                    <form method="POST" id="delete-media" enctype="multipart/form-data"
-                                        action="{{ route('channel.medias.destroy', ['channel' => $channel, 'media' => $media]) }}">
-                                        @method('DELETE')
-                                        @csrf
-                                        <button type="submit" class="btn-delete">delete</button>
-                                    </form>
+                                    @if ($media->isDisabled())
+                                        <form method="POST" action="{{ route('media.enable', ['media' => $media]) }}">
+                                            @method('PATCH')
+                                            @csrf
+                                            <button type="submit" class="btn-upgrade">enable</button>
+                                        </form>
+                                    @else
+                                        <form method="POST" action="{{ route('media.disable', ['media' => $media]) }}">
+                                            @method('PATCH')
+                                            @csrf
+                                            <button type="submit" class="btn-disable">disable</button>
+                                        </form>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach

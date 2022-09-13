@@ -11,6 +11,7 @@ use App\Modules\PeriodsHelper;
 use App\Traits\BelongsToChannel;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -18,7 +19,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
 
 /**
+ * @property bool    $active
  * @property Channel $channel
+ * @property Carbon  $created_at
+ * @property Carbon  $deleted_at
+ * @property int     $status
+ * @property string  $title
+ * @property Carbon  $updated_at
  */
 class Media extends Model
 {
@@ -37,6 +44,7 @@ class Media extends Model
     public const STATUS_AGE_FILTERED = 11; // filtered too old
     public const STATUS_NOT_PROCESSED_ON_YOUTUBE = 20; // upcoming
     public const STATUS_NOT_AVAILABLE_ON_YOUTUBE = 21; // should not be possible unless deleted after being registered in pod
+    public const STATUS_DELETED = 22; // user has disable this media
     public const STATUS_EXHAUSTED_QUOTA = 99; // user has more episode to be converted but is not paying enough for
 
     /** @var string medias table name - without it fails */
@@ -297,5 +305,23 @@ class Media extends Model
     public function weight(): int
     {
         return $this->length ?? 0;
+    }
+
+    public function isDisabled(): bool
+    {
+        return $this->realStatus === static::STATUS_DELETED;
+    }
+
+    protected function realStatus(): Attribute
+    {
+        return Attribute::get(
+            function (): int {
+                if ($this->deleted_at !== null) {
+                    return static::STATUS_DELETED;
+                }
+
+                return $this->status;
+            }
+        );
     }
 }

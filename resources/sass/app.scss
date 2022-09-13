@@ -17,11 +17,14 @@
     .btn-podcast {
         @apply bg-purple-800 hover:bg-purple-900 text-gray-100 font-bold py-2 px-4 rounded-lg;
     }
-    .btn-upgrade {
+    .btn-upgrade,.btn-success {
         @apply bg-green-800 hover:bg-green-900 text-white font-bold py-2 px-4 rounded-lg;
     }
     .btn-delete {
         @apply bg-red-800 hover:bg-red-900 text-white font-bold py-2 px-4 rounded-lg;
+    }
+    .btn-disable {
+        @apply bg-gray-400 hover:bg-gray-500 text-black font-bold py-2 px-4 rounded-lg;
     }
     .post-content {
         h2 {

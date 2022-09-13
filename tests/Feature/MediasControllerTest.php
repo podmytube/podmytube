@@ -5,6 +5,10 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Events\MediaUploadedByUser;
+use App\Events\PodcastUpdated;
+use App\Models\Channel;
+use App\Models\Media;
+use App\Models\Plan;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -14,6 +18,7 @@ use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class MediasControllerTest extends TestCase
@@ -21,11 +26,8 @@ class MediasControllerTest extends TestCase
     use RefreshDatabase;
     use WithFaker;
 
-    /** @var \App\Models\Channel */
-    protected $channel;
-
-    /** @var \App\Models\Media */
-    protected $media;
+    protected Channel $channel;
+    protected Media $media;
 
     public function setUp(): void
     {
@@ -41,7 +43,6 @@ class MediasControllerTest extends TestCase
             'index' => 'get',
             'create' => 'get',
             'store' => 'post',
-            'destroy' => 'delete',
             'update' => 'patch',
             'edit' => 'get',
         ];
@@ -152,11 +153,59 @@ class MediasControllerTest extends TestCase
         Event::assertDispatched(MediaUploadedByUser::class);
     }
 
-    /**
-     * ===================================================================
-     * helpers
-     * ===================================================================.
-     */
+    /** @test */
+    public function disable_route_is_fine(): void
+    {
+        $this->channel = $this->createChannelWithPlan(Plan::bySlug('starter'));
+
+        /** @var Media $mediaToDelete */
+        $mediaToDelete = Media::factory()->for($this->channel)->create();
+
+        Event::fake();
+        $this->followingRedirects()
+            ->actingAs($this->channel->user)
+            ->patch(route('media.disable', ['media' => $mediaToDelete]))
+            ->assertSuccessful()
+            ->assertSessionHasNoErrors()
+            ->assertViewIs('medias.index')
+        ;
+
+        $mediaToDelete->refresh();
+        // should have been deleted today
+        $this->assertEquals(now()->toDateString(), $mediaToDelete->deleted_at->toDateString());
+        Event::assertDispatched(fn (PodcastUpdated $event) => $event->podcastable->channelId() === $this->channel->channel_id);
+    }
+
+    /** @test */
+    public function enable_route_is_fine(): void
+    {
+        $this->channel = $this->createChannelWithPlan(Plan::bySlug('starter'));
+
+        /** @var Media $mediaToDelete */
+        $mediaToDelete = Media::factory()->for($this->channel)->create();
+        $mediaId = $mediaToDelete->id;
+        $mediaToDelete->delete();
+
+        Event::fake();
+        $this->followingRedirects()
+            ->actingAs($this->channel->user)
+            ->patch(route('media.enable', ['media' => $mediaId]))
+            ->assertSuccessful()
+            ->assertSessionHasNoErrors()
+            ->assertViewIs('medias.index')
+        ;
+
+        $mediaToDelete->refresh();
+        // should have been deleted today
+        $this->assertNull($mediaToDelete->deleted_at);
+        Event::assertDispatched(fn (PodcastUpdated $event) => $event->podcastable->channelId() === $this->channel->channel_id);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | helpers & providers
+    |--------------------------------------------------------------------------
+    */
     protected function mediaCreateFields(): array
     {
         /** copying fixture/stub file with test data in tmp dir (where it should be uploaded) */

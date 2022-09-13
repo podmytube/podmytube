@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Events\MediaUploadedByUser;
-use App\Exceptions\NotImplementedException;
+use App\Events\PodcastUpdated;
 use App\Http\Requests\MediaRequest;
 use App\Http\Requests\UpdateMediaRequest;
-use App\Jobs\MediaCleaning;
 use App\Models\Channel;
 use App\Models\Media;
 use App\Modules\MediaProperties;
@@ -30,8 +29,9 @@ class MediasController extends Controller
         try {
             $nbItemsPerPage = $request->query('nb') ?? self::NB_ITEMS_PER_PAGE;
 
-            $medias = $channel
-                ->medias()
+            $medias = Media::query()
+                ->withTrashed()
+                ->where('channel_id', '=', $channel->channel_id)
                 ->orderBy('published_at', 'desc')
                 ->simplePaginate($nbItemsPerPage)
             ;
@@ -42,11 +42,6 @@ class MediasController extends Controller
 
             return redirect()->route('home')->withErrors(['danger' => $exception->getMessage()]);
         }
-    }
-
-    public function show(Channel $channel, Media $media): void
-    {
-        throw new NotImplementedException(self::class . '::' . __FUNCTION__ . ' is not implemented yet');
     }
 
     public function create(Channel $channel)
@@ -196,19 +191,49 @@ class MediasController extends Controller
         }
     }
 
-    public function destroy(Channel $channel, Media $media)
+    public function disable(Media $media)
     {
-        $this->authorize('addMedia', $channel);
+        $this->authorize('addMedia', $media->channel);
 
         try {
-            $savedTitle = $media->title;
+            $media->delete();
 
-            MediaCleaning::dispatch($media);
+            PodcastUpdated::dispatch($media->channel);
 
-            return redirect(route('home'))
+            return redirect(route('channel.medias.index', $media->channel))
                 ->with(
                     'success',
-                    "Your episode {$savedTitle} is planned for deletion."
+                    "Your episode {$media->title} won't be published anymore."
+                )
+            ;
+        } catch (Throwable $exception) {
+            Log::error($exception->getMessage());
+
+            return redirect()->route('home')->withErrors(['danger' => $exception->getMessage()]);
+        }
+    }
+
+    /**
+     * @param Media $media
+     *
+     * DO NOT TYPE HINT
+     * If you type hint laravel wont find object and you will get 404 not found
+     */
+    public function enable($media)
+    {
+        $media = Media::withTrashed()->find($media);
+
+        $this->authorize('addMedia', $media->channel);
+
+        try {
+            $media->restore();
+
+            PodcastUpdated::dispatch($media->channel);
+
+            return redirect(route('channel.medias.index', $media->channel))
+                ->with(
+                    'success',
+                    "Your episode {$media->title} will be restored soon."
                 )
             ;
         } catch (Throwable $exception) {

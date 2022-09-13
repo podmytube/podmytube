@@ -107,8 +107,10 @@ Route::domain('dashboard.' . config('app.domain'))->group(function (): void {
 
         // ================================================
         // Medias
+        Route::patch('/media/{media}/enable', 'MediasController@enable')->name('media.enable');
+        Route::patch('/media/{media}/disable', 'MediasController@disable')->name('media.disable');
         Route::resource('channel.medias', 'MediasController')
-            ->only(['index', 'create', 'edit', 'store', 'update', 'destroy'])
+            ->only(['index', 'create', 'edit', 'store', 'update'])
         ;
 
         // ================================================

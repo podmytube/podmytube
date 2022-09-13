@@ -6,6 +6,7 @@ namespace Tests\Traits;
 
 use App\Interfaces\Podcastable;
 use App\Models\Category;
+use App\Models\Media;
 use App\Podcast\PodcastItem;
 use Illuminate\Support\Collection;
 
@@ -26,9 +27,11 @@ trait IsAbleToTestPodcast
             'explicit',
         ];
 
-        array_map(function ($key) use ($podcastable, $podcastInfos): void {
-            $this->assertArrayHasKey($key, $podcastInfos, 'Converting a ' . get_class($podcastable) . " to a podcast header should have key {$key}.");
-        }, $expectedKeys);
+        array_map(fn ($key) => $this->assertArrayHasKey(
+            $key,
+            $podcastInfos,
+            'Converting a ' . get_class($podcastable) . " to a podcast header should have key {$key}."
+        ), $expectedKeys);
 
         $this->assertEquals($podcastInfos['title'], $podcastable->podcastTitle());
         $this->assertEquals($podcastInfos['link'], $podcastable->podcastLink());
@@ -45,20 +48,20 @@ trait IsAbleToTestPodcast
 
     public function podcastItemsChecking(Collection $podcastItems): void
     {
-        $podcastItems->map(
-            function ($podcastItem): void {
-                $this->assertInstanceOf(
-                    PodcastItem::class,
-                    $podcastItem,
-                    'PodcastItems should be a collection of PodcastItem Object'
-                );
-            }
+        $podcastItems->each(
+            fn ($podcastItem) => $this->assertInstanceOf(
+                PodcastItem::class,
+                $podcastItem,
+                'PodcastItems should be a collection of PodcastItem Object'
+            )
         );
     }
 
-    public function itemsChecking(Podcastable $podcastable, string $renderedPodcast): void
+    public function itemsChecking(Podcastable $podcastable, string $renderedPodcast, int $expectedNumberOfMedias): void
     {
-        $podcastable->mediasToPublish()->map(function ($media) use ($podcastable, $renderedPodcast): void {
+        $itemCollection = $podcastable->mediasToPublish();
+        $this->assertCount($expectedNumberOfMedias, $itemCollection);
+        $itemCollection->each(function (Media $media) use ($podcastable, $renderedPodcast): void {
             $this->assertStringContainsString('<guid>' . $media->media_id . '</guid>', $renderedPodcast);
             $this->assertStringContainsString('<title>' . $media->title . '</title>', $renderedPodcast);
             $this->assertStringContainsString(
@@ -74,7 +77,7 @@ trait IsAbleToTestPodcast
         });
     }
 
-    public function headerChecking($podcastable, $renderedPodcast): void
+    public function headerChecking(Podcastable $podcastable, string $renderedPodcast): void
     {
         $this->assertStringContainsString('<?xml version="1.0" encoding="UTF-8"?>', $renderedPodcast);
         $this->assertStringContainsString(
@@ -88,7 +91,7 @@ trait IsAbleToTestPodcast
          * =======================================
          */
 
-        $this->assertStringContainsString('<title>' . $podcastable->title() . '</title>', $renderedPodcast);
+        $this->assertStringContainsString('<title>' . $podcastable->podcastTitle() . '</title>', $renderedPodcast);
         $this->assertStringContainsString('<description><![CDATA[' . $podcastable->description . ']]></description>', $renderedPodcast);
         $this->assertStringContainsString('<image>', $renderedPodcast);
         $this->assertStringContainsString('<url>' . $podcastable->cover->podcastUrl() . '</url>', $renderedPodcast);

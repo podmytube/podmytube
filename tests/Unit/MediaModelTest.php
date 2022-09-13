@@ -16,6 +16,7 @@ use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class MediaModelTest extends TestCase
@@ -23,11 +24,9 @@ class MediaModelTest extends TestCase
     use RefreshDatabase;
     use WithFaker;
 
-    /** @var \App\Models\Channel */
-    protected $channel;
+    protected Channel $channel;
 
-    /** @var \App\Models\Media */
-    protected $media;
+    protected Media $media;
 
     public function setUp(): void
     {
@@ -349,5 +348,68 @@ class MediaModelTest extends TestCase
         $this->assertNotNull($result);
         $this->assertIsInt($result);
         $this->assertEquals($expectedWeight, $result);
+    }
+
+    /** @test */
+    public function delete_should_set_active_to_0_and_fill_deleted(): void
+    {
+        $this->assertNull($this->media->deleted_at);
+
+        $this->media->delete();
+
+        $this->assertNotNull($this->media->deleted_at, 'Deleted_at should be set.');
+        $this->assertEquals(now()->toDateString(), $this->media->deleted_at->toDateString());
+    }
+
+    /** @test */
+    public function real_status_should_be_fine(): void
+    {
+        array_map(
+            function (int $status): void {
+                $media = Media::factory()->create(['status' => $status]);
+                $this->assertEquals($status, $media->realStatus);
+
+                // if deleted ... we don't care about status
+                $media->delete();
+                $this->assertEquals(Media::STATUS_DELETED, $media->realStatus);
+            },
+            [
+                Media::STATUS_NOT_DOWNLOADED,
+                Media::STATUS_DOWNLOADED,
+                Media::STATUS_UPLOADED_BY_USER,
+                Media::STATUS_TAG_FILTERED,
+                Media::STATUS_AGE_FILTERED,
+                Media::STATUS_NOT_PROCESSED_ON_YOUTUBE,
+                Media::STATUS_NOT_AVAILABLE_ON_YOUTUBE,
+                Media::STATUS_DELETED,
+                Media::STATUS_EXHAUSTED_QUOTA,
+            ]
+        );
+    }
+
+    /** @test */
+    public function is_deleted_should_be_fine(): void
+    {
+        $expectations = [
+            Media::STATUS_NOT_DOWNLOADED => false,
+            Media::STATUS_DOWNLOADED => false,
+            Media::STATUS_UPLOADED_BY_USER => false,
+            Media::STATUS_TAG_FILTERED => false,
+            Media::STATUS_AGE_FILTERED => false,
+            Media::STATUS_NOT_PROCESSED_ON_YOUTUBE => false,
+            Media::STATUS_NOT_AVAILABLE_ON_YOUTUBE => false,
+            Media::STATUS_DELETED => true,
+            Media::STATUS_EXHAUSTED_QUOTA => false,
+        ];
+
+        array_map(
+            function (int $status, bool $expected): void {
+                $media = Media::factory()->create(['status' => $status]);
+
+                $this->assertEquals($expected, $media->isDisabled());
+            },
+            array_keys($expectations),
+            $expectations
+        );
     }
 }

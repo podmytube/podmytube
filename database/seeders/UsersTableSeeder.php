@@ -22,11 +22,13 @@ class UsersTableSeeder extends Seeder
                 'firstname' => 'Fred',
                 'email' => 'frederick@podmytube.com',
                 'password' => '$2y$10$NZouI76/3YhdnrkRXT3ee.1MaHA3zvg3TDKS07vobYfSV0rsHnEN2',
+                'superadmin' => true,
             ],
             [
                 'firstname' => 'another fred',
                 'email' => 'frederick@tyteca.net',
                 'password' => '$2y$10$pDoZavewGcqHU93YwOR3zOOzDKICchCQtirhhKHCV/FVxY55yFNA.',
+                'superadmin' => false,
             ],
         ];
         $index = 1;
