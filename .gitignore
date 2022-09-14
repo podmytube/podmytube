@@ -20,6 +20,5 @@ node_modules
 # ===============================================
 # Bothering me
 # ===============================================
-package-lock.json
 _ide_helper.php
 .php-cs-fixer.cache
