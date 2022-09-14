@@ -11,12 +11,13 @@ use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class PlayingWithMockeryTest extends TestCase
 {
     /** @test */
-    public function foo(): void
+    public function it_should_give_us_a_cat(): void
     {
         $stripeClient = $this->mock(StripeClient::class, function (MockInterface $mock): void {
             $mock->shouldReceive(config('app.stripe_secret'))->andReturnSelf();
@@ -32,9 +33,9 @@ class PlayingWithMockeryTest extends TestCase
         $this->assertEquals('{id:subId}', $stripeClient->subscriptions->retrieve('subId'));
 
         $subscription = $this->mock(Subscription::class, function (MockInterface $mock): void {
-            $mock->shouldReceive('retrieve')->with('chat')->once()->andReturn('chien');
+            $mock->shouldReceive('retrieve')->with('cat')->once()->andReturn('dog');
         });
 
-        $this->assertEquals('chien', $subscription->retrieve('chat'));
+        $this->assertEquals('dog', $subscription->retrieve('cat'));
     }
 }
