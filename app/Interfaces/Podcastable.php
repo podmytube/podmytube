@@ -56,4 +56,8 @@ interface Podcastable
     public function nameWithId(): string;
 
     public function wasUpdatedOn(Carbon $updatedOnDate): bool;
+
+    public function relativeFolderPath(): string;
+
+    public function feedFolderPath(): string;
 }

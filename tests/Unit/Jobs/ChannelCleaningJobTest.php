@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Tests\Unit\Jobs;
 
 use App\Jobs\ChannelCleaningJob;
-use App\Jobs\MediaCleaning;
-use App\Jobs\SendFileBySFTP;
 use App\Models\Channel;
 use App\Models\Media;
 use App\Models\Playlist;
@@ -30,8 +28,8 @@ class ChannelCleaningJobTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Storage::fake(SendFileBySFTP::REMOTE_DISK);
-        Bus::fake();
+        // Storage::fake(Channel::REMOTE_DISK);
+        // Bus::fake();
     }
 
     /** @test */
@@ -53,20 +51,36 @@ class ChannelCleaningJobTest extends TestCase
 
         $this->assertCount(1, $this->channelToDelete->playlists);
 
-        // dispatching media deletion
+        // dispatching channels deletion
         $job = new ChannelCleaningJob($this->channelToDelete);
         $job->handle();
 
-        // media clening should have been dispatched twice.
-        Bus::assertDispatched(MediaCleaning::class, $nbMediasForPodcastable);
-
-        // podcast file should be deleted
-        $this->assertFalse(Storage::exists($this->channelToDelete->remoteFilePath()));
-
-        // object that should have been deleted from db
-        $this->assertNull(Channel::byYoutubeId($savedYoutubeId));
+        // folders should have been deleted
+        $this->assertFalse(
+            Storage::exists($this->channelToDelete->feedFolderPath()),
+            $this->channelToDelete->feedFolderPath() . ' should have been removed.'
+        );
+        $this->assertFalse(
+            Storage::exists($this->channelToDelete->mp3FolderPath()),
+            $this->channelToDelete->mp3FolderPath() . ' should have been removed.'
+        );
+        $this->assertFalse(
+            Storage::exists($this->channelToDelete->playlistFolderPath()),
+            $this->channelToDelete->playlistFolderPath() . ' should have been removed.'
+        );
+        $this->assertFalse(
+            Storage::exists($this->channelToDelete->coverFolderPath()),
+            $this->channelToDelete->coverFolderPath() . ' should have been removed.'
+        );
 
         $this->assertNull(Playlist::byYoutubeId($playlistThatShouldBeRemoved->youtubeId()));
         $this->assertNull(Subscription::byChannelId($this->channelToDelete->youtubeId()));
+        $this->assertCount(
+            0,
+            Media::query()->where('channel_id', '=', $this->channelToDelete->youtubeId())->get()
+        );
+
+        // object that should have been deleted from db
+        $this->assertNull(Channel::byYoutubeId($savedYoutubeId));
     }
 }

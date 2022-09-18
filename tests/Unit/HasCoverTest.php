@@ -7,35 +7,28 @@ namespace Tests\Unit;
 use App\Models\Channel;
 use App\Models\Playlist;
 use App\Models\Thumb;
-use App\Traits\HasCover;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class HasCoverTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var \App\Models\Channel */
-    protected $channel;
+    protected Channel $channel;
 
-    /** @var \App\Models\Playlist */
-    protected $playlist;
+    protected Playlist $playlist;
 
     public function setUp(): void
     {
         parent::setup();
         $this->playlist = Playlist::factory()->create();
         $this->channel = Channel::factory()->create();
-        $this->object = new class() extends Model {
-            use HasCover;
-            public $id = 1;
-        };
     }
 
     /** @test */
@@ -121,9 +114,19 @@ class HasCoverTest extends TestCase
         $this->assertInstanceOf(Thumb::class, $this->playlist->cover);
     }
 
-    /*
-     * ===================================================================
-     * Helpers
-     * ===================================================================
-     */
+    /** @test */
+    public function cover_folder_path_should_be_good(): void
+    {
+        // for channel
+        $this->assertEquals(
+            config('app.thumbs_path') . '/' . $this->channel->relativeFolderPath(),
+            $this->channel->coverFolderPath()
+        );
+
+        // for playlist
+        $this->assertEquals(
+            config('app.thumbs_path') . '/' . $this->playlist->relativeFolderPath(),
+            $this->playlist->coverFolderPath()
+        );
+    }
 }

@@ -296,11 +296,43 @@ class ChannelModelTest extends TestCase
     /** @test */
     public function should_update_podcast_updated_at(): void
     {
-        $channel = Channel::factory()->create(['podcast_updatedAt' => null]);
-        $this->assertNull($channel->podcast_updatedAt);
+        $this->channel->update(['podcast_updatedAt' => null]);
+        $this->assertNull($this->channel->podcast_updatedAt);
 
         $now = now();
-        $channel->wasUpdatedOn($now);
-        $this->assertEquals($now->toDateString(), $channel->podcast_updatedAt->toDateString());
+        $this->channel->wasUpdatedOn($now);
+        $this->assertEquals($now->toDateString(), $this->channel->podcast_updatedAt->toDateString());
+    }
+
+    /** @test */
+    public function relative_folder_path_should_be_good(): void
+    {
+        $this->assertEquals($this->channel->channel_id, $this->channel->relativeFolderPath());
+    }
+
+    public function feed_folder_path_should_be_good(): void
+    {
+        $this->assertEquals(
+            config('app.feed_path') . $this->channel->relativeFolderPath(),
+            $this->channel->feedFolderPath()
+        );
+    }
+
+    /** @test */
+    public function mp3_folder_path_is_fine(): void
+    {
+        $this->assertEquals(
+            config('app.mp3_path') . $this->channel->relativeFolderPath(),
+            $this->channel->mp3FolderPath()
+        );
+    }
+
+    /** @test */
+    public function playlists_folder_path_is_fine(): void
+    {
+        $this->assertEquals(
+            config('app.playlists_path') . $this->channel->relativeFolderPath(),
+            $this->channel->playlistFolderPath()
+        );
     }
 }

@@ -295,4 +295,14 @@ class Playlist extends Model implements Podcastable, Coverable
     {
         return $this->update(['updated_at' => $updatedOnDate]);
     }
+
+    public function relativeFolderPath(): string
+    {
+        return $this->channel->channel_id;
+    }
+
+    public function feedFolderPath(): string
+    {
+        return config('app.playlists_path') . $this->relativeFolderPath();
+    }
 }

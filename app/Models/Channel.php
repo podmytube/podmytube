@@ -16,6 +16,7 @@ use App\Podcast\PodcastItem;
 use App\Traits\BelongsToCategory;
 use App\Traits\BelongsToUser;
 use App\Traits\HasCover;
+use App\Traits\HasDownloads;
 use App\Traits\HasLimits;
 use App\Traits\HasManyMedias;
 use App\Traits\HasManyPlaylists;
@@ -44,12 +45,15 @@ class Channel extends Model implements Podcastable, Coverable
     use BelongsToUser;
     use HasLimits;
     use HasFactory;
+    use HasDownloads;
     use HasManyMedias;
     use HasManyPlaylists;
     use HasOneSubscription;
     use HasOneLanguage;
     use HasCover;
     use IsRelatedToOneChannel;
+
+    public const REMOTE_DISK = 'remote';
 
     public const CREATED_AT = 'channel_createdAt';
     public const UPDATED_AT = 'channel_updatedAt';
@@ -506,5 +510,20 @@ class Channel extends Model implements Podcastable, Coverable
     public function relativeFolderPath(): string
     {
         return $this->channelId();
+    }
+
+    public function feedFolderPath(): string
+    {
+        return config('app.feed_path') . $this->relativeFolderPath();
+    }
+
+    public function mp3FolderPath(): string
+    {
+        return config('app.mp3_path') . $this->relativeFolderPath();
+    }
+
+    public function playlistFolderPath(): string
+    {
+        return config('app.playlists_path') . $this->relativeFolderPath();
     }
 }

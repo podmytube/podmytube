@@ -6,8 +6,10 @@ namespace App\Jobs;
 
 use App\Interfaces\Podcastable;
 use App\Models\Channel;
+use App\Models\Download;
 use App\Models\Media;
 use App\Models\Playlist;
+use App\Models\Subscription;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -31,28 +33,38 @@ class ChannelCleaningJob implements ShouldQueue
 
     public function handle(): void
     {
-        $this->delete();
-    }
+        Storage::disk(Channel::REMOTE_DISK);
 
-    public function delete(): void
-    {
-        Storage::disk(SendFileBySFTP::REMOTE_DISK);
+        // delete podcast folder
+        Storage::deleteDirectory($this->channelToDelete->feedFolderPath());
 
-        // delete podcast file
-        if (Storage::exists($this->channelToDelete->remoteFilePath())) {
-            Storage::delete($this->channelToDelete->remoteFilePath());
-        }
+        // delete mp3 folder
+        Storage::deleteDirectory($this->channelToDelete->mp3FolderPath());
 
+        // delete playlists folder
+        Storage::deleteDirectory($this->channelToDelete->playlistFolderPath());
+
+        // delete cover folder
+        Storage::deleteDirectory($this->channelToDelete->coverFolderPath());
+
+        /*
+        |--------------------------------------------------------------------------
+        | cleaning db
+        |--------------------------------------------------------------------------
+        */
         // delete medias
-        $this->channelToDelete->medias->each(fn (Media $media) => MediaCleaning::dispatch($media));
+        Media::query()->where('channel_id', '=', $this->channelToDelete->channel_id)->delete();
 
-        // delete playlists
-        $this->channelToDelete->playlists->map(fn (Playlist $playlist) => $playlist->delete());
+        // delete playlists db entries
+        Playlist::query()->where('channel_id', '=', $this->channelToDelete->channel_id)->delete();
 
         // delete subscription
-        $this->channelToDelete->subscription->delete();
+        Subscription::query()->where('channel_id', '=', $this->channelToDelete->channel_id)->delete();
 
-        // delete podcastable (channel/playlist)
+        // delete downloads
+        Download::query()->where('channel_id', '=', $this->channelToDelete->channel_id)->delete();
+
+        // soft delete podcastable (channel/playlist)
         $this->channelToDelete->delete();
     }
 }

@@ -17,6 +17,7 @@ use Tests\Traits\IsAbleToTestPodcast;
 
 /**
  * @internal
+ *
  * @covers \App\Models\Playlist
  */
 class PlaylistModelTest extends TestCase
@@ -253,5 +254,11 @@ class PlaylistModelTest extends TestCase
         $now = now();
         $playlist->wasUpdatedOn($now);
         $this->assertEquals($now->toDateString(), $playlist->updated_at->toDateString());
+    }
+
+    /** @test */
+    public function relative_folder_path_should_be_good(): void
+    {
+        $this->assertEquals($this->playlist->channel_id, $this->playlist->relativeFolderPath());
     }
 }

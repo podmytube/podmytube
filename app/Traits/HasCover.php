@@ -50,4 +50,9 @@ trait HasCover
 
         return 'morphed' . $reflect->getShortName();
     }
+
+    public function coverFolderPath(): string
+    {
+        return config('app.thumbs_path') . '/' . $this->relativeFolderPath();
+    }
 }
