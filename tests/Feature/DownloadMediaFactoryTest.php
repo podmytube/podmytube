@@ -40,7 +40,7 @@ class DownloadMediaFactoryTest extends TestCase
         ;
 
         Bus::fake(SendFileByRsync::class);
-        
+
         $marioCoinDownloadedFilePath = Storage::disk('tmp')->path(self::MARIO_COIN_VIDEO . '.mp3');
         if (file_exists($marioCoinDownloadedFilePath)) {
             unlink($marioCoinDownloadedFilePath);
@@ -133,7 +133,7 @@ class DownloadMediaFactoryTest extends TestCase
             )
         ;
 
-        DownloadMediaFactory::media($this->media, true)->run();
+        DownloadMediaFactory::media($this->media, force: true)->run();
         $this->assertEquals(Media::STATUS_DOWNLOADED, $this->media->status);
     }
 }

@@ -6,6 +6,7 @@ namespace App\Modules;
 
 use App\Exceptions\DownloadMediaFailureException;
 use App\Models\Media;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 
@@ -32,8 +33,7 @@ class DownloadYTMedia
         protected Media $media,
         protected string $destinationFolder,
         protected bool $verbose = false
-    )
-    {
+    ) {
         // Will set the path where to store the video file
         $this->checkDestinationFolder();
 

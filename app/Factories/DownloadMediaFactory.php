@@ -35,11 +35,6 @@ class DownloadMediaFactory
         return new static($media, $force);
     }
 
-    public static function fake(Media $media, bool $force = false)
-    {
-        return new static($media, $force, fake: true);
-    }
-
     public function run(): bool
     {
         try {
