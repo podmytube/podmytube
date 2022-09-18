@@ -14,15 +14,19 @@ use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class LastMediaPublishedCheckerTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected Plan $starterPlan;
+
     public function setUp(): void
     {
         parent::setUp();
+        $this->starterPlan = Plan::factory()->name('starter')->create();
         Mail::fake();
     }
 
@@ -39,8 +43,7 @@ class LastMediaPublishedCheckerTest extends TestCase
     public function check_lastmedia_with_paying_channel_and_no_grabbed_medias_should_send_mail(): void
     {
         $this->seedApiKeys();
-        $this->seedPlans();
-        $this->createMyOwnChannel(Plan::bySlug('starter'));
+        $this->createMyOwnChannel($this->starterPlan);
         $this->artisan('check:lastmedia')->assertExitCode(0);
         Mail::assertQueued(ChannelIsInTroubleWarningMail::class);
     }
@@ -49,8 +52,7 @@ class LastMediaPublishedCheckerTest extends TestCase
     public function check_lastmedia_with_paying_channel_and_all_medias_grabbed_should_send_nothing(): void
     {
         $this->seedApiKeys();
-        $this->seedPlans();
-        $channel = $this->createMyOwnChannel(Plan::bySlug('starter'));
+        $channel = $this->createMyOwnChannel($this->starterPlan);
         // creating media
         Media::factory()
             ->grabbedAt(now())

@@ -26,16 +26,17 @@ class TransfertChannelCommandTest extends TestCase
 
     protected Channel $fromChannel;
     protected User $user;
+    protected Plan $plan;
     protected string $destChannelId;
 
     public function setUp(): void
     {
         parent::setUp();
         Storage::fake('remote');
-        $this->seedPlans();
         $this->seedCategories();
 
         $this->user = User::factory()->create();
+        $this->plan = Plan::factory()->name('starter')->create();
 
         $this->fromChannel = Channel::factory()
             ->user($this->user)
@@ -44,7 +45,7 @@ class TransfertChannelCommandTest extends TestCase
             ])
         ;
         Subscription::factory()
-            ->plan(Plan::bySlug('starter'))
+            ->plan($this->plan)
             ->channel($this->fromChannel)
             ->create()
         ;

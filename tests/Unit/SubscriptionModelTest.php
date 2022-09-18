@@ -12,20 +12,20 @@ use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class SubscriptionModelTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var \App\Models\Channel */
-    protected $channel;
+    protected Channel $channel;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->seedPlans();
-        $this->channel = $this->createChannelWithPlan(Plan::find(Plan::FREE_PLAN_ID));
+        $plan = Plan::factory()->isFree()->create();
+        $this->channel = $this->createChannelWithPlan($plan);
     }
 
     /** @test */

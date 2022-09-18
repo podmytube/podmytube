@@ -8,6 +8,7 @@ use App\Models\Channel;
 use App\Models\Plan;
 use App\Models\StripePlan;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use InvalidArgumentException;
 use Stripe\Checkout\Session;
@@ -15,45 +16,24 @@ use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class PlanModelTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->seedPlans();
-    }
-
     /** @test */
-    public function free_plan_should_exist_still(): void
-    {
-        $freePlan = Plan::bySlug('forever_free');
-        $this->assertNotNull($freePlan);
-        $this->assertInstanceOf(Plan::class, $freePlan);
-    }
-
-    /** @test */
-    public function paying_plans_should_exist(): void
-    {
-        $planSlugs = ['monthly_6', 'weekly_youtuber', 'daily_youtuber', 'starter', 'professional', 'business'];
-        array_map(function ($payingSlug): void {
-            $plan = Plan::bySlug($payingSlug);
-            $this->assertNotNull($plan);
-            $this->assertInstanceOf(Plan::class, $plan);
-        }, $planSlugs);
-    }
-
-    /** @test */
-    public function by__slug_is_ok(): void
+    public function by_slug_is_ok(): void
     {
         $this->assertNull(Plan::bySlug('unknown'));
 
-        $plan = Plan::bySlug('forever_free');
+        $free = Plan::factory()->name('forever free')->create();
+
+        $plan = Plan::bySlug('forever-free');
+        $this->assertNotNull($plan);
         $this->assertInstanceOf(Plan::class, $plan);
-        $this->assertEquals('forever_free', $plan->slug);
+        $this->assertEquals('forever free', $plan->name);
     }
 
     /** @test */
@@ -61,9 +41,25 @@ class PlanModelTest extends TestCase
     {
         $this->assertNull(Plan::bySlugs(['unknown', 'cat', 'dog']));
 
+        Plan::factory()
+            ->count(6)
+            ->state(new Sequence(
+                [
+                    'slug' => 'monthly_6',
+                    'slug' => 'weekly_youtuber',
+                    'slug' => 'daily_youtuber',
+                    'slug' => 'starter',
+                    'slug' => 'professional',
+                    'slug' => 'business',
+                ]
+            ))
+            ->create()
+        ;
+
         $planSlugs = ['monthly_6', 'weekly_youtuber', 'daily_youtuber', 'starter', 'professional', 'business'];
 
         $plans = Plan::bySlugs($planSlugs);
+
         $this->assertCount(count($planSlugs), $plans);
         $this->assertInstanceOf(Collection::class, $plans);
         $plans->each(function ($plan) use ($planSlugs): void {

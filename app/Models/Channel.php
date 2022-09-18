@@ -164,8 +164,8 @@ class Channel extends Model implements Podcastable, Coverable
     public static function payingChannels(): Collection
     {
         return static::active()
-            ->whereHas('subscription', function (Builder $query): void {
-                $query->where('plan_id', '>', Plan::EARLY_PLAN_ID);
+            ->whereHas('subscription.plan', function (Builder $query): void {
+                $query->where('price', '>', 0);
             })
             ->with(['User', 'Category', 'cover', 'Subscription'])
             ->get()
@@ -309,12 +309,12 @@ class Channel extends Model implements Podcastable, Coverable
 
     public function isFree(): bool
     {
-        return $this->subscription?->plan_id === Plan::FREE_PLAN_ID;
+        return !$this->isPaying();
     }
 
     public function isPaying(): bool
     {
-        return !in_array($this->subscription->plan_id, [Plan::FREE_PLAN_ID, Plan::EARLY_PLAN_ID]);
+        return $this->subscription->plan->price > 0;
     }
 
     public function slugChannelName(): string

@@ -23,8 +23,7 @@ class DownloadVideosByChannelCommandTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->seedPlans();
-        $this->starterPlan = Plan::bySlug('starter');
+        $this->starterPlan = Plan::factory()->name('starter')->create();
         $this->channel = $this->createChannelWithPlan($this->starterPlan);
     }
 

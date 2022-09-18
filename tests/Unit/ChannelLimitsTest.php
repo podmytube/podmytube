@@ -10,45 +10,41 @@ use App\Models\Plan;
 use App\Models\Subscription;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class ChannelLimitsTest extends TestCase
 {
     use RefreshDatabase;
-    use WithFaker;
 
-    protected const FREE_PLAN_NUMBER_OF_AUTHORIZED_EPISODES = 1;
-
-    /** @var \App\Models\Channel */
-    protected $channel;
+    protected Channel $channel;
+    protected Plan $plan;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->seedPlans();
-        $this->channel = Channel::factory()->create();
-        Subscription::factory()->create([
-            'channel_id' => $this->channel->channel_id,
-            'plan_id' => Plan::bySlug('forever_free')->id,
-        ]);
+        $this->plan = Plan::factory()->isFree()->create();
+        $this->channel = Channel::factory()
+            ->has(Subscription::factory()->state(['plan_id' => $this->plan->id]))
+            ->create()
+        ;
     }
 
     public function test_channel_has_not_reached_its_limits(): void
     {
-        $this->assertEquals(self::FREE_PLAN_NUMBER_OF_AUTHORIZED_EPISODES, $this->channel->numberOfEpisodesAllowed());
+        $this->assertEquals($this->plan->nb_episodes_per_month, $this->channel->numberOfEpisodesAllowed());
         $this->assertEquals(0, $this->channel->numberOfEpisodesGrabbed());
         $this->assertFalse($this->channel->hasReachedItslimit());
     }
 
     public function test_channel_has_reached_its_limits_this_month(): void
     {
-        $this->addMediasToChannel($this->channel, self::FREE_PLAN_NUMBER_OF_AUTHORIZED_EPISODES, true);
-        $this->assertEquals(self::FREE_PLAN_NUMBER_OF_AUTHORIZED_EPISODES, $this->channel->numberOfEpisodesGrabbed());
+        $this->addMediasToChannel($this->channel, $this->plan->nb_episodes_per_month, grabbed: true);
+        $this->assertEquals($this->plan->nb_episodes_per_month, $this->channel->numberOfEpisodesGrabbed());
         $this->assertTrue($this->channel->hasReachedItslimit());
     }
 

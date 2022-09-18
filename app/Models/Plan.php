@@ -17,6 +17,11 @@ use Stripe\Checkout\Session;
 use Stripe\Stripe;
 
 /**
+ * @property int          $billing_yearly;
+ * @property string       $name;
+ * @property int          $nb_episodes_per_month;
+ * @property int          $price;
+ * @property string       $slug;
  * @property Subscription $subscription;
  */
 class Plan extends Model

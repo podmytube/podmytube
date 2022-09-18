@@ -5,61 +5,67 @@ declare(strict_types=1);
 namespace Tests\Unit\Factories;
 
 use App\Factories\RevenueFactory;
+use App\Models\Plan;
 use App\Models\Subscription;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class RevenueFactoryTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected Plan $freePlan;
+    protected Plan $starterPlan;
+    protected Plan $proPlan;
+    protected Plan $bizPlan;
+
     public function setUp(): void
     {
         parent::setUp();
-        $this->seedPlans();
+        $this->freePlan = Plan::factory()->isFree()->create();
+        $this->starterPlan = Plan::factory()->name('starter')->create();
+        $this->proPlan = Plan::factory()->name('professional')->create(['price' => 29]);
+        $this->bizPlan = Plan::factory()->name('business')->create(['price' => 79]);
     }
 
     /** @test */
     public function revenue_factory_is_fine(): void
     {
         // free channels
-        $freePlan = $this->getFreePlan();
         $nbFreeChannels = 10;
-        $this->createChannelsWithPlan($freePlan, $nbFreeChannels);
+        $this->createChannelsWithPlan($this->freePlan, $nbFreeChannels);
 
-        $expectedRevenues = $nbFreeChannels * $freePlan->price;
+        $expectedRevenues = $nbFreeChannels * $this->freePlan->price;
         $this->assertEquals($expectedRevenues, RevenueFactory::init()->get());
 
         // starter channels
-        $starterPlan = $this->getPlanBySlug('starter');
         $nbStarterChannels = 5;
-        $expectedRevenues += $nbStarterChannels * $starterPlan->price;
+        $expectedRevenues += $nbStarterChannels * $this->starterPlan->price;
 
-        $this->createChannelsWithPlan($starterPlan, $nbStarterChannels);
+        $this->createChannelsWithPlan($this->starterPlan, $nbStarterChannels);
         $this->assertEquals($expectedRevenues, RevenueFactory::init()->get());
 
         // pro channels
-        $proPlan = $this->getPlanBySlug('professional');
         $nbProChannels = 3;
-        $expectedRevenues += $nbProChannels * $proPlan->price;
+        $expectedRevenues += $nbProChannels * $this->proPlan->price;
 
-        $this->createChannelsWithPlan($proPlan, $nbProChannels);
+        $this->createChannelsWithPlan($this->proPlan, $nbProChannels);
         $this->assertEquals($expectedRevenues, RevenueFactory::init()->get());
 
         // business channels
-        $businessPlan = $this->getPlanBySlug('business');
         $nbBusinessChannels = 2;
-        $expectedRevenues += $nbBusinessChannels * $businessPlan->price;
+        $expectedRevenues += $nbBusinessChannels * $this->bizPlan->price;
 
-        $this->createChannelsWithPlan($businessPlan, $nbBusinessChannels);
+        $this->createChannelsWithPlan($this->bizPlan, $nbBusinessChannels);
         $this->assertEquals($expectedRevenues, RevenueFactory::init()->get());
 
         // adding inactive channel should not change result
-        $inactiveChannel = $this->createChannelWithPlan($starterPlan);
+        $inactiveChannel = $this->createChannelWithPlan($this->starterPlan);
         Subscription::where('channel_id', '=', $inactiveChannel->channelId())
             ->update(['ends_at' => now()->submonth()])
         ;

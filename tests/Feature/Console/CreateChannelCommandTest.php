@@ -12,6 +12,7 @@ use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class CreateChannelCommandTest extends TestCase
@@ -21,17 +22,14 @@ class CreateChannelCommandTest extends TestCase
     protected const DEFAULT_USER_ID = 1;
     protected const DEFAULT_PLAN_ID = 1;
 
-    protected Channel $channel;
-    protected Plan $starterPlan;
-
     public function setUp(): void
     {
         parent::setUp();
-        $this->seedPlans();
         $this->seedApiKeys();
         $this->seedCategories();
 
         // because we need one (the 1 at least)
+        Plan::factory()->create();
         User::factory()->create();
     }
 

@@ -16,9 +16,29 @@ class PlanFactory extends Factory
         return [
             'name' => $name,
             'slug' => Str::slug($name),
-            'price' => 29,
+            'price' => 9,
             'billing_yearly' => false,
             'nb_episodes_per_month' => 5,
         ];
+    }
+
+    public function isFree(): static
+    {
+        $name = 'forever free';
+
+        return $this->state([
+            'name' => $name,
+            'slug' => Str::slug($name),
+            'price' => 0,
+            'nb_episodes_per_month' => 1,
+        ]);
+    }
+
+    public function name(string $name): static
+    {
+        return $this->state([
+            'name' => $name,
+            'slug' => Str::slug($name),
+        ]);
     }
 }

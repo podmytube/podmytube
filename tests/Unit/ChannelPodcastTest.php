@@ -27,8 +27,8 @@ class ChannelPodcastTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->seedPlans();
-        $this->channel = $this->createChannelWithPlan();
+        $freePlan = Plan::factory()->isFree()->create();
+        $this->channel = $this->createChannelWithPlan($freePlan);
     }
 
     /** @test */

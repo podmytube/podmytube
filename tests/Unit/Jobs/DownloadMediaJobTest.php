@@ -14,6 +14,7 @@ use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class DownloadMediaJobTest extends TestCase
@@ -27,7 +28,6 @@ class DownloadMediaJobTest extends TestCase
     {
         parent::setUp();
         $this->seedApiKeys();
-        $this->seedPlans();
         Bus::fake(SendFileByRsync::class);
 
         $this->channel = $this->createChannelWithPlan();

@@ -11,6 +11,7 @@ use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class ChannelMediasTest extends TestCase
@@ -18,18 +19,21 @@ class ChannelMediasTest extends TestCase
     use RefreshDatabase;
     use WithFaker;
 
+    protected Plan $freePlan;
+    protected Plan $starterPlan;
+
     public function setUp(): void
     {
         parent::setUp();
-        $this->seedPlans();
+        $this->freePlan = Plan::factory()->isFree()->create();
+        $this->starterPlan = Plan::factory()->name('starter')->create();
     }
 
     public function test_free_channel_should_have_only_last_third_medias(): void
     {
         $expectedMediasToPublish = 3;
-        $freePlan = Plan::where('id', 1)->first();
 
-        $channel = $this->createChannelWithPlan($freePlan);
+        $channel = $this->createChannelWithPlan($this->freePlan);
 
         // adding grabbed medias
         $this->addMediasToChannel($channel, 5, true);
@@ -41,9 +45,7 @@ class ChannelMediasTest extends TestCase
     public function test_other_channel_should_have_all_medias(): void
     {
         $expectedMediasToPublish = 5;
-        $plan = Plan::where('id', '>', 1)->inRandomOrder()->first();
-
-        $channel = $this->createChannelWithPlan($plan);
+        $channel = $this->createChannelWithPlan($this->starterPlan);
 
         // adding grabbed medias
         $this->addMediasToChannel($channel, $expectedMediasToPublish, true);
@@ -55,9 +57,8 @@ class ChannelMediasTest extends TestCase
     public function test_ungrabbed_medias_shouldnt_be_included(): void
     {
         $expectedMediasToPublish = 5;
-        $plan = Plan::where('id', '>', 1)->inRandomOrder()->first();
 
-        $channel = $this->createChannelWithPlan($plan);
+        $channel = $this->createChannelWithPlan($this->starterPlan);
 
         // adding grabbed medias
         $this->addMediasToChannel($channel, $expectedMediasToPublish, true);

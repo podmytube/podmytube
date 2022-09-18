@@ -17,35 +17,30 @@ use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class DownloadMediaFactoryTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var \App\Models\Channel */
-    protected $channel;
-
-    /** @var \App\Models\Media */
-    protected $media;
-
-    /** \App\Models\Subscription $subscription */
-    protected $subscription;
+    protected Channel $channel;
+    protected Media $media;
+    protected Subscription $subscription;
 
     public function setUp(): void
     {
         parent::setUp();
         $this->seedApiKeys();
-        $this->seedPlans();
-        Bus::fake(SendFileByRsync::class);
-        $this->channel = Channel::factory()->create(['channel_id' => 'test']);
-        $this->subscription = Subscription::factory()->create(
-            [
-                'channel_id' => $this->channel->channel_id,
-                'plan_id' => Plan::bySlug('forever_free')->id,
-            ]
-        );
 
+        $this->plan = Plan::factory()->isFree()->create();
+        $this->channel = Channel::factory()
+            ->has(Subscription::factory()->state(['plan_id' => $this->plan->id]))
+            ->create()
+        ;
+
+        Bus::fake(SendFileByRsync::class);
+        
         $marioCoinDownloadedFilePath = Storage::disk('tmp')->path(self::MARIO_COIN_VIDEO . '.mp3');
         if (file_exists($marioCoinDownloadedFilePath)) {
             unlink($marioCoinDownloadedFilePath);

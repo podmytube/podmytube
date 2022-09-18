@@ -31,10 +31,9 @@ class ChannelModelTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->seedPlans();
 
-        $this->freePlan = Plan::bySlug('forever_free');
-        $this->starterPlan = Plan::bySlug('starter');
+        $this->freePlan = Plan::factory()->isFree()->create();
+        $this->starterPlan = Plan::factory()->name('starter')->create();
         $this->channel = $this->createChannelWithPlan($this->freePlan);
     }
 
@@ -235,32 +234,17 @@ class ChannelModelTest extends TestCase
     /** @test */
     public function is_paying_channel_is_fine(): void
     {
-        $freePlan = $this->getFreePlan();
-        $channel = $this->createChannelWithPlan($freePlan);
+        $channel = $this->createChannelWithPlan($this->freePlan);
         $this->assertFalse($channel->isPaying());
 
-        $earlyPlan = $this->getPlanBySlug('early_bird');
-        $channel = $this->createChannelWithPlan($earlyPlan);
-        $this->assertFalse($channel->isPaying());
-
-        array_map(function (string $planSlug): void {
-            $payingPlan = $this->getPlanBySlug($planSlug);
-            $channel = $this->createChannelWithPlan($payingPlan);
-            $this->assertTrue($channel->isPaying(), "{$planSlug} should be considered as a paying plan.");
-        }, [
-            'monthly_6',
-            'weekly_youtuber',
-            'daily_youtuber',
-            'starter',
-            'professional',
-            'business',
-        ]);
+        $channel = $this->createChannelWithPlan($this->starterPlan);
+        $this->assertTrue($channel->isPaying());
     }
 
     /** @test */
     public function youtube_url_is_fine(): void
     {
-        $expectedChannelYoutubeUrl = 'https://www.youtube.com/channel/' . $this->channel->channelId();
+        $expectedChannelYoutubeUrl = 'https://www.youtube.com/channel/' . $this->channel->youtubeId();
         $this->assertEquals($expectedChannelYoutubeUrl, $this->channel->youtubeUrl());
     }
 
@@ -334,5 +318,15 @@ class ChannelModelTest extends TestCase
             config('app.playlists_path') . $this->channel->relativeFolderPath(),
             $this->channel->playlistFolderPath()
         );
+    }
+
+    /** @test */
+    public function paying_channels_is_fine(): void
+    {
+        $this->assertCount(0, Channel::payingChannels());
+
+        $expectedPayingChannels = 3;
+        $this->createChannelsWithPlan($this->starterPlan, nbChannels: $expectedPayingChannels);
+        $this->assertCount($expectedPayingChannels, Channel::payingChannels());
     }
 }

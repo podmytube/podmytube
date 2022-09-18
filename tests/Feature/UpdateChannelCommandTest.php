@@ -14,6 +14,7 @@ use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class UpdateChannelCommandTest extends TestCase
@@ -26,8 +27,7 @@ class UpdateChannelCommandTest extends TestCase
     {
         parent::setUp();
         $this->seedApiKeys();
-        $this->seedPlans();
-        $this->starterPlan = Plan::bySlug('starter');
+        $this->starterPlan = Plan::factory()->name('starter')->create();
     }
 
     /** @test */

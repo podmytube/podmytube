@@ -20,9 +20,9 @@ use Tests\Traits\IsAbleToTestPodcast;
  */
 class PodcastBuilderTest extends TestCase
 {
+    use IsAbleToTestPodcast;
     use RefreshDatabase;
     use WithFaker;
-    use IsAbleToTestPodcast;
 
     protected Channel $channel;
 
@@ -32,8 +32,7 @@ class PodcastBuilderTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->seedPlans();
-        $this->channel = $this->createChannelWithPlan(Plan::bySlug('starter'));
+        $this->channel = $this->createChannelWithPlan(Plan::factory()->name('starter')->create());
         $this->createCoverFor($this->channel);
     }
 
