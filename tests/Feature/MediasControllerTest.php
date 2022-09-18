@@ -28,12 +28,14 @@ class MediasControllerTest extends TestCase
 
     protected Channel $channel;
     protected Media $media;
+    protected Plan $starterPlan;
 
     public function setUp(): void
     {
         parent::setUp();
         $this->channel = $this->createChannel();
         $this->media = $this->addMediasToChannel($this->channel);
+        $this->starterPlan = Plan::factory()->name('starter')->create();
     }
 
     /** @test */
@@ -84,8 +86,7 @@ class MediasControllerTest extends TestCase
     /** @test */
     public function paying_channel_may_add_exclusive_content(): void
     {
-        $plan = $this->getPlanBySlug('daily_youtuber');
-        $this->channel = $this->createChannelWithPlan($plan);
+        $this->channel = $this->createChannelWithPlan($this->starterPlan);
         $this->actingAs($this->channel->user)
             ->get(route('channel.medias.create', $this->channel))
             ->assertSuccessful()
@@ -95,8 +96,7 @@ class MediasControllerTest extends TestCase
     /** @test */
     public function paying_channel_may_edit_exclusive_content(): void
     {
-        $plan = $this->getPlanBySlug('daily_youtuber');
-        $this->channel = $this->createChannelWithPlan($plan);
+        $this->channel = $this->createChannelWithPlan($this->starterPlan);
         $this->actingAs($this->channel->user)
             ->get(route('channel.medias.edit', ['channel' => $this->channel, 'media' => $this->media]))
             ->assertSuccessful()
@@ -106,8 +106,7 @@ class MediasControllerTest extends TestCase
     /** @test */
     public function paying_channel_may_store_exclusive_content(): void
     {
-        $plan = $this->getPlanBySlug('daily_youtuber');
-        $this->channel = $this->createChannelWithPlan($plan);
+        $this->channel = $this->createChannelWithPlan($this->starterPlan);
 
         $this->followingRedirects()
             ->actingAs($this->channel->user)
@@ -120,8 +119,7 @@ class MediasControllerTest extends TestCase
     public function update_without_media_should_be_fine(): void
     {
         Event::fake();
-        $plan = $this->getPlanBySlug('daily_youtuber');
-        $this->channel = $this->createChannelWithPlan($plan);
+        $this->channel = $this->createChannelWithPlan($this->starterPlan);
 
         $this->followingRedirects()
             ->actingAs($this->channel->user)
@@ -138,8 +136,7 @@ class MediasControllerTest extends TestCase
     public function update_with_media_should_be_fine(): void
     {
         Event::fake();
-        $plan = $this->getPlanBySlug('daily_youtuber');
-        $this->channel = $this->createChannelWithPlan($plan);
+        $this->channel = $this->createChannelWithPlan($this->starterPlan);
 
         $this->followingRedirects()
             ->actingAs($this->channel->user)

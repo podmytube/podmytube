@@ -13,6 +13,7 @@ use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class DownloadYTMediaTest extends TestCase
@@ -22,23 +23,12 @@ class DownloadYTMediaTest extends TestCase
     public const AUDIO_FILE_EXTENSION = '.mp3';
     public const MARIO_COIN_DURATION = 6;
 
-    /** @var string */
-    protected $expectedVideoFile;
-
-    /** @var string */
-    protected $expectedCmdLineQuiet;
-
-    /** @var string */
-    protected $expectedCmdLineVerbose;
-
-    /** @var string */
-    protected $downloadVideo;
-
-    /** @var string */
-    protected $destinationFolder;
-
-    /** @var \App\Models\Media */
-    protected $media;
+    protected string $expectedVideoFile;
+    protected string $expectedCmdLineQuiet;
+    protected string $expectedCmdLineVerbose;
+    protected string $downloadVideo;
+    protected string $destinationFolder;
+    protected Media $media;
 
     protected function setUp(): void
     {
@@ -87,7 +77,7 @@ class DownloadYTMediaTest extends TestCase
         DownloadYTMedia::init($this->media, $this->destinationFolder, false);
         $this->assertFileDoesNotExist(
             $expectedFileToBeRemovedBefore,
-            'Mp4 file should have been revoed first, before youtube-dl'
+            'Mp4 file should have been removed first, before youtube-dl process it.'
         );
     }
 

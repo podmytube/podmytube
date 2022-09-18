@@ -20,15 +20,6 @@ class DownloadYTMedia
     /** Will contain the path to the youtube-dl app */
     protected const YOUTUBE_DL_BINARY = '/usr/local/bin/yt-dlp';
 
-    /** @var \App\Models\Media */
-    protected $media;
-
-    /** @var bool */
-    protected $verbose = false;
-
-    /** @var string (IE : /tmp/ ) */
-    protected $destinationFolder;
-
     /** Parameters for youtube-dl */
     protected $youtubeDlparameters;
 
@@ -37,18 +28,12 @@ class DownloadYTMedia
      */
     protected $commandLine;
 
-    /**
-     * Constructor, will check if youtube-dl is installed.
-     *
-     * @param \App\Models\Media $mediaToObtain     the id of the video to download
-     * @param string            $destinationFolder where to store (locally) the audioFile
-     */
-    public function __construct(Media $mediaToObtain, string $destinationFolder, bool $verbose = false)
+    public function __construct(
+        protected Media $media,
+        protected string $destinationFolder,
+        protected bool $verbose = false
+    )
     {
-        $this->media = $mediaToObtain;
-        $this->destinationFolder = $destinationFolder;
-        $this->verbose = $verbose;
-
         // Will set the path where to store the video file
         $this->checkDestinationFolder();
 
@@ -72,7 +57,7 @@ class DownloadYTMedia
         return $this->destinationFolder . $this->media->media_id . '.' . self::AUDIO_FORMAT;
     }
 
-    public function downloadedVideoFilePath()
+    public function downloadedVideoFilePath(): string
     {
         return $this->destinationFolder . $this->media->media_id . '.' . self::VIDEO_FORMAT;
     }
@@ -80,7 +65,7 @@ class DownloadYTMedia
     /**
      * This function will run youtube-dl command with wanted parameters in order to get the mp3 file.
      */
-    public function download(): self
+    public function download(): static
     {
         passthru($this->commandLine, $err);
         if ($err !== 0) {

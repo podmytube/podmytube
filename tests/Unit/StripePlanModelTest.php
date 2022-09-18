@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use App\Models\Plan;
 use App\Models\StripePlan;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
@@ -52,7 +53,7 @@ class StripePlanModelTest extends TestCase
     {
         array_map(
             function (string $mode) use ($provided): void {
-                $plan = $this->getPlanBySlug($provided['slug']);
+                $plan = Plan::BySlug($provided['slug']);
                 $expectedYearlyPriceId = $provided[$mode]['yearly'];
                 $expectedMonthlyPriceId = $provided[$mode]['monthly'];
 

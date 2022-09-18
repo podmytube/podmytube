@@ -176,22 +176,6 @@ abstract class TestCase extends BaseTestCase
     }
 
     /**
-     * will return real plan model (seeded).
-     */
-    public function getPlanBySlug(string $slug): ?Plan
-    {
-        return Plan::bySlug($slug);
-    }
-
-    /**
-     * will return seeded free plan.
-     */
-    public function getFreePlan()
-    {
-        return $this->getPlanBySlug('forever_free');
-    }
-
-    /**
      * @return Collection|Media
      */
     protected function addMediasToChannel(Channel $channel, int $numberOfMediasToAdd = 1, bool $grabbed = false)

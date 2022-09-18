@@ -8,7 +8,6 @@ use App\Exceptions\DownloadMediaTagException;
 use App\Exceptions\MediaAlreadyGrabbedException;
 use App\Exceptions\MediaIsTooOldException;
 use App\Factories\ShouldMediaBeingDownloadedFactory;
-use App\Models\Channel;
 use App\Models\Media;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

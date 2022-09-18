@@ -23,8 +23,11 @@ class DownloadMediaFactory
 {
     protected bool $verbose;
 
-    private function __construct(protected Media $media, protected bool $force = false)
-    {
+    private function __construct(
+        protected Media $media,
+        protected bool $force = false,
+        protected bool $fake = false
+    ) {
     }
 
     public static function media(Media $media, bool $force = false)
@@ -32,10 +35,15 @@ class DownloadMediaFactory
         return new static($media, $force);
     }
 
+    public static function fake(Media $media, bool $force = false)
+    {
+        return new static($media, $force, fake: true);
+    }
+
     public function run(): bool
     {
         try {
-            if ($this->force === false) {
+            if (!$this->force) {
                 // if forced we download it whatever its quota/plan situation.
                 $this->shouldWeDownloadMedia();
             }

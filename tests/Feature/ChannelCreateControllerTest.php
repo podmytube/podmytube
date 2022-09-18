@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Models\Channel;
+use App\Models\Plan;
 use App\Models\Subscription;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -56,7 +57,7 @@ class ChannelCreateControllerTest extends TestCase
         // free subscription should have been set
         $this->assertNotNull($channel->subscription);
         $this->assertInstanceOf(Subscription::class, $channel->subscription);
-        $this->assertEquals($this->getFreePlan()->id, $channel->subscription->plan_id);
+        $this->assertEquals(Plan::bySlug('forever_free')->id, $channel->subscription->plan_id);
     }
 
     /** @test */

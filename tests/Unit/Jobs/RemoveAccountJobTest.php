@@ -8,6 +8,7 @@ use App\Jobs\ChannelCleaningJob;
 use App\Jobs\RemoveAccountJob;
 use App\Jobs\SendFileBySFTP;
 use App\Models\Media;
+use App\Models\Plan;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
@@ -16,6 +17,7 @@ use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class RemoveAccountJobTest extends TestCase
@@ -36,7 +38,7 @@ class RemoveAccountJobTest extends TestCase
     public function removing_account_is_working_fine(): void
     {
         $user = User::factory()->create();
-        $plan = $this->getFreePlan();
+        $plan = Plan::factory()->isFree()->create();
 
         $this->createChannel($user, $plan);
 
