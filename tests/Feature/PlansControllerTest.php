@@ -7,7 +7,6 @@ namespace Tests\Feature;
 use App\Models\Channel;
 use App\Models\Plan;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -27,18 +26,6 @@ class PlansControllerTest extends TestCase
     {
         parent::setUp();
         $this->channel = Channel::factory()->create();
-
-        Plan::factory()
-            ->count(3)
-            ->state(new Sequence(
-                [
-                    'slug' => 'starter',
-                    'slug' => 'professional',
-                    'slug' => 'business',
-                ]
-            ))
-            ->create()
-        ;
     }
 
     /** @test */
@@ -63,6 +50,8 @@ class PlansControllerTest extends TestCase
     /** @test */
     public function default_plan_upgrade_should_be_allowed_to_owner(): void
     {
+        $this->seedStripePlans();
+
         /**
          * user should see 3 plans (starter, professionnal and business).
          * with monthly subscription.
@@ -89,6 +78,8 @@ class PlansControllerTest extends TestCase
     /** @test */
     public function yearly_plan_upgrade_should_be_allowed_to_owner(): void
     {
+        $this->seedStripePlans();
+
         /**
          * user should see 3 plans (starter, professionnal and business).
          * with yearly subscription.
