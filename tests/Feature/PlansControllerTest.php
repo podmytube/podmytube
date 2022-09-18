@@ -7,11 +7,13 @@ namespace Tests\Feature;
 use App\Models\Channel;
 use App\Models\Plan;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class PlansControllerTest extends TestCase
@@ -19,11 +21,24 @@ class PlansControllerTest extends TestCase
     use RefreshDatabase;
 
     protected Channel $channel;
+    protected Plan $freePlan;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->channel = $this->createChannelWithPlan();
+        $this->channel = Channel::factory()->create();
+
+        Plan::factory()
+            ->count(3)
+            ->state(new Sequence(
+                [
+                    'slug' => 'starter',
+                    'slug' => 'professional',
+                    'slug' => 'business',
+                ]
+            ))
+            ->create()
+        ;
     }
 
     /** @test */
@@ -37,6 +52,7 @@ class PlansControllerTest extends TestCase
     /** @test */
     public function plan_upgrade_should_be_denied_to_another_user(): void
     {
+        /** @var User $notTheOwner */
         $notTheOwner = User::factory()->create();
         $this->actingAs($notTheOwner)
             ->get(route('plans.index', $this->channel))

@@ -28,7 +28,7 @@ class PlanFactory extends Factory
 
         return $this->state([
             'name' => $name,
-            'slug' => Str::slug($name),
+            'slug' => 'forever_free',
             'price' => 0,
             'nb_episodes_per_month' => 1,
         ]);

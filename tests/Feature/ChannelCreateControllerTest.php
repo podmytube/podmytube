@@ -22,14 +22,16 @@ class ChannelCreateControllerTest extends TestCase
     use IsFakingYoutube;
     use RefreshDatabase;
 
+    protected Plan $freePlan;
     protected User $user;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->seedStripePlans();
         $this->seedApiKeys();
         $this->seedCategories();
+        $this->freePlan = Plan::factory()->isFree()->create();
+
         $this->user = User::factory()->create();
     }
 
@@ -57,7 +59,9 @@ class ChannelCreateControllerTest extends TestCase
         // free subscription should have been set
         $this->assertNotNull($channel->subscription);
         $this->assertInstanceOf(Subscription::class, $channel->subscription);
-        $this->assertEquals(Plan::bySlug('forever_free')->id, $channel->subscription->plan_id);
+        $this->assertNotNull($channel->subscription->plan);
+        $this->assertInstanceOf(Plan::class, $channel->subscription->plan);
+        $this->assertEquals($this->freePlan->name, $channel->subscription->plan->name);
     }
 
     /** @test */
