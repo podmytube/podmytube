@@ -63,8 +63,6 @@ class PlansControllerTest extends TestCase
     /** @test */
     public function default_plan_upgrade_should_be_allowed_to_owner(): void
     {
-        $this->seedStripePlans();
-
         /**
          * user should see 3 plans (starter, professionnal and business).
          * with monthly subscription.
@@ -91,8 +89,6 @@ class PlansControllerTest extends TestCase
     /** @test */
     public function yearly_plan_upgrade_should_be_allowed_to_owner(): void
     {
-        $this->seedStripePlans();
-
         /**
          * user should see 3 plans (starter, professionnal and business).
          * with yearly subscription.
