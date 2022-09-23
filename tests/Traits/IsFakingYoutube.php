@@ -13,7 +13,7 @@ trait IsFakingYoutube
     protected array $endpointsShorted = [
         YoutubeTestCase::CHANNELS_INDEX => YoutubeTestCase::CHANNELS_ENDPOINT,
         YoutubeTestCase::PLAYLISTS_INDEX => YoutubeTestCase::PLAYLISTS_ENDPOINT,
-        YoutubeTestCase::PLAYLIST_ITEMS_INDEX => YoutubeTestCase::PLAYLIST_ITEMS_INDEX,
+        YoutubeTestCase::PLAYLIST_ITEMS_INDEX => YoutubeTestCase::PLAYLIST_ITEMS_ENDPOINT,
         YoutubeTestCase::VIDEOS_INDEX => YoutubeTestCase::VIDEOS_ENDPOINT,
     ];
 
@@ -21,6 +21,16 @@ trait IsFakingYoutube
     {
         Http::fake([
             YoutubeTestCase::CHANNELS_ENDPOINT . '*' => Http::response(
+                file_get_contents(fixtures_path('Youtube/empty-channels-response.json')),
+                200
+            ),
+        ]);
+    }
+
+    protected function fakeEmptyPlaylistItemsResponse(): void
+    {
+        Http::fake([
+            YoutubeTestCase::PLAYLIST_ITEMS_INDEX . '*' => Http::response(
                 file_get_contents(fixtures_path('Youtube/empty-channels-response.json')),
                 200
             ),

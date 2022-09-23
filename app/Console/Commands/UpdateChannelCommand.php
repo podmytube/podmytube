@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\Traits\BaseCommand;
+use App\Console\Commands\Traits\WithProgressBar;
 use App\Jobs\ChannelHasReachedItsLimitsJob;
 use App\Models\Channel;
 use App\Models\Media;
 use App\Models\Quota;
+use App\Models\User;
 use App\Modules\ServerRole;
 use App\Youtube\YoutubeChannelVideos;
 use App\Youtube\YoutubeQuotas;
@@ -16,37 +19,15 @@ use Illuminate\Support\Facades\Log;
 
 class UpdateChannelCommand extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'update:channel {channel_id} {--limit=50}';
+    use BaseCommand;
+    use WithProgressBar;
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
+    protected $signature = 'update:channel {channel_id} {--limit=50}';
     protected $description = 'This will update list of episodes for specific channel';
 
-    /** @var \App\Youtube\YoutubeCore */
-    protected $youtubeCore;
+    protected array $channels = [];
+    protected array $errors = [];
 
-    /** @var array list of channel models */
-    protected $channels = [];
-
-    /** @var array list of errors that occured */
-    protected $errors = [];
-
-    /** @var \Symfony\Component\Console\Helper\ProgressBar */
-    protected $bar;
-
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
     public function handle(): int
     {
         if (!ServerRole::isWorker()) {
@@ -54,6 +35,16 @@ class UpdateChannelCommand extends Command
 
             return 0;
         }
+
+        if ($this->option('limit') === null) {
+            $message = "Limit specified is not valid. If you specify --limit, you should use a numeric value IE : '--limit 10' ";
+            $this->error($message);
+            Log::error($message);
+
+            return 1;
+        }
+
+        $limit = intval($this->option('limit'));
 
         $channel = Channel::byChannelId($this->argument('channel_id'));
 
@@ -66,8 +57,8 @@ class UpdateChannelCommand extends Command
             return 1;
         }
 
-        $this->info("Channel to update {$channel->channel_id} - limit {$this->option('limit')}", 'v');
-        $factory = YoutubeChannelVideos::forChannel($channel->channel_id, $this->option('limit'));
+        $this->info("Channel to update {$channel->channel_id} - limit {$limit}", 'v');
+        $factory = YoutubeChannelVideos::forChannel($channel->channel_id, $limit);
 
         $nbVideos = count($factory->videos());
         if ($nbVideos <= 0) {
@@ -78,11 +69,12 @@ class UpdateChannelCommand extends Command
             return 1;
         }
 
-        $this->prologue($nbVideos);
+        $this->initProgressBar($nbVideos);
 
         // for each channel video
-        array_map(function ($video) use ($channel): void {
-            Media::withTrashed()
+        $outputTable = [];
+        array_map(function ($video) use (&$outputTable, $channel): void {
+            $media = Media::withTrashed()
                 ->updateOrCreate(
                     [
                         'media_id' => $video['media_id'],
@@ -97,8 +89,16 @@ class UpdateChannelCommand extends Command
                 )
             ;
 
+            $outputTable[] = [
+                'media_id' => $media->media_id,
+                'title' => $media->title,
+                'published_at' => $media->published_at->toDateString(),
+                'grabbed' => $media->hasBeenGrabbed() ? '✅' : '-',
+            ];
             $this->makeProgressBarProgress();
         }, $factory->videos());
+
+        $this->finishProgressBar();
 
         if ($channel->hasReachedItslimit() && $channel->hasRecentlyAddedMedias()) {
             // channel has exceeded its quota for this newly inserted media
@@ -109,34 +109,13 @@ class UpdateChannelCommand extends Command
         $apikeysAndQuotas = YoutubeQuotas::forUrls($factory->queriesUsed())->quotaConsumed();
         Quota::saveScriptConsumption(pathinfo(__FILE__, PATHINFO_BASENAME), $apikeysAndQuotas);
 
+        if ($this->isVerbose()) {
+            $this->table(
+                ['Media ID', 'Title', 'Published at', 'Grabbed'],
+                $outputTable
+            );
+        }
+
         return 0;
-    }
-
-    protected function prologue(int $nbItems)
-    {
-        if (!$this->getOutput()->isVerbose()) {
-            return false;
-        }
-
-        $this->bar = $this->output->createProgressBar($nbItems);
-        $this->bar->start();
-
-        return true;
-    }
-
-    protected function epilogue()
-    {
-        if (!$this->getOutput()->isVerbose()) {
-            return false;
-        }
-        $this->bar->finish();
-    }
-
-    protected function makeProgressBarProgress()
-    {
-        if (!$this->getOutput()->isVerbose()) {
-            return false;
-        }
-        $this->bar->advance();
     }
 }

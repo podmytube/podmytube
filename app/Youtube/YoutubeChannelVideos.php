@@ -1,23 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Youtube;
 
 use App\Interfaces\QuotasConsumer;
 
 class YoutubeChannelVideos implements QuotasConsumer
 {
-    /** @var string $channelId youtube channel id */
-    protected $channelId;
-    /** @var int $limit number of items wanted (0=unlimited) */
-    protected $limit = 0;
-    /** @var string $uploadsPlaylistId $youtube 'uploads' playlist id */
-    protected $uploadsPlaylistId;
-    /** @var array $videos pile of video obtained from youtube api */
-    protected $videos = [];
-    /** @var array $queries */
-    protected $queries = [];
-    /** @var string $apikey */
-    protected $apikey;
+    protected string $channelId;
+    protected int $limit = 0;
+    protected string $uploadsPlaylistId;
+    protected array $videos = [];
+    protected array $queries = [];
+    protected string $apikey = '';
 
     /**
      * retrieve videos for one specified channel.
@@ -38,6 +34,21 @@ class YoutubeChannelVideos implements QuotasConsumer
         return new static(...$params);
     }
 
+    public function videos(): array
+    {
+        return $this->videos;
+    }
+
+    public function queriesUsed(): array
+    {
+        return $this->queries;
+    }
+
+    public function apikey(): ?string
+    {
+        return $this->apikey;
+    }
+
     /**
      * obtain 'uploads' playlist id the quickest/cheapest way.
      * uploads playlist id is the channel id where second letter has been replaced by 'U'.
@@ -53,28 +64,12 @@ class YoutubeChannelVideos implements QuotasConsumer
 
     protected function obtainVideos(): void
     {
-        /**
-         * get all the uploaded videos for that playlist
-         */
+        // get all the uploaded videos for that playlist
         $this->videos = ($playlistItems = new YoutubePlaylistItems())
             ->setLimit($this->limit)
             ->forPlaylist($this->uploadsPlaylistId)
-            ->videos();
+            ->videos()
+        ;
         $this->queries = array_merge($this->queries, $playlistItems->queriesUsed());
-    }
-
-    public function videos(): array
-    {
-        return $this->videos;
-    }
-
-    public function queriesUsed(): array
-    {
-        return $this->queries;
-    }
-
-    public function apikey(): ?string
-    {
-        return $this->apikey;
     }
 }

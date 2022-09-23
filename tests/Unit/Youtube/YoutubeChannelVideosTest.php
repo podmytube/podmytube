@@ -16,7 +16,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class YoutubeChannelVideosTest extends YoutubeTestCase
 {
     use RefreshDatabase;
-
+    
     /** @test */
     public function having_the_right_number_of_videos(): void
     {

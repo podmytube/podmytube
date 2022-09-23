@@ -23,6 +23,8 @@ use Illuminate\Support\Facades\Storage;
  * @property Channel $channel
  * @property Carbon  $created_at
  * @property Carbon  $deleted_at
+ * @property string  $media_id
+ * @property Carbon  $published_at
  * @property int     $status
  * @property string  $title
  * @property Carbon  $updated_at

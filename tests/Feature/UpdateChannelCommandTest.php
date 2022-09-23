@@ -11,6 +11,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
 use RuntimeException;
 use Tests\TestCase;
+use Tests\Traits\IsFakingYoutube;
 
 /**
  * @internal
@@ -19,6 +20,7 @@ use Tests\TestCase;
  */
 class UpdateChannelCommandTest extends TestCase
 {
+    use IsFakingYoutube;
     use RefreshDatabase;
 
     protected Plan $starterPlan;
@@ -38,9 +40,9 @@ class UpdateChannelCommandTest extends TestCase
     }
 
     /** @test */
-    public function update_channel_should_fail_on_invalid_channel(): void
+    public function update_channel_should_fail_on_unknown_channel(): void
     {
-        $this->artisan('update:channel', ['channel_id' => 'invalid-channel-id'])->assertExitCode(1);
+        $this->artisan('update:channel', ['channel_id' => 'unknown_channel_id'])->assertExitCode(1);
     }
 
     /** @test */
@@ -48,6 +50,7 @@ class UpdateChannelCommandTest extends TestCase
     {
         $expectedNumberOfMedias = 2;
         $channel = $this->createMyOwnChannel($this->starterPlan);
+        $this->fakePlaylistItemsResponse('UUw6bU9JT_Lihb2pbtqAUGQw', $channel->youtubeId());
         $this->assertCount(0, $channel->medias);
         $this->artisan('update:channel', ['channel_id' => $channel->channel_id])
             ->assertExitCode(0)
@@ -61,6 +64,7 @@ class UpdateChannelCommandTest extends TestCase
     {
         $mediaId = 'EePwbhMqEh0';
         $channel = $this->createMyOwnChannel($this->starterPlan);
+        $this->fakePlaylistItemsResponse('UUw6bU9JT_Lihb2pbtqAUGQw', $channel->youtubeId());
         Media::factory()->create([
             'media_id' => $mediaId,
             'channel_id' => $channel->channelId(),
@@ -75,7 +79,7 @@ class UpdateChannelCommandTest extends TestCase
 
         // checking media as really been updated
         $media = Media::byMediaId($mediaId, true);
-        $this->assertEquals('2015 10 20 Natacha Christian versus Nolwen Fred 01', $media->title);
+        $this->assertEquals('FAKED - 2015 10 20 Natacha Christian versus Nolwen Fred 01', $media->title);
         $this->assertEquals('2015-10-28', $media->publishedAt());
     }
 
@@ -84,6 +88,7 @@ class UpdateChannelCommandTest extends TestCase
     {
         $expectedNumberOfMedias = 2;
         $channel = $this->createMyOwnChannel($this->starterPlan);
+        $this->fakePlaylistItemsResponse('UUw6bU9JT_Lihb2pbtqAUGQw', $channel->youtubeId());
         $this->assertCount(0, $channel->medias);
         $this->artisan('update:channel', ['channel_id' => $channel->channel_id])
             ->assertExitCode(0)
@@ -104,6 +109,7 @@ class UpdateChannelCommandTest extends TestCase
         Bus::fake();
         // creating my own channel
         $channel = $this->createMyOwnChannel($this->starterPlan);
+        $this->fakePlaylistItemsResponse('UUw6bU9JT_Lihb2pbtqAUGQw', $channel->youtubeId());
         // adding grabbed medias more than my plan should permit
         $this->addGrabbedMediasToChannel($channel, 10);
         // running update should add 2 medias and warn me
@@ -111,5 +117,29 @@ class UpdateChannelCommandTest extends TestCase
             ->assertExitCode(0)
         ;
         Bus::assertDispatched(ChannelHasReachedItsLimitsJob::class);
+    }
+
+    /** @test */
+    public function update_channel_should_display_processed_medias(): void
+    {
+        $channel = $this->createMyOwnChannel($this->starterPlan);
+        Media::factory()->grabbedAt(now())->create([
+            'media_id' => 'EePwbhMqEh0',
+            'channel_id' => $channel->channelId(),
+            'title' => 'foo',
+            'deleted_at' => now(),
+        ]);
+        $this->fakePlaylistItemsResponse('UUw6bU9JT_Lihb2pbtqAUGQw', $channel->youtubeId());
+        $this->assertCount(0, $channel->medias);
+        $this->artisan('update:channel', ['channel_id' => $channel->channel_id, '-v'])
+            ->expectsTable(
+                ['Media ID', 'Title', 'Published at', 'Grabbed'],
+                [
+                    ['EePwbhMqEh0', 'FAKED - 2015 10 20 Natacha Christian versus Nolwen Fred 01', '2015-10-28', '✅'],
+                    ['9pTBAkkTRbw', 'FAKED - 20120604-match-Christian-RomainC-VS-Ludo-Fred', '2015-10-28', '-'],
+                ]
+            )
+            ->assertExitCode(0)
+        ;
     }
 }
