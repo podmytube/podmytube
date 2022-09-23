@@ -6,7 +6,6 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 
 class UsersController extends Controller
 {
@@ -14,20 +13,14 @@ class UsersController extends Controller
 
     public function index(Request $request)
     {
-        Gate::authorize('superadmin');
+        $this->authorize('superadmin');
 
-        $nbItemsPerPage = $request->query('nb') ?? self::NB_ITEMS_PER_PAGE;
-
-        $users = User::orderBy('created_at')
-            ->simplePaginate($nbItemsPerPage)
-        ;
-
-        return view('users.index', compact('users', 'nbItemsPerPage'));
+        return view('users.index');
     }
 
     public function impersonate(User $user)
     {
-        Gate::authorize('superadmin');
+        $this->authorize('superadmin');
 
         auth()->user()->impersonate($user);
 
@@ -38,6 +31,6 @@ class UsersController extends Controller
     {
         auth()->user()->leaveImpersonation();
 
-        return redirect()->route('home');
+        return redirect()->route('users.index');
     }
 }

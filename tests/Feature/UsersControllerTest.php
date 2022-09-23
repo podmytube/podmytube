@@ -10,9 +10,10 @@ use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
-class UsersAccessTest extends TestCase
+class UsersControllerTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -73,7 +74,7 @@ class UsersAccessTest extends TestCase
             ->actingAs($superadmin)
             ->get(route('users.leave-impersonate'))
             ->assertSuccessful()
-            ->assertViewIs('home')
+            ->assertViewIs('users.index')
         ;
     }
 }
