@@ -1,6 +1,6 @@
 {
     "kind": "youtube#channelListResponse",
-    "etag": "RuuXzTIr0OoDqI4S0RU6n4FqKEM",
+    "etag": "FAKE-uuXzTIr0OoDqI4S0RU6n4FqKEM",
     "pageInfo": {
         "totalResults": 0,
         "resultsPerPage": 5

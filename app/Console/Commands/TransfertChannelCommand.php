@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Factories\CreateChannelFactory;
 use App\Models\Category;
 use App\Models\Channel;
 use App\Models\Media;
@@ -108,7 +107,7 @@ class TransfertChannelCommand extends Command
         $channel = Channel::create([
             'user_id' => $user->userId(),
             'channel_id' => $channelId,
-            'category_id' => Category::bySlug(CreateChannelFactory::DEFAULT_CATEGORY_SLUG)->id,
+            'category_id' => Category::bySlug(Channel::DEFAULT_CATEGORY_SLUG)->id,
             'active' => true,
         ]);
 

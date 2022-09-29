@@ -1,6 +1,6 @@
 {
     "kind": "youtube#playlistItemListResponse",
-    "etag": "4VAEPti662C4QsBK7eVjEPaQqto",
+    "etag": "FAKE-4VAEPti662C4QsBK7eVjEPaQqto",
     "items": [
         {
             "kind": "youtube#playlistItem",

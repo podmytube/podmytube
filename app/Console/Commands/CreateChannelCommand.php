@@ -52,7 +52,7 @@ class CreateChannelCommand extends Command
             }
 
             // creating channel
-            $channel = CreateChannelFactory::fromYoutubeUrl($user, $youtubeUrl);
+            $channel = CreateChannelFactory::fromYoutubeUrl(user: $user, youtubeUrl: $youtubeUrl, active: true);
 
             // adding subscription
             Subscription::query()

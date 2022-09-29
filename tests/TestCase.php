@@ -287,4 +287,12 @@ abstract class TestCase extends BaseTestCase
 
         return $channel;
     }
+
+    protected function getPlaylistIdFromChannelId(string $channelId): string
+    {
+        $result = $channelId;
+        $result[1] = 'U';
+
+        return $result;
+    }
 }

@@ -35,7 +35,23 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 /**
+ * @property string       $accept_video_by_tag
+ * @property string       $authors
+ * @property bool         $active
  * @property Category     $category
+ * @property Carbon       $channel_createdAt
+ * @property Carbon       $channel_updatedAt
+ * @property string       $channel_name
+ * @property string       $description
+ * @property string       $email
+ * @property bool         $explicit
+ * @property Language     $language
+ * @property string       $link
+ * @property Carbon       $podcast_updatedAt
+ * @property string       $reject_video_too_old
+ * @property string       $reject_video_by_keyword
+ * @property string       $podcast_copyright
+ * @property string       $podcast_title
  * @property Subscription $subscription
  * @property User         $user
  */
@@ -54,6 +70,7 @@ class Channel extends Model implements Podcastable, Coverable
     use IsRelatedToOneChannel;
 
     public const REMOTE_DISK = 'remote';
+    public const DEFAULT_CATEGORY_SLUG = 'society-culture';
 
     public const CREATED_AT = 'channel_createdAt';
     public const UPDATED_AT = 'channel_updatedAt';
@@ -78,6 +95,7 @@ class Channel extends Model implements Podcastable, Coverable
     ];
 
     protected $casts = [
+        'active' => 'boolean',
         'explicit' => 'boolean',
     ];
 
@@ -525,5 +543,10 @@ class Channel extends Model implements Podcastable, Coverable
     public function playlistFolderPath(): string
     {
         return config('app.playlists_path') . $this->relativeFolderPath();
+    }
+
+    public function isActive(): bool
+    {
+        return $this->active;
     }
 }

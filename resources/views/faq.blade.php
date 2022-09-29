@@ -89,11 +89,20 @@
                     </ol>
                 </div>
 
+                <div class="py-4">
+                    <h2 class="font-semibold text-lg">
+                        Are shorts included in my podcast ?
+                    </h2>
+                    <p class="text-gray-700 py-2 text-base">
+                        Yes.
+                    </p>
+                </div>
+
 
                 <!--div class="my-2">
-                    <h2 class="font-semibold text-lg"> question </h2>
-                    <p class="text-gray-700 py-2 text-base"> answer </p>
-                </div-->
+                        <h2 class="font-semibold text-lg"> question </h2>
+                        <p class="text-gray-700 py-2 text-base"> answer </p>
+                    </div-->
 
             </div>
         </div>

@@ -1,6 +1,6 @@
 {
     "kind": "youtube#videoListResponse",
-    "etag": "p6oEjeZZwdNqgx3qdYi6aV1oYZo",
+    "etag": "FAKE-p6oEjeZZwdNqgx3qdYi6aV1oYZo",
     "items": [
         {
             "kind": "youtube#video",

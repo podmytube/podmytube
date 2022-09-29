@@ -1,6 +1,6 @@
 {
     "kind": "MOCKED youtube#playlistListResponse",
-    "etag": "DHdQRQ9l8Z-aK0kjd7P4gOkYCMw",
+    "etag": "FAKE-DHdQRQ9l8Z-aK0kjd7P4gOkYCMw",
     "pageInfo": {
         "totalResults": 2,
         "resultsPerPage": 5

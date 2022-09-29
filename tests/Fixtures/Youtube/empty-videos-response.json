@@ -1,6 +1,6 @@
 {
     "kind": "youtube#videoListResponse",
-    "etag": "YIUPVpqNjppyCWOZfL-19bLb7uk",
+    "etag": "FAKE-YIUPVpqNjppyCWOZfL-19bLb7uk",
     "items": [],
     "pageInfo": {
         "totalResults": 0,

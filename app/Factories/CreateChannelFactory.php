@@ -15,12 +15,6 @@ use Illuminate\Contracts\Auth\Authenticatable;
 
 class CreateChannelFactory
 {
-    public const DEFAULT_CATEGORY_SLUG = 'society-culture';
-
-    private function __construct()
-    {
-    }
-
     public static function fromYoutubeUrl(Authenticatable $user, string $youtubeUrl, bool $active = false): ?Channel
     {
         try {
@@ -42,7 +36,7 @@ class CreateChannelFactory
                 'user_id' => $user->userId(),
                 'channel_id' => $channelId,
                 'channel_name' => $youtubeChannel->name(),
-                'category_id' => Category::bySlug(self::DEFAULT_CATEGORY_SLUG)->id,
+                'category_id' => Category::bySlug(Channel::DEFAULT_CATEGORY_SLUG)->id,
                 'active' => $active,
             ]);
         } catch (ChannelAlreadyRegisteredException $thrownException) {
