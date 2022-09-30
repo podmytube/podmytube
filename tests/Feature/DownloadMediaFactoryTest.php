@@ -114,26 +114,4 @@ class DownloadMediaFactoryTest extends TestCase
         $this->assertEquals(0, $this->media->length);
         $this->assertEquals(0, $this->media->duration);
     }
-
-    /**
-     * @test
-     * some medias may be missing on remote mp3 server although present in DB.
-     * If present in DB I should have them on the remote server.
-     */
-    public function force_download_should_be_ok(): void
-    {
-        // adding grabbed media(s) to channel (with free plan)
-        $this->media = Media::factory()
-            ->grabbedAt(now())
-            ->create(
-                [
-                    'channel_id' => $this->channel->channel_id,
-                    'media_id' => self::MARIO_COIN_VIDEO,
-                ]
-            )
-        ;
-
-        DownloadMediaFactory::media($this->media, force: true)->run();
-        $this->assertEquals(Media::STATUS_DOWNLOADED, $this->media->status);
-    }
 }
