@@ -26,6 +26,7 @@ use App\Traits\IsRelatedToOneChannel;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -48,7 +49,7 @@ use Illuminate\Support\Str;
  * @property Language     $language
  * @property string       $link
  * @property Carbon       $podcast_updatedAt
- * @property string       $reject_video_too_old
+ * @property Carbon       $reject_video_too_old
  * @property string       $reject_video_by_keyword
  * @property string       $podcast_copyright
  * @property string       $podcast_title
@@ -145,49 +146,6 @@ class Channel extends Model implements Podcastable, Coverable
     public function podcastUrl(): string
     {
         return config('app.podcasts_url') . '/' . $this->relativeFeedPath();
-    }
-
-    /**
-     * return all early birds channels.
-     */
-    public static function earlyBirdsChannels(): Collection
-    {
-        return static::active()
-            ->whereHas('subscription', function (Builder $query): void {
-                $query->where('plan_id', '=', Plan::EARLY_PLAN_ID);
-            })
-            ->with(['User', 'Category', 'cover', 'Subscription'])
-            ->get()
-        ;
-    }
-
-    /**
-     * return all free channels.
-     */
-    public static function freeChannels(): Collection
-    {
-        return static::active()
-            ->whereHas('subscription', function (Builder $query): void {
-                $query->where('plan_id', '=', Plan::FREE_PLAN_ID);
-            })
-            ->with(['User', 'Category', 'cover', 'Subscription'])
-            ->get()
-        ;
-    }
-
-    /**
-     * return all paying customers channels.
-     * Paying customers only.
-     */
-    public static function payingChannels(): Collection
-    {
-        return static::active()
-            ->whereHas('subscription.plan', function (Builder $query): void {
-                $query->where('price', '>', 0);
-            })
-            ->with(['User', 'Category', 'cover', 'Subscription'])
-            ->get()
-        ;
     }
 
     public static function allActiveChannels(): Collection
@@ -479,9 +437,12 @@ class Channel extends Model implements Podcastable, Coverable
         return self::where('user_id', '=', $user->user_id)->get();
     }
 
-    public function youtubeId(): string
+    /**
+     * used as a property $this->youtube_id.
+     */
+    public function youtubeId(): Attribute
     {
-        return $this->channelId();
+        return Attribute::get(fn () => $this->channel_id);
     }
 
     public function subscribeToPlan(Plan $plan): Subscription

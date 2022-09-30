@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Exceptions\NoPayingChannelException;
+use App\Exceptions\NoActiveChannelException;
 use App\Exceptions\YoutubeNoResultsException;
 use App\Mail\ChannelIsInTroubleWarningMail;
 use App\Models\Channel;
@@ -49,14 +49,14 @@ class LastMediaPublishedChecker extends Command
             return 0;
         }
 
-        // get paying channels
-        $this->channelsToCheck = Channel::payingChannels();
+        // get active channels
+        $this->channelsToCheck = Channel::active()->get();
 
         // add now tech
         $this->addNowTech();
 
         if (!$this->channelsToCheck->count()) {
-            throw new NoPayingChannelException();
+            throw new NoActiveChannelException();
 
             return 1;
         }
@@ -77,7 +77,7 @@ class LastMediaPublishedChecker extends Command
             }
         });
 
-        $this->comment('Nb paying channels in trouble : ' . count($this->channelInTroubleMessages), 'v');
+        $this->comment('Nb active channels in trouble : ' . count($this->channelInTroubleMessages), 'v');
 
         if (count($this->channelInTroubleMessages)) {
             // Send myself an email with channels in trouble

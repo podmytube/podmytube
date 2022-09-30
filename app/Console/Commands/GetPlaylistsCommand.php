@@ -4,40 +4,25 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\Traits\BaseCommand;
 use App\Models\Channel;
 use App\Models\Playlist;
 use App\Modules\ServerRole;
+use App\Youtube\YoutubeCore;
 use App\Youtube\YoutubePlaylists;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
 class GetPlaylistsCommand extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'get:playlists';
+    use BaseCommand;
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'This will obtain playlists for all paying channels';
+    protected $signature = 'get:playlists {channel_id?}';
+    protected $description = 'This will obtain playlists for all active/specific channel(s)';
 
-    /** @var \App\Youtube\YoutubeCore */
-    protected $youtubeCore;
-
-    /** @var array list of channel models */
-    protected $channels = [];
-
-    /** @var array list of errors that occured */
-    protected $errors = [];
-
-    /** @var \Symfony\Component\Console\Helper\ProgressBar */
-    protected $bar;
+    protected YoutubeCore $youtubeCore;
+    protected array $channels = [];
+    protected array $errors = [];
 
     /**
      * Execute the console command.
@@ -52,33 +37,36 @@ class GetPlaylistsCommand extends Command
             return 0;
         }
 
-        /**
-         * get paying channels.
-         */
-        $channels = Channel::payingChannels();
-        if ($channels === null) {
-            $message = 'There is no paying channel to get playlist for.';
+        if ($this->argument('channel_id')) {
+            $channels = Channel::query()
+                ->where('channel_id', '=', $this->argument('channel_id'))
+                ->get()
+            ;
+        } else {
+            $channels = Channel::active()->get();
+        }
+
+        if (!$channels->count()) {
+            $message = 'There is no active channel to get playlist for or specified channel_id is invalid.';
             $this->error($message);
             Log::notice($message);
 
             return 1;
         }
 
-        /**
-         * get playlists from youtube.
-         */
-        $nbPlaylists = 0;
-        $channels->map(function (Channel $channel) use (&$nbPlaylists): void {
+        // get playlists from youtube.
+        $channels->each(function (Channel $channel): void {
             $this->comment('======================================================================', 'v');
             $this->comment("Getting playlists (from youtube) for {$channel->nameWithId()}", 'v');
+
             $playlists = (new YoutubePlaylists())->forChannel($channel->channelId())->playlists();
-            $nbPlaylists += count($playlists);
+
             array_map(function ($playlistItem) use ($channel): void {
                 $this->line("Getting {$playlistItem['title']}");
                 Playlist::updateOrCreate(
                     ['youtube_playlist_id' => $playlistItem['id']],
                     [
-                        'channel_id' => $channel->channelId(),
+                        'channel_id' => $channel->youtube_id,
                         'youtube_playlist_id' => $playlistItem['id'],
                         'title' => $playlistItem['title'],
                         'description' => $playlistItem['description'],
@@ -86,8 +74,6 @@ class GetPlaylistsCommand extends Command
                 );
             }, $playlists);
         });
-
-        $this->info("Nb playlists added/updated : {$nbPlaylists}", 'v');
 
         return 0;
     }

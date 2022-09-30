@@ -25,6 +25,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -32,6 +33,8 @@ use Illuminate\Support\Collection as SupportCollection;
 
 /**
  * @property Channel $channel
+ * @property string  $youtube_id
+ * @property string  $youtube_playlist_id
  */
 class Playlist extends Model implements Podcastable, Coverable
 {
@@ -249,9 +252,12 @@ class Playlist extends Model implements Podcastable, Coverable
         return $this->title;
     }
 
-    public function youtubeId(): string
+    /**
+     * used as a property $this->youtube_id.
+     */
+    public function youtubeId(): Attribute
     {
-        return $this->youtube_playlist_id;
+        return Attribute::get(fn () => $this->youtube_playlist_id);
     }
 
     public function id()

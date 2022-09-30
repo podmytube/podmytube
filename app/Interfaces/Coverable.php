@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Interfaces;
 
 use App\Models\Thumb;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Http\UploadedFile;
 
 interface Coverable
@@ -13,7 +14,7 @@ interface Coverable
 
     public function title(): string;
 
-    public function youtubeId(): string;
+    public function youtubeId(): Attribute;
 
     public function channelId(): string;
 

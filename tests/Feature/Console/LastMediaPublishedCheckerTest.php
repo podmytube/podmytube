@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Console;
 
-use App\Exceptions\NoPayingChannelException;
+use App\Exceptions\NoActiveChannelException;
 use App\Mail\ChannelIsInTroubleWarningMail;
 use App\Models\Media;
 use App\Models\Plan;
@@ -33,7 +33,7 @@ class LastMediaPublishedCheckerTest extends TestCase
     /** @test */
     public function check_lastmedia_with_no_paying_channel_should_fail(): void
     {
-        $this->expectException(NoPayingChannelException::class);
+        $this->expectException(NoActiveChannelException::class);
         $this->artisan('check:lastmedia')->assertExitCode(1);
         // Assert that no mailables were sent...
         Mail::assertNothingQueued();

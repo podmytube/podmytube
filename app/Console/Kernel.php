@@ -42,7 +42,7 @@ class Kernel extends ConsoleKernel
         // grabbing non grabbed videos
         $schedule->command(DownloadVideosByPeriodCommand::class)->hourlyAt(12);
 
-        // get playlists from paying channels
+        // get playlists from active channels
         $schedule->command(GetPlaylistsCommand::class)->hourlyAt(35);
 
         // build playlists feeds

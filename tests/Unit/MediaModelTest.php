@@ -412,4 +412,11 @@ class MediaModelTest extends TestCase
             $expectations
         );
     }
+
+    /** @test */
+    public function youtube_id_attribute_is_fine(): void
+    {
+        $this->assertNotNull($this->media->youtube_id);
+        $this->assertEquals($this->media->media_id, $this->media->youtube_id);
+    }
 }

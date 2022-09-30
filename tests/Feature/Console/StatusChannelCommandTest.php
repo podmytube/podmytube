@@ -44,16 +44,16 @@ class StatusChannelCommandTest extends TestCase
     {
         $plan = Plan::factory()->name('starter')->create();
         $channel = $this->createChannelWithPlan($plan);
-        $playlistId = $this->getPlaylistIdFromChannelId($channel->youtubeId());
+        $playlistId = $this->getPlaylistIdFromChannelId($channel->youtube_id);
         // faking playlist items response
         $this->fakePlaylistItemsResponse($playlistId);
         // command should run properly
-        $this->artisan('status:channel', ['channel_id' => $channel->youtubeId()])
+        $this->artisan('status:channel', ['channel_id' => $channel->youtube_id])
             ->assertExitCode(0)
             ->expectsTable(
                 ['Channel ID', 'Channel name', 'Email', 'Created', 'Updated', 'Subscription', 'Active'],
                 [[
-                    $channel->youtubeId(),
+                    $channel->youtube_id,
                     $channel->channel_name,
                     $channel->user->email,
                     $channel->channel_createdAt->toDateString(),
@@ -71,18 +71,18 @@ class StatusChannelCommandTest extends TestCase
         $plan = Plan::factory()->isFree()->create();
         $channel = $this->createChannelWithPlan($plan);
         $channel->update(['active' => false]);
-        $playlistId = $this->getPlaylistIdFromChannelId($channel->youtubeId());
+        $playlistId = $this->getPlaylistIdFromChannelId($channel->youtube_id);
 
         // faking playlist items response
         $this->fakePlaylistItemsResponse($playlistId);
 
         // command should run properly
-        $this->artisan('status:channel', ['channel_id' => $channel->youtubeId()])
+        $this->artisan('status:channel', ['channel_id' => $channel->youtube_id])
             ->assertExitCode(0)
             ->expectsTable(
                 ['Channel ID', 'Channel name', 'Email', 'Created', 'Updated', 'Subscription', 'Active'],
                 [[
-                    $channel->youtubeId(),
+                    $channel->youtube_id,
                     $channel->channel_name,
                     $channel->user->email,
                     $channel->channel_createdAt->toDateString(),

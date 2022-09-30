@@ -26,7 +26,7 @@ class GetPlaylistMediasCommand extends Command
      *
      * @var string
      */
-    protected $description = 'This will get playlists medias for all paying channels';
+    protected $description = 'This will get playlists medias for all active channels';
 
     /**
      * Execute the console command.

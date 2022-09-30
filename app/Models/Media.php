@@ -314,6 +314,14 @@ class Media extends Model
         return $this->realStatus === static::STATUS_DELETED;
     }
 
+    /**
+     * used as a property $this->youtube_id.
+     */
+    public function youtubeId(): Attribute
+    {
+        return Attribute::get(fn () => $this->media_id);
+    }
+
     protected function realStatus(): Attribute
     {
         return Attribute::get(

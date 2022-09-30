@@ -25,7 +25,7 @@ class GetPlaylistsForChannelCommand extends Command
      *
      * @var string
      */
-    protected $description = 'This will obtain playlists for all paying channels';
+    protected $description = 'This will obtain playlists for all active channels';
 
     /** @var \App\Youtube\YoutubeCore */
     protected $youtubeCore;

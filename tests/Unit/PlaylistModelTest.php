@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use App\Interfaces\Podcastable;
+use App\Models\ApiKey;
 use App\Models\Channel;
 use App\Models\Media;
 use App\Models\Playlist;
@@ -14,6 +16,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use Tests\Traits\IsAbleToTestPodcast;
+use Tests\Traits\IsFakingYoutube;
 
 /**
  * @internal
@@ -22,11 +25,11 @@ use Tests\Traits\IsAbleToTestPodcast;
  */
 class PlaylistModelTest extends TestCase
 {
-    use RefreshDatabase;
     use IsAbleToTestPodcast;
+    use IsFakingYoutube;
+    use RefreshDatabase;
 
-    /** @var \App\Models\Playlist */
-    protected $playlist;
+    protected Playlist $playlist;
 
     public function setUp(): void
     {
@@ -111,16 +114,20 @@ class PlaylistModelTest extends TestCase
     /** @test */
     public function playlist_to_podcast_is_running_fine(): void
     {
-        $this->seedApiKeys();
+        /** @var Podcastable $playlist */
+        $playlist = Playlist::factory()->create();
+
+        ApiKey::factory()->create();
+        $this->fakePlaylistItemsResponse($playlist->youtube_id);
         $expectedItems = 2;
-        Media::factory()->grabbedAt(now()->subday())->create(['media_id' => 'GJzweq_VbVc']);
-        Media::factory()->grabbedAt(now()->subWeek())->create(['media_id' => 'AyU4u-iQqJ4']);
+        Media::factory()->grabbedAt(now()->subday())->create(['media_id' => 'EePwbhMqEh0']);
+        Media::factory()->grabbedAt(now()->subWeek())->create(['media_id' => '9pTBAkkTRbw']);
         Media::factory()->create(['media_id' => 'hb0Fo1Jqxkc']);
 
-        $this->playlist = Playlist::factory()->create(['youtube_playlist_id' => self::PODMYTUBE_TEST_PLAYLIST_ID]);
-        $playlistToPodcastInfos = $this->playlist->toPodcast();
+        $playlistToPodcastInfos = $playlist->toPodcast();
+
         // checking header
-        $this->podcastHeaderInfosChecking($this->playlist, $playlistToPodcastInfos);
+        $this->podcastHeaderInfosChecking($playlist, $playlistToPodcastInfos);
         // checking items
         $this->assertCount($expectedItems, $playlistToPodcastInfos['podcastItems']);
         $this->podcastItemsChecking($playlistToPodcastInfos['podcastItems']);
@@ -168,6 +175,8 @@ class PlaylistModelTest extends TestCase
     public function user_has_no_playlists_should_return_zero(): void
     {
         $expectedNumberOfPlaylists = 0;
+
+        /** @var Authenticatable $user */
         $user = User::factory()->create();
         // user has no playlist yet
         $this->assertCount($expectedNumberOfPlaylists, Playlist::userPlaylists($user));
@@ -260,5 +269,12 @@ class PlaylistModelTest extends TestCase
     public function relative_folder_path_should_be_good(): void
     {
         $this->assertEquals($this->playlist->channel_id, $this->playlist->relativeFolderPath());
+    }
+
+    /** @test */
+    public function youtube_id_attribute_is_fine(): void
+    {
+        $this->assertNotNull($this->playlist->youtube_id);
+        $this->assertEquals($this->playlist->youtube_playlist_id, $this->playlist->youtube_id);
     }
 }

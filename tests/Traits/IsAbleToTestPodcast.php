@@ -33,17 +33,17 @@ trait IsAbleToTestPodcast
             'Converting a ' . get_class($podcastable) . " to a podcast header should have key {$key}."
         ), $expectedKeys);
 
-        $this->assertEquals($podcastInfos['title'], $podcastable->podcastTitle());
-        $this->assertEquals($podcastInfos['link'], $podcastable->podcastLink());
-        $this->assertEquals($podcastInfos['description'], $podcastable->podcastDescription());
-        $this->assertEquals($podcastInfos['author'], $podcastable->podcastAuthor());
-        $this->assertEquals($podcastInfos['email'], $podcastable->podcastEmail());
-        $this->assertEquals($podcastInfos['copyright'], $podcastable->podcastCopyright());
-        $this->assertEquals($podcastInfos['imageUrl'], $podcastable->podcastCoverUrl());
-        $this->assertEquals($podcastInfos['language'], $podcastable->podcastLanguage());
-        $this->assertEquals($podcastInfos['category'], $podcastable->podcastCategory());
-        $this->assertEquals($podcastInfos['copyright'], $podcastable->podcastCopyright());
-        $this->assertEquals($podcastInfos['explicit'], $podcastable->podcastExplicit());
+        $this->assertEquals($podcastInfos['title'], $podcastable->podcastTitle(), "Expecting title {$podcastInfos['title']}, obtained {$podcastable->podcastTitle()}");
+        $this->assertEquals($podcastInfos['link'], $podcastable->podcastLink(), "Expecting link {$podcastInfos['link']}, obtained {$podcastable->podcastLink()}");
+        $this->assertEquals($podcastInfos['description'], $podcastable->podcastDescription(), "Expecting description {$podcastInfos['description']}, obtained {$podcastable->podcastDescription()}");
+        $this->assertEquals($podcastInfos['author'], $podcastable->podcastAuthor(), "Expecting author {$podcastInfos['author']}, obtained {$podcastable->podcastAuthor()}");
+        $this->assertEquals($podcastInfos['email'], $podcastable->podcastEmail(), "Expecting email {$podcastInfos['email']}, obtained {$podcastable->podcastEmail()}");
+        $this->assertEquals($podcastInfos['copyright'], $podcastable->podcastCopyright(), "Expecting copyright {$podcastInfos['copyright']}, obtained {$podcastable->podcastCopyright()}");
+        $this->assertEquals($podcastInfos['imageUrl'], $podcastable->podcastCoverUrl(), "Expecting imageUrl {$podcastInfos['imageUrl']}, obtained {$podcastable->podcastCoverUrl()}");
+        $this->assertEquals($podcastInfos['language'], $podcastable->podcastLanguage(), "Expecting language {$podcastInfos['language']}, obtained {$podcastable->podcastLanguage()}");
+        $this->assertEquals($podcastInfos['category'], $podcastable->podcastCategory(), "Expecting category {$podcastInfos['category']}, obtained {$podcastable->podcastCategory()}");
+        $this->assertEquals($podcastInfos['copyright'], $podcastable->podcastCopyright(), "Expecting copyright {$podcastInfos['copyright']}, obtained {$podcastable->podcastCopyright()}");
+        $this->assertEquals($podcastInfos['explicit'], $podcastable->podcastExplicit(), "Expecting explicit {$podcastInfos['explicit']}, obtained {$podcastable->podcastExplicit()}");
     }
 
     public function podcastItemsChecking(Collection $podcastItems): void

@@ -35,7 +35,7 @@ class UpdateChannelCommandTest extends TestCase
 
         $this->starterPlan = Plan::factory()->name('starter')->create();
         $this->channel = $this->createChannelWithPlan($this->starterPlan);
-        $this->playlistId = $this->getPlaylistIdFromChannelId($this->channel->youtubeId());
+        $this->playlistId = $this->getPlaylistIdFromChannelId($this->channel->youtube_id);
     }
 
     /** @test */
@@ -57,7 +57,7 @@ class UpdateChannelCommandTest extends TestCase
         $this->assertCount(0, $this->channel->medias);
 
         // command should run properly
-        $this->artisan('update:channel', ['channel_id' => $this->channel->youtubeId()])
+        $this->artisan('update:channel', ['channel_id' => $this->channel->youtube_id])
             ->assertExitCode(0)
         ;
         $this->channel->refresh();
@@ -67,7 +67,7 @@ class UpdateChannelCommandTest extends TestCase
             'EePwbhMqEh0' => 'FAKED - 2015 10 20 Natacha Christian versus Nolwen Fred 01',
             '9pTBAkkTRbw' => 'FAKED - 20120604-match-Christian-RomainC-VS-Ludo-Fred',
         ];
-        $this->assertCount(2, $this->channel->medias);
+        $this->assertCount(count($expectedMedias), $this->channel->medias);
 
         $this->assertEqualsCanonicalizing(
             $expectedMedias,

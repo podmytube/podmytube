@@ -263,7 +263,7 @@ abstract class YoutubeCore implements QuotasConsumer
             return Cache::get($this->cacheKey());
         }
         $rawResults = Http::get($this->url())->body();
-
+        // dump($this->url(), $rawResults);
         // adding url to the list of queries used
         $this->queries[] = $this->url();
 

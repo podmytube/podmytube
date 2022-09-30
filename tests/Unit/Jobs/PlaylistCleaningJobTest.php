@@ -17,6 +17,7 @@ use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class PlaylistCleaningJobTest extends TestCase
@@ -56,7 +57,7 @@ class PlaylistCleaningJobTest extends TestCase
         // creating fake file with real file (storage disk is faked above).
         $this->createFakeRemoteFileForPodcast($this->playlistToDelete);
         $this->assertTrue(Storage::exists($this->playlistToDelete->remoteFilePath()));
-        $savedYoutubeId = $this->playlistToDelete->youtubeId();
+        $savedYoutubeId = $this->playlistToDelete->youtube_id;
 
         // running podcast deletion
         $job = new PlaylistCleaningJob($this->playlistToDelete);

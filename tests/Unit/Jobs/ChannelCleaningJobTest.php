@@ -43,10 +43,10 @@ class ChannelCleaningJobTest extends TestCase
         // associating some medias for channel
         $this->createMediaWithFileForChannel($this->channelToDelete, $nbMediasForPodcastable);
         $this->channelToDelete->refresh();
-        $savedYoutubeId = $this->channelToDelete->youtubeId();
+        $savedYoutubeId = $this->channelToDelete->youtube_id;
 
         // associate playlist with this channel
-        $playlistThatShouldBeRemoved = Playlist::factory()->create(['channel_id' => $this->channelToDelete->youtubeId()]);
+        $playlistThatShouldBeRemoved = Playlist::factory()->create(['channel_id' => $this->channelToDelete->youtube_id]);
         $this->channelToDelete->refresh();
 
         $this->assertCount(1, $this->channelToDelete->playlists);
@@ -73,11 +73,11 @@ class ChannelCleaningJobTest extends TestCase
             $this->channelToDelete->coverFolderPath() . ' should have been removed.'
         );
 
-        $this->assertNull(Playlist::byYoutubeId($playlistThatShouldBeRemoved->youtubeId()));
-        $this->assertNull(Subscription::byChannelId($this->channelToDelete->youtubeId()));
+        $this->assertNull(Playlist::byYoutubeId($playlistThatShouldBeRemoved->youtube_id));
+        $this->assertNull(Subscription::byChannelId($this->channelToDelete->youtube_id));
         $this->assertCount(
             0,
-            Media::query()->where('channel_id', '=', $this->channelToDelete->youtubeId())->get()
+            Media::query()->where('channel_id', '=', $this->channelToDelete->youtube_id)->get()
         );
 
         // object that should have been deleted from db

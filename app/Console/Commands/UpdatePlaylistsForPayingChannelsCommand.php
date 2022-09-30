@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Exceptions\NoPayingChannelException;
+use App\Exceptions\NoActiveChannelException;
 use App\Factories\UploadPodcastFactory;
 use App\Models\Channel;
 use App\Models\Playlist;
@@ -57,11 +57,11 @@ class UpdatePlaylistsForPayingChannelsCommand extends Command
         }
 
         /**
-         * get paying channels.
+         * get active channels.
          */
-        $channels = Channel::payingChannels();
+        $channels = Channel::active()->get();
         if ($channels === null) {
-            throw new NoPayingChannelException('There is no paying channel to get playlist for.');
+            throw new NoActiveChannelException('There is no active channel to get playlist for.');
         }
 
         /**

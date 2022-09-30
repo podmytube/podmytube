@@ -79,7 +79,7 @@ class StatusChannelCommand extends Command
             $this->table(
                 ['Channel ID', 'Channel name', 'Email', 'Created', 'Updated', 'Subscription', 'Active'],
                 [[
-                    $channel->youtubeId(),
+                    $channel->youtube_id,
                     $channel->channel_name,
                     $channel->user->email,
                     $channel->channel_createdAt->toDateString(),

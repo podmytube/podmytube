@@ -9,11 +9,11 @@
         {
             "kind": "youtube#playlist",
             "etag": "k39fJJtzMlOKTF9F-3TRb95nAz8",
-            "id": "EXPECTED_PLAYLIST_ID",
+            "id": "FLw6bU9JT_Lihb2pbtqAUGQw1",
             "snippet": {
                 "publishedAt": "2019-09-06T15:21:33Z",
                 "channelId": "EXPECTED_CHANNEL_ID",
-                "title": "testPmt",
+                "title": "Lorem ipsum dolore sit amet",
                 "description": "",
                 "thumbnails": {
                     "default": {
@@ -45,11 +45,11 @@
         {
             "kind": "youtube#playlist",
             "etag": "RZ5P40yJCbVsvG9-dOd5Lk3BVE4",
-            "id": "FLw6bU9JT_Lihb2pbtqAUGQw",
+            "id": "FLw6bU9JT_Lihb2pbtqAUGQw2",
             "snippet": {
                 "publishedAt": "2011-05-25T05:17:04Z",
                 "channelId": "EXPECTED_CHANNEL_ID",
-                "title": "Favorites",
+                "title": "Consectetur adipiscing elit",
                 "description": "",
                 "thumbnails": {
                     "default": {

@@ -244,7 +244,7 @@ class ChannelModelTest extends TestCase
     /** @test */
     public function youtube_url_is_fine(): void
     {
-        $expectedChannelYoutubeUrl = 'https://www.youtube.com/channel/' . $this->channel->youtubeId();
+        $expectedChannelYoutubeUrl = 'https://www.youtube.com/channel/' . $this->channel->youtube_id;
         $this->assertEquals($expectedChannelYoutubeUrl, $this->channel->youtubeUrl());
     }
 
@@ -321,12 +321,9 @@ class ChannelModelTest extends TestCase
     }
 
     /** @test */
-    public function paying_channels_is_fine(): void
+    public function youtube_id_attribute_is_fine(): void
     {
-        $this->assertCount(0, Channel::payingChannels());
-
-        $expectedPayingChannels = 3;
-        $this->createChannelsWithPlan($this->starterPlan, nbChannels: $expectedPayingChannels);
-        $this->assertCount($expectedPayingChannels, Channel::payingChannels());
+        $this->assertNotNull($this->channel->youtube_id);
+        $this->assertEquals($this->channel->channel_id, $this->channel->youtube_id);
     }
 }

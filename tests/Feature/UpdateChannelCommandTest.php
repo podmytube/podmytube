@@ -50,7 +50,7 @@ class UpdateChannelCommandTest extends TestCase
     {
         $expectedNumberOfMedias = 2;
         $channel = $this->createMyOwnChannel($this->starterPlan);
-        $this->fakePlaylistItemsResponse('UUw6bU9JT_Lihb2pbtqAUGQw', $channel->youtubeId());
+        $this->fakePlaylistItemsResponse('UUw6bU9JT_Lihb2pbtqAUGQw', $channel->youtube_id);
         $this->assertCount(0, $channel->medias);
         $this->artisan('update:channel', ['channel_id' => $channel->channel_id])
             ->assertExitCode(0)
@@ -64,7 +64,7 @@ class UpdateChannelCommandTest extends TestCase
     {
         $mediaId = 'EePwbhMqEh0';
         $channel = $this->createMyOwnChannel($this->starterPlan);
-        $this->fakePlaylistItemsResponse('UUw6bU9JT_Lihb2pbtqAUGQw', $channel->youtubeId());
+        $this->fakePlaylistItemsResponse('UUw6bU9JT_Lihb2pbtqAUGQw', $channel->youtube_id);
         Media::factory()->create([
             'media_id' => $mediaId,
             'channel_id' => $channel->channelId(),
@@ -88,7 +88,7 @@ class UpdateChannelCommandTest extends TestCase
     {
         $expectedNumberOfMedias = 2;
         $channel = $this->createMyOwnChannel($this->starterPlan);
-        $this->fakePlaylistItemsResponse('UUw6bU9JT_Lihb2pbtqAUGQw', $channel->youtubeId());
+        $this->fakePlaylistItemsResponse('UUw6bU9JT_Lihb2pbtqAUGQw', $channel->youtube_id);
         $this->assertCount(0, $channel->medias);
         $this->artisan('update:channel', ['channel_id' => $channel->channel_id])
             ->assertExitCode(0)
@@ -109,7 +109,7 @@ class UpdateChannelCommandTest extends TestCase
         Bus::fake();
         // creating my own channel
         $channel = $this->createMyOwnChannel($this->starterPlan);
-        $this->fakePlaylistItemsResponse('UUw6bU9JT_Lihb2pbtqAUGQw', $channel->youtubeId());
+        $this->fakePlaylistItemsResponse('UUw6bU9JT_Lihb2pbtqAUGQw', $channel->youtube_id);
         // adding grabbed medias more than my plan should permit
         $this->addGrabbedMediasToChannel($channel, 10);
         // running update should add 2 medias and warn me
@@ -129,7 +129,7 @@ class UpdateChannelCommandTest extends TestCase
             'title' => 'foo',
             'deleted_at' => now(),
         ]);
-        $this->fakePlaylistItemsResponse('UUw6bU9JT_Lihb2pbtqAUGQw', $channel->youtubeId());
+        $this->fakePlaylistItemsResponse('UUw6bU9JT_Lihb2pbtqAUGQw', $channel->youtube_id);
         $this->assertCount(0, $channel->medias);
         $this->artisan('update:channel', ['channel_id' => $channel->channel_id, '-v'])
             ->expectsTable(
