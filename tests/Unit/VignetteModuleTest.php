@@ -15,6 +15,7 @@ use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class VignetteModuleTest extends TestCase
@@ -45,7 +46,7 @@ class VignetteModuleTest extends TestCase
     /** @test */
     public function default_url_is_good(): void
     {
-        $expectedUrl = env('THUMBS_URL') . '/' . Vignette::DEFAULT_VIGNETTE_FILE;
+        $expectedUrl = config('app.thumbs_url') . '/' . Vignette::DEFAULT_VIGNETTE_FILE;
         $this->assertEquals($expectedUrl, Vignette::defaultUrl());
     }
 
@@ -108,9 +109,8 @@ class VignetteModuleTest extends TestCase
     /** @test */
     public function url_should_be_good(): void
     {
-        $this->assertEquals(
-            Storage::disk(Vignette::LOCAL_STORAGE_DISK)->url($this->vignette->relativePath()),
-            $this->vignette->url()
-        );
+        $expectedUrl = config('app.url') . '/storage/vignettes/' . $this->vignette->relativePath();
+
+        $this->assertEquals($expectedUrl, $this->vignette->url());
     }
 }

@@ -17,18 +17,14 @@ class Vignette
     public const VIGNETTE_SUFFIX = '_vig';
     public const DEFAULT_VIGNETTE_FILE = 'default_vignette.jpg';
 
-    /** @var \App\Models\Thumb used to create vignette */
-    protected $thumb;
-
     /** @var \Intervention\Image\Image */
     protected $image;
 
     /**
      * private constructor.
      */
-    private function __construct(Thumb $thumb)
+    private function __construct(protected Thumb $thumb)
     {
-        $this->thumb = $thumb;
     }
 
     /**
@@ -111,7 +107,7 @@ class Vignette
         return $this;
     }
 
-    public function saveLocally()
+    public function saveLocally(): static
     {
         Storage::disk(self::LOCAL_STORAGE_DISK)
             ->put($this->relativePath(), (string) $this->image->encode())
@@ -125,7 +121,7 @@ class Vignette
      *
      * @return string content of the file
      */
-    public function getData()
+    public function getData(): string
     {
         return (string) $this->image->encode();
     }
@@ -133,7 +129,7 @@ class Vignette
     /**
      * Should be done within a queue.
      */
-    public function delete()
+    public function delete(): bool
     {
         try {
             // removing local vig
@@ -145,11 +141,7 @@ class Vignette
                 $this->relativePath()
             );
         } catch (Exception $exception) {
-            Log::alert(
-                'Deleting vignette ' .
-                    $this->relativePath() .
-                    " has failed with message {{$exception->getMessage()}}."
-            );
+            Log::alert('Deleting vignette ' . $this->relativePath() . " has failed with message {{$exception->getMessage()}}.");
 
             throw $exception;
         }
@@ -164,7 +156,7 @@ class Vignette
      */
     public static function defaultUrl()
     {
-        return env('THUMBS_URL') . '/' . self::DEFAULT_VIGNETTE_FILE;
+        return config('app.thumbs_url') . '/' . self::DEFAULT_VIGNETTE_FILE;
     }
 
     public function localFilePath()

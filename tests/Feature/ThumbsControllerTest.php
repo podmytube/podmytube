@@ -16,10 +16,9 @@ use Tests\TestCase;
 
 /**
  * @internal
- *
  * @coversNothing
  */
-class ThumbsControllerTest extends TestCase
+class ThumbControllerTest extends TestCase
 {
     use RefreshDatabase;
 

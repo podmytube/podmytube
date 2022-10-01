@@ -23,14 +23,11 @@ class CreateVignetteFromThumb implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    protected $srcThumb;
-
     /**
      * Create a new job instance.
      */
-    public function __construct(Thumb $srcThumb)
+    public function __construct(protected Thumb $srcThumb)
     {
-        $this->srcThumb = $srcThumb;
     }
 
     /**

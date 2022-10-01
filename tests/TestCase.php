@@ -74,7 +74,7 @@ abstract class TestCase extends BaseTestCase
         return htmlspecialchars($str, ENT_QUOTES | ENT_HTML401);
     }
 
-    public function createCoverFor(Coverable $coverable): Thumb
+    public function createCoverFor(Coverable|Channel|Playlist $coverable): Thumb
     {
         $thumb = Thumb::factory()->create([
             'coverable_type' => $coverable->morphedName(),
