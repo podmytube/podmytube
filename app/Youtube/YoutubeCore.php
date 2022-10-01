@@ -42,6 +42,7 @@ abstract class YoutubeCore implements QuotasConsumer
 
     /** @var array list of valid queries used */
     protected array $queries = [];
+
     protected string $nextPageToken;
 
     /**
@@ -104,7 +105,7 @@ abstract class YoutubeCore implements QuotasConsumer
     {
         do {
             $this->response = Http::get($this->url());
-            ray($this->url(), $this->response->json());
+            // ray($this->url(), $this->response->json());
             // adding url to the list of queries used
             $this->queries[] = $this->url();
 
