@@ -12,13 +12,12 @@ use InvalidArgumentException;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class YoutubeCoreTest extends YoutubeTestCase
 {
     use RefreshDatabase;
-
-    
 
     protected YoutubeCore $abstractCore;
 
@@ -51,6 +50,19 @@ class YoutubeCoreTest extends YoutubeTestCase
     }
 
     /** @test */
+    public function totally_empty_response_should_throw_exception(): void
+    {
+        $this->fakeTotallyEmptyResponse();
+        $this->expectException(YoutubeNoResultsException::class);
+        $this->abstractCore
+            ->defineEndpoint(YoutubeCore::CHANNELS_ENDPOINT)
+            ->addParts(['id'])
+            ->addParams(['id' => 'ForSureThisChannelIdIsInvalid'])
+            ->run()
+        ;
+    }
+
+    /** @test */
     public function invalid_channel_should_throw_exception(): void
     {
         $this->fakeEmptyChannelResponse();
@@ -67,7 +79,7 @@ class YoutubeCoreTest extends YoutubeTestCase
     /** @test */
     public function getting_proper_id_for_channel_list_should_be_ok(): void
     {
-        $this->fakeChannelResponse(expectedChannelId: self::PEWDIEPIE_CHANNEL_ID);
+        // $this->fakeChannelResponse(expectedChannelId: self::PEWDIEPIE_CHANNEL_ID);
 
         $items = $this->abstractCore
             ->defineEndpoint(YoutubeCore::CHANNELS_ENDPOINT)
@@ -122,60 +134,5 @@ class YoutubeCoreTest extends YoutubeTestCase
                 $item['snippet']['channelId']
             );
         }, $items);
-    }
-
-    /** @test */
-    public function getting_all_playlist_items_by_page_is_ok(): void
-    {
-        $this->markTestSkipped('TO BE DONE');
-
-        /*
-         * nowtech has more then 15 playlists.
-         * this function is testing pagination
-         */
-        $this->assertGreaterThanOrEqual(
-            20,
-            count(
-                $this->abstractCore
-                    ->defineEndpoint(YoutubeCore::PLAYLIST_ITEMS_ENDPOINT)
-                    ->addParams([
-                        'playlistId' => self::NOWTECH_PLAYLIST_ID,
-                        'maxResults' => 15,
-                    ])
-                    ->addParts(['id', 'snippet', 'contentDetails'])
-                    ->run()
-                    ->items()
-            )
-        );
-    }
-
-    /** @test */
-    public function combining_limits_and_max_results(): void
-    {
-        $this->markTestSkipped('TO BE DONE');
-
-        $uploadsId = self::PEWDIEPIE_CHANNEL_ID;
-        $uploadsId[1] = 'U';
-        /*
-         * we are asking for 35 items on each request
-         * we are setting a limit to 60
-         * at the end we should have :
-         * - 2 queries and
-         * - 70 items (2x35)
-         * it's more than 60 so it should stop after 2 queries
-         */
-        $this->abstractCore
-            ->defineEndpoint(YoutubeCore::PLAYLIST_ITEMS_ENDPOINT)
-            ->setLimit(60)
-            ->addParams([
-                'playlistId' => $uploadsId,
-                'maxResults' => 35,
-            ])
-            ->addParts(['id', 'snippet'])
-            ->run()
-        ;
-
-        $this->assertCount(2, $this->abstractCore->queriesUsed());
-        $this->assertCount(70, $this->abstractCore->items());
     }
 }

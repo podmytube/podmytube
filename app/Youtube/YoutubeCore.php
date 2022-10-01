@@ -10,7 +10,7 @@ use App\Exceptions\YoutubeNoResultsException;
 use App\Interfaces\QuotasConsumer;
 use App\Models\ApiKey;
 use App\Traits\YoutubeEndpoints;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 
 abstract class YoutubeCore implements QuotasConsumer
@@ -26,11 +26,8 @@ abstract class YoutubeCore implements QuotasConsumer
 
     protected string $apikey;
 
-    /** @var string */
-    protected $endpoint;
-
-    /** @var array contain the whole response */
-    protected $jsonDecoded = [];
+    protected Response $response;
+    protected string $endpoint;
 
     protected array $items = [];
 
@@ -45,11 +42,19 @@ abstract class YoutubeCore implements QuotasConsumer
 
     /** @var array list of valid queries used */
     protected array $queries = [];
-    protected bool $cacheHasBeenUsed = false;
+    protected string $nextPageToken;
 
-    public function __construct()
+    /**
+     * passing optional Apikey is a way to fix this old getOne crap
+     * I made long ago.
+     */
+    public function __construct(?ApiKey $apiKeyModel = null)
     {
-        $this->apikey = ApiKey::getOne();
+        if ($apiKeyModel === null) {
+            $this->apikey = ApiKey::getOne();
+        } else {
+            $this->apikey = $apiKeyModel->apikey;
+        }
         $this->params['part'] = [];
     }
 
@@ -98,12 +103,15 @@ abstract class YoutubeCore implements QuotasConsumer
     public function run(): static
     {
         do {
-            $rawResults = $this->getRawResults();
+            $this->response = Http::get($this->url());
+            ray($this->url(), $this->response->json());
+            // adding url to the list of queries used
+            $this->queries[] = $this->url();
 
-            // convert json string into a hash table.
-            $this->jsonDecoded = json_decode($rawResults, true);
-
-            if (isset($this->jsonDecoded['error'])) {
+            if (
+                $this->response->failed()
+                || $this->response->json('error') !== null
+            ) {
                 /*
                  * Sometimes, for the same query Youtube is returning a json with
                  * an error and sometimes he is returning a json with no errors and empty
@@ -112,23 +120,23 @@ abstract class YoutubeCore implements QuotasConsumer
                  */
                 $exception = new YoutubeGenericErrorException();
                 $exception->addInformations('url used ' . $this->url());
-                $exception->addInformations('youtube error message ' . $this->jsonDecoded['error']['message']);
-                $exception->addInformations('youtube error code ' . $this->jsonDecoded['error']['code']);
+                $exception->addInformations('youtube error message ' . $this->response->json('error.message'));
+                $exception->addInformations('youtube error code ' . $this->response->json('error.code'));
 
                 throw $exception;
             }
 
-            throw_unless(
-                isset($this->jsonDecoded['items']),
+            throw_if(
+                $this->response->json('items') === null,
                 new YoutubeNoResultsException('No results for ' . $this->url())
             );
 
             // adding them to previous results
-            $this->items = array_merge($this->items, $this->jsonDecoded['items']);
+            $this->items = array_merge($this->items, $this->response->json('items'));
 
             // if response is multi page, prepare next youtube query.
-            if (isset($this->jsonDecoded['nextPageToken'])) {
-                $this->setPageToken($this->jsonDecoded['nextPageToken']);
+            if ($this->response->json('nextPageToken') !== null) {
+                $this->setPageToken($this->response->json('nextPageToken'));
             }
         } while ($this->doWeGetNextPage());
 
@@ -193,12 +201,12 @@ abstract class YoutubeCore implements QuotasConsumer
 
     public function results(): array
     {
-        return $this->jsonDecoded;
+        return $this->response->json();
     }
 
     public function totalResults(): int
     {
-        return $this->jsonDecoded['pageInfo']['totalResults'];
+        return $this->response->json('pageInfo.totalResults');
     }
 
     public function items(): array
@@ -221,11 +229,6 @@ abstract class YoutubeCore implements QuotasConsumer
         return $this->queries;
     }
 
-    public function hasCacheBeingUsed(): bool
-    {
-        return $this->cacheHasBeenUsed === true;
-    }
-
     public function channelId(): string
     {
         return $this->items[0]['snippet']['channelId'];
@@ -242,42 +245,12 @@ abstract class YoutubeCore implements QuotasConsumer
             return false;
         }
 
-        return isset($this->jsonDecoded['nextPageToken']);
+        return isset($this->nextPageToken);
     }
 
     protected function nbItemsGrabbed(): int
     {
         return count($this->items());
-    }
-
-    /**
-     * Return the raw json result.
-     * May come from the cache of from youtube api.
-     */
-    protected function getRawResults(): string
-    {
-        // get it from cache (if any)
-        if (Cache::has($this->cacheKey())) {
-            $this->cacheHasBeenUsed = true;
-
-            return Cache::get($this->cacheKey());
-        }
-        $rawResults = Http::get($this->url())->body();
-        // dump($this->url(), $rawResults);
-        // adding url to the list of queries used
-        $this->queries[] = $this->url();
-
-        // putting results in cache for next time
-        // sometimes (I never reproduced it) youtube api is returning null body
-        // this test exists for those cases
-        if (strlen($rawResults)) {
-            Cache::put($this->cacheKey(), $rawResults, now()->addHour());
-
-            return $rawResults;
-        }
-
-        // strange case when we have nothing.
-        return '';
     }
 
     /**
@@ -292,19 +265,11 @@ abstract class YoutubeCore implements QuotasConsumer
         return $this->nbItemsGrabbed() > 0;
     }
 
-    protected function setPageToken($pageToken): static
+    protected function setPageToken(string $pageToken): static
     {
+        $this->nextPageToken = $pageToken;
         $this->params['pageToken'] = $pageToken;
 
         return $this;
-    }
-
-    protected function cacheKey(): string
-    {
-        $separator = '_';
-
-        return 'youtube' . $separator .
-            $this->endpoint() . $separator .
-            http_build_query($this->params(), '', $separator);
     }
 }

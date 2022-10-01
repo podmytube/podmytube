@@ -17,6 +17,11 @@ trait IsFakingYoutube
         YoutubeTestCase::VIDEOS_INDEX => YoutubeTestCase::VIDEOS_ENDPOINT,
     ];
 
+    protected function fakeTotallyEmptyResponse(): void
+    {
+        Http::fake(['https://www.googleapis.com/youtube/v3/*' => Http::response('', 200)]);
+    }
+
     protected function fakeEmptyChannelResponse(): void
     {
         Http::fake([
