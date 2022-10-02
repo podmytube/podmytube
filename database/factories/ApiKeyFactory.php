@@ -11,7 +11,7 @@ class ApiKeyFactory extends Factory
     public function definition(): array
     {
         return [
-            'apikey' => fake()->regexify('[a-zA-Z0-9-_]{24}'),
+            'apikey' => 'fake_apikey_mxyzptlk',
             'comment' => 'used for test',
             'active' => true,
         ];

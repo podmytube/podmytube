@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Youtube;
 
 use App\Exceptions\YoutubeMediaDoesNotExistException;
+use App\Models\ApiKey;
 use App\Youtube\YoutubeVideo;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
@@ -21,7 +22,7 @@ class YoutubeVideoTest extends YoutubeTestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->seedApiKeys();
+        ApiKey::factory()->create();
     }
 
     /** @test */
