@@ -54,7 +54,7 @@
                     </thead>
                     <tbody>
                         @foreach ($medias as $media)
-                            <tr>
+                            <tr class="@if ($loop->even) bg-gray-200 @endif">
                                 <td class="px-2 py-2">
                                     @if ($media->isUploadedByUser())
                                         <a
@@ -68,14 +68,9 @@
                                     {{ $media->publishedAt() }}
                                 </td>
                                 <td class="text-center">
-                                    @if ($media->isDisabled())
-                                        🔇
-                                    @else
-                                        @include('svg.media_status_' . $media->realStatus, [
-                                            'cssClass' => 'h-6 w-auto inline fill-current',
-                                            'comment' => $media->statusComment(),
-                                        ])
-                                    @endif
+                                    <span title="{{ $media->statusComment() }}"
+                                        class="inline-flex items-center rounded-full bg-gray-900 px-3 py-0.5 text-sm font-medium text-gray-800">
+                                        {{ $media->statusEmoji() }}</span>
                                 </td>
                                 <td class="text-center">
                                     @if ($media->isDisabled())

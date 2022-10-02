@@ -262,7 +262,7 @@ class Media extends Model
 
     public function statusComment()
     {
-        $comments = [
+        return match ($this->status) {
             self::STATUS_NOT_DOWNLOADED => "Episode {$this->title} has not been downloaded yet.",
             self::STATUS_DOWNLOADED => "Episode {$this->title} has been added to your podcast.",
             self::STATUS_TAG_FILTERED => "Episode {$this->title} has been filtered by tag ",
@@ -270,9 +270,20 @@ class Media extends Model
             self::STATUS_NOT_PROCESSED_ON_YOUTUBE => "Episode {$this->title} is not available yet on Youtube (upcoming live ?)",
             self::STATUS_NOT_AVAILABLE_ON_YOUTUBE => "Episode {$this->title} is unknow on Youtube. Did you remove it ?",
             self::STATUS_EXHAUSTED_QUOTA => 'Your quota has been exhausted this month. What about upgrading ?',
-        ];
+        };
+    }
 
-        return $comments[$this->status];
+    public function statusEmoji()
+    {
+        return match ($this->status) {
+            self::STATUS_NOT_DOWNLOADED => '⏳',
+            self::STATUS_DOWNLOADED => '👍',
+            self::STATUS_TAG_FILTERED => '❌',
+            self::STATUS_AGE_FILTERED => '❌',
+            self::STATUS_NOT_PROCESSED_ON_YOUTUBE => '❔',
+            self::STATUS_NOT_AVAILABLE_ON_YOUTUBE => '❓',
+            self::STATUS_EXHAUSTED_QUOTA => '💸',
+        };
     }
 
     public function publishedAt(): string

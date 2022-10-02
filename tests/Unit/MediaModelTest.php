@@ -419,4 +419,42 @@ class MediaModelTest extends TestCase
         $this->assertNotNull($this->media->youtube_id);
         $this->assertEquals($this->media->media_id, $this->media->youtube_id);
     }
+
+    /** @test */
+    public function status_comment_is_fine(): void
+    {
+        $expectedStatus = [
+            Media::STATUS_NOT_DOWNLOADED => "Episode {$this->media->title} has not been downloaded yet.",
+            Media::STATUS_DOWNLOADED => "Episode {$this->media->title} has been added to your podcast.",
+            Media::STATUS_TAG_FILTERED => "Episode {$this->media->title} has been filtered by tag ",
+            Media::STATUS_AGE_FILTERED => "Episode {$this->media->title} is too old to be included to your podcast.",
+            Media::STATUS_NOT_PROCESSED_ON_YOUTUBE => "Episode {$this->media->title} is not available yet on Youtube (upcoming live ?)",
+            Media::STATUS_NOT_AVAILABLE_ON_YOUTUBE => "Episode {$this->media->title} is unknow on Youtube. Did you remove it ?",
+            Media::STATUS_EXHAUSTED_QUOTA => 'Your quota has been exhausted this month. What about upgrading ?',
+        ];
+
+        array_map(function ($status, $expectedComment): void {
+            $this->media->update(['status' => $status]);
+            $this->assertEquals($expectedComment, $this->media->statusComment());
+        }, array_keys($expectedStatus), $expectedStatus);
+    }
+
+    /** @test */
+    public function status_emoji_is_fine(): void
+    {
+        $expectedStatus = [
+            Media::STATUS_NOT_DOWNLOADED => '⏳',
+            Media::STATUS_DOWNLOADED => '👍',
+            Media::STATUS_TAG_FILTERED => '❌',
+            Media::STATUS_AGE_FILTERED => '❌',
+            Media::STATUS_NOT_PROCESSED_ON_YOUTUBE => '❔',
+            Media::STATUS_NOT_AVAILABLE_ON_YOUTUBE => '❓',
+            Media::STATUS_EXHAUSTED_QUOTA => '💸',
+        ];
+
+        array_map(function ($status, $expectedEmoji): void {
+            $this->media->update(['status' => $status]);
+            $this->assertEquals($expectedEmoji, $this->media->statusEmoji());
+        }, array_keys($expectedStatus), $expectedStatus);
+    }
 }

@@ -44,4 +44,13 @@ EOT,
             ]
         );
     }
+
+    public function channel(Channel $channel): static
+    {
+        return $this->state(
+            [
+                'channel_id' => $channel->youtube_id,
+            ]
+        );
+    }
 }
