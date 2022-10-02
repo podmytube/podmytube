@@ -21,16 +21,19 @@ class MonthlyReportMail extends Mailable
     use Queueable;
     use SerializesModels;
 
-    protected Collection $publishedMedias = [];
+    public const DATE_MONTH_YEAR_FORMAT = 'F Y';
+    public Collection $publishedMedias;
+    public string $formattedPeriod;
+    public bool $displayUpgradeMessage = false;
+
+    protected ?Carbon $wantedMonth;
 
     /**
      * Create a monthly report email.
-     *
-     * @param \Carbon\Carbon wanted month (start of month)
      */
-    public function __construct(protected Channel $channel, protected ?Carbon $wantedMonth = null)
+    public function __construct(public Channel $channel, Carbon $wantedMonth = null)
     {
-        $this->wantedMonth = $this->wantedMonth ?? now();
+        $this->wantedMonth = $wantedMonth ?? now();
     }
 
     /**
@@ -40,30 +43,29 @@ class MonthlyReportMail extends Mailable
      */
     public function build()
     {
-        /** formatted period is Month Year (IE : march 2021) */
-        $formattedPeriod = $this->wantedMonth->format(__('config.monthPeriodFormat'));
-        $subject = __('emails.monthlyReport_subject', [
-            'period' => $formattedPeriod,
-            'channel_name' => $this->channel->channel_name,
-        ]);
+        // formatted period is Month Year (IE : march 2021)
+        $this->formattedPeriod = $this->wantedMonth->format(static::DATE_MONTH_YEAR_FORMAT);
+        $this->wantedMonth->startOfMonth();
         $endOfMonth = (clone $this->wantedMonth)->endOfMonth();
-        $this->wantedMonth->startOfMonth()->subDay();
 
         $this->publishedMedias = $this->channel->medias()
-            ->publishedBetween($this->wantedMonth, $endOfMonth)
+            ->whereNotNull('media_id')
             ->orderBy('published_at', 'desc')
+            ->publishedBetween($this->wantedMonth, $endOfMonth)
             ->get()
         ;
+        $this->displayUpgradeMessage = $this->channel->shouldChannelBeUpgraded($this->wantedMonth->month, $this->wantedMonth->year);
 
-        return $this->subject($subject)
-            ->view('emails.monthlyReport')
+        return $this->view('emails.monthlyReport')
+            ->subject($this->getSubject())
             ->with([
-                'mailTitle' => $subject,
-                'formattedPeriod' => $formattedPeriod,
-                'channel' => $this->channel,
-                'publishedMedias' => $this->publishedMedias,
-                'shouldChannelBeUpgraded' => $this->channel->shouldChannelBeUpgraded($this->wantedMonth->month, $this->wantedMonth->year),
+                'mailTitle' => $this->getSubject(),
             ])
         ;
+    }
+
+    public function getSubject(): string
+    {
+        return "Here is your {$this->wantedMonth->format(static::DATE_MONTH_YEAR_FORMAT)} report for {$this->channel->channel_name}";
     }
 }

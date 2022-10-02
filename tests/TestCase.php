@@ -64,16 +64,6 @@ abstract class TestCase extends BaseTestCase
         parent::tearDown();
     }
 
-    /**
-     * Laravel is encoding.
-     * So i'm encoding the same way to be sure tests will stay green.
-     * IE "d'angelo" => "d&#039;angelo".
-     */
-    public function stringEncodingLikeLaravel(string $str): string
-    {
-        return htmlspecialchars($str, ENT_QUOTES | ENT_HTML401);
-    }
-
     public function createCoverFor(Coverable|Channel|Playlist $coverable): Thumb
     {
         $thumb = Thumb::factory()->create([
@@ -185,7 +175,8 @@ abstract class TestCase extends BaseTestCase
             $factory = $factory->grabbedAt(now());
         }
         $medias = $factory->count($numberOfMediasToAdd)
-            ->create(['channel_id' => $channel->channel_id])
+            ->channel($channel)
+            ->create()
         ;
 
         return $medias->count() == 1 ? $medias->first() : $medias;
