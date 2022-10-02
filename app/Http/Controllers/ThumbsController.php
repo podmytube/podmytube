@@ -73,7 +73,7 @@ class ThumbsController extends Controller
         $thumb = $coverable->setCoverFromUploadedFile($uploadedFile);
 
         // dispatching create vignette job
-        CreateVignetteFromThumbJob::dispatch($thumb);
+        CreateVignetteFromThumbJob::dispatchSync($thumb);
 
         // dispatching thumbUpdated event
         ThumbUpdated::dispatch($thumb->coverable);
