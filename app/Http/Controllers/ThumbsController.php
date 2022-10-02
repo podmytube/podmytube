@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Events\ThumbUpdated;
 use App\Http\Requests\ThumbRequest;
 use App\Interfaces\Coverable;
+use App\Jobs\CreateVignetteFromThumbJob;
 use App\Models\Channel;
 use App\Models\Playlist;
 use App\Modules\Vignette;
@@ -71,15 +72,11 @@ class ThumbsController extends Controller
 
         $thumb = $coverable->setCoverFromUploadedFile($uploadedFile);
 
-        Log::notice(__FUNCTION__ . " : {$coverable->nameWithId()} thumb has been updated/created in db");
+        // dispatching create vignette job
+        CreateVignetteFromThumbJob::dispatch($thumb);
 
-        Vignette::fromThumb($thumb)->makeIt()->saveLocally();
-
-        Log::notice(__FUNCTION__ . " : {$coverable->nameWithId()} vignette has been created locally");
-
+        // dispatching thumbUpdated event
         ThumbUpdated::dispatch($thumb->coverable);
-
-        Log::notice(__FUNCTION__ . " : {$coverable->nameWithId()} thumbUpdated event has been dispatched");
 
         return redirect()->route('home')->with('success', 'Your cover has been updated 🎉.');
     }

@@ -5,31 +5,30 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Events\ThumbUpdated;
+use App\Jobs\CreateVignetteFromThumbJob;
+use App\Models\Channel;
 use App\Models\Playlist;
 use App\Models\Thumb;
 use App\Models\User;
-use App\Modules\Vignette;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
-class ThumbControllerTest extends TestCase
+class ThumbsControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var \App\Models\User */
-    protected $user;
-
-    /** @var \App\Models\Channel */
-    protected $channel;
-
-    /** @var \App\Models\Playlist */
-    protected $playlist;
+    protected User $user;
+    protected Channel $channel;
+    protected Playlist $playlist;
 
     public function setUp(): void
     {
@@ -68,6 +67,7 @@ class ThumbControllerTest extends TestCase
     /** @test */
     public function editing_channel_cover_is_denied_to_another_user(): void
     {
+        /** @var Authenticatable $notTheOwner */
         $notTheOwner = User::factory()->create();
         $this->actingAs($notTheOwner)
             ->get(route('channel.cover.edit', $this->channel))
@@ -78,6 +78,7 @@ class ThumbControllerTest extends TestCase
     /** @test */
     public function editing_playlist_cover_is_denied_to_another_user(): void
     {
+        /** @var Authenticatable $notTheOwner */
         $notTheOwner = User::factory()->create();
         $this->actingAs($notTheOwner)
             ->get(route('playlist.cover.edit', $this->playlist))
@@ -88,12 +89,16 @@ class ThumbControllerTest extends TestCase
     /** @test */
     public function updating_channel_cover_is_denied_to_another_user(): void
     {
+        /** @var Authenticatable $notTheOwner */
         $notTheOwner = User::factory()->create();
         $this->followingRedirects()
             ->actingAs($notTheOwner)
-            ->patch(route('channel.cover.update', $this->channel), [
-                'new_thumb_file' => UploadedFile::fake()->image('photo1.jpg', 1400, 1400),
-            ])
+            ->patch(
+                route('channel.cover.update', $this->channel),
+                [
+                    'new_thumb_file' => UploadedFile::fake()->image('photo1.jpg', 1400, 1400),
+                ]
+            )
             ->assertForbidden()
         ;
         // ->assertRedirect(route(''));
@@ -102,6 +107,7 @@ class ThumbControllerTest extends TestCase
     /** @test */
     public function updating_playlist_cover_is_denied_to_another_user(): void
     {
+        /** @var Authenticatable $notTheOwner */
         $notTheOwner = User::factory()->create();
         $this->actingAs($notTheOwner)
             ->patch(route('playlist.cover.update', $this->playlist), [
@@ -115,6 +121,7 @@ class ThumbControllerTest extends TestCase
     public function channel_thumb_should_be_updated(): void
     {
         Event::fake();
+        Bus::fake();
 
         $this->assertNull($this->channel->cover);
 
@@ -128,21 +135,20 @@ class ThumbControllerTest extends TestCase
             ->assertSuccessful()
         ;
 
+        Bus::assertDispatched(CreateVignetteFromThumbJob::class);
         Event::assertDispatched(ThumbUpdated::class);
 
         // once updated, coverable should have a cover
         $this->channel->refresh();
         $this->assertNotNull($this->channel->cover);
         $this->assertInstanceOf(Thumb::class, $this->channel->cover);
-
-        // and a vignette
-        $this->markTestIncomplete('Should check the vignette is the new one');
     }
 
     /** @test */
     public function playlist_thumb_should_be_updated(): void
     {
         Event::fake();
+        Bus::fake();
 
         $this->assertNull($this->playlist->cover);
 
@@ -156,14 +162,12 @@ class ThumbControllerTest extends TestCase
             ->assertSuccessful()
         ;
 
+        Bus::assertDispatched(CreateVignetteFromThumbJob::class);
         Event::assertDispatched(ThumbUpdated::class);
 
         // once updated, coverable should have a cover
         $this->playlist->refresh();
         $this->assertNotNull($this->playlist->cover);
         $this->assertInstanceOf(Thumb::class, $this->playlist->cover);
-
-        // and a vignette
-        $this->markTestIncomplete('Should check the vignette is the new one');
     }
 }

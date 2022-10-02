@@ -25,7 +25,8 @@
 
                 <div class="text-center">
                     <label for="new_thumb_file">Feel free to change your cover.</label><br />
-                    <input type="file" name="new_thumb_file" id="new_thumb_file" class="" />
+                    <input type="file" name="new_thumb_file" id="new_thumb_file" class=""
+                        accept="image/png, image/jpg" />
                 </div>
 
                 <div class="p-6 flex justify-center items-center">

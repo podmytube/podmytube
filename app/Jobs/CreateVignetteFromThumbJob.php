@@ -16,12 +16,14 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-class CreateVignetteFromThumb implements ShouldQueue
+class CreateVignetteFromThumbJob implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
     use Queueable;
     use SerializesModels;
+
+    protected Vignette $vignette;
 
     /**
      * Create a new job instance.
@@ -43,7 +45,7 @@ class CreateVignetteFromThumb implements ShouldQueue
 
         try {
             // chaining vignette creation and upload
-            Vignette::fromThumb($this->srcThumb)->makeIt()->saveLocally();
+            $this->vignette = Vignette::fromThumb($this->srcThumb)->makeIt()->saveLocally();
         } catch (Exception $exception) {
             $message = "Creation of vignette from thumb {{$this->srcThumb}} \\
                     for coverable {$this->srcThumb->coverableLabel()} has failed with message :" .
@@ -52,5 +54,10 @@ class CreateVignetteFromThumb implements ShouldQueue
 
             throw new VignetteCreationFromThumbException($message);
         }
+    }
+
+    public function vignette(): Vignette
+    {
+        return $this->vignette;
     }
 }
