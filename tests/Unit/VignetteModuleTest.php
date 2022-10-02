@@ -12,6 +12,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Image;
 use Tests\TestCase;
+use Tests\Traits\Covers;
 
 /**
  * @internal
@@ -20,6 +21,7 @@ use Tests\TestCase;
  */
 class VignetteModuleTest extends TestCase
 {
+    use Covers;
     use RefreshDatabase;
 
     protected Thumb $thumb;

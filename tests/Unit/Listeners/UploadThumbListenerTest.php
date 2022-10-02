@@ -14,13 +14,16 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
 use InvalidArgumentException;
 use Tests\TestCase;
+use Tests\Traits\Covers;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class UploadThumbListenerTest extends TestCase
 {
+    use Covers;
     use RefreshDatabase;
 
     protected Channel $channel;

@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image as FacadesImage;
 use Intervention\Image\Image as InterventionImage;
 use Tests\TestCase;
+use Tests\Traits\Covers;
 
 /**
  * @internal
@@ -21,6 +22,7 @@ use Tests\TestCase;
  */
 class CreateVignetteFromThumbJobTest extends TestCase
 {
+    use Covers;
     use RefreshDatabase;
 
     protected Thumb $thumb;

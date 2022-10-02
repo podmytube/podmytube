@@ -10,13 +10,16 @@ use App\Models\Thumb;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
+use Tests\Traits\Covers;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class ThumbModelTest extends TestCase
 {
+    use Covers;
     use RefreshDatabase;
 
     protected Thumb $thumb;

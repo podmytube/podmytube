@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Storage;
 use InvalidArgumentException;
 use RuntimeException;
 use Tests\TestCase;
+use Tests\Traits\Covers;
 
 /**
  * @internal
@@ -22,6 +23,7 @@ use Tests\TestCase;
  */
 class TransfertChannelCommandTest extends TestCase
 {
+    use Covers;
     use RefreshDatabase;
 
     protected Channel $fromChannel;

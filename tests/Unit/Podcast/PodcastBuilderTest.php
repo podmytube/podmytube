@@ -11,6 +11,7 @@ use App\Podcast\PodcastBuilder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use Tests\Traits\Covers;
 use Tests\Traits\IsAbleToTestPodcast;
 
 /**
@@ -21,6 +22,7 @@ use Tests\Traits\IsAbleToTestPodcast;
 class PodcastBuilderTest extends TestCase
 {
     use IsAbleToTestPodcast;
+    use Covers;
     use RefreshDatabase;
     use WithFaker;
 
