@@ -48,3 +48,10 @@ if (!function_exists('fixtures_path')) {
         return base_path('tests/Fixtures/' . ltrim($relativePath, '/'));
     }
 }
+
+if (!function_exists('encodeLikeLaravel')) {
+    function encodeLikeLaravel(string $toBeEncoded): string
+    {
+        return htmlspecialchars($toBeEncoded, ENT_QUOTES | ENT_HTML401);
+    }
+}
