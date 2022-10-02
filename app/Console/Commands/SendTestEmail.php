@@ -26,7 +26,7 @@ class SendTestEmail extends Command
 
     /** @var string The name and signature of the console command. */
     protected $signature = <<<'EOT'
-email:test 
+test:email
 {--email=frederick@podmytube.com : email address to send email to}
 {--emailIdToSend= : email template to send}
 EOT;
