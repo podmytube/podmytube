@@ -104,7 +104,7 @@ abstract class YoutubeCore implements QuotasConsumer
     public function run(): static
     {
         do {
-            $this->response = Http::get($this->url());
+            $this->response = Http::timeout(10)->get($this->url());
             // ray($this->url(), $this->response->json());
             // adding url to the list of queries used
             $this->queries[] = $this->url();

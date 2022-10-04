@@ -11,7 +11,7 @@ class ApiKeyFactory extends Factory
     public function definition(): array
     {
         return [
-            'apikey' => 'fake_apikey_mxyzptlk',
+            'apikey' => 'apikey_' . fake()->bothify('???###'),
             'comment' => 'used for test',
             'active' => true,
         ];

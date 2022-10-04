@@ -11,6 +11,7 @@ use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class QuotaModelTest extends TestCase
@@ -81,7 +82,7 @@ class QuotaModelTest extends TestCase
 
         /** checking results */
         $results = Quota::byScript($scriptName);
-        $totalQuotaConsumed = $results->reduce(function ($carry, $QuotaModel) {
+        $totalQuotaConsumed = $results->reduce(function (?int $carry, Quota $QuotaModel) {
             return $carry + $QuotaModel->quota_used;
         });
 
