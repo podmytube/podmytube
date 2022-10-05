@@ -4,12 +4,9 @@ declare(strict_types=1);
 
 namespace App\Exceptions;
 
-use App\Mail\ExceptionEmail;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
-use Symfony\Component\ErrorHandler\ErrorRenderer\HtmlErrorRenderer;
-use Symfony\Component\ErrorHandler\Exception\FlattenException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -19,7 +16,10 @@ class Handler extends ExceptionHandler
      *
      * @var array
      */
-    protected $dontReport = [
+    protected $dontReport = [];
+
+    protected array $dontReportToSentry = [
+        DoNotReportToSentryException::class,
     ];
 
     /**
@@ -35,32 +35,21 @@ class Handler extends ExceptionHandler
     public function report(Throwable $exception): void
     {
         if ($this->shouldReport($exception)) {
-            // send email alert to me
             Log::error($exception->getMessage());
+        }
 
+        if ($this->shouldReportToSentry($exception)) {
             if (app()->bound('sentry')) {
                 // if sentry send it to sentry
                 app('sentry')->captureException($exception);
             }
         }
+
         parent::report($exception);
     }
 
-    /**
-     * Sends an email to the developer about the exception.
-     */
-    public function sendExceptionEmail(Throwable $exceptionReceived): void
+    protected function shouldReportToSentry($exception): bool
     {
-        try {
-            $exception = FlattenException::create($exceptionReceived);
-            $handler = new HtmlErrorRenderer(true); // boolean, true raises debug flag...
-            $css = $handler->getStylesheet();
-            $content = $handler->getBody($exception);
-            Mail::to(config('mail.email_to_warn'))
-                ->queue(new ExceptionEmail(compact('css', 'content')))
-            ;
-        } catch (Throwable $exception) {
-            Log::error($exception);
-        }
+        return is_null(Arr::first($this->dontReportToSentry, fn ($type) => $exception instanceof $type));
     }
 }

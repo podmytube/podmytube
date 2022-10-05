@@ -1,16 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
+use App\Exceptions\DoNotReportToSentryException;
 use Illuminate\Console\Command;
 use InvalidArgumentException;
 
 class ThrowTestExceptionCommand extends Command
 {
-    /** @var string $signature */
+    /** @var string */
     protected $signature = 'throw:exception';
 
-    /** @var string $description */
+    /** @var string */
     protected $description = 'Will send an exception to check if log/email is running fine.';
 
     /**
@@ -20,6 +23,7 @@ class ThrowTestExceptionCommand extends Command
      */
     public function handle()
     {
-        throw new InvalidArgumentException("Don't panic !!! This is a test exception.");
+        report(new InvalidArgumentException("Don't panic !!! This is a test exception."));
+        report(new DoNotReportToSentryException('This exception should not be sent to sentry.'));
     }
 }
