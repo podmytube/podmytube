@@ -9,19 +9,16 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class ChannelIsRegistered extends Mailable
+class ChannelIsRegisteredMail extends Mailable
 {
     use Queueable;
     use SerializesModels;
 
-    protected $channel;
-
     /**
      * Create a new message instance.
      */
-    public function __construct(Channel $channel)
+    public function __construct(public Channel $channel)
     {
-        $this->channel = $channel;
     }
 
     /**
@@ -31,11 +28,6 @@ class ChannelIsRegistered extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.channelRegistered')
-            ->with([
-                'user' => $this->channel->user,
-                'channel' => $this->channel,
-            ])
-        ;
+        return $this->view('emails.channelRegistered');
     }
 }

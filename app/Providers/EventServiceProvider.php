@@ -4,8 +4,16 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Events\ChannelRegistered;
+use App\Events\ChannelUpdated;
+use App\Events\MediaUploadedByUser;
+use App\Events\PodcastUpdated;
+use App\Events\ThumbUpdated;
 use App\Listeners\UploadPodcastListener;
 use App\Listeners\UploadThumbListener;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Auth\Events\Verified;
+use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -16,25 +24,29 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        \App\Events\ChannelRegistered::class => [
+        ChannelRegistered::class => [
             \App\Listeners\UploadPodcastListener::class,
             \App\Listeners\SendChannelIsRegisteredEmail::class,
         ],
-        \App\Events\ChannelUpdated::class => [
+        ChannelUpdated::class => [
             \App\Listeners\UploadPodcastListener::class,
         ],
-        \App\Events\MediaUploadedByUser::class => [
+        MediaUploadedByUser::class => [
             \App\Listeners\UploadMediaListener::class,
             \App\Listeners\UploadPodcastListener::class,
         ],
-        // thumb has been updated
-        \App\Events\ThumbUpdated::class => [
+        ThumbUpdated::class => [
             UploadThumbListener::class,
             UploadPodcastListener::class,
         ],
-        // feed has been updated
-        \App\Events\PodcastUpdated::class => [
+        PodcastUpdated::class => [
             \App\Listeners\UploadPodcastListener::class,
+        ],
+        Registered::class => [
+            SendEmailVerificationNotification::class,
+        ],
+        Verified::class => [
+            SendEmailVerificationNotification::class,
         ],
     ];
 

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Mail\ChannelHasReachedItsLimitsMail;
-use App\Mail\ChannelIsRegistered;
+use App\Mail\ChannelIsRegisteredMail;
 use App\Mail\MonthlyReportMail;
 use App\Mail\WelcomeToPodmytube;
 use App\Models\Channel;
@@ -87,7 +87,7 @@ EOT;
                     break;
 
                 case 2:
-                    $mailable = new ChannelIsRegistered($this->channel);
+                    $mailable = new ChannelIsRegisteredMail($this->channel);
 
                     break;
 

@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\ThumbsController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 Route::get('test', function () {
     return view('test');
@@ -137,5 +138,21 @@ Route::domain('dashboard.' . config('app.domain'))->group(function (): void {
         Route::get('/{user}/impersonate', 'UsersController@impersonate')->name('users.impersonate');
         Route::get('/leave-impersonate', 'UsersController@leaveImpersonate')->name('users.leave-impersonate');
         Route::resource('users', 'UsersController')->only(['index']);
+
+        // =======================================
+        // User should verify email
+        Route::get('/email/verify', function () { return view('auth.verify-email'); })->name('verification.notice');
+
+        Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+            $request->fulfill();
+            
+            return redirect(route('home'));
+        })->middleware(['signed'])->name('verification.verify');
+
+        Route::post('/email/verification-notification', function (Request $request) {
+            $request->user()->sendEmailVerificationNotification();
+
+            return back()->with('message', 'Verification link sent!');
+        })->middleware(['throttle:6,1'])->name('verification.send');
     });
 });

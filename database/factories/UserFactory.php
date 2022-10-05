@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -21,6 +22,15 @@ class UserFactory extends Factory
             'superadmin' => false,
             'stripe_id' => null,
             'dont_warn_exceeding_quota' => false,
+            'referral_code' => fake()->bothify('????####'),
+            'email_verified_at' => null,
         ];
+    }
+
+    public function verifiedAt(Carbon $verifiedAt): static
+    {
+        return $this->state([
+            'email_verified_at' => $verifiedAt,
+        ]);
     }
 }

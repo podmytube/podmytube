@@ -6,11 +6,14 @@ namespace Tests\Feature;
 
 use App\Http\Controllers\Auth\RegisterController;
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class RegisterControllerTest extends TestCase
@@ -19,6 +22,7 @@ class RegisterControllerTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider invalid_firstname_provider
      * @dataProvider invalid_lastname_provider
      * @dataProvider invalid_email_provider
@@ -39,10 +43,13 @@ class RegisterControllerTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider valid_data_provider
      */
     public function valid_data_should_succeed(array $formData): void
     {
+        Event::fake(Registered::class);
+
         $this->followingRedirects()
             ->post(route('register'), $formData)
             ->assertSessionHasNoErrors()
@@ -50,11 +57,18 @@ class RegisterControllerTest extends TestCase
                 RegisterController::SUCCESS_MESSAGE,
             ])
         ;
-        $userCreated = User::byEmail($formData['email']);
-        $this->assertNotNull($userCreated);
-        $this->assertInstanceOf(User::class, $userCreated);
-        $this->assertEquals($formData['firstname'], $userCreated->firstname);
-        $this->assertEquals($formData['lastname'], $userCreated->lastname);
+
+        $user = User::byEmail($formData['email']);
+        $this->assertNotNull($user);
+        $this->assertInstanceOf(User::class, $user);
+        $this->assertEquals($formData['firstname'], $user->firstname);
+        $this->assertEquals($formData['lastname'], $user->lastname);
+        $this->assertEquals($formData['email'], $user->email);
+        $this->assertNotEquals($formData['password'], $user->password); // should be somewhat encrypted !!!
+        $this->assertNotNull($user->referral_code, 'User should have one referral code.');
+        $this->assertEquals(8, strlen($user->referral_code));
+
+        Event::assertDispatched(Registered::class);
     }
 
     /**

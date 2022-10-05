@@ -1,26 +1,32 @@
 @extends('emails.layout')
 
-@section('mailTitle', '' )
+@section('mailTitle', '')
 
-@section ('content')
-
-
-<h1> {{ __('emails.registered_h1_success', ['name' => $user->name]) }}</h1>
-
-<p> {!! __('emails.registered_p_channel_is_now_registered', ['channel_id' => $channel->title()]) !!} </p>
-<p> {!! __('emails.registered_p_in_a_few_minutes') !!} </p>
+@section('content')
 
 
-<p> {!! __('emails.registered_p_one_last_word', ['name' => $channel->channel_id]) !!} </p>
+    <h1> Congratulations {{ $channel->user->firstname }}</h1>
 
-<p>
-    <a href="{{ route ('channel.edit', $channel) }}" class="button bgsuccess"> 
-        {{ __('emails.registered_a_select_a_category') }}
-    </a>
+    <p> Channel <b>{{ $channel->title() }}</b> is now registered.</p>
+    <p> In a few minutes, you channel will be validated then your podcast will include your last episodes. </p>
 
-    <a href="{{ route ('channel.cover.edit', $channel) }}" class="button bgsuccess">  
-        @lang('emails.registered_a_add_an_illustration') 
-    </a>
-</p>
+
+    <p>
+        <b>One last word</b>. If you want to register your podcast on iTunes (You should !) you will have to :
+    <ul>
+        <li>Select your podcast category </li>
+        <li>Add a podcast illustration (1400x1400 minimum 3000x3000 maximum)</li>
+    </ul>
+    </p>
+
+    <p>
+        <a href="{{ route('channel.edit', $channel) }}" class="button bgsuccess">
+            Select your podcast category
+        </a>
+
+        <a href="{{ route('channel.cover.edit', $channel) }}" class="button bgsuccess">
+            Add your illustration
+        </a>
+    </p>
 
 @endsection

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,8 +15,19 @@ use Lab404\Impersonate\Models\Impersonate;
 
 /**
  * User Model Class.
+ *
+ * @property string $firstname
+ * @property string $lastname
+ * @property string $email
+ * @property string $password
+ * @property string $remember_token
+ * @property bool   $newsletter
+ * @property bool   $superadmin
+ * @property string $stripe_id
+ * @property bool   $dont_warn_exceeding_quota
+ * @property string $referral_code
  */
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use Impersonate;
     use HasFactory;
@@ -105,5 +117,10 @@ class User extends Authenticatable
     public function wantToBeWarnedForExceedingQuota(): bool
     {
         return $this->dont_warn_exceeding_quota === false;
+    }
+
+    public static function createReferralCode(): string
+    {
+        return fake()->bothify('????####');
     }
 }

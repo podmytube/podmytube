@@ -12,6 +12,7 @@ use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class UserModelTest extends TestCase

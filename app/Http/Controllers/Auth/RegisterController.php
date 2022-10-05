@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Mail\WelcomeToPodmytube;
 use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
@@ -52,7 +50,7 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
-        $data_to_valid = [
+        $dataToValid = [
             'firstname' => 'required|string|max:255',
             'lastname' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -62,24 +60,23 @@ class RegisterController extends Controller
 
         // if in dev mode there's no captcha displayed
         if (App::environment('production')) {
-            $data_to_valid['g-recaptcha-response'] = 'required|captcha';
+            $dataToValid['g-recaptcha-response'] = 'required|captcha';
         }
 
-        return Validator::make($data, $data_to_valid);
+        return Validator::make($data, $dataToValid);
     }
 
     /**
      * Create a new user instance after a valid registration.
-     *
-     * @return \App\Models\User
      */
-    protected function create(array $data)
+    protected function create(array $data): User
     {
         return User::create([
             'firstname' => $data['firstname'],
             'lastname' => $data['lastname'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
+            'referral_code' => User::createReferralCode(),
         ]);
     }
 
@@ -93,6 +90,5 @@ class RegisterController extends Controller
     protected function registered(Request $request, User $user)
     {
         $request->session()->flash('success', self::SUCCESS_MESSAGE);
-        Mail::to($user)->send(new WelcomeToPodmytube($user));
     }
 }
