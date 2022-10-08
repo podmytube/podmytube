@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\Traits\BaseCommand;
 use App\Exceptions\ChannelHasReachedItsQuotaException;
 use App\Factories\DownloadMediaFactory;
 use App\Models\Channel;
@@ -20,6 +21,8 @@ use Illuminate\Support\Facades\Log;
  */
 class DownloadVideosByPeriodCommand extends Command
 {
+    use BaseCommand;
+
     /** @var string */
     protected $signature = 'download:channels {--period=}';
 
@@ -36,6 +39,8 @@ class DownloadVideosByPeriodCommand extends Command
 
             return 0;
         }
+
+        $this->prologue();
 
         $periodOption = $this->option('period') ? Carbon::createFromFormat('Y-m', $this->option('period')) : Carbon::now();
         $period = PeriodsHelper::create($periodOption->month, $periodOption->year);
@@ -75,7 +80,7 @@ class DownloadVideosByPeriodCommand extends Command
                     $message = "There is no ungrabbed medias for {$channel->nameWithId()} between " .
                         "{$period->startDate()} and {$period->endDate()}.";
                     $this->comment($message, 'v');
-                    Log::debug($message);
+                    Log::notice($message);
 
                     return;
                 }
@@ -85,11 +90,13 @@ class DownloadVideosByPeriodCommand extends Command
                     DownloadMediaFactory::media($media, $this->getOutput()->isVerbose())->run();
                 });
             } catch (ChannelHasReachedItsQuotaException $exception) {
-                Log::info($exception->getMessage());
+                Log::notice($exception->getMessage());
             } catch (Exception $exception) {
                 Log::error($exception->getMessage());
             }
         });
+
+        $this->epilogue();
 
         return 0;
     }

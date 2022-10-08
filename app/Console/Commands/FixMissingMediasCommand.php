@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\Traits\BaseCommand;
+use App\Exceptions\NotImplementedException;
 use App\Factories\LineLogParserFactory;
 use App\Jobs\DownloadMediaJob;
 use App\Models\Media;
@@ -14,6 +16,8 @@ use Spatie\Ssh\Ssh;
 
 class FixMissingMediasCommand extends Command
 {
+    use BaseCommand;
+
     /**
      * The name and signature of the console command.
      *
@@ -30,16 +34,16 @@ class FixMissingMediasCommand extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
-    public function handle()
+    public function handle(): int
     {
+        throw new NotImplementedException('Should be reworked before launched.');
         if (!ServerRole::isWorker()) {
             $this->info('This server is not a worker.', 'v');
 
             return 0;
         }
+        $this->prologue();
 
         $remoteCommandToBeRun = 'docker logs --since=' . $this->argument('duration') . ' ' . config('app.audio_container_name') . ' | grep 404';
         $this->info("Remote command to be run : {$remoteCommandToBeRun}", 'v');
@@ -67,6 +71,8 @@ class FixMissingMediasCommand extends Command
         array_map(function (string $lineLog): void {
             $this->processLineLog($lineLog);
         }, $lineLogs);
+
+        $this->epilogue();
 
         return 0;
     }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\Traits\BaseCommand;
 use App\Jobs\MediaCleaning;
 use App\Models\Media;
 use App\Models\Plan;
@@ -12,8 +13,9 @@ use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
 
-class CleanFreeChannelMedias extends Command
+class CleanFreeChannelMediasCommand extends Command
 {
+    use BaseCommand;
     public const RETENTION_PERIOD_IN_MONTH = 4;
 
     /** @var string The name and signature of the console command. */
@@ -35,6 +37,8 @@ class CleanFreeChannelMedias extends Command
 
             return 0;
         }
+
+        $this->prologue();
 
         /**
          * Date before we soft deletes free channels episodes.
@@ -59,6 +63,8 @@ class CleanFreeChannelMedias extends Command
         $mediasToDelete->each(function ($media): void {
             MediaCleaning::dispatch($media);
         });
+
+        $this->epilogue();
 
         return 0;
     }

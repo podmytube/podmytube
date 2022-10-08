@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\Traits\BaseCommand;
 use App\Models\Channel;
 use App\Models\Media;
 use App\Models\Plan;
@@ -19,6 +20,8 @@ use Tests\TestCase;
 
 class DownloadVideoByMediaIdCommand extends Command
 {
+    use BaseCommand;
+
     /** @var string */
     protected $signature = 'download:media {media_id}';
 
@@ -35,6 +38,7 @@ class DownloadVideoByMediaIdCommand extends Command
 
             return 0;
         }
+        $this->prologue();
 
         $media = Media::byMediaId($this->argument('media_id'));
         if ($media == null) {
@@ -86,6 +90,8 @@ class DownloadVideoByMediaIdCommand extends Command
         } catch (Exception $exception) {
             $this->error($exception->getMessage(), 'v');
         }
+
+        $this->epilogue();
 
         return 0;
     }

@@ -36,6 +36,8 @@ class UpdateChannelCommand extends Command
             return 0;
         }
 
+        $this->prologue();
+
         if ($this->option('limit') === null) {
             $message = "Limit specified is not valid. If you specify --limit, you should use a numeric value IE : '--limit 10' ";
             $this->error($message);
@@ -116,6 +118,8 @@ class UpdateChannelCommand extends Command
             );
         }
 
-        return 0;
+        $this->epilogue();
+
+        return Command::SUCCESS;
     }
 }

@@ -10,14 +10,13 @@ use App\Models\Media;
 use App\Models\Plan;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
-use Tests\TestCase;
 
 /**
  * @internal
  *
  * @coversNothing
  */
-class LastMediaPublishedCheckerTest extends TestCase
+class LastMediaPublishedCheckerTest extends CommandTestCase
 {
     use RefreshDatabase;
 

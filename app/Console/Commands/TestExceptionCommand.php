@@ -8,10 +8,10 @@ use App\Exceptions\DoNotReportToSentryException;
 use Illuminate\Console\Command;
 use InvalidArgumentException;
 
-class ThrowTestExceptionCommand extends Command
+class TestExceptionCommand extends Command
 {
     /** @var string */
-    protected $signature = 'throw:exception';
+    protected $signature = 'test:exception';
 
     /** @var string */
     protected $description = 'Will send an exception to check if log/email is running fine.';

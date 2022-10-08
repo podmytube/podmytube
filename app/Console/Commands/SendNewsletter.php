@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\Traits\BaseCommand;
 use App\Mail\Newsletter;
 use App\Models\User;
 use Illuminate\Console\Command;
@@ -12,6 +13,8 @@ use Illuminate\Support\Facades\Storage;
 
 class SendNewsletter extends Command
 {
+    use BaseCommand;
+
     /** @var string The name and signature of the console command. */
     protected $signature = 'email:newsletter';
 
@@ -30,15 +33,16 @@ class SendNewsletter extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): int
     {
+        $this->prologue();
         $this->availableNewsletters();
 
         $newsletterToSend = $this->askUserWhichOneToSend();
         if ($newsletterToSend === false) {
             $this->error('This newsletter does not exist.');
 
-            return false;
+            return 1;
         }
 
         /**
@@ -57,6 +61,10 @@ class SendNewsletter extends Command
             "{$users->count()} newsletters were successfully queued.",
             'v'
         );
+
+        $this->epilogue();
+
+        return 0;
     }
 
     protected function askUserWhichOneToSend()

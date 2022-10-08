@@ -36,7 +36,7 @@ class GetPlaylistsCommand extends Command
 
             return 0;
         }
-
+        $this->prologue();
         if ($this->argument('channel_id')) {
             $channels = Channel::query()
                 ->where('channel_id', '=', $this->argument('channel_id'))
@@ -74,6 +74,8 @@ class GetPlaylistsCommand extends Command
                 );
             }, $playlists);
         });
+
+        $this->epilogue();
 
         return 0;
     }

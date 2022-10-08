@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\Traits\BaseCommand;
 use App\Factories\GoogleSpreadsheetFactory;
 use App\Models\User;
 use App\Modules\ServerRole;
@@ -14,6 +15,8 @@ use Illuminate\Console\Command;
  */
 class UpdateEmailSpreadsheetCommand extends Command
 {
+    use BaseCommand;
+
     /**
      * The name and signature of the console command.
      *
@@ -39,6 +42,7 @@ class UpdateEmailSpreadsheetCommand extends Command
             return 0;
         }
 
+        $this->prologue();
         $this->info('Updating users spreadsheet', 'v');
 
         /*
@@ -70,6 +74,8 @@ class UpdateEmailSpreadsheetCommand extends Command
 
         $this->comment('Spreadsheet updated with success.', 'v');
 
-        return 0;
+        $this->epilogue();
+
+        return Command::SUCCESS;
     }
 }

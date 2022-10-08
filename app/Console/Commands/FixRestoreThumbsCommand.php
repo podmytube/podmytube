@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Exceptions\NotImplementedException;
 use App\Exceptions\SshConnectionFailedException;
 use App\Models\Channel;
 use App\Models\Thumb;
@@ -31,9 +32,7 @@ class FixRestoreThumbsCommand extends Command
      */
     public function handle(): int
     {
-        $this->error('you should filter vignettes before using it.');
-
-        return 1;
+        throw new NotImplementedException('you should do something for vignettes before.');
         if (!ServerRole::isWorker()) {
             $this->info('This server is not a worker.', 'v');
 

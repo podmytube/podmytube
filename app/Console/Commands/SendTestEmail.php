@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\Traits\BaseCommand;
 use App\Mail\ChannelHasReachedItsLimitsMail;
 use App\Mail\ChannelIsRegisteredMail;
 use App\Mail\MonthlyReportMail;
-use App\Mail\WelcomeToPodmytube;
+use App\Mail\WelcomeToPodmytubeMail;
 use App\Models\Channel;
 use App\Models\Media;
 use App\Models\Plan;
@@ -22,6 +23,8 @@ use InvalidArgumentException;
 
 class SendTestEmail extends Command
 {
+    use BaseCommand;
+
     protected const DEFAULT_EMAIL = 'frederick@podmytube.com';
 
     /** @var string The name and signature of the console command. */
@@ -66,6 +69,8 @@ EOT;
      */
     public function handle(): int
     {
+        $this->prologue();
+
         // if not restarted
         Artisan::call('queue:restart');
 
@@ -82,7 +87,7 @@ EOT;
 
             switch ($this->emailIdToSend) {
                 case 1:
-                    $mailable = new WelcomeToPodmytube($this->user);
+                    $mailable = new WelcomeToPodmytubeMail($this->user);
 
                     break;
 
@@ -117,13 +122,12 @@ EOT;
                 $this->availableEmails[$this->emailIdToSend]['label'] .
                 "\" has been queued to be sent to {{$this->user->email}}."
             );
-
-            return 0;
         } catch (Exception $exception) {
             $this->error($exception->getMessage());
-
-            return 1;
         }
+        $this->epilogue();
+
+        return 0;
     }
 
     protected function fakeUser(): void

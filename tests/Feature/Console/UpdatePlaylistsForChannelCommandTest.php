@@ -9,14 +9,14 @@ use App\Models\Channel;
 use App\Models\Playlist;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use RuntimeException;
-use Tests\TestCase;
 use Tests\Traits\IsFakingYoutube;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
-class UpdatePlaylistsForChannelCommandTest extends TestCase
+class UpdatePlaylistsForChannelCommandTest extends CommandTestCase
 {
     use IsFakingYoutube;
     use RefreshDatabase;

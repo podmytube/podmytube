@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Console\Commands\Traits\BaseCommand;
+use App\Exceptions\UnknownChannelException;
+use App\Exceptions\YoutubeChannelHasNoPublicMediaException;
 use App\Models\Channel;
 use App\Models\Media;
 use App\Youtube\YoutubeChannelVideos;
@@ -37,26 +39,24 @@ class StatusChannelCommand extends Command
      */
     public function handle()
     {
+        $this->prologue();
+
         try {
             $channel = Channel::byChannelId($this->argument('channel_id'));
 
             // no channel to refresh => nothing to do
             if ($channel === null) {
                 $message = "There is no channel with this channel_id ({$this->argument('channel_id')})";
-                $this->error($message);
-                Log::error($message);
 
-                return 1;
+                throw new UnknownChannelException($message);
             }
 
             $factory = YoutubeChannelVideos::forChannel($channel->channel_id);
             $nbVideos = count($factory->videos());
             if ($nbVideos <= 0) {
                 $message = "This channel ({$this->argument('channel_id')}) seems to have no videos.";
-                $this->error($message);
-                Log::error($message);
 
-                return 1;
+                throw new YoutubeChannelHasNoPublicMediaException($message);
             }
 
             // for each channel video
@@ -94,11 +94,15 @@ class StatusChannelCommand extends Command
                 $outputTable
             );
 
-            return 0;
+            $errCode = 0;
         } catch (Exception $exception) {
             $this->error($exception->getMessage(), 'v');
-
-            return 1;
+            Log::error($exception->getMessage());
+            $errCode = 1;
         }
+
+        $this->epilogue();
+
+        return $errCode;
     }
 }

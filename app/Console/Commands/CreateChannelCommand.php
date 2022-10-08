@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\Traits\BaseCommand;
 use App\Factories\CreateChannelFactory;
 use App\Models\Plan;
 use App\Models\Subscription;
@@ -14,6 +15,8 @@ use RuntimeException;
 
 class CreateChannelCommand extends Command
 {
+    use BaseCommand;
+
     /**
      * The name and signature of the console command.
      *
@@ -35,6 +38,8 @@ class CreateChannelCommand extends Command
      */
     public function handle()
     {
+        $this->prologue();
+
         try {
             $this->line('');
             $userId = $this->option('userId');

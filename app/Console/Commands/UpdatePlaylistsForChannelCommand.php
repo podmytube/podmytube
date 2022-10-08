@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\Traits\BaseCommand;
 use App\Factories\UploadPodcastFactory;
 use App\Models\Channel;
 use App\Models\Playlist;
@@ -12,6 +13,8 @@ use Illuminate\Console\Command;
 
 class UpdatePlaylistsForChannelCommand extends Command
 {
+    use BaseCommand;
+
     /**
      * The name and signature of the console command.
      *
@@ -39,6 +42,8 @@ class UpdatePlaylistsForChannelCommand extends Command
             return 0;
         }
 
+        $this->prologue();
+
         $channelToUpdate = Channel::byChannelId($this->argument('channel_id'));
 
         // no channel to refresh => nothing to do
@@ -65,7 +70,8 @@ class UpdatePlaylistsForChannelCommand extends Command
             $this->comment("Playlist {$playlist->podcastTitle()} has been successfully updated.", 'v');
             $this->info("You can check it here : {$playlist->podcastUrl()}", 'v');
         });
+        $this->epilogue();
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

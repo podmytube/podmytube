@@ -13,7 +13,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use InvalidArgumentException;
 use RuntimeException;
-use Tests\TestCase;
 use Tests\Traits\Covers;
 
 /**
@@ -21,7 +20,7 @@ use Tests\Traits\Covers;
  *
  * @coversNothing
  */
-class TransfertChannelCommandTest extends TestCase
+class TransfertChannelCommandTest extends CommandTestCase
 {
     use Covers;
     use RefreshDatabase;

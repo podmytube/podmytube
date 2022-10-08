@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\Traits\BaseCommand;
 use App\Models\Post;
 use App\Modules\ServerRole;
 use App\Sitemap\Sitemap;
@@ -15,6 +16,8 @@ use Illuminate\Console\Command;
  */
 class UpdateSitemapCommand extends Command
 {
+    use BaseCommand;
+
     /**
      * The name and signature of the console command.
      *
@@ -41,6 +44,7 @@ class UpdateSitemapCommand extends Command
 
             return 0;
         }
+        $this->prologue();
 
         $this->info('Updating sitemap', 'v');
 
@@ -57,7 +61,9 @@ class UpdateSitemapCommand extends Command
 
         $this->comment('Sitemap {' . public_path('sitemap.xml') . '} updated with success.', 'v');
 
-        return 0;
+        $this->epilogue();
+
+        return Command::SUCCESS;
     }
 
     protected function addPosts(): void

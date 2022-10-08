@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\Traits\BaseCommand;
 use App\Models\Channel;
 use App\Models\Media;
 use App\Modules\PeriodsHelper;
@@ -13,6 +14,8 @@ use Illuminate\Console\Command;
 
 class YoutubeVideoTagsForChannelCommand extends Command
 {
+    use BaseCommand;
+
     /**
      * The name and signature of the console command.
      *
@@ -33,6 +36,8 @@ class YoutubeVideoTagsForChannelCommand extends Command
      */
     public function handle(): int
     {
+        $this->prologue();
+
         $channel = Channel::byChannelId($this->argument('channelId'));
         if (!$channel) {
             $this->error("There is no registered channel with this id ({$this->argument('channelId')}).");
@@ -90,6 +95,8 @@ class YoutubeVideoTagsForChannelCommand extends Command
         );
         $this->line('');
 
-        return 0;
+        $this->epilogue();
+
+        return Command::SUCCESS;
     }
 }

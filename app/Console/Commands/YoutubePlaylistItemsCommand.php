@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\Traits\BaseCommand;
 use App\Modules\ServerRole;
 use App\Youtube\YoutubePlaylistItems;
 use Carbon\Carbon;
@@ -11,6 +12,8 @@ use Illuminate\Console\Command;
 
 class YoutubePlaylistItemsCommand extends Command
 {
+    use BaseCommand;
+
     /**
      * The name and signature of the console command.
      *
@@ -36,6 +39,7 @@ class YoutubePlaylistItemsCommand extends Command
             return 0;
         }
 
+        $this->prologue();
         $this->info('===========================================');
         $this->info("Getting playlist items for {$this->argument('playlistId')}");
         $this->info("options : limit {$this->option('limit')}");
@@ -58,6 +62,8 @@ class YoutubePlaylistItemsCommand extends Command
             $this->line("{$item['contentDetails']['videoId']} - {$publishedAt} - {$item['snippet']['title']}");
         }, $factory->items());
 
-        return 0;
+        $this->epilogue();
+
+        return Command::SUCCESS;
     }
 }

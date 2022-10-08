@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\Traits\BaseCommand;
 use App\Models\Media;
 use App\Youtube\YoutubeVideo;
 use Illuminate\Console\Command;
 
 class YoutubeVideoCommand extends Command
 {
+    use BaseCommand;
+
     /**
      * The name and signature of the console command.
      *
@@ -29,6 +32,8 @@ class YoutubeVideoCommand extends Command
      */
     public function handle(): int
     {
+        $this->prologue();
+
         $this->info('===========================================');
         $this->info("Getting details on video {$this->argument('videoId')}");
         $this->info('===========================================');
@@ -58,6 +63,8 @@ class YoutubeVideoCommand extends Command
         }
         $this->info('Url : ' . Media::YoutubeUrl($this->argument('videoId')));
 
-        return 0;
+        $this->epilogue();
+
+        return Command::SUCCESS;
     }
 }

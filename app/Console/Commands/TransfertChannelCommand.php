@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\Traits\BaseCommand;
 use App\Models\Category;
 use App\Models\Channel;
 use App\Models\Media;
@@ -17,6 +18,8 @@ use InvalidArgumentException;
 
 class TransfertChannelCommand extends Command
 {
+    use BaseCommand;
+
     protected $signature = 'transfert:channel {from_channel_id} {dest_channel_id} {--user_id} {--plan_id} {--copy}';
     protected $description = 'transfer one channel';
 
@@ -25,6 +28,7 @@ class TransfertChannelCommand extends Command
 
     public function handle()
     {
+        $this->prologue();
         // obtain channels from DB
         $this->fromChannel = Channel::byChannelId($this->argument('from_channel_id'));
         $this->destChannel = Channel::byChannelId($this->argument('dest_channel_id'));
@@ -97,6 +101,8 @@ class TransfertChannelCommand extends Command
                 ])
             ;
         }
+
+        $this->epilogue();
 
         return 0;
     }

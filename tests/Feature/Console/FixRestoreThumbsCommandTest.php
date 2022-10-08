@@ -7,13 +7,13 @@ namespace Tests\Feature\Console;
 use App\Models\Channel;
 use App\Models\Thumb;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
-class FixRestoreThumbsCommandTest extends TestCase
+class FixRestoreThumbsCommandTest extends CommandTestCase
 {
     use RefreshDatabase;
 

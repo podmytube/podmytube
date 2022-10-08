@@ -56,4 +56,9 @@ EOD,
     {
         return $this->state(['language_id' => $language->id]);
     }
+
+    public function active(bool $active = true): static
+    {
+        return $this->state(['active' => $active]);
+    }
 }

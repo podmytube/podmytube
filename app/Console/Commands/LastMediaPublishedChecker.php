@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\Traits\BaseCommand;
 use App\Exceptions\NoActiveChannelException;
 use App\Exceptions\YoutubeNoResultsException;
 use App\Mail\ChannelIsInTroubleWarningMail;
@@ -16,6 +17,8 @@ use Illuminate\Support\Facades\Mail;
 
 class LastMediaPublishedChecker extends Command
 {
+    use BaseCommand;
+
     public const NB_HOURS_AGO = 6;
 
     protected Collection $channelsToCheck;
@@ -48,6 +51,8 @@ class LastMediaPublishedChecker extends Command
 
             return 0;
         }
+
+        $this->prologue();
 
         // get active channels
         $this->channelsToCheck = Channel::active()->get();
@@ -87,6 +92,8 @@ class LastMediaPublishedChecker extends Command
             ;
         }
         $this->info("It's all folks.", 'v');
+
+        $this->epilogue();
 
         return 0;
     }

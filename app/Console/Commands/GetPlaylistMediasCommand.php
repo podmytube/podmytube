@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\Traits\BaseCommand;
 use App\Models\Media;
 use App\Models\Playlist;
 use App\Modules\ServerRole;
@@ -14,6 +15,8 @@ use Illuminate\Support\Facades\Log;
 
 class GetPlaylistMediasCommand extends Command
 {
+    use BaseCommand;
+
     /**
      * The name and signature of the console command.
      *
@@ -40,6 +43,7 @@ class GetPlaylistMediasCommand extends Command
 
             return 0;
         }
+        $this->prologue();
 
         /**
          * get active playlists.
@@ -89,6 +93,8 @@ class GetPlaylistMediasCommand extends Command
 
             Log::notice("Playlist {$playlist->youtube_playlist_id} updated with {$nbVideosToKeep} videos.");
         });
+
+        $this->epilogue();
 
         return 0;
     }

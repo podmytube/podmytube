@@ -6,14 +6,13 @@ namespace Tests\Feature\Console;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
 /**
  * @internal
  *
  * @coversNothing
  */
-class UserGenerateReferralCodeCommandTest extends TestCase
+class UserGenerateReferralCodeCommandTest extends CommandTestCase
 {
     use RefreshDatabase;
 

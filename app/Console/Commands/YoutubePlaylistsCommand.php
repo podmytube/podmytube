@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\Traits\BaseCommand;
 use App\Modules\ServerRole;
 use App\Youtube\YoutubePlaylists;
 use Illuminate\Console\Command;
 
 class YoutubePlaylistsCommand extends Command
 {
+    use BaseCommand;
+
     /**
      * The name and signature of the console command.
      *
@@ -34,6 +37,7 @@ class YoutubePlaylistsCommand extends Command
 
             return 0;
         }
+        $this->prologue();
 
         $this->info('===========================================');
         $this->info("Getting playlists for {$this->argument('channelId')}");
@@ -50,6 +54,8 @@ class YoutubePlaylistsCommand extends Command
             $this->line("Playlist {$playlist['title']} ({$playlist['id']}) - nb videos : {{$playlist['nbVideos']}}");
         }, $factory->playlists());
 
-        return 0;
+        $this->epilogue();
+
+        return Command::SUCCESS;
     }
 }

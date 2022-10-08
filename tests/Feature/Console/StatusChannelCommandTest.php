@@ -7,7 +7,6 @@ namespace Tests\Feature\Console;
 use App\Models\ApiKey;
 use App\Models\Plan;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 use Tests\Traits\IsFakingYoutube;
 
 /**
@@ -15,7 +14,7 @@ use Tests\Traits\IsFakingYoutube;
  *
  * @coversNothing
  */
-class StatusChannelCommandTest extends TestCase
+class StatusChannelCommandTest extends CommandTestCase
 {
     use IsFakingYoutube;
     use RefreshDatabase;

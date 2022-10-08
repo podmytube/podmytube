@@ -7,14 +7,13 @@ namespace Tests\Feature\Console;
 use App\Models\Channel;
 use App\Models\Plan;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
 /**
  * @internal
  *
  * @coversNothing
  */
-class DownloadVideosByPeriodCommandTest extends TestCase
+class DownloadVideosByPeriodCommandTest extends CommandTestCase
 {
     use RefreshDatabase;
 

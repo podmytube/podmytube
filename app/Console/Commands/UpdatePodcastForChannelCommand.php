@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\Traits\BaseCommand;
 use App\Factories\UploadPodcastFactory;
 use App\Models\Channel;
 use App\Modules\ServerRole;
@@ -11,6 +12,8 @@ use Illuminate\Console\Command;
 
 class UpdatePodcastForChannelCommand extends Command
 {
+    use BaseCommand;
+
     /**
      * The name and signature of the console command.
      *
@@ -39,7 +42,7 @@ class UpdatePodcastForChannelCommand extends Command
 
             return 0;
         }
-
+        $this->prologue();
         $this->channel = Channel::findOrFail($this->argument('channelId'));
         $this->info("Updating podcast for channel {$this->channel->nameWithId()}", 'v');
 
@@ -48,6 +51,8 @@ class UpdatePodcastForChannelCommand extends Command
         $this->comment("Podcast {$this->channel->nameWithId()} has been successfully updated.", 'v');
         $this->info("You can check it here : {$this->channel->podcastUrl()}", 'v');
 
-        return 0;
+        $this->epilogue();
+
+        return Command::SUCCESS;
     }
 }

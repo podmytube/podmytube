@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\Traits\BaseCommand;
+use App\Console\Commands\Traits\WithProgressBar;
 use App\Exceptions\YoutubeNoResultsException;
 use App\Jobs\ChannelHasReachedItsLimitsJob;
 use App\Models\Channel;
@@ -23,6 +25,9 @@ use RuntimeException;
  */
 class UpdateChannelsCommand extends Command
 {
+    use BaseCommand;
+    use WithProgressBar;
+
     /**
      * The name and signature of the console command.
      *
@@ -54,6 +59,7 @@ class UpdateChannelsCommand extends Command
 
             return 0;
         }
+        $this->prologue();
 
         // update all channels
         $this->channels = Channel::active()->get();
@@ -69,7 +75,7 @@ class UpdateChannelsCommand extends Command
             return 1;
         }
 
-        $this->prologue($this->channels->count());
+        $this->initProgressBar($this->channels->count());
 
         // for each channel
         $this->channels->each(function (Channel $channel) {
@@ -118,28 +124,10 @@ class UpdateChannelsCommand extends Command
             }
         });
 
+        $this->finishProgressBar();
         $this->epilogue();
 
         return 0;
-    }
-
-    protected function prologue(int $progressBarNbItems): void
-    {
-        $this->info('Updating channels.', 'v');
-        if ($this->getOutput()->isVerbose()) {
-            $this->bar = $this->output->createProgressBar($progressBarNbItems);
-            $this->bar->start();
-        }
-    }
-
-    protected function epilogue(): void
-    {
-        if ($this->getOutput()->isVerbose()) {
-            $this->bar->finish();
-        }
-
-        $this->displayErrors();
-        Log::info("There were {$this->mediasAdded} media(s) added during process.");
     }
 
     protected function displayErrors(): void

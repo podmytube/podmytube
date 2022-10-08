@@ -34,6 +34,8 @@ class UserGenerateReferralCodeCommand extends Command
      */
     public function handle()
     {
+        $this->prologue();
+
         try {
             User::query()
                 ->whereNull('referral_code')
@@ -43,5 +45,8 @@ class UserGenerateReferralCodeCommand extends Command
         } catch (Throwable $thrown) {
             $this->error($thrown->getMessage());
         }
+        $this->epilogue();
+
+        return Command::SUCCESS;
     }
 }

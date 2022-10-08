@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Console;
 
-use App\Console\Commands\CleanFreeChannelMedias;
+use App\Console\Commands\CleanFreeChannelMediasCommand;
 use App\Console\Commands\DownloadVideosByPeriodCommand;
 use App\Console\Commands\GetPlaylistMediasCommand;
 use App\Console\Commands\GetPlaylistsCommand;
 use App\Console\Commands\LastMediaPublishedChecker;
 use App\Console\Commands\ProcessLogsCommand;
-use App\Console\Commands\SendMonthlyReports;
+use App\Console\Commands\SendMonthlyReportsCommand;
 use App\Console\Commands\UpdateBlogPostsCommand;
 use App\Console\Commands\UpdateChannelsCommand;
 use App\Console\Commands\UpdatePlaylistsForPayingChannelsCommand;
@@ -75,10 +75,10 @@ class Kernel extends ConsoleKernel
         |--------------------------------------------------------------------------
         */
         // cleaning free medias old episodes - 12h
-        $schedule->command(CleanFreeChannelMedias::class)->monthlyOn($day = 1, $time = '12:0');
+        $schedule->command(CleanFreeChannelMediasCommand::class)->monthlyOn($day = 1, $time = '12:0');
 
         // monthly report on first monday
-        $schedule->command(SendMonthlyReports::class)->monthlyOn($day = 1, $time = '11:0');
+        $schedule->command(SendMonthlyReportsCommand::class)->monthlyOn($day = 1, $time = '11:0');
     }
 
     /**

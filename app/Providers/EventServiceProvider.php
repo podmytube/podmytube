@@ -9,6 +9,8 @@ use App\Events\ChannelUpdated;
 use App\Events\MediaUploadedByUser;
 use App\Events\PodcastUpdated;
 use App\Events\ThumbUpdated;
+use App\Listeners\SendChannelIsRegisteredEmail;
+use App\Listeners\UploadMediaListener;
 use App\Listeners\UploadPodcastListener;
 use App\Listeners\UploadThumbListener;
 use Illuminate\Auth\Events\Registered;
@@ -25,22 +27,22 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $listen = [
         ChannelRegistered::class => [
-            \App\Listeners\UploadPodcastListener::class,
-            \App\Listeners\SendChannelIsRegisteredEmail::class,
+            UploadPodcastListener::class,
+            SendChannelIsRegisteredEmail::class,
         ],
         ChannelUpdated::class => [
-            \App\Listeners\UploadPodcastListener::class,
+            UploadPodcastListener::class,
         ],
         MediaUploadedByUser::class => [
-            \App\Listeners\UploadMediaListener::class,
-            \App\Listeners\UploadPodcastListener::class,
+            UploadMediaListener::class,
+            UploadPodcastListener::class,
         ],
         ThumbUpdated::class => [
             UploadThumbListener::class,
             UploadPodcastListener::class,
         ],
         PodcastUpdated::class => [
-            \App\Listeners\UploadPodcastListener::class,
+            UploadPodcastListener::class,
         ],
         Registered::class => [
             SendEmailVerificationNotification::class,

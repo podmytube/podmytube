@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature;
+namespace Tests\Feature\Console;
 
 use App\Jobs\ChannelHasReachedItsLimitsJob;
 use App\Models\Channel;
@@ -11,14 +11,13 @@ use App\Models\Plan;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
 use RuntimeException;
-use Tests\TestCase;
 
 /**
  * @internal
  *
  * @coversNothing
  */
-class UpdateChannelsCommandTest extends TestCase
+class UpdateChannelsCommandTest extends CommandTestCase
 {
     use RefreshDatabase;
 

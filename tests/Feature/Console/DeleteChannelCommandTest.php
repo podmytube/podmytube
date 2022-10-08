@@ -8,13 +8,13 @@ use App\Jobs\ChannelCleaningJob;
 use App\Models\Channel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
-use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
-class DeleteChannelCommandTest extends TestCase
+class DeleteChannelCommandTest extends CommandTestCase
 {
     use RefreshDatabase;
 

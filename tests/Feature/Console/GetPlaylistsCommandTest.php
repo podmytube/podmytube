@@ -8,7 +8,6 @@ use App\Models\ApiKey;
 use App\Models\Channel;
 use App\Models\Plan;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 use Tests\Traits\IsFakingYoutube;
 
 /**
@@ -16,7 +15,7 @@ use Tests\Traits\IsFakingYoutube;
  *
  * @coversNothing
  */
-class GetPlaylistsCommandTest extends TestCase
+class GetPlaylistsCommandTest extends CommandTestCase
 {
     use IsFakingYoutube;
     use RefreshDatabase;

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\Traits\BaseCommand;
 use App\Exceptions\DownloadMediaTagException;
 use App\Exceptions\YoutubeMediaIsNotAvailableException;
 use App\Factories\DownloadMediaFactory;
@@ -19,6 +20,8 @@ use Symfony\Component\Console\Helper\ProgressBar;
 
 class DownloadVideosByChannelCommand extends Command
 {
+    use BaseCommand;
+
     /** @var string */
     protected $signature = 'download:channel {channel_id} {--period=}';
 
@@ -38,6 +41,7 @@ class DownloadVideosByChannelCommand extends Command
 
             return 0;
         }
+        $this->prologue();
 
         $channel = Channel::byChannelId($this->argument('channel_id'));
         if ($channel === null) {
@@ -82,7 +86,7 @@ class DownloadVideosByChannelCommand extends Command
         }
 
         // for every medias in db
-        $medias->each(function(Media $media){
+        $medias->each(function (Media $media): void {
             try {
                 DownloadMediaFactory::media($media, $this->getOutput()->isVerbose())->run();
             } catch (YoutubeMediaIsNotAvailableException|DownloadMediaTagException $exception) {
@@ -93,13 +97,14 @@ class DownloadVideosByChannelCommand extends Command
             if ($this->getOutput()->isVerbose()) {
                 $this->progressBar->advance();
             }
-
         });
-        
+
         if ($this->getOutput()->isVerbose()) {
             $this->progressBar->finish();
             $this->line('');
         }
+
+        $this->epilogue();
 
         return 0;
     }

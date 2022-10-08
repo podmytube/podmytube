@@ -4,20 +4,24 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\Traits\BaseCommand;
 use Illuminate\Console\Command;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
-class RayTest extends Command
+class TestRayCommand extends Command
 {
+    use BaseCommand;
+
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'ray:test';
+    protected $signature = 'test:ray';
 
     /**
      * The console command description.
@@ -33,7 +37,10 @@ class RayTest extends Command
      */
     public function handle()
     {
+        $this->prologue();
         ray('hello Ray')->green();
+
+        $this->epilogue();
 
         return 0;
     }

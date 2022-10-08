@@ -4,16 +4,18 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Mail\MonthlyReportMail;
+use App\Console\Commands\Traits\BaseCommand;
+use App\Jobs\SendMonthlyReportEmailJob;
 use App\Models\Channel;
 use App\Modules\ServerRole;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 
-class SendMonthlyReports extends Command
+class SendMonthlyReportsCommand extends Command
 {
+    use BaseCommand;
+
     /** @var string The name and signature of the console command. */
     protected $signature = 'email:monthlyReport {--period=}';
 
@@ -33,6 +35,9 @@ class SendMonthlyReports extends Command
             return 0;
         }
 
+        $this->prologue();
+
+        /** @var Carbon $wantedMonth */
         $wantedMonth = $this->option('period') !== null ?
             Carbon::createFromFormat('Y-m', $this->option('period'))->startOfMonth() :
             Carbon::now()->startOfMonth()->subMonth();
@@ -51,9 +56,9 @@ class SendMonthlyReports extends Command
         }
 
         // dispatch
-        $channels->map(function ($channel) use ($wantedMonth): void {
+        $channels->each(function ($channel) use ($wantedMonth): void {
             if ($channel->user->newsletter) {
-                Mail::to($channel->user)->queue(new MonthlyReportMail($channel, $wantedMonth));
+                SendMonthlyReportEmailJob::dispatch($channel, $wantedMonth);
             }
         });
 
@@ -61,6 +66,8 @@ class SendMonthlyReports extends Command
             "{$channels->count()} monthly reports emails were successfully queued.",
             'v'
         );
+
+        $this->epilogue();
 
         return 0;
     }

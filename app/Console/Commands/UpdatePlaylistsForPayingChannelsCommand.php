@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\Traits\BaseCommand;
 use App\Exceptions\NoActiveChannelException;
 use App\Factories\UploadPodcastFactory;
 use App\Models\Channel;
@@ -17,6 +18,8 @@ use Illuminate\Support\Facades\Log;
  */
 class UpdatePlaylistsForPayingChannelsCommand extends Command
 {
+    use BaseCommand;
+
     /**
      * The name and signature of the console command.
      *
@@ -55,6 +58,7 @@ class UpdatePlaylistsForPayingChannelsCommand extends Command
 
             return 0;
         }
+        $this->prologue();
 
         /**
          * get active channels.
@@ -92,6 +96,8 @@ class UpdatePlaylistsForPayingChannelsCommand extends Command
             });
         });
 
-        return 0;
+        $this->epilogue();
+
+        return Command::SUCCESS;
     }
 }

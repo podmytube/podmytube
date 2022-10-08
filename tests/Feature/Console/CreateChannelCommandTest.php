@@ -10,7 +10,6 @@ use App\Models\Channel;
 use App\Models\Plan;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 use Tests\Traits\IsFakingYoutube;
 
 /**
@@ -18,7 +17,7 @@ use Tests\Traits\IsFakingYoutube;
  *
  * @coversNothing
  */
-class CreateChannelCommandTest extends TestCase
+class CreateChannelCommandTest extends CommandTestCase
 {
     use IsFakingYoutube;
     use RefreshDatabase;
