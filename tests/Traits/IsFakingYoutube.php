@@ -69,12 +69,16 @@ trait IsFakingYoutube
         );
     }
 
-    protected function fakePlaylistResponse(string $expectedChannelId, ?string $expectedPlaylistId = null): void
-    {
+    protected function fakePlaylistResponse(
+        string $expectedChannelId,
+        bool $withNextPageToken = false,
+        ?string $expectedPlaylistId = null,
+    ): void {
         $this->fakeYoutubeResponse(
-            YoutubeTestCase::PLAYLISTS_INDEX,
+            endpoint: YoutubeTestCase::PLAYLISTS_INDEX,
             expectedChannelId: $expectedChannelId,
-            expectedPlaylistId: $expectedPlaylistId
+            expectedPlaylistId: $expectedPlaylistId,
+            fixtureFile: $withNextPageToken ? 'playlists-next-page-token' : 'playlists',
         );
     }
 
@@ -115,6 +119,7 @@ trait IsFakingYoutube
         ?string $expectedDescription = null,
         ?array $expectedTags = [],
         ?string $expectedDuration = null,
+        ?string $fixtureFile = null,
         ?int $totalResults = 1,
         ?int $resultsPerPage = 1
     ): void {
@@ -122,11 +127,13 @@ trait IsFakingYoutube
             throw new InvalidArgumentException("{$endpoint} is unknown");
         }
 
+        $fixtureFileName = $fixtureFile ?? $endpoint;
+
         $tags = count($expectedTags) ? '"' . implode('","', $expectedTags) . '"' : '';
         $expectedJson = str_replace(
             ['EXPECTED_MEDIA_ID', 'EXPECTED_CHANNEL_ID', 'EXPECTED_PLAYLIST_ID', 'EXPECTED_TITLE', 'EXPECTED_DESCRIPTION', 'EXPECTED_TOTAL_RESULTS', 'EXPECTED_RESULTS_PER_PAGE', 'EXPECTED_TAGS', 'EXPECTED_DURATION'],
             [$expectedMediaId, $expectedChannelId, $expectedPlaylistId, $expectedTitle, $expectedDescription, $totalResults, $resultsPerPage, $tags, $expectedDuration],
-            file_get_contents(fixtures_path('Youtube/' . $endpoint . '-response.json'))
+            file_get_contents(fixtures_path('Youtube/' . $fixtureFileName . '-response.json'))
         );
 
         Http::fake([

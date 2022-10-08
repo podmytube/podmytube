@@ -1,0 +1,94 @@
+{
+    "kind": "MOCKED youtube#playlistListResponse",
+    "etag": "FAKE-DHdQRQ9l8Z-aK0kjd7P4gOkYCMw",
+    "nextPageToken": "FAKE-BlBUOkNBVQ",
+    "pageInfo": {
+        "totalResults": 2,
+        "resultsPerPage": 5
+    },
+    "items": [
+        {
+            "kind": "youtube#playlist",
+            "etag": "k39fJJtzMlOKTF9F-3TRb95nAz8",
+            "id": "FLw6bU9JT_Lihb2pbtqAUGQw1",
+            "snippet": {
+                "publishedAt": "2019-09-06T15:21:33Z",
+                "channelId": "EXPECTED_CHANNEL_ID",
+                "title": "Lorem ipsum dolore sit amet",
+                "description": "",
+                "thumbnails": {
+                    "default": {
+                        "url": "https://i.ytimg.com/img/no_thumbnail.jpg",
+                        "width": 120,
+                        "height": 90
+                    },
+                    "medium": {
+                        "url": "https://i.ytimg.com/img/no_thumbnail.jpg",
+                        "width": 320,
+                        "height": 180
+                    },
+                    "high": {
+                        "url": "https://i.ytimg.com/img/no_thumbnail.jpg",
+                        "width": 480,
+                        "height": 360
+                    }
+                },
+                "channelTitle": "Frédérick Tyteca",
+                "localized": {
+                    "title": "testPmt",
+                    "description": ""
+                }
+            },
+            "contentDetails": {
+                "itemCount": 0
+            }
+        },
+        {
+            "kind": "youtube#playlist",
+            "etag": "RZ5P40yJCbVsvG9-dOd5Lk3BVE4",
+            "id": "FLw6bU9JT_Lihb2pbtqAUGQw2",
+            "snippet": {
+                "publishedAt": "2011-05-25T05:17:04Z",
+                "channelId": "EXPECTED_CHANNEL_ID",
+                "title": "Consectetur adipiscing elit",
+                "description": "",
+                "thumbnails": {
+                    "default": {
+                        "url": "https://i.ytimg.com/vi/W2z1c8Gy2C8/default.jpg",
+                        "width": 120,
+                        "height": 90
+                    },
+                    "medium": {
+                        "url": "https://i.ytimg.com/vi/W2z1c8Gy2C8/mqdefault.jpg",
+                        "width": 320,
+                        "height": 180
+                    },
+                    "high": {
+                        "url": "https://i.ytimg.com/vi/W2z1c8Gy2C8/hqdefault.jpg",
+                        "width": 480,
+                        "height": 360
+                    },
+                    "standard": {
+                        "url": "https://i.ytimg.com/vi/W2z1c8Gy2C8/sddefault.jpg",
+                        "width": 640,
+                        "height": 480
+                    },
+                    "maxres": {
+                        "url": "https://i.ytimg.com/vi/W2z1c8Gy2C8/maxresdefault.jpg",
+                        "width": 1280,
+                        "height": 720
+                    }
+                },
+                "channelTitle": "Frédérick Tyteca",
+                "defaultLanguage": "en",
+                "localized": {
+                    "title": "Favorites",
+                    "description": ""
+                }
+            },
+            "contentDetails": {
+                "itemCount": 7
+            }
+        }
+    ]
+}

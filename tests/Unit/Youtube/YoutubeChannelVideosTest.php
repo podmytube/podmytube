@@ -11,12 +11,13 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class YoutubeChannelVideosTest extends YoutubeTestCase
 {
     use RefreshDatabase;
-    
+
     /** @test */
     public function having_the_right_number_of_videos(): void
     {
@@ -47,7 +48,7 @@ class YoutubeChannelVideosTest extends YoutubeTestCase
          * Imagine you want to grab all Pewdiepie videos ...
          */
         $expectedNumberOfVideos = 50;
-        $factory = YoutubeChannelVideos::forChannel(YoutubeCoreTest::PEWDIEPIE_CHANNEL_ID, 3);
+        $factory = YoutubeChannelVideos::forChannel(YoutubeCoreTest::PEWDIEPIE_CHANNEL_ID, 50);
         $nbVideos = count($factory->videos());
         $this->assertEquals(
             $expectedNumberOfVideos,

@@ -79,17 +79,25 @@ class YoutubeCoreTest extends YoutubeTestCase
     /** @test */
     public function getting_proper_id_for_channel_list_should_be_ok(): void
     {
-        // $this->fakeChannelResponse(expectedChannelId: self::PEWDIEPIE_CHANNEL_ID);
+        $expectedTitle = 'PewDiePie';
+        $expectedDescription = 'I make videos.';
+        $this->fakeChannelResponse(
+            expectedChannelId: self::PEWDIEPIE_CHANNEL_ID,
+            expectedTitle: $expectedTitle,
+        );
 
-        $items = $this->abstractCore
+        $youtubeCore = $this->abstractCore
             ->defineEndpoint(YoutubeCore::CHANNELS_ENDPOINT)
             ->addParts(['id'])
             ->addParams(['id' => self::PEWDIEPIE_CHANNEL_ID])
             ->run()
-            ->items()
         ;
 
-        $this->assertEquals(self::PEWDIEPIE_CHANNEL_ID, $items[0]['id']);
+        $this->assertCount(1, $youtubeCore->queriesUsed());
+        $this->assertCount(1, $youtubeCore->items());
+        $this->assertEquals(self::PEWDIEPIE_CHANNEL_ID, $youtubeCore->items()[0]['id']);
+        $this->assertEquals($expectedTitle, $youtubeCore->items()[0]['snippet']['title']);
+        $this->assertEquals($expectedDescription, $youtubeCore->items()[0]['snippet']['description']);
     }
 
     /** @test */
@@ -108,6 +116,29 @@ class YoutubeCoreTest extends YoutubeTestCase
         ;
 
         $this->assertEquals(self::NOWTECH_CHANNEL_ID, $youtubeCore->channelId());
+        $this->assertCount(1, $youtubeCore->queriesUsed());
+        $this->assertCount(2, $youtubeCore->items());
+    }
+
+    /** @test */
+    public function getting_next_page_token_should_be_ok(): void
+    {
+        $this->fakePlaylistResponse(expectedChannelId: self::NOWTECH_CHANNEL_ID, withNextPageToken: true);
+
+        $youtubeCore = $this->abstractCore
+            ->defineEndpoint(YoutubeCore::PLAYLISTS_ENDPOINT)
+            ->addParts(['id', 'snippet'])
+            ->addParams([
+                'channelId' => self::NOWTECH_CHANNEL_ID,
+                'maxResults' => 50,
+            ])
+            ->run()
+        ;
+
+        // even if I dont change the nextPageToken from the fixture file
+        // nextPageToken May only be used once.
+        // its a mecanism to avoid falling in infinite loop
+        $this->assertCount(2, $youtubeCore->queriesUsed());
     }
 
     /** @test */

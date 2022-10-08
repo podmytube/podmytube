@@ -12,6 +12,7 @@ use App\Models\ApiKey;
 use App\Traits\YoutubeEndpoints;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 abstract class YoutubeCore implements QuotasConsumer
 {
@@ -28,6 +29,7 @@ abstract class YoutubeCore implements QuotasConsumer
 
     protected Response $response;
     protected string $endpoint;
+    protected array $nextPageTokens = [];
 
     protected array $items = [];
 
@@ -105,7 +107,7 @@ abstract class YoutubeCore implements QuotasConsumer
     {
         do {
             $this->response = Http::timeout(10)->get($this->url());
-            ray($this->url(), $this->response->json());
+            // ray($this->url(), $this->response->json(), 'nextpageToken : ' . $this->response->json('nextPageToken'));
             // adding url to the list of queries used
             $this->queries[] = $this->url();
 
@@ -238,9 +240,27 @@ abstract class YoutubeCore implements QuotasConsumer
     protected function doWeGetNextPage(): bool
     {
         if ($this->limit > 0 && $this->nbItemsGrabbed() >= $this->limit) {
+            // we grabbed more items we need => stop
+            Log::debug('we grabbed more items we need => stop. limit was ' . $this->limit . ' obtained ' . $this->nbItemsGrabbed());
+
             return false;
         }
 
+        if (in_array($this->response->json('nextPageToken'), $this->nextPageTokens)) {
+            // we already used this nextPageToken => stop
+            Log::debug('we already used this nextPageToken => stop');
+
+            return false;
+        }
+
+        if ($this->response->json('nextPageToken') !== null) {
+            // storing nextPageToken used
+            $this->nextPageTokens[] = $this->response->json('nextPageToken');
+            $this->params['pageToken'] = $this->response->json('nextPageToken');
+        }
+
+        Log::debug('nextPageToken ? ' . $this->response->json('nextPageToken') !== null);
+        // if there a nextPageToken in the response => continue, else => stop
         return $this->response->json('nextPageToken') !== null;
     }
 
@@ -259,12 +279,5 @@ abstract class YoutubeCore implements QuotasConsumer
     protected function hasResult(): bool
     {
         return $this->nbItemsGrabbed() > 0;
-    }
-
-    protected function setPageToken(): self
-    {
-        $this->params['pageToken'] = $this->response->json('nextPageToken');
-
-        return $this;
     }
 }
