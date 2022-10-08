@@ -73,11 +73,15 @@ class CreateChannelCommand extends Command
             $this->info('Channel 🎉 ' . $channel->nameWithId() . ' 🎉 has been created successfully !');
             $this->line('');
 
-            return 0;
+            $errCode = 0;
         } catch (Exception $exception) {
-            $this->error($exception->getMessage(), 'v');
+            $this->error($exception->getMessage());
 
-            return 1;
+            $errCode = 1;
         }
+
+        $this->epilogue();
+
+        return $errCode;
     }
 }

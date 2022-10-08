@@ -19,14 +19,14 @@ trait BaseCommand
         return $this->getOutput()->isVerbose();
     }
 
-    protected function setLogPrefix(): void
+    protected function chooseLogPrefix(): void
     {
         $this->logPrefix = Arr::random($this->logPrefixes);
     }
 
     protected function prologue(): void
     {
-        $this->setLogPrefix();
+        $this->chooseLogPrefix();
         $this->typedCommand = $this->argument('command');
 
         if ($this->hasMoreArgumentsThanJustCommand()) {

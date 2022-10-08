@@ -10,7 +10,6 @@ use App\Jobs\ChannelHasReachedItsLimitsJob;
 use App\Models\Channel;
 use App\Models\Media;
 use App\Models\Quota;
-use App\Models\User;
 use App\Modules\ServerRole;
 use App\Youtube\YoutubeChannelVideos;
 use App\Youtube\YoutubeQuotas;

@@ -112,7 +112,8 @@ class PostFactory
         $this->postModel->author = $this->postData['_embedded']['author'][0]['name'] ?? self::DEFAULT_AUTHOR;
         $this->postModel->title = $this->postTitle();
         $this->postModel->slug = $this->postSlug();
-        $this->postModel->featured_image = $this->postData['_embedded']['wp:featuredmedia'][0]['source_url'] ?? self::DEFAULT_FEATURED_IMAGE;
+        $this->postModel->featured_image = $this->postData['_embedded']['wp:featuredmedia'][0]['source_url'] ??
+            self::DEFAULT_FEATURED_IMAGE;
         $this->postModel->sticky = $this->postData['sticky'];
         $this->postModel->excerpt = $this->postData['excerpt']['rendered'];
         $this->postModel->content = $this->postData['content']['rendered'];

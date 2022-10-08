@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
-use App\Interfaces\Podcastable;
 use App\Models\Channel;
 use App\Models\Download;
 use App\Models\Media;
@@ -24,11 +23,8 @@ class ChannelCleaningJob implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    protected Channel $channelToDelete;
-
-    public function __construct(Channel $channelToDelete)
+    public function __construct(protected Channel $channelToDelete)
     {
-        $this->channelToDelete = $channelToDelete;
     }
 
     public function handle(): void

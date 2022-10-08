@@ -10,7 +10,6 @@ use App\Interfaces\Coverable;
 use App\Jobs\CreateVignetteFromThumbJob;
 use App\Models\Channel;
 use App\Models\Playlist;
-use App\Modules\Vignette;
 use Exception;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;

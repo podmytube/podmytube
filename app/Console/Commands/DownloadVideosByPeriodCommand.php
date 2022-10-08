@@ -77,8 +77,8 @@ class DownloadVideosByPeriodCommand extends Command
 
                 $nbMedias = $medias->count();
                 if ($nbMedias <= 0) {
-                    $message = "There is no ungrabbed medias for {$channel->nameWithId()} between " .
-                        "{$period->startDate()} and {$period->endDate()}.";
+                    $message = "There is no ungrabbed medias for {$channel->nameWithId()} between \\
+                        {$period->startDate()} and {$period->endDate()}.";
                     $this->comment($message, 'v');
                     Log::notice($message);
 

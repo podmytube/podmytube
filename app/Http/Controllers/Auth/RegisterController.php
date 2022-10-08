@@ -87,7 +87,7 @@ class RegisterController extends Controller
      *
      * @return mixed
      */
-    protected function registered(Request $request, User $user)
+    protected function registered(Request $request)
     {
         $request->session()->flash('success', self::SUCCESS_MESSAGE);
     }

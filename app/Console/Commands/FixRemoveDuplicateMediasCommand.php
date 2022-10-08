@@ -38,7 +38,6 @@ class FixRemoveDuplicateMediasCommand extends Command
             return 0;
         }
 
-        $deleted = 0;
         $channelId = $this->argument('channel_id');
         $doIt = (bool) $this->option('doIt');
 
@@ -55,7 +54,7 @@ class FixRemoveDuplicateMediasCommand extends Command
             return 1;
         }
 
-        $channels->map(function (Channel $channel) use ($deleted, $doIt): void {
+        $channels->map(function (Channel $channel) use ($doIt): void {
             $mediaIdsStorage = [];
 
             /** get all medias */
@@ -81,7 +80,6 @@ class FixRemoveDuplicateMediasCommand extends Command
                 if ($doIt) {
                     $media->forceDelete();
                 }
-                $deleted++;
             }
         });
 

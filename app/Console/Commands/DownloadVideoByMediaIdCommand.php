@@ -41,9 +41,9 @@ class DownloadVideoByMediaIdCommand extends Command
         $this->prologue();
 
         $media = Media::byMediaId($this->argument('media_id'));
-        if ($media == null) {
+        if ($media === null) {
             $channel = Channel::byChannelId(TestCase::PERSONAL_CHANNEL_ID);
-            if ($channel == null) {
+            if ($channel === null) {
                 $channel = Channel::create([
                     'channel_id' => TestCase::PERSONAL_CHANNEL_ID,
                     'user_id' => 1,

@@ -56,7 +56,8 @@ class ShouldMediaBeingDownloadedFactory
 
         // is video downladable (not upcoming and processed)
         if (!$youtubeVideo->isAvailable()) {
-            $message = "The video {$this->media->media_id} for {$this->media->channel->nameWithId()} is not available yet. 'upcoming' live or not yet 'processed'.";
+            $message = "The video {$this->media->media_id} for {$this->media->channel->nameWithId()} is not available yet. \\
+                'upcoming' live or not yet 'processed'.";
             Log::notice($message);
 
             throw new YoutubeMediaIsNotAvailableException($message);

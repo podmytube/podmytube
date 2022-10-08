@@ -36,7 +36,8 @@ class UploadPodcastFactory
 
         $this->podcastable->wasUpdatedOn(now());
 
-        Log::notice("Podcast {$this->podcastable->podcastTitle()} has been successfully updated. You can check it here : {$this->podcastable->podcastUrl()}");
+        Log::notice("Podcast {$this->podcastable->podcastTitle()} has been successfully updated. \\
+            You can check it here : {$this->podcastable->podcastUrl()}");
 
         return $this;
     }

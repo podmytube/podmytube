@@ -45,7 +45,8 @@ class FixMissingMediasCommand extends Command
         }
         $this->prologue();
 
-        $remoteCommandToBeRun = 'docker logs --since=' . $this->argument('duration') . ' ' . config('app.audio_container_name') . ' | grep 404';
+        $remoteCommandToBeRun = 'docker logs --since=' . $this->argument('duration') . ' ' .
+            config('app.audio_container_name') . ' | grep 404';
         $this->info("Remote command to be run : {$remoteCommandToBeRun}", 'v');
         $sshProcess = Ssh::create(config('app.sftp_user'), config('app.sftp_host'))
             ->usePrivateKey(config('app.sftp_key_path'))

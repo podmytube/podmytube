@@ -59,7 +59,7 @@ class GetPlaylistMediasCommand extends Command
             return 1;
         }
 
-        $playlists->map(function ($playlist): void {
+        $playlists->each(function ($playlist): void {
             /** for each playlist, get the media to obtain */
             $factory = YoutubePlaylistItems::init()
                 ->forPlaylist($playlist->youtube_playlist_id)

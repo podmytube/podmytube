@@ -31,7 +31,7 @@ class MonthlyReportMail extends Mailable
     /**
      * Create a monthly report email.
      */
-    public function __construct(public Channel $channel, Carbon $wantedMonth = null)
+    public function __construct(public Channel $channel, ?Carbon $wantedMonth = null)
     {
         $this->wantedMonth = $wantedMonth ?? now();
     }
@@ -44,7 +44,7 @@ class MonthlyReportMail extends Mailable
     public function build()
     {
         // formatted period is Month Year (IE : march 2021)
-        $this->formattedPeriod = $this->wantedMonth->format(static::DATE_MONTH_YEAR_FORMAT);
+        $this->formattedPeriod = $this->wantedMonth->format(self::DATE_MONTH_YEAR_FORMAT);
         $this->wantedMonth->startOfMonth();
         $endOfMonth = (clone $this->wantedMonth)->endOfMonth();
 
@@ -66,6 +66,6 @@ class MonthlyReportMail extends Mailable
 
     public function getSubject(): string
     {
-        return "Here is your {$this->wantedMonth->format(static::DATE_MONTH_YEAR_FORMAT)} report for {$this->channel->channel_name}";
+        return "Here is your {$this->wantedMonth->format(self::DATE_MONTH_YEAR_FORMAT)} report for {$this->channel->channel_name}";
     }
 }

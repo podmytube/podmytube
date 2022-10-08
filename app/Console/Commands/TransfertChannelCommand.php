@@ -10,7 +10,6 @@ use App\Models\Channel;
 use App\Models\Media;
 use App\Models\Plan;
 use App\Models\Subscription;
-use App\Models\Thumb;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
@@ -46,7 +45,10 @@ class TransfertChannelCommand extends Command
                 plan: $plan,
                 channelId: $this->argument('dest_channel_id')
             );
-            throw_if($this->destChannel === null, new InvalidArgumentException("Channel {$this->argument('dest_channel_id')} creation has failed."));
+            throw_if(
+                $this->destChannel === null,
+                new InvalidArgumentException("Channel {$this->argument('dest_channel_id')} creation has failed.")
+            );
         }
 
         /*

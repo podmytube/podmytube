@@ -60,7 +60,8 @@ class LastMediaChecker
 
         if ($this->media === null) {
             Log::debug(
-                "Media {$this->lastMediaFromYoutube['media_id']} published more than " . self::NB_HOURS_AGO . " hours ago is still unknown \\
+                "Media {$this->lastMediaFromYoutube['media_id']} published more than " .
+                self::NB_HOURS_AGO . " hours ago is still unknown \\
                 for {$this->channel->nameWithId()}. Sending alert !"
             );
 

@@ -74,7 +74,7 @@ class FixRestoreThumbsCommand extends Command
                 $mostRecentFileName = array_key_first($filesWithSize);
                 $mostRecentFileSize = $filesWithSize[$mostRecentFileName];
 
-                $result = $channel->cover->update(
+                $channel->cover->update(
                     [
                         'file_size' => $mostRecentFileSize,
                         'file_name' => $mostRecentFileName,

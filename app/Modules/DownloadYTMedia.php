@@ -6,7 +6,6 @@ namespace App\Modules;
 
 use App\Exceptions\DownloadMediaFailureException;
 use App\Models\Media;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 
@@ -96,7 +95,9 @@ class DownloadYTMedia
     protected function checkDestinationFolder(): bool
     {
         if (!is_dir($this->destinationFolder) || !is_writable($this->destinationFolder)) {
-            throw new InvalidArgumentException("The folder {$this->destinationFolder} for {$this->media->id} is either invalid or not writable");
+            throw new InvalidArgumentException(
+                "The folder {$this->destinationFolder} for {$this->media->id} is either invalid or not writable"
+            );
         }
 
         return true;

@@ -45,7 +45,8 @@ class ChannelRequest extends FormRequest
             'authors.max' => 'Please stop kidding me, your name is too long ... Are you still human ?',
             'email.email' => 'Please give use a valid email address so that your listener can send you some feedback.',
             'category_id.exists' => 'The category you selected is not valid.',
-            'link.u_r_l' => 'The link to get more information is not valid. It should be like https://my-greatpodcast.com. Don\'t forget the "http" stuff !',
+            'link.u_r_l' => 'The link to get more information is not valid. \\
+                It should be like https://my-greatpodcast.com. Don\'t forget the "http" stuff !',
             'lang.in' => 'The language you selected is not valid. Only ' . implode(', ', $this->supportedLanguages) . ' are supported yet.',
             'explicit.boolean' => 'I\'m not quite sure about your explicit content. Please tell us about it.',
         ];

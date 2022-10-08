@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\Request;
 
 class UsersController extends Controller
 {
     public const NB_ITEMS_PER_PAGE = 100;
 
-    public function index(Request $request)
+    public function index()
     {
         $this->authorize('superadmin');
 

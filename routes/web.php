@@ -70,7 +70,9 @@ Route::domain('dashboard.' . config('app.domain'))->group(function (): void {
 
     // ================================================
     // Dash homepage is the login screen
-    Route::get('/', function () { return view('auth.login'); })->name('root');
+    Route::get('/', fn () => view('auth.login'))
+        ->name('root')
+    ;
 
     Route::middleware(['auth'])->group(function (): void {
         Route::get('/home', 'HomeController@index')->name('home');
@@ -141,11 +143,13 @@ Route::domain('dashboard.' . config('app.domain'))->group(function (): void {
 
         // =======================================
         // User should verify email
-        Route::get('/email/verify', function () { return view('auth.verify-email'); })->name('verification.notice');
+        Route::get('/email/verify', fn () => view('auth.verify-email'))
+            ->name('verification.notice')
+        ;
 
         Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
             $request->fulfill();
-            
+
             return redirect(route('home'));
         })->middleware(['signed'])->name('verification.verify');
 

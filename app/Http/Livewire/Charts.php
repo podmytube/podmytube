@@ -31,11 +31,11 @@ class Charts extends Component
     {
         $this->channel = $channel;
         $this->periods = [
-            static::PERIOD_THIS_MONTH => 'This month',
-            static::PERIOD_THIS_WEEK => 'This week',
-            static::PERIOD_LAST_MONTH => 'Last month',
-            static::PERIOD_LAST_WEEK => 'Last week',
-            static::PERIOD_LAST_QUARTER => 'Last quarter',
+            self::PERIOD_THIS_MONTH => 'This month',
+            self::PERIOD_THIS_WEEK => 'This week',
+            self::PERIOD_LAST_MONTH => 'Last month',
+            self::PERIOD_LAST_WEEK => 'Last week',
+            self::PERIOD_LAST_QUARTER => 'Last quarter',
         ];
         $this->selectedPeriodLabel = $this->periods[$this->selectedPeriod];
         $this->buildCoordinates();
@@ -61,11 +61,13 @@ class Charts extends Component
     public function fromPeriodToDates(?int $period = null): array
     {
         return match ($period) {
-            static::PERIOD_LAST_WEEK => [now()->subWeek()->startOfWeek(weekStartsAt: Carbon::MONDAY), now()->subWeek()->endOfWeek(weekEndsAt: Carbon::SUNDAY)],
-            static::PERIOD_LAST_MONTH => [now()->subMonth()->startOfMonth(), now()->subMonth()->endOfMonth()],
-            static::PERIOD_THIS_WEEK => [now()->startOfWeek(weekStartsAt: Carbon::MONDAY), now()->endOfWeek(weekEndsAt: Carbon::SUNDAY)],
-            static::PERIOD_THIS_MONTH => [now()->startOfMonth(), now()->endOfMonth()],
-            static::PERIOD_LAST_QUARTER => [now()->startOfMonth()->subMonth(3), now()->endOfMonth()],
+            self::PERIOD_LAST_WEEK => [
+                now()->subWeek()->startOfWeek(weekStartsAt: Carbon::MONDAY), now()->subWeek()->endOfWeek(weekEndsAt: Carbon::SUNDAY),
+            ],
+            self::PERIOD_LAST_MONTH => [now()->subMonth()->startOfMonth(), now()->subMonth()->endOfMonth()],
+            self::PERIOD_THIS_WEEK => [now()->startOfWeek(weekStartsAt: Carbon::MONDAY), now()->endOfWeek(weekEndsAt: Carbon::SUNDAY)],
+            self::PERIOD_THIS_MONTH => [now()->startOfMonth(), now()->endOfMonth()],
+            self::PERIOD_LAST_QUARTER => [now()->startOfMonth()->subMonth(3), now()->endOfMonth()],
             // this month
             default => [now()->startOfMonth(), now()->endOfMonth()],
         };

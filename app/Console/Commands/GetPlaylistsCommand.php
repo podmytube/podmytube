@@ -59,7 +59,7 @@ class GetPlaylistsCommand extends Command
             $this->comment('======================================================================', 'v');
             $this->comment("Getting playlists (from youtube) for {$channel->nameWithId()}", 'v');
 
-            $playlists = (new YoutubePlaylists())->forChannel($channel->channelId())->playlists();
+            $playlists = (new YoutubePlaylists())->forChannel($channel->youtube_id)->playlists();
 
             array_map(function ($playlistItem) use ($channel): void {
                 $this->line("Getting {$playlistItem['title']}");

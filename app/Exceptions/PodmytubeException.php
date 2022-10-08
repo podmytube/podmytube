@@ -10,6 +10,6 @@ class PodmytubeException extends Exception
 {
     public function addInformations(string $moreInformations): void
     {
-        $this->message = $this->message . PHP_EOL . $moreInformations;
+        $this->message .= PHP_EOL . $moreInformations;
     }
 }

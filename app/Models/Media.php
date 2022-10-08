@@ -322,7 +322,7 @@ class Media extends Model
 
     public function isDisabled(): bool
     {
-        return $this->realStatus === static::STATUS_DELETED;
+        return $this->realStatus === self::STATUS_DELETED;
     }
 
     /**
@@ -338,7 +338,7 @@ class Media extends Model
         return Attribute::get(
             function (): int {
                 if ($this->deleted_at !== null) {
-                    return static::STATUS_DELETED;
+                    return self::STATUS_DELETED;
                 }
 
                 return $this->status;

@@ -36,7 +36,7 @@ class SendFileBySFTP implements ShouldQueue
 
     public function handle(): bool
     {
-        Log::info(__CLASS__ . '::' . __FUNCTION__ . " Moving File {$this->localFilePath} to {$this->remoteFilePath}");
+        Log::info("SFTPing File {$this->localFilePath} to {$this->remoteFilePath}");
         $destFolder = pathinfo($this->remoteFilePath, PATHINFO_DIRNAME);
         $destFilename = pathinfo($this->remoteFilePath, PATHINFO_BASENAME);
 
@@ -50,7 +50,6 @@ class SendFileBySFTP implements ShouldQueue
                 is_readable($this->localFilePath),
                 new Exception("File {$this->localFilePath} is not readable.")
             );
-
 
             Storage::disk(self::REMOTE_DISK)->makeDirectory($destFolder);
             Storage::disk(self::REMOTE_DISK)

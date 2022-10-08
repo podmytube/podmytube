@@ -77,15 +77,17 @@ class StatusChannelCommand extends Command
 
             $this->table(
                 ['Channel ID', 'Channel name', 'Email', 'Created', 'Updated', 'Subscription', 'Active'],
-                [[
-                    $channel->youtube_id,
-                    $channel->channel_name,
-                    $channel->user->email,
-                    $channel->channel_createdAt->toDateString(),
-                    $channel->podcast_updatedAt?->toDateString() ?? '-',
-                    $channel->subscription->plan->name,
-                    $channel->isActive() ? '✅' : '❌',
-                ]]
+                [
+                    [
+                        $channel->youtube_id,
+                        $channel->channel_name,
+                        $channel->user->email,
+                        $channel->channel_createdAt->toDateString(),
+                        $channel->podcast_updatedAt?->toDateString() ?? '-',
+                        $channel->subscription->plan->name,
+                        $channel->isActive() ? '✅' : '❌',
+                    ],
+                ]
             );
             $this->line('');
             $this->table(

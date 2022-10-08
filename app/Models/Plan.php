@@ -171,31 +171,7 @@ class Plan extends Model
     {
         try {
             $stripeIdColumn = App::environment('production') ? 'stripe_live_id' : 'stripe_test_id';
-            $stripeSessionParams = [
-                'payment_method_types' => ['card'],
-                'line_items' => [
-                    [
-                        // it s a price ID not the price in €
-                        'price' => $this->stripePlans->first()->{$stripeIdColumn},
-                        'quantity' => 1,
-                    ],
-                ],
-                'subscription_data' => [
-                    'trial_period_days' => 30,
-                ],
-                'mode' => 'subscription',
-                'success_url' => config('app.url') . '/success?session_id={CHECKOUT_SESSION_ID}',
-                'cancel_url' => config('app.url') . '/cancel',
-                'metadata' => [
-                    'channel_id' => $channel->channel_id,
-                ],
-            ];
-
-            if ($channel->user->stripe_id !== null) {
-                $stripeSessionParams['customer'] = $channel->user->stripe_id;
-            } else {
-                $stripeSessionParams['customer_email'] = $channel->user->email;
-            }
+            $stripeSessionParams = $this->stripeSessionParams($channel, $stripeIdColumn);
 
             Stripe::setApiKey(config('services.stripe.secret'));
             $this->stripeSession = Session::create($stripeSessionParams);
@@ -212,5 +188,36 @@ class Plan extends Model
     public function stripeSession(): ?Session
     {
         return $this->stripeSession;
+    }
+
+    protected function stripeSessionParams(Channel $channel, string $stripeIdColumn = 'stripe_live_id'): array
+    {
+        $stripeSessionParams = [
+            'payment_method_types' => ['card'],
+            'line_items' => [
+                [
+                    // it s a price ID not the price in €
+                    'price' => $this->stripePlans->first()->{$stripeIdColumn},
+                    'quantity' => 1,
+                ],
+            ],
+            'subscription_data' => [
+                'trial_period_days' => 30,
+            ],
+            'mode' => 'subscription',
+            'success_url' => config('app.url') . '/success?session_id={CHECKOUT_SESSION_ID}',
+            'cancel_url' => config('app.url') . '/cancel',
+            'metadata' => [
+                'channel_id' => $channel->channel_id,
+            ],
+        ];
+
+        if ($channel->user->stripe_id !== null) {
+            $stripeSessionParams['customer'] = $channel->user->stripe_id;
+        } else {
+            $stripeSessionParams['customer_email'] = $channel->user->email;
+        }
+
+        return $stripeSessionParams;
     }
 }

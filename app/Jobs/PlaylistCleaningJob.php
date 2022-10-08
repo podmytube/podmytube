@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
-use App\Interfaces\Podcastable;
 use App\Models\Playlist;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -20,12 +19,8 @@ class PlaylistCleaningJob implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    /** @var \App\Models\Playlist */
-    protected $playlistToDelete;
-
-    public function __construct(Playlist $playlistToDelete)
+    public function __construct(protected Playlist $playlistToDelete)
     {
-        $this->playlistToDelete = $playlistToDelete;
     }
 
     public function handle(): void

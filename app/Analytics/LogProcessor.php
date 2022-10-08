@@ -139,14 +139,23 @@ class LogProcessor
 
         // recover channel model from cache or db
         $channel = $this->recoverChannelModel($logLineParser->channelId());
-        throw_if($channel === null, new LogProcessorUnknownChannelException('Channel {' . $logLineParser->channelId() . '} is unknown'));
+        throw_if(
+            $channel === null,
+            new LogProcessorUnknownChannelException('Channel {' . $logLineParser->channelId() . '} is unknown')
+        );
 
         // recover channel model from cache or db
         $media = $this->recoverMediaModel($logLineParser->mediaId());
-        throw_if($media === null, new LogProcessorUnknownMediaException('Media {' . $logLineParser->mediaId() . '} is unknown'));
+        throw_if(
+            $media === null,
+            new LogProcessorUnknownMediaException('Media {' . $logLineParser->mediaId() . '} is unknown')
+        );
 
         // 404 media not found
-        throw_if($logLineParser->status() === 404, new LogProcessorMediaNotFoundException('Media {' . $logLineParser->mediaId() . '} is not found'));
+        throw_if(
+            $logLineParser->status() === 404,
+            new LogProcessorMediaNotFoundException('Media {' . $logLineParser->mediaId() . '} is not found')
+        );
 
         // according to status media should be downloaded or not
         if ($logLineParser->status() !== 200 || $logLineParser->weight() <= 0) {

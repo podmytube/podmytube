@@ -51,12 +51,14 @@ class ApiKey extends Model
 
         $apikeys = self::query()
             ->active()
-            ->with(['quotas' => function ($query): void {
-                $query->select(DB::raw('apikey_id, sum(quotas.quota_used) as consumed'))
-                    ->whereBetween('created_at', [today(), now()])
-                    ->groupBy('apikey_id')
-                ;
-            }])
+            ->with([
+                'quotas' => function ($query): void {
+                    $query->select(DB::raw('apikey_id, sum(quotas.quota_used) as consumed'))
+                        ->whereBetween('created_at', [today(), now()])
+                        ->groupBy('apikey_id')
+                    ;
+                },
+            ])
             ->get()
             ->filter(function (ApiKey $apikey): bool {
                 // no quota recored for this apikey yet => it is good

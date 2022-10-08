@@ -105,7 +105,7 @@ abstract class YoutubeCore implements QuotasConsumer
     {
         do {
             $this->response = Http::timeout(10)->get($this->url());
-            // ray($this->url(), $this->response->json());
+            ray($this->url(), $this->response->json());
             // adding url to the list of queries used
             $this->queries[] = $this->url();
 
@@ -134,11 +134,6 @@ abstract class YoutubeCore implements QuotasConsumer
 
             // adding them to previous results
             $this->items = array_merge($this->items, $this->response->json('items'));
-
-            // if response is multi page, prepare next youtube query.
-            if ($this->response->json('nextPageToken') !== null) {
-                $this->setPageToken($this->response->json('nextPageToken'));
-            }
         } while ($this->doWeGetNextPage());
 
         return $this;
@@ -246,7 +241,7 @@ abstract class YoutubeCore implements QuotasConsumer
             return false;
         }
 
-        return isset($this->nextPageToken);
+        return $this->response->json('nextPageToken') !== null;
     }
 
     protected function nbItemsGrabbed(): int
@@ -266,10 +261,9 @@ abstract class YoutubeCore implements QuotasConsumer
         return $this->nbItemsGrabbed() > 0;
     }
 
-    protected function setPageToken(string $pageToken): static
+    protected function setPageToken(): self
     {
-        $this->nextPageToken = $pageToken;
-        $this->params['pageToken'] = $pageToken;
+        $this->params['pageToken'] = $this->response->json('nextPageToken');
 
         return $this;
     }

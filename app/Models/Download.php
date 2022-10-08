@@ -79,7 +79,7 @@ class Download extends Model
         ?Channel $channel = null,
         ?int $interval = null,
     ): Collection {
-        $interval ??= static::INTERVAL_PER_DAY;
+        $interval ??= self::INTERVAL_PER_DAY;
 
         $query = Download::query()
             ->select('log_day')
@@ -128,7 +128,7 @@ class Download extends Model
         }
         $query->groupBy('channel_id');
 
-        if ($moreThan != null) {
+        if ($moreThan !== null) {
             $query->having('aggregate', '>=', $moreThan);
         }
 

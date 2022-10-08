@@ -70,7 +70,9 @@ class ChannelCreateController extends Controller
         } catch (Exception $exception) {
             Log::error($exception->getMessage());
 
-            return redirect()->back()->withErrors(['danger' => 'Podcast registration has failed. Please send me an email about it at fred@podmytube.com']);
+            return redirect()->back()->withErrors([
+                'danger' => 'Podcast registration has failed. Please send me an email about it at fred@podmytube.com',
+            ]);
         }
     }
 

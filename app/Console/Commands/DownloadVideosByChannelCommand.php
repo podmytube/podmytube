@@ -56,7 +56,10 @@ class DownloadVideosByChannelCommand extends Command
         $periodOption = $this->option('period') ? Carbon::createFromFormat('Y-m', $this->option('period')) : Carbon::now();
         $period = PeriodsHelper::create($periodOption->month, $periodOption->year);
 
-        Log::notice("Downloading ungrabbed medias for channel {$channel->channelId()} during period {$period->startDate()} and {$period->endDate()}");
+        Log::notice(
+            "Downloading ungrabbed medias for channel {$channel->channelId()} \\
+            during period {$period->startDate()} and {$period->endDate()}"
+        );
 
         if ($channel->hasReachedItslimit($period->month(), $period->year())) {
             $message = "Channel {$channel->nameWithId()} has reached its quota. No more media will be downloaded for this period.";
