@@ -66,6 +66,33 @@ class StatusChannelCommandTest extends TestCase
     }
 
     /** @test */
+    public function podcast_never_updated_channel_id_should_succeed(): void
+    {
+        $plan = Plan::factory()->name('starter')->create();
+        $channel = $this->createChannelWithPlan($plan);
+        $channel->update(['podcast_updatedAt' => null]);
+        $playlistId = $this->getPlaylistIdFromChannelId($channel->youtube_id);
+        // faking playlist items response
+        $this->fakePlaylistItemsResponse($playlistId);
+        // command should run properly
+        $this->artisan('status:channel', ['channel_id' => $channel->youtube_id])
+            ->assertExitCode(0)
+            ->expectsTable(
+                ['Channel ID', 'Channel name', 'Email', 'Created', 'Updated', 'Subscription', 'Active'],
+                [[
+                    $channel->youtube_id,
+                    $channel->channel_name,
+                    $channel->user->email,
+                    $channel->channel_createdAt->toDateString(),
+                    '-',
+                    $plan->name,
+                    '✅',
+                ]]
+            )
+        ;
+    }
+
+    /** @test */
     public function inactive_channel_id_should_succeed(): void
     {
         $plan = Plan::factory()->isFree()->create();

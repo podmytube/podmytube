@@ -70,7 +70,7 @@ class StatusChannelCommand extends Command
                 $outputTable[] = [
                     'media_id' => $media->media_id,
                     'title' => $media->title,
-                    'published_at' => $media->published_at->toDateString(),
+                    'published_at' => $media->published_at?->toDateString() ?? '-',
                     'grabbed' => $media->hasBeenGrabbed() ? '✅' : '-',
                 ];
             }, $factory->videos());
@@ -83,7 +83,7 @@ class StatusChannelCommand extends Command
                     $channel->channel_name,
                     $channel->user->email,
                     $channel->channel_createdAt->toDateString(),
-                    $channel->podcast_updatedAt->toDateString(),
+                    $channel->podcast_updatedAt?->toDateString() ?? '-',
                     $channel->subscription->plan->name,
                     $channel->isActive() ? '✅' : '❌',
                 ]]
