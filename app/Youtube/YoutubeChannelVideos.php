@@ -29,9 +29,9 @@ class YoutubeChannelVideos implements QuotasConsumer
         $this->obtainVideos();
     }
 
-    public static function forChannel(...$params)
+    public static function forChannel(string $channelId, ?int $limit = 0)
     {
-        return new static(...$params);
+        return new static($channelId, $limit);
     }
 
     public function videos(): array

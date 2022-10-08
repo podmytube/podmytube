@@ -37,7 +37,7 @@ class YoutubeVideosCommand extends Command
         $this->info('===========================================');
         $this->info("Getting videos available on channel {$this->argument('channelId')}");
         $this->info('===========================================');
-        $factory = YoutubeChannelVideos::forChannel($this->argument('channelId'));
+        $factory = YoutubeChannelVideos::forChannel($this->argument('channelId'), 50);
 
         if ($this->option('raw')) {
             print_r($factory->videos());

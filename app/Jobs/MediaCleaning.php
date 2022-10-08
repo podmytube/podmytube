@@ -21,19 +21,11 @@ class MediaCleaning implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    protected $mediaToDelete;
-
-    public function __construct(Media $mediaToDelete)
+    public function __construct(public Media $mediaToDelete)
     {
-        $this->mediaToDelete = $mediaToDelete;
     }
 
     public function handle(): void
-    {
-        $this->delete();
-    }
-
-    public function delete(): void
     {
         Storage::disk(SendFileBySFTP::REMOTE_DISK);
 

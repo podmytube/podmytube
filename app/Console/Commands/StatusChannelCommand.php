@@ -51,7 +51,7 @@ class StatusChannelCommand extends Command
                 throw new UnknownChannelException($message);
             }
 
-            $factory = YoutubeChannelVideos::forChannel($channel->channel_id);
+            $factory = YoutubeChannelVideos::forChannel($channel->channel_id, 50);
             $nbVideos = count($factory->videos());
             if ($nbVideos <= 0) {
                 $message = "This channel ({$this->argument('channel_id')}) seems to have no videos.";
@@ -75,7 +75,6 @@ class StatusChannelCommand extends Command
                 ];
             }, $factory->videos());
 
-            $this->line('========================');
             $this->table(
                 ['Channel ID', 'Channel name', 'Email', 'Created', 'Updated', 'Subscription', 'Active'],
                 [[
@@ -96,7 +95,7 @@ class StatusChannelCommand extends Command
 
             $errCode = 0;
         } catch (Exception $exception) {
-            $this->error($exception->getMessage(), 'v');
+            $this->error($exception->getMessage());
             Log::error($exception->getMessage());
             $errCode = 1;
         }
