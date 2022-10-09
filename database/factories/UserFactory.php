@@ -20,10 +20,8 @@ class UserFactory extends Factory
             'remember_token' => Str::random(10),
             'newsletter' => true,
             'superadmin' => false,
-            'stripe_id' => null,
             'dont_warn_exceeding_quota' => false,
             'referral_code' => fake()->bothify('????####'),
-            'email_verified_at' => null,
         ];
     }
 

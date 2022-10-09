@@ -13,6 +13,7 @@ use Tests\Traits\IsAbleToTestPodcast;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class PodcastHeaderTest extends TestCase
@@ -25,7 +26,9 @@ class PodcastHeaderTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->channel = Channel::factory()->create();
+        $this->channel = Channel::factory()->create([
+            'podcast_copyright' => 'lorem ipsum',
+        ]);
         $this->seedCategories();
     }
 

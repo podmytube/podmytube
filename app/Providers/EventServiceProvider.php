@@ -34,7 +34,6 @@ class EventServiceProvider extends ServiceProvider
         ],
         MediaUploadedByUserEvent::class => [
             MediaUploadedByUserListener::class,
-            UploadPodcastListener::class,
         ],
         ThumbUpdatedEvent::class => [
             UploadThumbListener::class,

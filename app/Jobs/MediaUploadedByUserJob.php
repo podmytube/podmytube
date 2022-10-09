@@ -15,7 +15,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-class TransferMediaUploadedByUserJob implements ShouldQueue
+class MediaUploadedByUserJob implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;

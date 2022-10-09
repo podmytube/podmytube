@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Tests\Unit\Listeners;
 
 use App\Events\MediaUploadedByUserEvent;
+use App\Jobs\MediaUploadedByUserJob;
 use App\Jobs\SendFileByRsync;
-use App\Jobs\TransferMediaUploadedByUserJob;
+use App\Jobs\UploadPodcastJob;
 use App\Listeners\MediaUploadedByUserListener;
+use App\Models\Channel;
 use App\Models\Media;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
@@ -23,13 +25,19 @@ class MediaUploadedByUserListenerTest extends TestCase
     use RefreshDatabase;
 
     protected Media $media;
+    protected Channel $channel;
     protected MediaUploadedByUserEvent $event;
 
     public function setUp(): void
     {
         parent::setUp();
         Bus::fake(SendFileByRsync::class);
-        $this->media = Media::factory()->uploadedByUser()->create();
+        $this->channel = $this->createChannelWithPlan();
+        $this->media = Media::factory()
+            ->channel($this->channel)
+            ->uploadedByUser()
+            ->create()
+        ;
 
         $this->event = new MediaUploadedByUserEvent($this->media);
     }
@@ -42,6 +50,10 @@ class MediaUploadedByUserListenerTest extends TestCase
         touch($this->media->uploadedFilePath());
         $job = new MediaUploadedByUserListener();
         $job->handle($this->event);
-        Bus::assertDispatched(TransferMediaUploadedByUserJob::class);
+
+        Bus::assertDispatched(MediaUploadedByUserJob::class);
+
+        Bus::assertDispatched(UploadPodcastJob::class, 1);
+        Bus::assertDispatched(fn (UploadPodcastJob $job) => $job->podcastable->youtube_id === $this->channel->youtube_id);
     }
 }

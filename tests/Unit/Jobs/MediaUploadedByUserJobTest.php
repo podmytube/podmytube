@@ -6,8 +6,8 @@ namespace Tests\Unit\Jobs;
 
 use App\Exceptions\NotReadableFileException;
 use App\Exceptions\UploadedMediaByUserIsMissingException;
+use App\Jobs\MediaUploadedByUserJob;
 use App\Jobs\SendFileByRsync;
-use App\Jobs\TransferMediaUploadedByUserJob;
 use App\Models\Media;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
@@ -18,7 +18,7 @@ use Tests\TestCase;
  *
  * @coversNothing
  */
-class TransferMediaUploadedByUserJobTest extends TestCase
+class MediaUploadedByUserJobTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -44,7 +44,7 @@ class TransferMediaUploadedByUserJobTest extends TestCase
     /** @test */
     public function missing_uploaded_file_for_media_should_throw_exception(): void
     {
-        $job = new TransferMediaUploadedByUserJob($this->media);
+        $job = new MediaUploadedByUserJob($this->media);
         $this->expectException(UploadedMediaByUserIsMissingException::class);
         $job->handle();
     }
@@ -55,7 +55,7 @@ class TransferMediaUploadedByUserJobTest extends TestCase
         touch($this->media->uploadedFilePath());
         chmod($this->media->uploadedFilePath(), 0300);
 
-        $job = new TransferMediaUploadedByUserJob($this->media);
+        $job = new MediaUploadedByUserJob($this->media);
         $this->expectException(NotReadableFileException::class);
         $job->handle();
     }
@@ -67,7 +67,7 @@ class TransferMediaUploadedByUserJobTest extends TestCase
 
         Bus::fake(SendFileByRsync::class);
 
-        $job = new TransferMediaUploadedByUserJob($this->media);
+        $job = new MediaUploadedByUserJob($this->media);
         $job->handle();
 
         Bus::assertDispatched(SendFileByRsync::class, 1);

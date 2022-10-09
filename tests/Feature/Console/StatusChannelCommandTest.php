@@ -43,6 +43,10 @@ class StatusChannelCommandTest extends CommandTestCase
     {
         $plan = Plan::factory()->name('starter')->create();
         $channel = $this->createChannelWithPlan($plan);
+        $channel->update([
+            'channel_createdAt' => now()->subMonth(),
+            'podcast_updatedAt' => now()->subDay(),
+        ]);
         $playlistId = $this->getPlaylistIdFromChannelId($channel->youtube_id);
         // faking playlist items response
         $this->fakePlaylistItemsResponse($playlistId);
@@ -69,7 +73,10 @@ class StatusChannelCommandTest extends CommandTestCase
     {
         $plan = Plan::factory()->name('starter')->create();
         $channel = $this->createChannelWithPlan($plan);
-        $channel->update(['podcast_updatedAt' => null]);
+        $channel->update([
+            'channel_createdAt' => now()->subMonth(),
+            'podcast_updatedAt' => null,
+        ]);
         $playlistId = $this->getPlaylistIdFromChannelId($channel->youtube_id);
         // faking playlist items response
         $this->fakePlaylistItemsResponse($playlistId);
@@ -96,7 +103,12 @@ class StatusChannelCommandTest extends CommandTestCase
     {
         $plan = Plan::factory()->isFree()->create();
         $channel = $this->createChannelWithPlan($plan);
-        $channel->update(['active' => false]);
+        $channel->update([
+            'channel_createdAt' => now()->subMonth(),
+            'podcast_updatedAt' => now()->subDay(),
+            'active' => false,
+        ]);
+
         $playlistId = $this->getPlaylistIdFromChannelId($channel->youtube_id);
 
         // faking playlist items response
