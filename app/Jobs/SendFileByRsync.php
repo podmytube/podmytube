@@ -97,4 +97,14 @@ class SendFileByRsync implements ShouldQueue
 
         return true;
     }
+
+    public function localFilePath(): string
+    {
+        return $this->localFilePath;
+    }
+
+    public function remoteFilePath(): string
+    {
+        return $this->remoteFilePath;
+    }
 }

@@ -24,13 +24,10 @@ class MediaFactory extends Factory
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor. 
 Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi utt.
 EOT,
-            'length' => 0,
             'duration' => 0,
+            'length' => 0,
             'published_at' => now(),
-            'grabbed_at' => null,
             'status' => Media::STATUS_NOT_DOWNLOADED,
-            'deleted_at' => null,
-            'uploaded_by_user' => false,
         ];
     }
 
@@ -43,6 +40,11 @@ EOT,
                 'grabbed_at' => $grabbedAt,
             ]
         );
+    }
+
+    public function uploadedByUser(): static
+    {
+        return $this->state(['uploaded_by_user' => true]);
     }
 
     public function channel(Channel $channel): static

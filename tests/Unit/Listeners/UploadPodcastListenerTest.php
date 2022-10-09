@@ -26,6 +26,7 @@ class UploadPodcastListenerTest extends TestCase
     protected Channel $channel;
 
     protected Playlist $playlist;
+    protected ThumbUpdatedEvent $event;
 
     public function setUp(): void
     {
@@ -33,7 +34,7 @@ class UploadPodcastListenerTest extends TestCase
         $this->seedApiKeys();
         $this->channel = $this->createChannelWithPlan();
         $this->playlist = Playlist::factory()->create([
-            'channel_id' => $this->channel->channelId(),
+            'channel_id' => $this->channel->youtube_id,
             'youtube_playlist_id' => self::PODMYTUBE_TEST_PLAYLIST_ID,
         ]);
         Media::factory()->grabbedAt(now()->subday())->create(['media_id' => 'GJzweq_VbVc']);
@@ -45,18 +46,24 @@ class UploadPodcastListenerTest extends TestCase
     /** @test */
     public function upload_podcast_listener_for_channel(): void
     {
-        $thumbUpdatedEvent = new ThumbUpdatedEvent($this->channel);
-        $this->assertTrue((new UploadPodcastListener())->handle($thumbUpdatedEvent));
+        $this->event = new ThumbUpdatedEvent($this->channel);
+        $job = new UploadPodcastListener();
+        $job->handle($this->event);
+
+        Bus::assertDispatched(SendFileByRsync::class, 1);
         Bus::assertDispatched(function (SendFileByRsync $job) {
-            return config('app.feed_path') . $this->channel->channelId() . '/' . config('app.feed_filename') === $job->remoteFilePath;
+            return config('app.feed_path') . $this->channel->youtube_id . '/' . config('app.feed_filename') === $job->remoteFilePath;
         });
     }
 
     /** @test */
     public function upload_podcast_listener_for_playlist(): void
     {
-        $thumbUpdatedEvent = new ThumbUpdatedEvent($this->playlist);
-        $this->assertTrue((new UploadPodcastListener())->handle($thumbUpdatedEvent));
+        $this->event = new ThumbUpdatedEvent($this->playlist);
+        $job = new UploadPodcastListener();
+        $job->handle($this->event);
+
+        Bus::assertDispatched(SendFileByRsync::class, 1);
         Bus::assertDispatched(function (SendFileByRsync $job) {
             return config('app.playlists_path') . $this->playlist->channelId() . '/' . $this->playlist->youtube_playlist_id . '.xml' === $job->remoteFilePath;
         });

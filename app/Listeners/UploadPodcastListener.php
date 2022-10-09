@@ -18,7 +18,5 @@ class UploadPodcastListener implements ShouldQueue
     {
         Log::debug('About to upload podcast feed for ' . $event->podcastable()->nameWithId());
         UploadPodcastFactory::for($event->podcastable())->run();
-
-        return true; // only for tests
     }
 }

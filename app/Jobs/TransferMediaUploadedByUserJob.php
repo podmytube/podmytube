@@ -2,20 +2,25 @@
 
 declare(strict_types=1);
 
-namespace App\Listeners;
+namespace App\Jobs;
 
 use App\Exceptions\NotReadableFileException;
-use App\Interfaces\InteractsWithMedia;
-use App\Jobs\SendFileByRsync;
+use App\Exceptions\UploadedMediaByUserIsMissingException;
+use App\Models\Media;
 use Carbon\Carbon;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-use InvalidArgumentException;
 
-class UploadMediaListener implements ShouldQueue
+class TransferMediaUploadedByUserJob implements ShouldQueue
 {
+    use Dispatchable;
     use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * The number of seconds to wait before retrying the job.
@@ -27,25 +32,27 @@ class UploadMediaListener implements ShouldQueue
      */
     public $maxExceptions = 3;
 
-    public function handle(InteractsWithMedia $event): void
+    public function __construct(protected Media $media)
     {
-        $media = $event->media();
+    }
 
-        $localPath = $media->uploadedFilePath();
-        $remotePath = $media->remoteFilePath();
+    public function handle(): void
+    {
+        $localPath = $this->media->uploadedFilePath();
+        $remotePath = $this->media->remoteFilePath();
 
         if (!file_exists($localPath)) {
             $message = "File on {$localPath} does not exists.";
             Log::error($message);
 
-            throw new InvalidArgumentException($message);
+            throw new UploadedMediaByUserIsMissingException($message);
         }
 
         if (!is_readable($localPath)) {
             $message = "File on {$localPath} is not readable.";
             Log::error($message);
 
-            throw new NotReadableFileException("File on {$localPath} does not exists.");
+            throw new NotReadableFileException($message);
         }
 
         SendFileByRsync::dispatch($localPath, $remotePath, true)->onQueue('podwww');
