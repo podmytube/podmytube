@@ -7,6 +7,7 @@ namespace App\Exceptions;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -20,6 +21,7 @@ class Handler extends ExceptionHandler
 
     protected array $dontReportToSentry = [
         DoNotReportToSentryException::class,
+        NotFoundHttpException::class,
     ];
 
     /**
