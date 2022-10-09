@@ -32,7 +32,7 @@ class UploadPodcastFactory
         // defining where to render local path
         $this->localPath = $this->saveRenderedFile($renderedPodcast);
 
-        SendFileByRsync::dispatch($this->localPath, $this->remotePath(), $cleanAfter = true)->delay(now()->addSecond());
+        SendFileByRsync::dispatch($this->localPath, $this->remotePath(), true)->delay(now()->addSecond());
 
         $this->podcastable->wasUpdatedOn(now());
 
@@ -68,7 +68,10 @@ class UploadPodcastFactory
 
         // saving podcast locally
         $status = file_put_contents($localPath, $renderedPodcast);
-        throw_if($status === false, new PodcastSavingFailureException("Saving rendered podcast to {$localPath} has failed."));
+        throw_if(
+            $status === false,
+            new PodcastSavingFailureException("Saving rendered podcast to {$localPath} has failed.")
+        );
 
         return $localPath;
     }
