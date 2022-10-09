@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Listeners;
 
-use App\Listeners\SendWelcomeToPodmytubeEmail;
+use App\Listeners\SendWelcomeToPodmytubeEmailListener;
 use App\Mail\WelcomeToPodmytubeMail;
 use App\Models\User;
 use Illuminate\Auth\Events\Verified;
@@ -27,7 +27,7 @@ class SendWelcomeToPodmytubeEmailTest extends TestCase
     {
         parent::setUp();
 
-        Mail::fake(SendWelcomeToPodmytubeEmail::class);
+        Mail::fake(SendWelcomeToPodmytubeEmailListener::class);
     }
 
     /** @test */
@@ -36,7 +36,7 @@ class SendWelcomeToPodmytubeEmailTest extends TestCase
         $nonVerifiedUser = User::factory()->create();
         $event = new Verified($nonVerifiedUser);
 
-        $job = new SendWelcomeToPodmytubeEmail();
+        $job = new SendWelcomeToPodmytubeEmailListener();
         $job->handle($event);
         Mail::assertNothingSent();
     }
@@ -47,7 +47,7 @@ class SendWelcomeToPodmytubeEmailTest extends TestCase
         $verifiedUser = User::factory()->verifiedAt(now())->create();
         $event = new Verified($verifiedUser);
 
-        $job = new SendWelcomeToPodmytubeEmail();
+        $job = new SendWelcomeToPodmytubeEmailListener();
         $job->handle($event);
         Mail::assertSent(WelcomeToPodmytubeMail::class);
     }

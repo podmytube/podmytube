@@ -11,7 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Mail;
 
-class SendWelcomeToPodmytubeEmail implements ShouldQueue
+class SendWelcomeToPodmytubeEmailListener implements ShouldQueue
 {
     use InteractsWithQueue;
 
