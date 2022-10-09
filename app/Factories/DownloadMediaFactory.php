@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Factories;
 
-use App\Events\ChannelUpdated;
+use App\Events\ChannelUpdatedEvent;
 use App\Exceptions\DownloadMediaTagException;
 use App\Exceptions\MediaIsTooOldException;
 use App\Exceptions\YoutubeAndLocalDurationException;
@@ -109,7 +109,7 @@ class DownloadMediaFactory
         Log::debug("Processing media {$this->media->media_id} is finished.");
         if ($status === Media::STATUS_DOWNLOADED) {
             // media has been dowloaded => update podcast feed
-            ChannelUpdated::dispatch($this->media->channel);
+            ChannelUpdatedEvent::dispatch($this->media->channel);
         }
 
         return true;

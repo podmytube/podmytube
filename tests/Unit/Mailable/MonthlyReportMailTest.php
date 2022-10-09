@@ -33,11 +33,20 @@ class MonthlyReportMailTest extends TestCase
     }
 
     /** @test */
-    public function subject_is_fine(): void
+    public function default_period_subject_is_fine(): void
     {
         $this->channel = $this->createChannelWithPlan($this->starterPlan);
         $expectedSubject = 'Here is your ' . now()->englishMonth . ' ' . now()->year . " report for {$this->channel->channel_name}";
-        $mailContent = new MonthlyReportMail($this->channel, now());
+        $mailContent = new MonthlyReportMail($this->channel);
+        $this->assertEquals($expectedSubject, $mailContent->getSubject());
+    }
+
+    /** @test */
+    public function specified_period_subject_is_fine(): void
+    {
+        $this->channel = $this->createChannelWithPlan($this->starterPlan);
+        $expectedSubject = 'Here is your ' . now()->subMonths(2)->englishMonth . ' ' . now()->subMonths(2)->year . " report for {$this->channel->channel_name}";
+        $mailContent = new MonthlyReportMail($this->channel, now()->subMonths(2));
         $this->assertEquals($expectedSubject, $mailContent->getSubject());
     }
 

@@ -26,7 +26,7 @@ class MonthlyReportMail extends Mailable
     public string $formattedPeriod;
     public bool $displayUpgradeMessage = false;
 
-    protected ?Carbon $wantedMonth;
+    protected Carbon $wantedMonth;
 
     /**
      * Create a monthly report email.

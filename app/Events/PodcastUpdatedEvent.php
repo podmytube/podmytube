@@ -10,7 +10,7 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class ChannelUpdated implements InteractsWithPodcastable
+class PodcastUpdatedEvent implements InteractsWithPodcastable
 {
     use Dispatchable;
     use InteractsWithSockets;

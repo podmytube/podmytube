@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use App\Events\ChannelRegistered;
-use App\Events\ChannelUpdated;
-use App\Events\MediaUploadedByUser;
-use App\Events\PodcastUpdated;
-use App\Events\ThumbUpdated;
+use App\Events\ChannelRegisteredEvent;
+use App\Events\ChannelUpdatedEvent;
+use App\Events\MediaUploadedByUserEvent;
+use App\Events\PodcastUpdatedEvent;
+use App\Events\ThumbUpdatedEvent;
 use App\Listeners\SendChannelIsRegisteredEmail;
 use App\Listeners\UploadMediaListener;
 use App\Listeners\UploadPodcastListener;
@@ -26,22 +26,22 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        ChannelRegistered::class => [
+        ChannelRegisteredEvent::class => [
             UploadPodcastListener::class,
             SendChannelIsRegisteredEmail::class,
         ],
-        ChannelUpdated::class => [
+        ChannelUpdatedEvent::class => [
             UploadPodcastListener::class,
         ],
-        MediaUploadedByUser::class => [
+        MediaUploadedByUserEvent::class => [
             UploadMediaListener::class,
             UploadPodcastListener::class,
         ],
-        ThumbUpdated::class => [
+        ThumbUpdatedEvent::class => [
             UploadThumbListener::class,
             UploadPodcastListener::class,
         ],
-        PodcastUpdated::class => [
+        PodcastUpdatedEvent::class => [
             UploadPodcastListener::class,
         ],
         Registered::class => [

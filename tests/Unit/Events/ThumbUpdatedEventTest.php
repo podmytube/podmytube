@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Events;
 
-use App\Events\ThumbUpdated;
+use App\Events\ThumbUpdatedEvent;
 use App\Models\Channel;
 use App\Models\Playlist;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -12,6 +12,7 @@ use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class ThumbUpdatedEventTest extends TestCase
@@ -30,22 +31,14 @@ class ThumbUpdatedEventTest extends TestCase
     }
 
     /** @test */
-    public function class_is_instanciable(): void
-    {
-        $thumbUpdatedEvent = new ThumbUpdated($this->channel);
-        $this->assertNotNull($thumbUpdatedEvent);
-        $this->assertInstanceOf(ThumbUpdated::class, $thumbUpdatedEvent);
-    }
-
-    /** @test */
     public function podcastable_is_fine(): void
     {
-        $thumbUpdatedEvent = new ThumbUpdated($this->channel);
+        $thumbUpdatedEvent = new ThumbUpdatedEvent($this->channel);
         $podcastable = $thumbUpdatedEvent->podcastable();
         $this->assertNotNull($podcastable);
         $this->assertInstanceOf(Channel::class, $podcastable);
 
-        $thumbUpdatedEvent = new ThumbUpdated($this->playlist);
+        $thumbUpdatedEvent = new ThumbUpdatedEvent($this->playlist);
         $podcastable = $thumbUpdatedEvent->podcastable();
         $this->assertNotNull($podcastable);
         $this->assertInstanceOf(Playlist::class, $podcastable);

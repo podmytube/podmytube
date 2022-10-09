@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Listeners;
 
-use App\Events\ThumbUpdated;
+use App\Events\ThumbUpdatedEvent;
 use App\Exceptions\NotReadableFileException;
 use App\Interfaces\InteractsWithPodcastable;
 use App\Jobs\SendFileByRsync;
@@ -38,7 +38,7 @@ class UploadThumbListenerTest extends TestCase
         $this->channel = $this->createChannelWithPlan();
         $this->createCoverFor($this->channel);
 
-        $this->event = new ThumbUpdated($this->channel);
+        $this->event = new ThumbUpdatedEvent($this->channel);
     }
 
     public function tearDown(): void

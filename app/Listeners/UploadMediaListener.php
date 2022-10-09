@@ -48,7 +48,7 @@ class UploadMediaListener implements ShouldQueue
             throw new NotReadableFileException("File on {$localPath} does not exists.");
         }
 
-        SendFileByRsync::dispatchSync($localPath, $remotePath, true);
+        SendFileByRsync::dispatch($localPath, $remotePath, true)->onQueue('podwww');
     }
 
     public function retryUntil(): Carbon

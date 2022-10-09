@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
-use App\Events\ChannelUpdated;
+use App\Events\ChannelUpdatedEvent;
 use App\Models\Media;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -42,6 +42,6 @@ class MediaCleaning implements ShouldQueue
         $this->mediaToDelete->delete();
 
         // sending event to rebuild podcast
-        event(new ChannelUpdated($this->mediaToDelete->channel));
+        event(new ChannelUpdatedEvent($this->mediaToDelete->channel));
     }
 }

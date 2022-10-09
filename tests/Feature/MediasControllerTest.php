@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use App\Events\MediaUploadedByUser;
-use App\Events\PodcastUpdated;
+use App\Events\MediaUploadedByUserEvent;
+use App\Events\PodcastUpdatedEvent;
 use App\Models\Channel;
 use App\Models\Media;
 use App\Models\Plan;
@@ -130,7 +130,7 @@ class MediasControllerTest extends TestCase
         $this->media->refresh();
         $this->assertEquals('title updated', $this->media->title);
         $this->assertEquals('description updated', $this->media->description);
-        Event::assertDispatched(MediaUploadedByUser::class);
+        Event::assertDispatched(MediaUploadedByUserEvent::class);
     }
 
     public function update_with_media_should_be_fine(): void
@@ -147,7 +147,7 @@ class MediasControllerTest extends TestCase
         $this->media->refresh();
         $this->assertEquals('title updated', $this->media->title);
         $this->assertEquals('description updated', $this->media->description);
-        Event::assertDispatched(MediaUploadedByUser::class);
+        Event::assertDispatched(MediaUploadedByUserEvent::class);
     }
 
     /** @test */
@@ -170,7 +170,7 @@ class MediasControllerTest extends TestCase
         $mediaToDelete->refresh();
         // should have been deleted today
         $this->assertEquals(now()->toDateString(), $mediaToDelete->deleted_at->toDateString());
-        Event::assertDispatched(fn (PodcastUpdated $event) => $event->podcastable->channelId() === $this->channel->channel_id);
+        Event::assertDispatched(fn (PodcastUpdatedEvent $event) => $event->podcastable->channelId() === $this->channel->channel_id);
     }
 
     /** @test */
@@ -195,7 +195,7 @@ class MediasControllerTest extends TestCase
         $mediaToDelete->refresh();
         // should have been deleted today
         $this->assertNull($mediaToDelete->deleted_at);
-        Event::assertDispatched(fn (PodcastUpdated $event) => $event->podcastable->channelId() === $this->channel->channel_id);
+        Event::assertDispatched(fn (PodcastUpdatedEvent $event) => $event->podcastable->channelId() === $this->channel->channel_id);
     }
 
     /*

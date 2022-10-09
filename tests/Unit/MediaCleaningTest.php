@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use App\Events\ChannelUpdated;
+use App\Events\ChannelUpdatedEvent;
 use App\Jobs\MediaCleaning;
 use App\Jobs\SendFileBySFTP;
 use App\Models\Media;
@@ -15,6 +15,7 @@ use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class MediaCleaningTest extends TestCase
@@ -64,6 +65,6 @@ class MediaCleaningTest extends TestCase
         $this->assertEquals(0, $mediaSoftDeleted->duration);
 
         // an event should have been sent to rebuild podcast
-        Event::assertDispatched(ChannelUpdated::class);
+        Event::assertDispatched(ChannelUpdatedEvent::class);
     }
 }

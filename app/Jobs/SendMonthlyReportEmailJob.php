@@ -21,7 +21,7 @@ class SendMonthlyReportEmailJob implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    public function __construct(public Podcastable $podcastable, public Carbon $wantedMonth)
+    public function __construct(public Podcastable $podcastable, protected ?Carbon $wantedMonth = null)
     {
     }
 

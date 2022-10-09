@@ -33,22 +33,22 @@ class SendWelcomeToPodmytubeEmailTest extends TestCase
     /** @test */
     public function when_not_verified_sending_welcome_to_podmytube_email_should_fail(): void
     {
-        $this->user = User::factory()->create();
-        $this->event = new Verified($this->user);
+        $nonVerifiedUser = User::factory()->create();
+        $event = new Verified($nonVerifiedUser);
 
         $job = new SendWelcomeToPodmytubeEmail();
-        $job->handle($this->event);
+        $job->handle($event);
         Mail::assertNothingSent();
     }
 
     /** @test */
     public function sending_welcome_to_podmytube_email_should_succeed(): void
     {
-        $this->user = User::factory()->verifiedAt(now())->create();
-        $this->event = new Verified($this->user);
+        $verifiedUser = User::factory()->verifiedAt(now())->create();
+        $event = new Verified($verifiedUser);
 
         $job = new SendWelcomeToPodmytubeEmail();
-        $job->handle($this->event);
+        $job->handle($event);
         Mail::assertSent(WelcomeToPodmytubeMail::class);
     }
 }

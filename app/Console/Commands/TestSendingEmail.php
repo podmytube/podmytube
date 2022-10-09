@@ -17,22 +17,18 @@ use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Mail;
 use InvalidArgumentException;
 
-class SendTestEmail extends Command
+class TestSendingEmail extends Command
 {
     use BaseCommand;
 
     protected const DEFAULT_EMAIL = 'frederick@podmytube.com';
 
     /** @var string The name and signature of the console command. */
-    protected $signature = <<<'EOT'
-test:email
-{--email=frederick@podmytube.com : email address to send email to}
-{--emailIdToSend= : email template to send}
-EOT;
+    protected $signature = 'test:email {--email=frederick@podmytube.com : email address to send email to} \\
+        {--emailIdToSend= : email template to send}';
 
     /** @var string The console command description. */
     protected $description = 'This command is allowing me to send test email to myself (by default) and check if everything is fine.';
@@ -71,9 +67,6 @@ EOT;
     {
         $this->prologue();
 
-        // if not restarted
-        Artisan::call('queue:restart');
-
         try {
             $this->emailIdToSend = $this->option('emailIdToSend') ?? $this->askUserWhatMailToSend();
             if (!in_array($this->emailIdToSend, array_keys($this->availableEmails))) {
@@ -98,7 +91,9 @@ EOT;
 
                 case 3: // monthly report with upgrade message
                     $this->fakeSubscription(Plan::bySlug('forever_free'));
-                    $mailable = new MonthlyReportMail($this->subscription->channel);
+                    $mailable = (new MonthlyReportMail($this->subscription->channel))
+                        ->onQueue('foo')
+                    ;
 
                     break;
 

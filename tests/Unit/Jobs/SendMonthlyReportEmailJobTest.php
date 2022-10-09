@@ -38,4 +38,12 @@ class SendMonthlyReportEmailJobTest extends TestCase
         $job->handle();
         Mail::assertSent(fn (MonthlyReportMail $mail) => $mail->channel->youtube_id === $this->channel->youtube_id);
     }
+
+    /** @test */
+    public function sending_monthly_report_email_without_period_shoudl_send_current_month(): void
+    {
+        $job = new SendMonthlyReportEmailJob($this->channel);
+        $job->handle();
+        Mail::assertSent(fn (MonthlyReportMail $mail) => $mail->channel->youtube_id === $this->channel->youtube_id);
+    }
 }

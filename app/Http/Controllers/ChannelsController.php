@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Events\ChannelUpdated;
+use App\Events\ChannelUpdatedEvent;
 use App\Http\Requests\ChannelRequest;
 use App\Jobs\ChannelCleaningJob;
 use App\Models\Category;
@@ -66,7 +66,7 @@ class ChannelsController extends Controller
 
         $channel->update($request->validated());
 
-        ChannelUpdated::dispatch($channel);
+        ChannelUpdatedEvent::dispatch($channel);
 
         return redirect(route('home'))
             ->with(

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use App\Events\ThumbUpdated;
+use App\Events\ThumbUpdatedEvent;
 use App\Jobs\CreateVignetteFromThumbJob;
 use App\Models\Channel;
 use App\Models\Playlist;
@@ -136,7 +136,7 @@ class ThumbsControllerTest extends TestCase
         ;
 
         Bus::assertDispatched(CreateVignetteFromThumbJob::class);
-        Event::assertDispatched(ThumbUpdated::class);
+        Event::assertDispatched(ThumbUpdatedEvent::class);
 
         // once updated, coverable should have a cover
         $this->channel->refresh();
@@ -163,7 +163,7 @@ class ThumbsControllerTest extends TestCase
         ;
 
         Bus::assertDispatched(CreateVignetteFromThumbJob::class);
-        Event::assertDispatched(ThumbUpdated::class);
+        Event::assertDispatched(ThumbUpdatedEvent::class);
 
         // once updated, coverable should have a cover
         $this->playlist->refresh();

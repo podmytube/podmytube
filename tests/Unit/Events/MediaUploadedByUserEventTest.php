@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Events;
 
-use App\Events\MediaUploadedByUser;
+use App\Events\MediaUploadedByUserEvent;
 use App\Models\Channel;
 use App\Models\Media;
 use App\Models\Playlist;
@@ -13,6 +13,7 @@ use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class MediaUploadedByUserEventTest extends TestCase
@@ -34,30 +35,22 @@ class MediaUploadedByUserEventTest extends TestCase
     }
 
     /** @test */
-    public function class_is_instanciable(): void
-    {
-        $thumbUpdatedEvent = new MediaUploadedByUser($this->media);
-        $this->assertNotNull($thumbUpdatedEvent);
-        $this->assertInstanceOf(MediaUploadedByUser::class, $thumbUpdatedEvent);
-    }
-
-    /** @test */
     public function podcastable_is_fine(): void
     {
-        $thumbUpdatedEvent = new MediaUploadedByUser($this->media);
+        $thumbUpdatedEvent = new MediaUploadedByUserEvent($this->media);
         $podcastable = $thumbUpdatedEvent->podcastable();
         $this->assertNotNull($podcastable);
         $this->assertInstanceOf(Channel::class, $podcastable);
-        $this->assertEquals($this->channel->channel_id, $podcastable->channel_id);
+        $this->assertEquals($this->channel->youtube_id, $podcastable->youtube_id);
     }
 
     /** @test */
     public function media_is_fine(): void
     {
-        $thumbUpdatedEvent = new MediaUploadedByUser($this->media);
+        $thumbUpdatedEvent = new MediaUploadedByUserEvent($this->media);
         $media = $thumbUpdatedEvent->media();
         $this->assertNotNull($media);
         $this->assertInstanceOf(Media::class, $media);
-        $this->assertEquals($this->media->media_id, $media->media_id);
+        $this->assertEquals($this->media->youtube_id, $media->youtube_id);
     }
 }

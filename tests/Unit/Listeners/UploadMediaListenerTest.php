@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Listeners;
 
-use App\Events\MediaUploadedByUser;
+use App\Events\MediaUploadedByUserEvent;
 use App\Exceptions\NotReadableFileException;
 use App\Jobs\SendFileByRsync;
 use App\Listeners\UploadMediaListener;
@@ -16,6 +16,7 @@ use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class UploadMediaListenerTest extends TestCase
@@ -23,7 +24,7 @@ class UploadMediaListenerTest extends TestCase
     use RefreshDatabase;
 
     protected Media $media;
-    protected MediaUploadedByUser $event;
+    protected MediaUploadedByUserEvent $event;
 
     public function setUp(): void
     {
@@ -31,7 +32,7 @@ class UploadMediaListenerTest extends TestCase
         Bus::fake(SendFileByRsync::class);
         $this->media = Media::factory()->create();
 
-        $this->event = new MediaUploadedByUser($this->media);
+        $this->event = new MediaUploadedByUserEvent($this->media);
     }
 
     public function tearDown(): void

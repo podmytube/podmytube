@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use App\Events\ChannelUpdated;
+use App\Events\ChannelUpdatedEvent;
 use App\Models\Channel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
@@ -12,6 +12,7 @@ use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class ChannelUpdateTest extends TestCase
@@ -38,7 +39,7 @@ class ChannelUpdateTest extends TestCase
             ->assertSuccessful()
         ;
 
-        Event::assertDispatched(ChannelUpdated::class);
+        Event::assertDispatched(ChannelUpdatedEvent::class);
     }
 
     /**
@@ -55,7 +56,7 @@ class ChannelUpdateTest extends TestCase
             ->assertRedirect(route('channel.edit', $this->channel))
         ;
 
-        Event::assertNotDispatched(ChannelUpdated::class);
+        Event::assertNotDispatched(ChannelUpdatedEvent::class);
     }
 
     public function provideValidData()

@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Listeners;
 
-use App\Events\ThumbUpdated;
+use App\Events\ThumbUpdatedEvent;
 use App\Jobs\SendFileByRsync;
-use App\Jobs\SendFileBySFTP;
 use App\Listeners\UploadPodcastListener;
 use App\Models\Channel;
 use App\Models\Media;
@@ -17,6 +16,7 @@ use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class UploadPodcastListenerTest extends TestCase
@@ -45,7 +45,7 @@ class UploadPodcastListenerTest extends TestCase
     /** @test */
     public function upload_podcast_listener_for_channel(): void
     {
-        $thumbUpdatedEvent = new ThumbUpdated($this->channel);
+        $thumbUpdatedEvent = new ThumbUpdatedEvent($this->channel);
         $this->assertTrue((new UploadPodcastListener())->handle($thumbUpdatedEvent));
         Bus::assertDispatched(function (SendFileByRsync $job) {
             return config('app.feed_path') . $this->channel->channelId() . '/' . config('app.feed_filename') === $job->remoteFilePath;
@@ -55,7 +55,7 @@ class UploadPodcastListenerTest extends TestCase
     /** @test */
     public function upload_podcast_listener_for_playlist(): void
     {
-        $thumbUpdatedEvent = new ThumbUpdated($this->playlist);
+        $thumbUpdatedEvent = new ThumbUpdatedEvent($this->playlist);
         $this->assertTrue((new UploadPodcastListener())->handle($thumbUpdatedEvent));
         Bus::assertDispatched(function (SendFileByRsync $job) {
             return config('app.playlists_path') . $this->playlist->channelId() . '/' . $this->playlist->youtube_playlist_id . '.xml' === $job->remoteFilePath;

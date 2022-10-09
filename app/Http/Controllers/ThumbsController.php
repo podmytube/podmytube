@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Events\ThumbUpdated;
+use App\Events\ThumbUpdatedEvent;
 use App\Http\Requests\ThumbRequest;
 use App\Interfaces\Coverable;
 use App\Jobs\CreateVignetteFromThumbJob;
@@ -72,10 +72,10 @@ class ThumbsController extends Controller
         $thumb = $coverable->setCoverFromUploadedFile($uploadedFile);
 
         // dispatching create vignette job
-        CreateVignetteFromThumbJob::dispatchSync($thumb);
+        CreateVignetteFromThumbJob::dispatch($thumb)->onQueue('podwww');
 
         // dispatching thumbUpdated event
-        ThumbUpdated::dispatch($thumb->coverable);
+        ThumbUpdatedEvent::dispatch($thumb->coverable);
 
         return redirect()->route('home')->with('success', 'Your cover has been updated 🎉.');
     }

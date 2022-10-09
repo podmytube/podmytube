@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Events\MediaUploadedByUser;
-use App\Events\PodcastUpdated;
+use App\Events\MediaUploadedByUserEvent;
+use App\Events\PodcastUpdatedEvent;
 use App\Http\Requests\MediaRequest;
 use App\Http\Requests\UpdateMediaRequest;
 use App\Models\Channel;
@@ -116,7 +116,7 @@ class MediasController extends Controller
             Log::debug(self::LOG_PREFIX . " {$channel->nameWithId()} : media is persisted with id {$media->id}.");
 
             // dispatching event
-            MediaUploadedByUser::dispatch($media);
+            MediaUploadedByUserEvent::dispatch($media);
 
             Log::debug(self::LOG_PREFIX . " {$channel->nameWithId()} : media has been dispatched for upload.");
 
@@ -176,7 +176,7 @@ class MediasController extends Controller
             Log::debug(self::LOG_PREFIX . " {$channel->nameWithId()} : media has been updated in db.");
 
             // dispatching event
-            MediaUploadedByUser::dispatch($media);
+            MediaUploadedByUserEvent::dispatch($media);
 
             Log::debug(self::LOG_PREFIX . " {$channel->nameWithId()} : media has been dispatched.");
 
@@ -198,7 +198,7 @@ class MediasController extends Controller
         try {
             $media->delete();
 
-            PodcastUpdated::dispatch($media->channel);
+            PodcastUpdatedEvent::dispatch($media->channel);
 
             return redirect(route('channel.medias.index', $media->channel))
                 ->with(
@@ -228,7 +228,7 @@ class MediasController extends Controller
         try {
             $media->restore();
 
-            PodcastUpdated::dispatch($media->channel);
+            PodcastUpdatedEvent::dispatch($media->channel);
 
             return redirect(route('channel.medias.index', $media->channel))
                 ->with(

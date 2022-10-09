@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Jobs\StripeWebhooks;
 
-use App\Events\ChannelRegistered;
+use App\Events\ChannelRegisteredEvent;
 use App\Exceptions\CannotIdentifyUserFromStripeException;
 use App\Exceptions\ChannelOwnerMismatchingStripeException;
 use App\Exceptions\EmptyChannelIdReceivedFromStripeException;
@@ -95,7 +95,7 @@ class HandleCheckoutSessionCompletedJob implements ShouldQueue
         // finally update channel active status
         $this->channel->update(['active' => true]);
 
-        ChannelRegistered::dispatch($this->channel);
+        ChannelRegisteredEvent::dispatch($this->channel);
 
         return 0;
     }

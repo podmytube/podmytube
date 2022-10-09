@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Events;
 
-use App\Events\ChannelRegistered;
+use App\Events\ChannelRegisteredEvent;
 use App\Models\Channel;
 use App\Models\Playlist;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -12,6 +12,7 @@ use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class ChannelRegisteredEventTest extends TestCase
@@ -29,22 +30,14 @@ class ChannelRegisteredEventTest extends TestCase
     }
 
     /** @test */
-    public function class_is_instanciable(): void
-    {
-        $channelRegisteredEvent = new ChannelRegistered($this->channel);
-        $this->assertNotNull($channelRegisteredEvent);
-        $this->assertInstanceOf(ChannelRegistered::class, $channelRegisteredEvent);
-    }
-
-    /** @test */
     public function podcastable_is_fine(): void
     {
-        $channelRegisteredEvent = new ChannelRegistered($this->channel);
+        $channelRegisteredEvent = new ChannelRegisteredEvent($this->channel);
         $podcastable = $channelRegisteredEvent->podcastable();
         $this->assertNotNull($podcastable);
         $this->assertInstanceOf(Channel::class, $podcastable);
 
-        $channelRegisteredEvent = new ChannelRegistered($this->playlist);
+        $channelRegisteredEvent = new ChannelRegisteredEvent($this->playlist);
         $podcastable = $channelRegisteredEvent->podcastable();
         $this->assertNotNull($podcastable);
         $this->assertInstanceOf(Playlist::class, $podcastable);

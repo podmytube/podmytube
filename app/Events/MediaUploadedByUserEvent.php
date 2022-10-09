@@ -12,7 +12,7 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class MediaUploadedByUser implements InteractsWithPodcastable, InteractsWithMedia
+class MediaUploadedByUserEvent implements InteractsWithPodcastable, InteractsWithMedia
 {
     use Dispatchable;
     use InteractsWithSockets;
