@@ -13,8 +13,8 @@ use App\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
 /**
@@ -33,6 +33,8 @@ class ThumbsControllerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+        Queue::fake(CreateVignetteFromThumbJob::class);
+        Event::fake(ThumbUpdatedEvent::class);
         $this->user = User::factory()->create();
         $this->channel = $this->createChannel($this->user);
         $this->playlist = Playlist::factory()->create(['channel_id' => $this->channel->channelId()]);
@@ -120,9 +122,6 @@ class ThumbsControllerTest extends TestCase
     /** @test */
     public function channel_thumb_should_be_updated(): void
     {
-        Event::fake();
-        Bus::fake();
-
         $this->assertNull($this->channel->cover);
 
         // updating cover should be ok and displayed on home
@@ -135,7 +134,7 @@ class ThumbsControllerTest extends TestCase
             ->assertSuccessful()
         ;
 
-        Bus::assertDispatched(CreateVignetteFromThumbJob::class);
+        Queue::assertPushedOn('podwww', CreateVignetteFromThumbJob::class);
         Event::assertDispatched(ThumbUpdatedEvent::class);
 
         // once updated, coverable should have a cover
@@ -147,9 +146,6 @@ class ThumbsControllerTest extends TestCase
     /** @test */
     public function playlist_thumb_should_be_updated(): void
     {
-        Event::fake();
-        Bus::fake();
-
         $this->assertNull($this->playlist->cover);
 
         // updating cover should be ok and displayed on home
@@ -162,7 +158,7 @@ class ThumbsControllerTest extends TestCase
             ->assertSuccessful()
         ;
 
-        Bus::assertDispatched(CreateVignetteFromThumbJob::class);
+        Queue::assertPushedOn('podwww', CreateVignetteFromThumbJob::class);
         Event::assertDispatched(ThumbUpdatedEvent::class);
 
         // once updated, coverable should have a cover

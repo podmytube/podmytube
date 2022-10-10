@@ -37,10 +37,6 @@ class SendFileByRsync implements ShouldQueue
 
     public function handle(): bool
     {
-        Log::info(
-            "Rsync File {$this->localFilePath} to {$this->remoteFilePath} on " .
-            config('app.podhost_ssh_host')
-        );
         $destFolder = pathinfo($this->remoteFilePath, PATHINFO_DIRNAME);
         $destFilename = pathinfo($this->remoteFilePath, PATHINFO_BASENAME);
         $command = 'not defined yet';

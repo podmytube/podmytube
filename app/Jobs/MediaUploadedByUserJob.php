@@ -32,7 +32,7 @@ class MediaUploadedByUserJob implements ShouldQueue
      */
     public $maxExceptions = 3;
 
-    public function __construct(protected Media $media)
+    public function __construct(public Media $media)
     {
     }
 

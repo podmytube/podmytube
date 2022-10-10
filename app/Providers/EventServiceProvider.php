@@ -11,8 +11,8 @@ use App\Events\PodcastUpdatedEvent;
 use App\Events\ThumbUpdatedEvent;
 use App\Listeners\ChannelIsRegisteredListener;
 use App\Listeners\MediaUploadedByUserListener;
+use App\Listeners\ThumbUpdatedListener;
 use App\Listeners\UploadPodcastListener;
-use App\Listeners\UploadThumbListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -36,8 +36,7 @@ class EventServiceProvider extends ServiceProvider
             MediaUploadedByUserListener::class,
         ],
         ThumbUpdatedEvent::class => [
-            UploadThumbListener::class,
-            UploadPodcastListener::class,
+            ThumbUpdatedListener::class,
         ],
         PodcastUpdatedEvent::class => [
             UploadPodcastListener::class,
