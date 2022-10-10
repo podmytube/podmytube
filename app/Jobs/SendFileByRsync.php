@@ -32,7 +32,6 @@ class SendFileByRsync implements ShouldQueue
         public string $remoteFilePath,
         public bool $cleanAfter = false
     ) {
-        Log::info(" Local : {$this->localFilePath} Remote {$this->remoteFilePath} ");
     }
 
     public function handle(): bool
@@ -88,8 +87,6 @@ class SendFileByRsync implements ShouldQueue
             // Log::notice("Cleaning {$this->localFilePath}.");
             unlink($this->localFilePath);
         }
-
-        Log::info("File {$this->localFilePath} has been moved to {$this->remoteFilePath} on " . config('app.podhost_ssh_host'));
 
         return true;
     }

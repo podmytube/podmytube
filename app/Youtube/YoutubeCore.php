@@ -241,7 +241,7 @@ abstract class YoutubeCore implements QuotasConsumer
     {
         if ($this->limit > 0 && $this->nbItemsGrabbed() >= $this->limit) {
             // we grabbed more items we need => stop
-            Log::debug('we grabbed more items we need => stop. limit was ' . $this->limit . ' obtained ' . $this->nbItemsGrabbed());
+            Log::info('we grabbed more items we need => stop. limit was ' . $this->limit . ' obtained ' . $this->nbItemsGrabbed());
 
             return false;
         }
@@ -259,7 +259,6 @@ abstract class YoutubeCore implements QuotasConsumer
             $this->params['pageToken'] = $this->response->json('nextPageToken');
         }
 
-        Log::debug('nextPageToken ? ' . $this->response->json('nextPageToken') !== null);
         // if there a nextPageToken in the response => continue, else => stop
         return $this->response->json('nextPageToken') !== null;
     }

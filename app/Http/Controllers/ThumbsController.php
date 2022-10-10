@@ -77,6 +77,6 @@ class ThumbsController extends Controller
         // dispatching thumbUpdated event
         ThumbUpdatedEvent::dispatch($thumb->coverable);
 
-        return redirect()->route('home')->with('success', 'Your cover has been updated 🎉.');
+        return redirect()->route('home')->with('success', 'Your cover has been updated 🎉. If not visible may I suggest you to refresh this page ?.');
     }
 }
