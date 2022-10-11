@@ -37,7 +37,7 @@ class ThumbUpdatedListener implements ShouldQueue
         SendFileByRsync::dispatch($this->localPath, $this->remotePath)->onQueue('podwww');
 
         // should build and upload podcast
-        UploadPodcastJob::dispatch($event->podcastable())->delay(now()->addMinutes(10));
+        UploadPodcastJob::dispatch($event->podcastable())->delay(now()->addSeconds(3));
     }
 
     public function sourceFilePath(): string
