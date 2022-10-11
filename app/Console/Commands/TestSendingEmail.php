@@ -48,7 +48,7 @@ class TestSendingEmail extends Command
             2 => ['label' => 'A new channel has been registered.'],
             3 => ['label' => 'Monthly report for free plan.'],
             4 => ['label' => 'Monthly report for paying user (no upgrade message) .'],
-            5 => ['label' => 'Channel has reached its limits.'],
+            5 => ['label' => 'TODO : create job for this mailable >>> Channel has reached its limits.'],
             6 => ['label' => 'Send verification email.'],
         ];
     }
