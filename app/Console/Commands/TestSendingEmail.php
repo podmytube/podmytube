@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Console\Commands\Traits\BaseCommand;
+use App\Jobs\SendChannelIsRegisteredEmailJob;
+use App\Jobs\SendMonthlyReportEmailJob;
+use App\Jobs\SendVerificationEmailJob;
+use App\Jobs\SendWelcomeToPodmytubeEmailJob;
 use App\Mail\ChannelHasReachedItsLimitsMail;
-use App\Mail\ChannelIsRegisteredMail;
-use App\Mail\MonthlyReportMail;
-use App\Mail\WelcomeToPodmytubeMail;
 use App\Models\Channel;
 use App\Models\Media;
 use App\Models\Plan;
@@ -17,24 +18,17 @@ use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Mail;
 use InvalidArgumentException;
 
 class TestSendingEmail extends Command
 {
     use BaseCommand;
 
-    protected const DEFAULT_EMAIL = 'frederick@podmytube.com';
-
     /** @var string The name and signature of the console command. */
-    protected $signature = 'test:email {--email=frederick@podmytube.com : email address to send email to} \\
-        {--emailIdToSend= : email template to send}';
+    protected $signature = 'test:email {emailIdToSend?}';
 
     /** @var string The console command description. */
     protected $description = 'This command is allowing me to send test email to myself (by default) and check if everything is fine.';
-
-    /** @var int email id to be sent */
-    protected $emailIdToSend;
 
     protected User $user;
 
@@ -55,6 +49,7 @@ class TestSendingEmail extends Command
             3 => ['label' => 'Monthly report for free plan.'],
             4 => ['label' => 'Monthly report for paying user (no upgrade message) .'],
             5 => ['label' => 'Channel has reached its limits.'],
+            6 => ['label' => 'Send verification email.'],
         ];
     }
 
@@ -68,55 +63,52 @@ class TestSendingEmail extends Command
         $this->prologue();
 
         try {
-            $this->emailIdToSend = $this->option('emailIdToSend') ?? $this->askUserWhatMailToSend();
+            $this->emailIdToSend = $this->argument('emailIdToSend') ?? $this->askUserWhatMailToSend();
             if (!in_array($this->emailIdToSend, array_keys($this->availableEmails))) {
                 throw new InvalidArgumentException("The template id ({$this->emailIdToSend}) you have chosen does not exists.");
             }
+
             // handle user with email
-            $this->fakeUser();
+            $this->user = $this->fakeUser();
 
             // handle user channel
             $this->fakeChannel();
 
             switch ($this->emailIdToSend) {
                 case 1:
-                    $mailable = new WelcomeToPodmytubeMail($this->user);
+                    SendWelcomeToPodmytubeEmailJob::dispatch($this->user);
 
                     break;
 
                 case 2:
-                    $mailable = new ChannelIsRegisteredMail($this->channel);
+                    SendChannelIsRegisteredEmailJob::dispatch($this->channel);
 
                     break;
 
                 case 3: // monthly report with upgrade message
                     $this->fakeSubscription(Plan::bySlug('forever_free'));
-                    $mailable = (new MonthlyReportMail($this->subscription->channel))
-                        ->onQueue('foo')
-                    ;
+                    SendMonthlyReportEmailJob::dispatch($this->subscription->channel);
 
                     break;
 
                 case 4: // monthly report with upgrade message
                     $this->fakeSubscription(Plan::bySlug('weekly_youtuber'));
-                    $mailable = new MonthlyReportMail($this->subscription->channel);
+                    SendMonthlyReportEmailJob::dispatch($this->subscription->channel);
 
                     break;
+                    /* @todo create a job for this
+                        case 5:
+                            $mailable = new ChannelHasReachedItsLimitsMail($this->channel);
 
-                case 5:
-                    $mailable = new ChannelHasReachedItsLimitsMail($this->channel);
+                            break; */
+
+                case 6:
+                    SendVerificationEmailJob::dispatch($this->user);
 
                     break;
             }
 
-            // send it to me with the right locale
-            Mail::to($this->user)->queue($mailable);
-
-            $this->comment(
-                'Email "' .
-                $this->availableEmails[$this->emailIdToSend]['label'] .
-                "\" has been queued to be sent to {{$this->user->email}}."
-            );
+            $this->comment('email should have been dispatched/sent');
         } catch (Exception $exception) {
             $this->error($exception->getMessage());
         }
@@ -125,13 +117,10 @@ class TestSendingEmail extends Command
         return 0;
     }
 
-    protected function fakeUser(): void
+    protected function fakeUser(): User
     {
         // if no user exists
-        $this->user = User::byEmail($this->option('email'));
-        if ($this->user === null) {
-            $this->user = User::factory()->create(['email' => $this->option('email')]);
-        }
+        return User::factory()->create();
     }
 
     protected function fakeChannel()
