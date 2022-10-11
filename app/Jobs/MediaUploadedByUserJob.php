@@ -34,6 +34,7 @@ class MediaUploadedByUserJob implements ShouldQueue
 
     public function __construct(public Media $media)
     {
+        $this->onQueue('podwww');
     }
 
     public function handle(): void

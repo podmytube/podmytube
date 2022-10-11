@@ -11,7 +11,6 @@ use App\Listeners\MediaUploadedByUserListener;
 use App\Models\Channel;
 use App\Models\Media;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
@@ -31,8 +30,7 @@ class MediaUploadedByUserListenerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Bus::fake(UploadPodcastJob::class);
-        Queue::fake(MediaUploadedByUserJob::class);
+        Queue::fake();
         $this->channel = $this->createChannelWithPlan();
         $this->media = Media::factory()
             ->channel($this->channel)
@@ -50,10 +48,15 @@ class MediaUploadedByUserListenerTest extends TestCase
         $listener = new MediaUploadedByUserListener();
         $listener->handle($this->event);
 
+        Queue::assertPushedWithChain(MediaUploadedByUserJob::class, [
+            UploadPodcastJob::class,
+        ]);
+
         Queue::assertPushedOn('podwww', MediaUploadedByUserJob::class);
         Queue::assertPushed(fn (MediaUploadedByUserJob $job) => $job->media->youtube_id === $this->media->youtube_id);
 
-        Bus::assertDispatched(UploadPodcastJob::class, 1);
-        Bus::assertDispatched(fn (UploadPodcastJob $job) => $job->podcastable->youtube_id === $this->channel->youtube_id);
+        // when chained it seems you cannot test job instanciation
+        // Queue::assertPushed(UploadPodcastJob::class, 1);
+        // Queue::assertPushed(fn (UploadPodcastJob $job) => $job->podcastable->youtube_id === $this->channel->youtube_id);
     }
 }

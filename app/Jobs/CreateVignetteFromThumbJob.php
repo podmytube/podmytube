@@ -30,6 +30,7 @@ class CreateVignetteFromThumbJob implements ShouldQueue
      */
     public function __construct(protected Thumb $srcThumb)
     {
+        $this->onQueue('podwww');
     }
 
     /**

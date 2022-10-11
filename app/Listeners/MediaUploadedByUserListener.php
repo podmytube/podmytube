@@ -10,6 +10,7 @@ use App\Jobs\MediaUploadedByUserJob;
 use App\Jobs\UploadPodcastJob;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Bus;
 
 class MediaUploadedByUserListener implements ShouldQueue
 {
@@ -17,10 +18,13 @@ class MediaUploadedByUserListener implements ShouldQueue
 
     public function handle(InteractsWithMedia|InteractsWithPodcastable $event): void
     {
-        // transfer file from www to host
-        MediaUploadedByUserJob::dispatch($event->media())->onQueue('podwww');
-
-        // rebuild podcast
-        UploadPodcastJob::dispatch($event->podcastable())->delay(now()->addMinutes(10));
+        Bus::chain([
+            // transfer file from www to host
+            new MediaUploadedByUserJob($event->media()),
+            // THEN ! rebuild podcast
+            new UploadPodcastJob($event->podcastable()),
+        ])
+            ->dispatch()
+        ;
     }
 }
