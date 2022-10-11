@@ -42,8 +42,9 @@
                         <small>If you set a new audio file, it will replace the current audio file.</small>
                     @endif
                 </label>
-                <input type="file" id="media_file" name="media_file" placeholder="My full interview of Yoda"
-                    aria-label="Episode file" class="w-full px-5 py-1 text-gray-900 bg-gray-200 rounded placeholder">
+                <input type="file" accept=".mp3" id="media_file" name="media_file"
+                    placeholder="My full interview of Yoda" aria-label="Episode file"
+                    class="w-full px-5 py-1 text-gray-900 bg-gray-200 rounded placeholder">
 
             </div>
 
@@ -51,7 +52,11 @@
                 <a href="#" onclick="event.preventDefault(); document.getElementById('add-or-edit-media').submit();">
                     <button type="button"
                         class="flex-1 bg-gray-800 text-gray-100 hover:bg-gray-700 font-bold py-2 px-4 rounded-l-lg">
-                        @if ($patch === true) Update @else Submit @endif
+                        @if ($patch === true)
+                            Update
+                        @else
+                            Submit
+                        @endif
                     </button>
                 </a>
                 <a href="{{ route('home') }}">
