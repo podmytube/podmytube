@@ -10,7 +10,9 @@ declare(strict_types=1);
 
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\ThumbsController;
+use App\Jobs\SendVerificationEmailJob;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
 
 Route::get('test', function () {
     return view('test');
@@ -154,9 +156,10 @@ Route::domain('dashboard.' . config('app.domain'))->group(function (): void {
         })->middleware(['signed'])->name('verification.verify');
 
         Route::post('/email/verification-notification', function (Request $request) {
-            $request->user()->sendEmailVerificationNotification();
+            SendVerificationEmailJob::dispatch($request->user());
+            session()->put('verification_sent', true);
 
-            return back()->with('message', 'Verification link sent!');
+            return back()->with('success', 'Verification link has been sent 📬.');
         })->middleware(['throttle:6,1'])->name('verification.send');
     });
 });

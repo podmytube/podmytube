@@ -15,6 +15,7 @@ use App\Models\Download;
 use App\Models\Playlist;
 use App\Modules\Vignette;
 use Carbon\Carbon;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -29,11 +30,14 @@ class HomeController extends Controller
      */
     public function index()
     {
+        /** @var Authenticatable $user */
+        $user = Auth::user();
+
         /**
          * Get user's channel(s).
          */
         $channels = Channel::with(['subscription.plan', 'cover'])
-            ->where('user_id', '=', Auth::id())
+            ->where('user_id', '=', $user->id())
             ->get()
             ->map(function ($channel) {
                 $channel->vignetteUrl = Vignette::defaultUrl();
@@ -57,8 +61,8 @@ class HomeController extends Controller
             })
         ;
 
-        $playlists = Playlist::userPlaylists(Auth::user());
+        $playlists = Playlist::userPlaylists($user);
 
-        return view('home', compact('channels', 'playlists'));
+        return view('home', compact('user', 'channels', 'playlists'));
     }
 }

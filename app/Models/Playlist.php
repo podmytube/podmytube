@@ -212,8 +212,6 @@ class Playlist extends Model implements Podcastable, Coverable
 
     /**
      * will return active playlist(s) for user.
-     *
-     * @param \App\Models\User $user
      */
     public static function userPlaylists(Authenticatable $user)
     {

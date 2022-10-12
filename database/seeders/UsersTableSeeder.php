@@ -38,6 +38,7 @@ class UsersTableSeeder extends Seeder
                     'user_id' => $index++,
                     'created_at' => now(),
                     'updated_at' => now(),
+                    'email_verified_at' => now(),
                 ]);
             },
             $data

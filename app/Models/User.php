@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -19,6 +20,7 @@ use Lab404\Impersonate\Models\Impersonate;
  * @property string $firstname
  * @property string $lastname
  * @property string $email
+ * @property Carbon email_verified_at
  * @property string $password
  * @property string $remember_token
  * @property bool   $newsletter
