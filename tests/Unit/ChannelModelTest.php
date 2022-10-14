@@ -9,6 +9,7 @@ use App\Models\Media;
 use App\Models\Plan;
 use App\Models\Playlist;
 use App\Models\Subscription;
+use App\Models\Thumb;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -338,10 +339,13 @@ class ChannelModelTest extends TestCase
         $user = User::factory()->verifiedAt(now())->create();
 
         // with 2 channels
-        $freeChannel = $this->createChannel($user, $this->freePlan);
-
         // one is free other is starter
+        $freeChannel = $this->createChannel($user, $this->freePlan);
         $paidChannel = $this->createChannel($user, $this->starterPlan);
+
+        // $paidchannel has cover/thumb
+        $paidChannelCover = Thumb::factory()->create();
+        $paidChannel->attachCover($paidChannelCover);
 
         // creating a collection for these channels
         $channels = collect([])->push($freeChannel, $paidChannel);
@@ -357,27 +361,48 @@ class ChannelModelTest extends TestCase
         // playlist has cover too
         $this->createCoverFor($playlist);
 
+        // ===============================================================
+        // this will become static function
         $results = Channel::query()
             ->select('user_id', 'channel_id', 'channel_name', 'podcast_title', 'active')
             ->where('user_id', '=', $user->id())
             ->with([
-                'playlists:channel_id,active',
-                'subscription:channel_id,plan_id',
+                'playlists:id,channel_id,active',
                 'subscription.plan:id,name',
             ])
             ->get()
         ;
+        // ===============================================================
 
-        $results->contains(function(Channel $freeChannel){
-            return $freeChannel->youtubeId
-        }/* 'channel_id', $channel->youtube_id */);
+        // should have 2 channels in results
+        $this->assertCount($channels->count(), $results);
 
-        // for each channel
+        // both channels should be present in results
         $channels->each(function (Channel $channel) use ($results): void {
-            // check results is containing youtube_id
-            $this->assertTrue($results->contains('channel_id', $channel->youtube_id));
-            $this->assertTrue($results->contains('channel_name', $channel->channel_name));
+            $result = $results->where('channel_id', '=', $channel->youtube_id)->first();
+            $this->assertNotNull($result);
+            $this->assertInstanceOf(Channel::class, $result);
+            // channel name
+            $this->assertEquals($channel->channel_name, $result->channel_name);
+            // podcast title
+            $this->assertEquals($channel->title(), $result->title());
 
+            // subscription and plans
+            $this->assertNotNull($result->subscription);
+            $this->assertInstanceOf(Subscription::class, $result->subscription);
+            $this->assertNotNull($result->subscription->plan);
+            $this->assertInstanceOf(Plan::class, $result->subscription->plan);
+            $this->assertEquals($channel->subscription->plan->name, $result->subscription->plan->name);
+
+            // vignette url is fine
+            $this->assertNotNull($result->vignette_url, 'vignette_url should be one url.');
+            $this->assertEquals($channel->vignette_url, $result->vignette_url);
+            // cover url is fine
+            $this->assertNotNull($result->cover_url, 'cover_url should be one url.');
+            $this->assertEquals($channel->cover_url, $result->cover_url);
+
+            // downloads TODO
+            // some results should be cached (last week/last month/last past one)
         });
     }
 }
