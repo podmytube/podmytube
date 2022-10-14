@@ -2,11 +2,11 @@
 
 @section('pageTitle', __('messages.page_title_user_register'))
 
-    @if (App::environment('production'))
-        @section('recaptcha')
-            <script src='https://www.google.com/recaptcha/api.js'></script>
-        @stop
-    @endif
+@if (App::environment('production'))
+    @section('recaptcha')
+        <script src='https://www.google.com/recaptcha/api.js'></script>
+    @stop
+@endif
 
 @section('content')
 
@@ -27,17 +27,19 @@
                 <div class="mb-4">
                     <label class="block text-grey-darker text-sm font-bold mb-2" for="username"> First name </label>
                     <input type="text" name="firstname" id="firstname" value="{{ old('firstname') }}" placeholder="Obi"
-                        required class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker">
+                        autocomplete="firstname" required
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker">
                 </div>
                 <div class="mb-4">
                     <label class="block text-grey-darker text-sm font-bold mb-2" for="username"> Last name </label>
                     <input type="text" name="lastname" id="lastname" value="{{ old('lastname') }}" placeholder="Wan"
-                        required class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker">
+                        autocomplete="lastname" required
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker">
                 </div>
                 <div class="mb-4">
                     <label class="block text-grey-darker text-sm font-bold mb-2" for="username"> Email </label>
                     <input type="email" name="email" id="email" value="{{ old('email') }}"
-                        placeholder="obi.wan@kenobi.net" required
+                        placeholder="obi.wan@kenobi.net" autocomplete="email" required
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker">
                 </div>
 
@@ -54,7 +56,8 @@
                 </div>
                 <div class="md:flex md:items-center mb-4">
                     <label for="terms" class="text-gray-500 font-bold text-center ">
-                        <input class="mr-2 leading-tight" type="checkbox" id="terms" name="terms" value="1" required="">
+                        <input class="mr-2 leading-tight" type="checkbox" id="terms" name="terms" value="1"
+                            required="">
                         <span class="text-sm"> I accept the terms of service </span>
                     </label>
                 </div>
@@ -64,7 +67,8 @@
                     @endif
                 </div>
                 <div class="flex items-center justify-between">
-                    <button class="bg-gray-900 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded" type="submit"> Sign
+                    <button class="bg-gray-900 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded" type="submit">
+                        Sign
                         up </button>
 
                     <ul class="inline-block">
