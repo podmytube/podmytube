@@ -55,3 +55,17 @@ if (!function_exists('encodeLikeLaravel')) {
         return htmlspecialchars($toBeEncoded, ENT_QUOTES | ENT_HTML401);
     }
 }
+
+if (!function_exists('defaultVignetteUrl')) {
+    function defaultVignetteUrl(): string
+    {
+        return config('app.thumbs_url') . '/default_vignette.jpg';
+    }
+}
+
+if (!function_exists('defaultCoverUrl')) {
+    function defaultCoverUrl(): string
+    {
+        return config('app.thumbs_url') . '/default_thumb.jpg';
+    }
+}

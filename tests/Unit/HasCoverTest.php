@@ -7,8 +7,12 @@ namespace Tests\Unit;
 use App\Models\Channel;
 use App\Models\Playlist;
 use App\Models\Thumb;
+use App\Traits\HasCover;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use InvalidArgumentException;
 use Tests\TestCase;
 
 /**
@@ -129,4 +133,49 @@ class HasCoverTest extends TestCase
             $this->playlist->coverFolderPath()
         );
     }
+
+   /** @test */
+   public function cover_url_should_fail_when_not_coverable(): void
+   {
+       $this->expectException(InvalidArgumentException::class);
+       $hasCover = new class() extends Model {
+           use HasCover;
+       };
+
+       $hasCover->cover_url;
+   }
+
+   /** @test */
+   public function channel_vignette_url_should_return_default_url(): void
+   {
+       $this->assertEquals(defaultCoverUrl(), $this->channel->cover_url);
+   }
+
+   /** @test */
+   public function channel_cover_url_should_return_true_cover_url(): void
+   {
+       $thumb = Thumb::factory()->create();
+       $this->channel->attachCover($thumb);
+       $coverFilepath = $this->channel->channelId() . '/' . $thumb->file_name;
+
+       $expectedCoverUrl = Storage::disk('thumbs')->url($coverFilepath);
+       $this->assertEquals($expectedCoverUrl, $this->channel->cover_url);
+   }
+
+   /** @test */
+   public function playlist_cover_url_should_return_default_url(): void
+   {
+       $this->assertEquals(defaultCoverUrl(), $this->playlist->cover_url);
+   }
+
+   /** @test */
+   public function playlist_cover_url_should_return_true_url(): void
+   {
+       $thumb = Thumb::factory()->create();
+       $this->playlist->attachCover($thumb);
+
+       $coverFilepath = $this->playlist->channelId() . '/' . $thumb->file_name;
+       $expectedCoverUrl = Storage::disk('thumbs')->url($coverFilepath);
+       $this->assertEquals($expectedCoverUrl, $this->playlist->cover_url);
+   }
 }

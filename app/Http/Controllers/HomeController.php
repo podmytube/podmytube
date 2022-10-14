@@ -13,7 +13,6 @@ namespace App\Http\Controllers;
 use App\Models\Channel;
 use App\Models\Download;
 use App\Models\Playlist;
-use App\Modules\Vignette;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Auth;
@@ -50,11 +49,6 @@ class HomeController extends Controller
             ->where('user_id', '=', $user->id())
             ->get()
             ->map(function ($channel) {
-                $channel->vignetteUrl = Vignette::defaultUrl();
-                if ($channel->cover) {
-                    $channel->vignetteUrl = Vignette::fromThumb($channel->cover)->url();
-                }
-
                 $channel->thisWeekDownloads = Download::sumOfDownloadsForChannelDuringPeriod(
                     $channel,
                     now()->startOfWeek(weekStartsAt: Carbon::MONDAY),

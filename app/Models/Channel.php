@@ -22,6 +22,7 @@ use App\Traits\HasManyMedias;
 use App\Traits\HasManyPlaylists;
 use App\Traits\HasOneLanguage;
 use App\Traits\HasOneSubscription;
+use App\Traits\HasVignette;
 use App\Traits\IsRelatedToOneChannel;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -68,6 +69,7 @@ class Channel extends Model implements Podcastable, Coverable
     use HasOneSubscription;
     use HasOneLanguage;
     use HasCover;
+    use HasVignette;
     use IsRelatedToOneChannel;
 
     public const REMOTE_DISK = 'remote';

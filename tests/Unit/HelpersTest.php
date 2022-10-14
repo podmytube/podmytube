@@ -14,7 +14,7 @@ use Tests\TestCase;
 class HelpersTest extends TestCase
 {
     /** @test */
-    public function secondseconds_to_youtube_format_is_working_fine(): void
+    public function seconds_to_youtube_format_is_working_fine(): void
     {
         $this->assertEquals('PT5S', secondsToYoutubeFormat(5));
         $this->assertEquals('PT6M35S', secondsToYoutubeFormat(395));
@@ -35,4 +35,16 @@ class HelpersTest extends TestCase
         $this->assertEquals('/app/tests/Fixtures/lorem/ipsum/dolore', fixtures_path('lorem/ipsum/dolore'));
         $this->assertEquals('/app/tests/Fixtures/lorem/ipsum/dolore', fixtures_path('/lorem/ipsum/dolore'));
     }
+
+    /** @test */
+    public function default_vignette_url_should_be_fine(): void
+    {
+        $this->assertEquals(config('app.thumbs_url') . '/default_vignette.jpg', defaultVignetteUrl());
+    }
+
+     /** @test */
+     public function default_cover_url_should_be_fine(): void
+     {
+         $this->assertEquals(config('app.thumbs_url') . '/default_thumb.jpg', defaultCoverUrl());
+     }
 }

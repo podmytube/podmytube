@@ -20,6 +20,7 @@ use App\Modules\Vignette;
 use App\Podcast\PodcastItem;
 use App\Traits\BelongsToChannel;
 use App\Traits\HasCover;
+use App\Traits\HasVignette;
 use App\Youtube\YoutubePlaylistItems;
 use Carbon\Carbon;
 use Exception;
@@ -41,6 +42,7 @@ class Playlist extends Model implements Podcastable, Coverable
     use BelongsToChannel;
     use HasCover;
     use HasFactory;
+    use HasVignette;
 
     protected $guarded = ['id'];
 
