@@ -10,6 +10,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use ReflectionClass;
 
+/**
+ * @property string $file_name
+ */
 class Thumb extends Model
 {
     use HasFactory;
