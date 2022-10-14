@@ -334,21 +334,50 @@ class ChannelModelTest extends TestCase
     public function user_channels_optimized(): void
     {
         // one user
+        /** @var User $user */
         $user = User::factory()->verifiedAt(now())->create();
 
         // with 2 channels
         $freeChannel = $this->createChannel($user, $this->freePlan);
+
         // one is free other is starter
         $paidChannel = $this->createChannel($user, $this->starterPlan);
+
+        // creating a collection for these channels
         $channels = collect([])->push($freeChannel, $paidChannel);
+
         // the paid one has one playlist
         $playlist = Playlist::factory()->channel($paidChannel)->create();
+
         // all channels have thumb/cover and vignettes
         $channels->each(function (Channel $channel): void {
             $this->createCoverFor($channel);
         });
+
+        // playlist has cover too
         $this->createCoverFor($playlist);
 
-        
+        $results = Channel::query()
+            ->select('user_id', 'channel_id', 'channel_name', 'podcast_title', 'active')
+            ->where('user_id', '=', $user->id())
+            ->with([
+                'playlists:channel_id,active',
+                'subscription:channel_id,plan_id',
+                'subscription.plan:id,name',
+            ])
+            ->get()
+        ;
+
+        $results->contains(function(Channel $freeChannel){
+            return $freeChannel->youtubeId
+        }/* 'channel_id', $channel->youtube_id */);
+
+        // for each channel
+        $channels->each(function (Channel $channel) use ($results): void {
+            // check results is containing youtube_id
+            $this->assertTrue($results->contains('channel_id', $channel->youtube_id));
+            $this->assertTrue($results->contains('channel_name', $channel->channel_name));
+
+        });
     }
 }
