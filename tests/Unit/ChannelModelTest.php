@@ -7,6 +7,7 @@ namespace Tests\Unit;
 use App\Models\Channel;
 use App\Models\Media;
 use App\Models\Plan;
+use App\Models\Playlist;
 use App\Models\Subscription;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -14,6 +15,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Tests\TestCase;
+use Tests\Traits\Covers;
 
 /**
  * @internal
@@ -22,6 +24,7 @@ use Tests\TestCase;
  */
 class ChannelModelTest extends TestCase
 {
+    use Covers;
     use RefreshDatabase;
 
     protected Channel $channel;
@@ -325,5 +328,27 @@ class ChannelModelTest extends TestCase
     {
         $this->assertNotNull($this->channel->youtube_id);
         $this->assertEquals($this->channel->channel_id, $this->channel->youtube_id);
+    }
+
+    /** @test */
+    public function user_channels_optimized(): void
+    {
+        // one user
+        $user = User::factory()->verifiedAt(now())->create();
+
+        // with 2 channels
+        $freeChannel = $this->createChannel($user, $this->freePlan);
+        // one is free other is starter
+        $paidChannel = $this->createChannel($user, $this->starterPlan);
+        $channels = collect([])->push($freeChannel, $paidChannel);
+        // the paid one has one playlist
+        $playlist = Playlist::factory()->channel($paidChannel)->create();
+        // all channels have thumb/cover and vignettes
+        $channels->each(function (Channel $channel): void {
+            $this->createCoverFor($channel);
+        });
+        $this->createCoverFor($playlist);
+
+        
     }
 }

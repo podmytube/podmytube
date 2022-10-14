@@ -36,6 +36,16 @@ class HomeController extends Controller
         /**
          * Get user's channel(s).
          */
+        /* $channels = Channel::query()
+            ->select('user_id', 'channel_id', 'channel_name', 'podcast_title', 'active')
+            ->where('user_id', '=', $user->id())
+            ->with([
+                'playlists:channel_id,active',
+                'subscription:channel_id,plan_id',
+                'subscription.plan:id,name',
+            ])
+            ->get()
+        ; */
         $channels = Channel::with(['subscription.plan', 'cover'])
             ->where('user_id', '=', $user->id())
             ->get()
