@@ -4,12 +4,18 @@ declare(strict_types=1);
 
 namespace App\Traits;
 
+use App\Interfaces\Coverable;
 use App\Models\Thumb;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use InvalidArgumentException;
 use ReflectionClass;
 
 trait HasCover
 {
+    protected string $coverDisk = 'thumbs';
+
     public function cover()
     {
         return $this->morphOne(Thumb::class, 'coverable');
@@ -36,6 +42,11 @@ trait HasCover
         );
     }
 
+    public function attachCover(Thumb $thumb)
+    {
+        return $this->cover()->save($thumb);
+    }
+
     public function setCoverFromThumb(Thumb $thumb): bool
     {
         return $thumb->update([
@@ -54,5 +65,24 @@ trait HasCover
     public function coverFolderPath(): string
     {
         return config('app.thumbs_path') . '/' . $this->relativeFolderPath();
+    }
+
+    /**
+     * used as a property $this->vignette_url.
+     */
+    public function coverUrl(): Attribute
+    {
+        throw_unless(
+            $this instanceof Coverable,
+            new InvalidArgumentException("Object is not implementing Coverable. It's impossible for it to get a cover.")
+        );
+
+        return Attribute::get(function () {
+            if (!$this->hasCover()) {
+                return defaultCoverUrl();
+            }
+
+            return Storage::disk($this->coverDisk)->url($this->channelId() . '/' . $this->cover->file_name);
+        });
     }
 }
