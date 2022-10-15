@@ -10,10 +10,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Models\Channel;
-use App\Models\Download;
 use App\Models\Playlist;
-use Carbon\Carbon;
+use App\Services\HomeDetailsService;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Auth;
 
@@ -27,43 +25,12 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(HomeDetailsService $service)
     {
         /** @var Authenticatable $user */
         $user = Auth::user();
 
-        /**
-         * Get user's channel(s).
-         */
-        /* $channels = Channel::query()
-            ->select('user_id', 'channel_id', 'channel_name', 'podcast_title', 'active')
-            ->where('user_id', '=', $user->id())
-            ->with([
-                'playlists:channel_id,active',
-                'subscription:channel_id,plan_id',
-                'subscription.plan:id,name',
-            ])
-            ->get()
-        ; */
-        $channels = Channel::with(['subscription.plan', 'cover'])
-            ->where('user_id', '=', $user->id())
-            ->get()
-            ->map(function ($channel) {
-                $channel->thisWeekDownloads = Download::sumOfDownloadsForChannelDuringPeriod(
-                    $channel,
-                    now()->startOfWeek(weekStartsAt: Carbon::MONDAY),
-                    now()->endOfWeek(weekEndsAt: Carbon::SUNDAY),
-                );
-
-                $channel->thisMonthDownloads = Download::sumOfDownloadsForChannelDuringPeriod(
-                    $channel,
-                    now()->startOfMonth(),
-                    now()->endOfMonth(),
-                );
-
-                return $channel;
-            })
-        ;
+        $channels = $service->userContent($user);
 
         $playlists = Playlist::userPlaylists($user);
 
