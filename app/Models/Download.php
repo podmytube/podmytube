@@ -81,29 +81,21 @@ class Download extends Model
     ): Collection {
         $interval ??= self::INTERVAL_PER_DAY;
 
-        $query = Download::query()
+        return Download::query()
             ->select('log_day')
+            ->when(
+                $channel === null,
+                fn ($query) => $query->groupBy(['log_day']),
+                fn ($query) => $query->forChannel($channel)->groupBy(['log_day', 'channel_id']),
+            )
+            ->selectRaw('sum(counted) as counted')
+            ->when(
+                $startDate->toDateString() === $endDate->toDateString(),
+                fn ($query) => $query->where('log_day', '=', $startDate->toDateString()),
+                fn ($query) => $query->duringPeriod($startDate, $endDate)
+            )
+            ->get()
         ;
-
-        if ($channel !== null) {
-            $query->forChannel($channel);
-        }
-
-        $query->selectRaw('sum(counted) as counted');
-
-        if ($startDate->toDateString() === $endDate->toDateString()) {
-            $query->where('log_day', '=', $startDate->toDateString());
-        } else {
-            $query->duringPeriod($startDate, $endDate);
-        }
-
-        $groupsBy = ['log_day'];
-        if ($channel !== null) {
-            $groupsBy[] = 'channel_id';
-        }
-        $query->groupBy($groupsBy);
-
-        return $query->get();
     }
 
     public static function downloadsDuringPeriod(Carbon $startDate, Carbon $endDate): int

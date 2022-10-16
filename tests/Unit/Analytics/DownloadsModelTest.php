@@ -66,6 +66,9 @@ class DownloadsModelTest extends TestCase
         // creating one channel and some medias each downloaded once.
         $this->addMediasToChannel($this->channel, $expectedNumberOfMedias);
 
+        // creating another channel with downloads (for comparison)
+        $this->createAnotherChannelWithDownloads(now(), now());
+
         $result = Download::forChannelThisDay($this->channel, now());
 
         $this->assertNotNull($result);
@@ -83,6 +86,9 @@ class DownloadsModelTest extends TestCase
 
         // creating one download per media (count is 1)
         $medias->each(fn (Media $media) => Download::factory()->media($media)->create(['counted' => 1]));
+
+        // creating another channel with downloads (for comparison)
+        $this->createAnotherChannelWithDownloads(now(), now());
 
         $result = Download::forChannelThisDay($this->channel, now());
         $this->assertNotNull($result);
@@ -104,6 +110,9 @@ class DownloadsModelTest extends TestCase
             $download = Download::factory()->media($media)->create();
             $expectedNumberOfDownloads += $download->counted;
         });
+
+        // creating another channel with downloads (for comparison)
+        $this->createAnotherChannelWithDownloads(now(), now());
 
         $result = Download::forChannelThisDay($this->channel, now());
         $this->assertNotNull($result);
@@ -133,6 +142,9 @@ class DownloadsModelTest extends TestCase
             $download = Download::factory()->media($media)->create();
             $expectedNumberOfDownloads += $download->counted;
         });
+
+        // creating another channel with downloads (for comparison)
+        $this->createAnotherChannelWithDownloads(now(), now());
 
         $result = Download::forChannelThisDay($this->channel, now());
         $this->assertNotNull($result);
@@ -164,6 +176,9 @@ class DownloadsModelTest extends TestCase
                 $expectedNumberOfDownloads = $download->counted;
             }
         });
+
+        // creating another channel with downloads (for comparison)
+        $this->createAnotherChannelWithDownloads(now(), now());
 
         $result = Download::forMediaThisDay($selectedMedia, now());
         $this->assertNotNull($result);
@@ -243,7 +258,7 @@ class DownloadsModelTest extends TestCase
         // $channel->media and $anotherChannel with 2 medias = 3
         $expectedDownloadRows = 31 * 3;
 
-        // only checking I'm doing right for nox
+        // only checking I'm doing right for now
         $this->assertEquals(Download::count(), $expectedDownloadRows);
         $this->assertEquals(Download::sum('counted'), $totalCounted);
 
@@ -440,5 +455,17 @@ class DownloadsModelTest extends TestCase
             $index++;
             $startDate->addDay();
         }
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | helpers & providers
+    |--------------------------------------------------------------------------
+    */
+    public function createAnotherChannelWithDownloads(Carbon $startDate, Carbon $endDate): void
+    {
+        // creating another channel with downloads
+        $anotherChannel = Channel::factory()->hasMedias(3)->create();
+        $this->addDownloadsForChannelMediasDuringPeriod($anotherChannel, $startDate, $endDate);
     }
 }
