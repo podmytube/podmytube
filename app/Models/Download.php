@@ -85,6 +85,10 @@ class Download extends Model
             ->select('log_day')
         ;
 
+        if ($channel !== null) {
+            $query->forChannel($channel);
+        }
+
         $query->selectRaw('sum(counted) as counted');
 
         if ($startDate->toDateString() === $endDate->toDateString()) {
