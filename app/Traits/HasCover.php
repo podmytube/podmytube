@@ -47,14 +47,6 @@ trait HasCover
         return $this->cover()->save($thumb);
     }
 
-    public function setCoverFromThumb(Thumb $thumb): bool
-    {
-        return $thumb->update([
-            'coverable_type' => $this->morphedName(),
-            'coverable_id' => $this->id(),
-        ]);
-    }
-
     public function morphedName(): string
     {
         $reflect = new ReflectionClass(static::class);
@@ -62,9 +54,14 @@ trait HasCover
         return 'morphed' . $reflect->getShortName();
     }
 
+    public function coverFullPath(): string
+    {
+        return config('app.thumbs_path') . '/' . $this->coverRelativePath();
+    }
+
     public function coverFolderPath(): string
     {
-        return config('app.thumbs_path') . '/' . $this->relativeFolderPath();
+        return config('app.thumbs_path') . '/' . $this->channelId();
     }
 
     /**
@@ -82,7 +79,27 @@ trait HasCover
                 return defaultCoverUrl();
             }
 
-            return Storage::disk($this->coverDisk)->url($this->channelId() . '/' . $this->cover->file_name);
+            return Storage::disk($this->coverDisk)->url($this->coverRelativePath());
         });
+    }
+
+    public function coverRelativePath(): string
+    {
+        throw_unless(
+            $this instanceof Coverable,
+            new InvalidArgumentException("Object is not implementing Coverable. It's impossible for it to get a vignette.")
+        );
+
+        // building cover path from channel id and thumb/cover filename
+        return $this->channelId() . '/' . $this->cover->file_name;
+    }
+
+    public function coverFileExists(): bool
+    {
+        if ($this->cover === null) {
+            return false;
+        }
+
+        return Storage::disk($this->coverDisk)->fileExists($this->coverRelativePath());
     }
 }

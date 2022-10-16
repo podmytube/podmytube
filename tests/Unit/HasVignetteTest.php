@@ -25,6 +25,8 @@ class HasVignetteTest extends TestCase
     use Covers;
     use RefreshDatabase;
 
+    public const VIGNETTE_DISK_NAME = 'vignettes';
+
     protected Channel $channel;
     protected Playlist $playlist;
 
@@ -33,6 +35,34 @@ class HasVignetteTest extends TestCase
         parent::setUp();
         $this->channel = Channel::factory()->create();
         $this->playlist = Playlist::factory()->create();
+    }
+
+    public function tearDown(): void
+    {
+        if ($this->channel->hasVignette()) {
+            Storage::disk(self::VIGNETTE_DISK_NAME)->delete($this->channel->vignetteRelativePath());
+        }
+        if ($this->playlist->hasVignette()) {
+            Storage::disk(self::VIGNETTE_DISK_NAME)->delete($this->playlist->vignetteRelativePath());
+        }
+        parent::tearDown();
+    }
+
+    /** @test */
+    public function has_vignette_should_be_fine(): void
+    {
+        // no thumb/cover => no vignette
+        $this->assertFalse($this->channel->hasVignette());
+
+        // a thumb with no file => no vignette
+        $thumb = Thumb::factory()->create();
+        $this->channel->attachCover($thumb);
+        $this->channel->refresh();
+        $this->assertFalse($this->channel->hasVignette());
+
+        // touching file
+        Storage::disk(self::VIGNETTE_DISK_NAME)->put($this->vignetteFilePath($this->channel), '');
+        $this->assertTrue($this->channel->hasVignette());
     }
 
     /** @test */
@@ -57,12 +87,36 @@ class HasVignetteTest extends TestCase
     {
         $thumb = Thumb::factory()->create();
         $this->channel->attachCover($thumb);
-        $vignetteFilepath = $this->channel->channelId() . '/' .
-            pathinfo($thumb->file_name, PATHINFO_FILENAME) .
-            '_vig.' .
-            pathinfo($thumb->file_name, PATHINFO_EXTENSION);
-        $expectedVignetteUrl = Storage::disk('vignettes')->url($vignetteFilepath);
+        $this->channel->refresh();
+
+        $expectedVignetteUrl = Storage::disk(self::VIGNETTE_DISK_NAME)->url($this->vignetteFilePath($this->channel));
         $this->assertEquals($expectedVignetteUrl, $this->channel->vignette_url);
+    }
+
+    /** @test */
+    public function with_cover_vignette_relative_path_should_be_fine(): void
+    {
+        // thumb without vignette file should return false
+        $thumb = Thumb::factory()->create();
+        $this->channel->attachCover($thumb);
+
+        $this->assertEquals($this->vignetteFilePath($this->channel), $this->channel->vignetteRelativePath());
+    }
+
+    /** @test */
+    public function vignette_exists_should_work_fine(): void
+    {
+        // no thumb no vignette
+        $this->assertFalse($this->channel->vignetteFileExists());
+
+        // thumb without vignette file should return false
+        $thumb = Thumb::factory()->create();
+        $this->channel->attachCover($thumb);
+        $this->channel->refresh();
+
+        // touching file
+        Storage::disk(self::VIGNETTE_DISK_NAME)->put($this->vignetteFilePath($this->channel), '');
+        $this->assertTrue($this->channel->vignetteFileExists());
     }
 
     /** @test */
@@ -81,7 +135,7 @@ class HasVignetteTest extends TestCase
             pathinfo($thumb->file_name, PATHINFO_FILENAME) .
             '_vig.' .
             pathinfo($thumb->file_name, PATHINFO_EXTENSION);
-        $expectedVignetteUrl = Storage::disk('vignettes')->url($vignetteFilepath);
+        $expectedVignetteUrl = Storage::disk(self::VIGNETTE_DISK_NAME)->url($vignetteFilepath);
         $this->assertEquals($expectedVignetteUrl, $this->playlist->vignette_url);
     }
 }

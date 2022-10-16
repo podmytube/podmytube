@@ -38,4 +38,17 @@ trait Covers
 
         return Storage::disk(Thumb::LOCAL_STORAGE_DISK)->size($filePath);
     }
+
+    public function vignetteFilePath(Coverable $coverable)
+    {
+        return $coverable->channelId() . '/' .
+            pathinfo($coverable->cover->file_name, PATHINFO_FILENAME) .
+            '_vig.' .
+            pathinfo($coverable->cover->file_name, PATHINFO_EXTENSION);
+    }
+
+    public function coverFilePath(Coverable $coverable)
+    {
+        return $coverable->channelId() . '/' . $coverable->cover->file_name;
+    }
 }

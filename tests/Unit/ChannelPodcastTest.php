@@ -42,7 +42,7 @@ class ChannelPodcastTest extends TestCase
     public function podcast_cover_url_should_be_good(): void
     {
         $thumb = Thumb::factory()->create();
-        $this->channel->setCoverFromThumb($thumb);
+        $this->channel->attachCover($thumb);
         $this->assertNotNull($thumb->podcastUrl());
         $this->assertInstanceOf(Thumb::class, $thumb);
         $this->assertEquals($thumb->podcastUrl(), $this->channel->podcastCoverUrl());

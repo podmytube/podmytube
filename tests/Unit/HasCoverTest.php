@@ -14,6 +14,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use InvalidArgumentException;
 use Tests\TestCase;
+use Tests\Traits\Covers;
 
 /**
  * @internal
@@ -22,10 +23,12 @@ use Tests\TestCase;
  */
 class HasCoverTest extends TestCase
 {
+    use Covers;
     use RefreshDatabase;
 
-    protected Channel $channel;
+    public const COVER_DISK_NAME = 'thumbs';
 
+    protected Channel $channel;
     protected Playlist $playlist;
 
     public function setUp(): void
@@ -52,12 +55,7 @@ class HasCoverTest extends TestCase
     /** @test */
     public function playlist_cover_should_be_ok(): void
     {
-        Thumb::factory()->create(
-            [
-                'coverable_type' => $this->playlist->morphedName(),
-                'coverable_id' => $this->playlist->id,
-            ]
-        );
+        $this->playlist->attachCover(Thumb::factory()->create());
         $this->assertNotNull($this->playlist->cover);
         $this->assertInstanceOf(Thumb::class, $this->playlist->cover);
     }
@@ -72,12 +70,7 @@ class HasCoverTest extends TestCase
     /** @test */
     public function channel_cover_relationship_should_be_ok(): void
     {
-        Thumb::factory()->create(
-            [
-                'coverable_type' => $this->channel->morphedName(),
-                'coverable_id' => $this->channel->channelId(),
-            ]
-        );
+        $this->channel->attachCover(Thumb::factory()->create());
         $this->assertNotNull($this->channel->cover);
         $this->assertTrue($this->channel->hasCover());
         $this->assertInstanceOf(Thumb::class, $this->channel->cover);
@@ -110,15 +103,6 @@ class HasCoverTest extends TestCase
     }
 
     /** @test */
-    public function set_cover_from_thumb_is_fine(): void
-    {
-        $thumb = Thumb::factory()->create();
-        $this->playlist->setCoverFromThumb($thumb);
-        $this->assertNotNull($this->playlist->cover);
-        $this->assertInstanceOf(Thumb::class, $this->playlist->cover);
-    }
-
-    /** @test */
     public function cover_folder_path_should_be_good(): void
     {
         // for channel
@@ -131,6 +115,24 @@ class HasCoverTest extends TestCase
         $this->assertEquals(
             config('app.thumbs_path') . '/' . $this->playlist->relativeFolderPath(),
             $this->playlist->coverFolderPath()
+        );
+    }
+
+    /** @test */
+    public function cover_full_path_should_be_good(): void
+    {
+        // for channel
+        $this->channel->attachCover(Thumb::factory()->create());
+        $this->assertEquals(
+            config('app.thumbs_path') . '/' . $this->channel->coverRelativePath(),
+            $this->channel->coverFullPath()
+        );
+
+        // for playlist
+        $this->playlist->attachCover(Thumb::factory()->create());
+        $this->assertEquals(
+            config('app.thumbs_path') . '/' . $this->playlist->coverRelativePath(),
+            $this->playlist->coverFullPath()
         );
     }
 
@@ -177,5 +179,20 @@ class HasCoverTest extends TestCase
        $coverFilepath = $this->playlist->channelId() . '/' . $thumb->file_name;
        $expectedCoverUrl = Storage::disk('thumbs')->url($coverFilepath);
        $this->assertEquals($expectedCoverUrl, $this->playlist->cover_url);
+   }
+
+   /** @test */
+   public function cover_exists_should_work_fine(): void
+   {
+       // no thumb
+       $this->assertFalse($this->channel->coverFileExists());
+
+       // thumb without vignette file should return false
+       $this->channel->attachCover(Thumb::factory()->create());
+       $this->channel->refresh();
+
+       // touching file
+       Storage::disk(self::COVER_DISK_NAME)->put($this->coverFilePath($this->channel), '');
+       $this->assertTrue($this->channel->coverFileExists());
    }
 }

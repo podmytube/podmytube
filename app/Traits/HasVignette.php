@@ -13,6 +13,11 @@ trait HasVignette
 {
     protected string $vignetteDisk = 'vignettes';
 
+    public function hasVignette(): bool
+    {
+        return $this->vignetteFileExists();
+    }
+
     /**
      * used as a property $this->vignette_url.
      */
@@ -32,6 +37,15 @@ trait HasVignette
         });
     }
 
+    public function vignetteFileExists(): bool
+    {
+        if ($this->cover === null) {
+            return false;
+        }
+
+        return Storage::disk('vignettes')->fileExists($this->vignetteRelativePath());
+    }
+
     public function vignetteRelativePath(): string
     {
         throw_unless(
@@ -40,7 +54,6 @@ trait HasVignette
         );
 
         // building vignette path from channel id and thumb/cover filename
-
         return $this->channelId() . '/' .
             pathinfo($this->cover->file_name, PATHINFO_FILENAME) . '_vig.'
             . pathinfo($this->cover->file_name, PATHINFO_EXTENSION);
