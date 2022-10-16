@@ -40,13 +40,8 @@
                     </p>
                 @endif
 
-                <p class="text-center py-2">
-                <p class="m-2 p-2 rounded-lg text-xl bg-gray-900 text-gray-100 text-center">⚡ <a
-                        href="{{ route('analytics', $channel) }}">Downloads</a> ⚡</p>
-                <ul class="text-gray-700 text-center list-disc">
-                    <li>this week : {{ $channel->thisWeekDownloads }}</li>
-                    <li>this month : {{ $channel->thisMonthDownloads }}</li>
-                </ul>
+                <p class="m-2 p-2 rounded-lg bg-gray-900 hover:bg-gray-700 text-gray-100 text-center hover:underline">📉
+                    <a href="{{ route('analytics', $channel) }}">Downloads</a> 📈
                 </p>
 
                 <div class="text-center pb-6">

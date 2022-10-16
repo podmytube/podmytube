@@ -17,7 +17,7 @@ class HomeDetailsService
             ->where('user_id', '=', $user->id())
             ->with([
                 'playlists:id,channel_id,active',
-                'subscription.plan:id,name',
+                'subscription.plan:id,name,price',
             ])
             ->get()
         ;

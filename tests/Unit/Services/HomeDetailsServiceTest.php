@@ -92,6 +92,7 @@ class HomeDetailsServiceTest extends TestCase
 
         // both channels should be present in results
         $channels->each(function (Channel $channel) use ($results): void {
+            /** @var Channel $result */
             $result = $results->where('channel_id', '=', $channel->youtube_id)->first();
             $this->assertNotNull($result);
             $this->assertInstanceOf(Channel::class, $result);
@@ -106,6 +107,17 @@ class HomeDetailsServiceTest extends TestCase
             $this->assertNotNull($result->subscription->plan);
             $this->assertInstanceOf(Plan::class, $result->subscription->plan);
             $this->assertEquals($channel->subscription->plan->name, $result->subscription->plan->name);
+            if ($channel->subscription->plan->id === $this->freePlan->id) {
+                // freePlan
+                $this->assertEquals('forever free', $result->subscription->plan->name);
+                $this->assertEquals(0, $result->subscription->plan->price);
+                $this->assertTrue($result->isFree());
+            } else {
+                // paying plan
+                $this->assertEquals('starter', $result->subscription->plan->name);
+                $this->assertGreaterThan(0, $result->subscription->plan->price);
+                $this->assertFalse($result->isFree());
+            }
 
             // vignette url is fine
             $this->assertNotNull($result->vignette_url, 'vignette_url should be one url.');
