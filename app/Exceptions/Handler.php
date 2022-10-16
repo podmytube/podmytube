@@ -6,6 +6,7 @@ namespace App\Exceptions;
 
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Session\TokenMismatchException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
@@ -32,6 +33,7 @@ class Handler extends ExceptionHandler
         NamespaceNotFoundException::class,
         NotFoundHttpException::class,
         ValidationException::class,
+        TokenMismatchException::class,
     ];
 
     /**
