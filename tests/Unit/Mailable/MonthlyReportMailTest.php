@@ -22,13 +22,15 @@ class MonthlyReportMailTest extends TestCase
 
     protected Channel $channel;
     protected Plan $freePlan;
+    protected Plan $earlyPlan;
     protected Plan $starterPlan;
 
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->freePlan = Plan::factory()->name('free')->create(['price' => 0]);
+        $this->freePlan = Plan::factory()->isFree()->create();
+        $this->earlyPlan = Plan::factory()->name('early')->create(['price' => 0]);
         $this->starterPlan = Plan::factory()->name('starter')->create();
     }
 
@@ -74,6 +76,18 @@ class MonthlyReportMailTest extends TestCase
 
         $mailContent
             ->assertSeeInHtml('<a href="' . route('plans.index', $this->channel) . '" class="button">Upgrade</a>')
+            ->assertSeeInHtml('No media published this month')
+        ;
+    }
+
+    /** @test */
+    public function default_email_for_early_bird_channel_is_fine(): void
+    {
+        $this->channel = $this->createChannelWithPlan($this->earlyPlan);
+        $mailContent = new MonthlyReportMail($this->channel, now());
+
+        $mailContent
+            ->assertDontSeeInHtml('<a href="' . route('plans.index', $this->channel) . '" class="button">Upgrade</a>')
             ->assertSeeInHtml('No media published this month')
         ;
     }

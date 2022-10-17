@@ -28,6 +28,7 @@ class ChannelModelTest extends TestCase
 
     protected Channel $channel;
     protected Plan $freePlan;
+    protected Plan $earlyPlan;
     protected Plan $starterPlan;
 
     public function setUp(): void
@@ -35,6 +36,7 @@ class ChannelModelTest extends TestCase
         parent::setUp();
 
         $this->freePlan = Plan::factory()->isFree()->create();
+        $this->earlyPlan = Plan::factory()->isFree()->name('early')->create();
         $this->starterPlan = Plan::factory()->name('starter')->create();
         $this->channel = $this->createChannelWithPlan($this->freePlan);
     }
@@ -63,6 +65,9 @@ class ChannelModelTest extends TestCase
     public function is_free_should_be_ok(): void
     {
         $this->assertTrue($this->channel->isFree());
+
+        $earlyChannel = $this->createChannelWithPlan($this->earlyPlan);
+        $this->assertFalse($earlyChannel->isFree());
 
         $payingChannel = $this->createChannelWithPlan($this->starterPlan);
         $this->assertFalse($payingChannel->isFree());

@@ -30,6 +30,7 @@ class HomeDetailsServiceTest extends TestCase
 
     protected HomeDetailsService $service;
     protected Plan $freePlan;
+    protected Plan $earlyPlan;
     protected Plan $starterPlan;
 
     public function setUp(): void
@@ -37,6 +38,7 @@ class HomeDetailsServiceTest extends TestCase
         parent::setUp();
         $this->service = new HomeDetailsService();
         $this->freePlan = Plan::factory()->isFree()->create();
+        $this->earlyPlan = Plan::factory()->name('early')->create(['price' => 0]);
         $this->starterPlan = Plan::factory()->name('starter')->create();
     }
 
@@ -109,12 +111,14 @@ class HomeDetailsServiceTest extends TestCase
             $this->assertEquals($channel->subscription->plan->name, $result->subscription->plan->name);
             if ($channel->subscription->plan->id === $this->freePlan->id) {
                 // freePlan
-                $this->assertEquals('forever free', $result->subscription->plan->name);
                 $this->assertEquals(0, $result->subscription->plan->price);
                 $this->assertTrue($result->isFree());
+            } elseif ($channel->subscription->plan->id === $this->earlyPlan->id) {
+                // earlyPlan
+                $this->assertEquals(0, $result->subscription->plan->price);
+                $this->assertFalse($result->isFree());
             } else {
                 // paying plan
-                $this->assertEquals('starter', $result->subscription->plan->name);
                 $this->assertGreaterThan(0, $result->subscription->plan->price);
                 $this->assertFalse($result->isFree());
             }
