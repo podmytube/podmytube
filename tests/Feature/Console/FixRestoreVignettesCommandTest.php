@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace Tests\Feature\Console;
 
 use App\Jobs\CreateVignetteFromThumbJob;
+use App\Jobs\TransferFileJob;
 use App\Models\Channel;
 use App\Models\Thumb;
-use Google\Service\Storagetransfer\TransferJob;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use Tests\Traits\Covers;
 
@@ -64,19 +63,43 @@ class FixRestoreVignettesCommandTest extends CommandTestCase
     }
 
     /** @test */
-    public function channel_with_cover_but_no_vignette_should_dispatch(): void
+    public function channel_with_cover_on_remote_but_no_vignette_should_chain_jobs(): void
     {
-        $this->markTestIncomplete('job chaining');
-        Bus::fake(CreateVignetteFromThumbJob::class);
+        Bus::fake([
+            TransferFileJob::class,
+            CreateVignetteFromThumbJob::class,
+        ]);
 
-        $channel = Channel::factory()->create();
-        Thumb::factory()->channel($channel)->create();
+        $thumb = Thumb::factory()->create();
+        $this->channel->attachCover($thumb);
 
-        $this->assertFalse($channel->hasVignette());
+        $this->assertFalse($this->channel->hasVignette());
 
         $this->artisan('fix:restore-vignettes')->assertExitCode(0);
 
-        Queue::assertPushedOn('podwww', TransferJob::class);
-        Bus::assertDispatched(CreateVignetteFromThumbJob::class, 1);
+        Bus::assertChained([
+            TransferFileJob::class,
+            CreateVignetteFromThumbJob::class,
+        ]);
+    }
+
+    /** @test */
+    public function channel_with_cover_on_remote_but_no_vignette_should_dispatch_create_vig_only(): void
+    {
+        Bus::fake([
+            TransferFileJob::class,
+            CreateVignetteFromThumbJob::class,
+        ]);
+
+        $thumb = Thumb::factory()->create();
+        $this->channel->attachCover($thumb);
+        $this->createFakeCoverFor($thumb);
+
+        $this->assertFalse($this->channel->hasVignette());
+
+        $this->artisan('fix:restore-vignettes')->assertExitCode(0);
+
+        Bus::assertNotDispatched(TransferFileJob::class);
+        Bus::assertDispatched(CreateVignetteFromThumbJob::class);
     }
 }

@@ -23,8 +23,6 @@ class MediaUploadedByUserListener implements ShouldQueue
             new MediaUploadedByUserJob($event->media()),
             // THEN ! rebuild podcast
             new UploadPodcastJob($event->podcastable()),
-        ])
-            ->dispatch()
-        ;
+        ])->dispatch();
     }
 }
