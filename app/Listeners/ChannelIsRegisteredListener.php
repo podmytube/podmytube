@@ -6,7 +6,9 @@ namespace App\Listeners;
 
 use App\Interfaces\InteractsWithPodcastable;
 use App\Jobs\SendChannelIsRegisteredEmailJob;
+use App\Jobs\SendNewReferralEmailJob;
 use App\Jobs\UploadPodcastJob;
+use App\Models\Channel;
 
 class ChannelIsRegisteredListener
 {
@@ -29,5 +31,12 @@ class ChannelIsRegisteredListener
 
         // should send a welcome email
         SendChannelIsRegisteredEmailJob::dispatch($event->podcastable());
+
+        if (
+            $event->podcastable() instanceof Channel
+            && $event->podcastable()->user->referrer !== null
+        ) {
+            SendNewReferralEmailJob::dispatch($event->podcastable());
+        }
     }
 }
