@@ -33,7 +33,7 @@ class FixRestoreVignettesCommand extends Command
     public function handle(): int
     {
         if (!ServerRole::isDisplay()) {
-            $this->info('This command should run on display only.', 'v');
+            $this->warn('This command should run on display only.');
 
             return 0;
         }

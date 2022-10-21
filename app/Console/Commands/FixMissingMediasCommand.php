@@ -39,7 +39,7 @@ class FixMissingMediasCommand extends Command
     {
         throw new NotImplementedException('Should be reworked before launched.');
         if (!ServerRole::isWorker()) {
-            $this->info('This server is not a worker.', 'v');
+            $this->warn('This server is not a worker.');
 
             return 0;
         }

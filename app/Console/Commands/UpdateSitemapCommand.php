@@ -40,7 +40,7 @@ class UpdateSitemapCommand extends Command
     public function handle(): int
     {
         if (!ServerRole::isDisplay()) {
-            $this->info('This server is not dedicated to display.', 'v');
+            $this->warn('This server is not dedicated to display.');
 
             return 0;
         }

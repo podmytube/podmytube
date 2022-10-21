@@ -55,7 +55,7 @@ class UpdateChannelsCommand extends Command
     public function handle(): int
     {
         if (!ServerRole::isWorker()) {
-            $this->info('This server is not a worker.', 'v');
+            $this->warn('This server is not a worker.');
 
             return 0;
         }
