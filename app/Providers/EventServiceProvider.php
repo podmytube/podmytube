@@ -11,6 +11,7 @@ use App\Events\PodcastUpdatedEvent;
 use App\Events\ThumbUpdatedEvent;
 use App\Listeners\ChannelIsRegisteredListener;
 use App\Listeners\MediaUploadedByUserListener;
+use App\Listeners\SendWelcomeToPodmytubeEmailListener;
 use App\Listeners\ThumbUpdatedListener;
 use App\Listeners\UploadPodcastListener;
 use Illuminate\Auth\Events\Registered;
@@ -45,7 +46,7 @@ class EventServiceProvider extends ServiceProvider
             SendEmailVerificationNotification::class,
         ],
         Verified::class => [
-            SendEmailVerificationNotification::class,
+            SendWelcomeToPodmytubeEmailListener::class,
         ],
     ];
 
