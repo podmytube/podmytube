@@ -98,11 +98,29 @@
                     </p>
                 </div>
 
+                <div class="my-2">
+                    <h2 class="font-semibold text-lg">Where to get my referral link.</h2>
+                    <p class="text-gray-700 py-2 text-base"> Once registered and your email address verified you will find
+                        it on the profile page. </p>
+                </div>
+
+                <div class="my-2">
+                    <h2 class="font-semibold text-lg">How many referrals can I have.</h2>
+                    <p class="text-gray-700 py-2 text-base"> Sky is the limit. You can have as many referrals as you want.
+                    </p>
+                </div>
+
+                <div class="my-2">
+                    <h2 class="font-semibold text-lg">How many levels of referrals may I have.</h2>
+                    <p class="text-gray-700 py-2 text-base"> There is only one level of referrals.
+                        If one of your referral is becoming referrer too, you won't gain anything on his/her referrals.
+                    </p>
+                </div>
 
                 <!--div class="my-2">
-                        <h2 class="font-semibold text-lg"> question </h2>
-                        <p class="text-gray-700 py-2 text-base"> answer </p>
-                    </div-->
+                                        <h2 class="font-semibold text-lg"> question </h2>
+                                        <p class="text-gray-700 py-2 text-base"> answer </p>
+                                    </div-->
 
             </div>
         </div>
