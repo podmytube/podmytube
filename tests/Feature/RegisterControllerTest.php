@@ -31,6 +31,7 @@ class RegisterControllerTest extends TestCase
                 'Email',
                 'Password',
                 'Confirmation',
+                'Referrer',
                 'I accept the terms of service',
                 'Sign up',
                 'Already user',
@@ -45,7 +46,7 @@ class RegisterControllerTest extends TestCase
         $expectedReferralCode = fake()->bothify('????####');
         $this->get('/register?referral_code=' . $expectedReferralCode)
             ->assertSuccessful()
-            ->assertSee('<input type="hidden" name="referral_code" value="' . $expectedReferralCode . '">', false)
+            ->assertSee('<input type="text" value="' . $expectedReferralCode . '" name="referral_code"', false)
         ;
     }
 

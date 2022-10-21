@@ -10,11 +10,10 @@
 
 @section('content')
 
-    <div class="max-w-sm mx-auto py-12 px-4">
+    <div class="max-w-sm mx-auto p-4">
         <form class="form-signin" method="POST" action="{{ route('register') }}">
             @csrf
-            <input type="hidden" name="referral_code" value="{{ $referralCode }}">
-            <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col">
+            <div class="bg-white shadow-md rounded px-8 pt-2 py-4 mb-3 flex flex-col">
                 <div class="mx-auto">
                     <svg class="h-24 w-auto inline fill-current" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
                         <path
@@ -25,44 +24,51 @@
                             d="m96 102.1h-18.7v-22.6a13.4 13.4 0 0 0-6.8-11.6 13.4 13.4 0 1 0-13.2 0 13.4 13.4 0 0 0-6.8 11.6v22.6h-18.7a1.8 1.8 0 0 0 0 3.5h64.1a1.8 1.8 0 0 0 0-3.5zm-41.9-45.8a9.9 9.9 0 1 1 9.9 9.9 9.9 9.9 0 0 1-9.9-9.9zm0 23.2a9.9 9.9 0 0 1 19.7 0v22.6h-19.7z" />
                     </svg>
                 </div>
-                <div class="mb-4">
-                    <label class="block text-grey-darker text-sm font-bold mb-2" for="username"> First name </label>
+                <div class="mb-3">
+                    <label class="block text-grey-darker text-sm font-bold" for="firstname"> First name </label>
                     <input type="text" name="firstname" id="firstname" value="{{ old('firstname') }}" placeholder="Obi"
                         autocomplete="firstname" required
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker">
                 </div>
-                <div class="mb-4">
-                    <label class="block text-grey-darker text-sm font-bold mb-2" for="username"> Last name </label>
+                <div class="mb-3">
+                    <label class="block text-grey-darker text-sm font-bold" for="lastname"> Last name </label>
                     <input type="text" name="lastname" id="lastname" value="{{ old('lastname') }}" placeholder="Wan"
                         autocomplete="lastname" required
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker">
                 </div>
-                <div class="mb-4">
-                    <label class="block text-grey-darker text-sm font-bold mb-2" for="username"> Email </label>
+                <div class="mb-3">
+                    <label class="block text-grey-darker text-sm font-bold" for="username"> Email </label>
                     <input type="email" name="email" id="email" value="{{ old('email') }}"
                         placeholder="obi.wan@kenobi.net" autocomplete="email" required
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker">
                 </div>
 
-                <div class="mb-4">
-                    <label class="block text-grey-darker text-sm font-bold mb-2" for="password"> Password </label>
+                <div class="mb-3">
+                    <label class="block text-grey-darker text-sm font-bold" for="password"> Password </label>
                     <input type="password" name="password" id="password" required placeholder="******************"
                         class="shadow appearance-none border border-red rounded w-full py-2 px-3 text-grey-darker mb-3">
                 </div>
-                <div class="mb-4">
-                    <label class="block text-grey-darker text-sm font-bold mb-2" for="password"> Confirmation </label>
+                <div class="mb-3">
+                    <label class="block text-grey-darker text-sm font-bold" for="password"> Confirmation </label>
                     <input type="password" name="password_confirmation" id="password_confirmation" required
                         class="shadow appearance-none border border-red rounded w-full py-2 px-3 text-grey-darker mb-3"
                         placeholder="******************">
                 </div>
-                <div class="md:flex md:items-center mb-4">
+                <div class="mb-3">
+                    <label class="block text-grey-darker text-sm font-bold" for="referral_code"> Referrer </label>
+                    <input type="text" value="{{ old('referral_code', $referralCode) }}" name="referral_code"
+                        id="referral_code"
+                        class="shadow appearance-none border border-red rounded w-full py-2 px-3 text-grey-darker mb-3"
+                        placeholder="Your referrer">
+                </div>
+                <div class="md:flex md:items-center mb-3">
                     <label for="terms" class="text-gray-500 font-bold text-center ">
                         <input class="mr-2 leading-tight" type="checkbox" id="terms" name="terms" value="1"
                             required="">
                         <span class="text-sm"> I accept the terms of service </span>
                     </label>
                 </div>
-                <div class="mb-4">
+                <div class="mb-3">
                     @if (App::environment('production'))
                         {!! NoCaptcha::display() !!}
                     @endif
