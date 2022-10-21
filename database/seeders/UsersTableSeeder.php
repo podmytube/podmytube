@@ -39,6 +39,7 @@ class UsersTableSeeder extends Seeder
                     'created_at' => now(),
                     'updated_at' => now(),
                     'email_verified_at' => now(),
+                    'referral_code' => User::createReferralCode(),
                 ]);
             },
             $data

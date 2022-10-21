@@ -12,9 +12,10 @@ use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
-class ProfileAccessTest extends TestCase
+class UserControllerTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -42,6 +43,20 @@ class ProfileAccessTest extends TestCase
             ->get(route('user.index'))
             ->assertViewIs('user.edit')
             ->assertSuccessful()
+            ->assertSeeText($this->user->referralLink())
+            ->assertSeeTextInOrder([
+                'Your firstname',
+                'Your lastname',
+                'Your email',
+                'I agree to the receive some emails',
+                "Don't warn me for exceeding quota.",
+            ], false)
+            ->assertSeeInOrder([
+                $this->user->firstname,
+                $this->user->lastname,
+                $this->user->email,
+            ])
+
         ;
     }
 

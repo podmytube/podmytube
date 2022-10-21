@@ -20,6 +20,35 @@ class RegisterControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    /** @test */
+    public function register_form_should_be_available(): void
+    {
+        $this->get('/register')
+            ->assertSuccessful()
+            ->assertSeeInOrder([
+                'First name',
+                'Last name',
+                'Email',
+                'Password',
+                'Confirmation',
+                'I accept the terms of service',
+                'Sign up',
+                'Already user',
+                'Forgot Password?',
+            ], false)
+        ;
+    }
+
+    /** @test */
+    public function referral_code_should_be_present_and_hidden(): void
+    {
+        $expectedReferralCode = fake()->bothify('????####');
+        $this->get('/register?referral_code=' . $expectedReferralCode)
+            ->assertSuccessful()
+            ->assertSee('<input type="hidden" name="referral_code" value="' . $expectedReferralCode . '">', false)
+        ;
+    }
+
     /**
      * @test
      *
@@ -64,9 +93,40 @@ class RegisterControllerTest extends TestCase
         $this->assertEquals($formData['firstname'], $user->firstname);
         $this->assertEquals($formData['lastname'], $user->lastname);
         $this->assertEquals($formData['email'], $user->email);
-        $this->assertNotEquals($formData['password'], $user->password); // should be somewhat encrypted !!!
+        $this->assertNotNull($user->referral_code, 'User should have one referral code.');
+        $this->assertNull($user->referrer_id, 'With no referral code, user should have no referrer.');
+        $this->assertEquals(8, strlen($user->referral_code));
+
+        Event::assertDispatched(Registered::class);
+    }
+
+    /** @test */
+    public function valid_referral_code_should_register_with_user_referrer_id(): void
+    {
+        Event::fake(Registered::class);
+
+        $referrer = User::factory()->create();
+        $newUserData = [
+            'firstname' => 'Gerard',
+            'lastname' => 'Bouchard',
+            'email' => 'gerard@bouchard.com',
+            'password' => 'loremIpsum$',
+            'password_confirmation' => 'loremIpsum$',
+            'terms' => 1,
+        ];
+        $this->post(route('register', ['referral_code' => $referrer->referral_code]), $newUserData);
+
+        $user = User::byEmail($newUserData['email']);
+
+        $this->assertNotNull($user);
+        $this->assertInstanceOf(User::class, $user);
+        $this->assertEquals($newUserData['firstname'], $user->firstname);
+        $this->assertEquals($newUserData['lastname'], $user->lastname);
+        $this->assertEquals($newUserData['email'], $user->email);
         $this->assertNotNull($user->referral_code, 'User should have one referral code.');
         $this->assertEquals(8, strlen($user->referral_code));
+        $this->assertNotNull($user->referrer_id, 'User should have one referrer.');
+        $this->assertEquals($referrer->user_id, $user->referrer_id, 'User should have referrer as referrer_id.');
 
         Event::assertDispatched(Registered::class);
     }

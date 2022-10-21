@@ -13,6 +13,7 @@
     <div class="max-w-sm mx-auto py-12 px-4">
         <form class="form-signin" method="POST" action="{{ route('register') }}">
             @csrf
+            <input type="hidden" name="referral_code" value="{{ $referralCode }}">
             <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col">
                 <div class="mx-auto">
                     <svg class="h-24 w-auto inline fill-current" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
@@ -68,8 +69,7 @@
                 </div>
                 <div class="flex items-center justify-between">
                     <button class="bg-gray-900 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded" type="submit">
-                        Sign
-                        up </button>
+                        Sign up </button>
 
                     <ul class="inline-block">
                         <li>

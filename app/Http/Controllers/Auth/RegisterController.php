@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Validator;
 
@@ -43,6 +44,13 @@ class RegisterController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
+    public function showRegistrationForm(Request $request)
+    {
+        $referralCode = $request->query('referral_code') ?? null;
+
+        return view('auth.register', compact('referralCode'));
+    }
+
     /**
      * Get a validator for an incoming registration request.
      *
@@ -71,12 +79,19 @@ class RegisterController extends Controller
      */
     protected function create(array $data): User
     {
+        $referrer = null;
+
+        if (Arr::get($data, 'referral_code') !== null) {
+            $referrer = User::byReferralCode(Arr::get($data, 'referral_code'));
+        }
+
         return User::create([
             'firstname' => $data['firstname'],
             'lastname' => $data['lastname'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
             'referral_code' => User::createReferralCode(),
+            'referrer_id' => $referrer !== null ? $referrer->user_id : null,
         ]);
     }
 

@@ -126,6 +126,38 @@ class UserModelTest extends TestCase
         $this->assertFalse($this->user->wantToBeWarnedForExceedingQuota());
     }
 
+    /** @test */
+    public function referral_link_should_return_link(): void
+    {
+        $user = User::factory()->create();
+        $expectedReferralUrl = route('register', ['referral_code' => $user->referral_code]);
+        $this->assertEquals($expectedReferralUrl, $user->referralLink());
+    }
+
+    /** @test */
+    public function by_referral_code_should_be_fine(): void
+    {
+        $referralCode = fake()->bothify('????####');
+        $this->assertNull(User::byReferralCode($referralCode));
+
+        $user = User::factory()->withReferralCode($referralCode)->create();
+        $result = User::byReferralCode($referralCode);
+        $this->assertNotNull($result);
+        $this->assertInstanceOf(User::class, $result);
+        $this->assertEquals($user->email, $result->email);
+    }
+
+    /** @test */
+    public function referrer_relation_is_fine(): void
+    {
+        $referrer = User::factory()->create();
+
+        $user = User::factory()->withReferrer($referrer)->create();
+        $this->assertNotNull($user->referrer);
+        $this->assertInstanceOf(User::class, $user->referrer);
+        $this->assertEquals($referrer->email, $user->referrer->email);
+    }
+
     /**
      * ===============================================
      * helpers & providers

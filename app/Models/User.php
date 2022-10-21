@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Traits\IsReferrable;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
@@ -33,6 +34,7 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use Impersonate;
     use HasFactory;
+    use IsReferrable;
     use Notifiable;
     use SoftDeletes;
 
@@ -119,10 +121,5 @@ class User extends Authenticatable implements MustVerifyEmail
     public function wantToBeWarnedForExceedingQuota(): bool
     {
         return $this->dont_warn_exceeding_quota === false;
-    }
-
-    public static function createReferralCode(): string
-    {
-        return fake()->bothify('????####');
     }
 }

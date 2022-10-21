@@ -27,6 +27,7 @@ class UserController extends Controller
         if (!array_key_exists('newsletter', $validatedParams)) {
             $validatedParams['newsletter'] = false;
         }
+
         if (!array_key_exists('dont_warn_exceeding_quota', $validatedParams)) {
             $validatedParams['dont_warn_exceeding_quota'] = false;
         }
@@ -45,10 +46,7 @@ class UserController extends Controller
         Auth::logout();
 
         return redirect(route('www.index'))
-            ->with(
-                'success',
-                'Your account is planned for deletion.'
-            )
+            ->with('success', 'Your account is planned for deletion.')
         ;
     }
 }

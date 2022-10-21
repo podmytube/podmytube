@@ -10,6 +10,11 @@
             This is the place where you can edit your account informations.
         </p>
 
+        <div class="bg-gray-100 my-2 p-4 rounded-lg shadow">
+            Your referral link : <span id="referral_code">{{ $user->referralLink() }}</span>
+            <button onclick="toClipBoard()"> 📋 </button>
+        </div>
+
         <div class="rounded-lg bg-white text-gray-900 p-4">
             <form method="POST" id="edit-user-form" action="{{ route('user.update', $user) }}">
                 {{ method_field('PATCH') }}
@@ -41,8 +46,7 @@
                     <label class="block py-1" for="newsletter">
                         <input type="checkbox" id="newsletter" name="newsletter" value="1" class="form-checkbox"
                             @if ($user->newsletter) checked @endif>
-                        <span class="ml-2">I agree to the receive <span class="underline">some
-                                emails</span></span><br>
+                        <span class="ml-2">I agree to the receive <span class="underline">some emails</span></span><br>
                         <small class="pl-4">the only emails you will receive are monthly reports and (more rarely)
                             important
                             news about Podmytube</small>
@@ -68,29 +72,6 @@
                             class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-900 font-bold py-2 px-4 rounded-r-lg">Cancel</button>
                     </a>
                 </div>
-
-                {{-- <div class="w-3/4 mx-auto pb-6 px-6 rounded-lg border-2 border-red-700 bg-red-200 text-center ">
-                    <div class="p-4 font-semibold">
-                        <strong>💣 Danger zone 💥</strong><br>
-                        change only if you know what you are doing ! 🔥
-                    </div>
-                    I only want to include videos with the
-                    <input type="text" id="accept_video_by_tag" name="accept_video_by_tag"
-                        value="{{ $channel->accept_video_by_tag }}"
-                        class="px-5 py-1 text-gray-900 bg-gray-200 rounded placeholder-gray-700">
-                    tag
-                </div>
-
-                <div class="flex mt-4 justify-center items-center">
-                    <a href="#" onclick="event.preventDefault(); document.getElementById('edit-podcast-form').submit();">
-                        <button type="submit"
-                            class="flex-1 bg-gray-800 text-gray-100 hover:bg-gray-700 font-bold py-2 px-4 rounded-l-lg">Submit</button>
-                    </a>
-                    <a href="{{ route('home') }}">
-                        <button type="button"
-                            class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-900 font-bold py-2 px-4 rounded-r-lg">Cancel</button>
-                    </a>
-                </div> --}}
             </form>
         </div>
 
@@ -124,3 +105,43 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script type="text/javascript">
+        function toClipBoard() {
+            // Get the text field
+            var referralCodeItem = document.getElementById("referral_code");
+
+            var referralCodeLink = referralCodeItem.innerHTML;
+
+            copyToClipboard(referralCodeLink);
+
+            alert("Referral link copied : " + referralCodeLink);
+        }
+
+        // return a promise
+        function copyToClipboard(textToCopy) {
+            // navigator clipboard api needs a secure context (https)
+            if (navigator.clipboard && window.isSecureContext) {
+                // navigator clipboard api method'
+                return navigator.clipboard.writeText(textToCopy);
+            } else {
+                // text area method
+                let textArea = document.createElement("textarea");
+                textArea.value = textToCopy;
+                // make the textarea out of viewport
+                textArea.style.position = "fixed";
+                textArea.style.left = "-999999px";
+                textArea.style.top = "-999999px";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                return new Promise((res, rej) => {
+                    // here the magic happens
+                    document.execCommand('copy') ? res() : rej();
+                    textArea.remove();
+                });
+            }
+        }
+    </script>
+@endpush
