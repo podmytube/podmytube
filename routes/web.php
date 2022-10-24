@@ -9,6 +9,7 @@ declare(strict_types=1);
  */
 
 use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\RefereeController;
 use App\Http\Controllers\ThumbsController;
 use App\Jobs\SendVerificationEmailJob;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -136,6 +137,10 @@ Route::domain('dashboard.' . config('app.domain'))->group(function (): void {
         Route::resource('user', 'UserController')->only(['index', 'update', 'destroy']);
 
         Route::get('analytics/{channel}', [AnalyticsController::class, 'show'])->name('analytics');
+
+        // ================================================
+        // User profile
+        Route::get('referees', RefereeController::class)->name('referees');
 
         // ================================================
         // Impersonate

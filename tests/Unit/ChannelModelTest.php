@@ -7,7 +7,6 @@ namespace Tests\Unit;
 use App\Models\Channel;
 use App\Models\Media;
 use App\Models\Plan;
-use App\Models\Subscription;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -144,27 +143,6 @@ class ChannelModelTest extends TestCase
 
         Channel::factory()->count(5)->create(['user_id' => $user->user_id]);
         $this->assertCount(6, Channel::userChannels($user));
-    }
-
-    /** @test */
-    public function subscribe_to_plan_should_be_ok(): void
-    {
-        $channel = Channel::factory()->create();
-        $this->assertNull($channel->subscription);
-
-        $plan = Plan::factory()->create();
-        $subscription = $channel->subscribeToPlan($plan);
-        $channel->refresh();
-        $this->assertNotNull($subscription);
-        $this->assertInstanceOf(Subscription::class, $subscription);
-
-        $this->assertNotNull($channel->subscription);
-        $this->assertInstanceOf(Subscription::class, $channel->subscription);
-
-        // checking plan subscription
-        $this->assertNotNull($channel->subscription->plan);
-        $this->assertInstanceOf(Plan::class, $channel->subscription->plan);
-        $this->assertEquals($plan->name, $channel->subscription->plan->name);
     }
 
     /** @test */

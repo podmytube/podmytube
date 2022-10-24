@@ -22,6 +22,7 @@ use App\Traits\HasManyMedias;
 use App\Traits\HasManyPlaylists;
 use App\Traits\HasOneLanguage;
 use App\Traits\HasOneSubscription;
+use App\Traits\HasPlan;
 use App\Traits\HasVignette;
 use App\Traits\IsRelatedToOneChannel;
 use Carbon\Carbon;
@@ -61,14 +62,15 @@ class Channel extends Model implements Podcastable, Coverable
 {
     use BelongsToCategory;
     use BelongsToUser;
-    use HasLimits;
-    use HasFactory;
+    use HasCover;
     use HasDownloads;
+    use HasFactory;
+    use HasLimits;
     use HasManyMedias;
     use HasManyPlaylists;
-    use HasOneSubscription;
     use HasOneLanguage;
-    use HasCover;
+    use HasOneSubscription;
+    use HasPlan;
     use HasVignette;
     use IsRelatedToOneChannel;
 
@@ -445,14 +447,6 @@ class Channel extends Model implements Podcastable, Coverable
     public function youtubeId(): Attribute
     {
         return Attribute::get(fn () => $this->channel_id);
-    }
-
-    public function subscribeToPlan(Plan $plan): Subscription
-    {
-        return Subscription::updateOrCreate(
-            ['channel_id' => $this->channel_id],
-            ['plan_id' => $plan->id]
-        );
     }
 
     public function associatedMedias(): Collection
