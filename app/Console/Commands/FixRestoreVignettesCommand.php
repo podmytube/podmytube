@@ -65,12 +65,12 @@ class FixRestoreVignettesCommand extends Command
             $jobToChains = [];
             if (!$channel->coverFileExists()) {
                 // thumb not present on display server
-                $jobToChains[] = new TransferFileJob(
+                $jobToChains[] = (new TransferFileJob(
                     sourceDisk: 'remote',
                     sourceFilePath: $channel->coverFullPath(),
                     destinationDisk: 'thumbs',
                     destinationFilePath: $channel->coverRelativePath(),
-                );
+                ))->onQueue('podwww');
             }
 
             // channel has cover but no vignette file => dispatch job
