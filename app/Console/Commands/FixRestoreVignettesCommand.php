@@ -71,7 +71,7 @@ class FixRestoreVignettesCommand extends Command
             // channel has cover but no vignette file => dispatch job
             $jobToChains[] = new CreateVignetteFromThumbJob($channel->cover);
 
-            Bus::chain($jobToChains)->dispatch();
+            Bus::chain($jobToChains)->dispatch()->onQueue('podwww');
         });
 
         return Command::SUCCESS;
