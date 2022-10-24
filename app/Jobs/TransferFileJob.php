@@ -43,7 +43,7 @@ class TransferFileJob implements ShouldQueue
         // checking source file really exists
         throw_unless(
             Storage::disk($this->sourceDisk)->exists($this->sourceFilePath),
-            new TransferFileSourceFileDoNoExistException("File  {$this->sourceDisk}:{$this->sourceFilePath} does not exists.")
+            new TransferFileSourceFileDoNoExistException("File {$this->sourceDisk}:{$this->sourceFilePath} does not exists.")
         );
 
         // creating destination folder

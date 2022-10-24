@@ -45,7 +45,7 @@ class CreateVignetteFromThumbJob implements ShouldQueue
         }
 
         try {
-            // chaining vignette creation and upload
+            // vignette creation
             $this->vignette = Vignette::fromThumb($this->srcThumb)->makeIt()->saveLocally();
         } catch (Exception $exception) {
             $message = "Creation of vignette from thumb {{$this->srcThumb}} \\

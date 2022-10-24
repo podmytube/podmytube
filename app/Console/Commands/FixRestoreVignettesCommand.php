@@ -10,6 +10,7 @@ use App\Models\Channel;
 use App\Modules\ServerRole;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Log;
 
 class FixRestoreVignettesCommand extends Command
 {
@@ -49,11 +50,15 @@ class FixRestoreVignettesCommand extends Command
 
             if ($channel->hasVignette()) {
                 // channel has vignette file => nothing to do
+                Log::info("Channel {$channel->youtube_id} already has vignette. Nothing to do.");
+
                 return;
             }
 
             if (!$channel->hasCover()) {
                 // channel has no cover => nothing to do
+                Log::info("Channel {$channel->youtube_id} has no cover/thumb. Can do nothing.");
+
                 return;
             }
 
