@@ -100,6 +100,6 @@ trait HasCover
             return false;
         }
 
-        return Storage::disk($this->coverDisk)->fileExists($this->coverRelativePath());
+        return Storage::disk($this->coverDisk)->exists($this->coverRelativePath());
     }
 }
