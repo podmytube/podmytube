@@ -447,13 +447,7 @@ class Channel extends Model implements Podcastable, Coverable
         return Attribute::get(fn () => $this->channel_id);
     }
 
-    public function subscribeToPlan(Plan $plan): Subscription
-    {
-        return Subscription::updateOrCreate(
-            ['channel_id' => $this->channel_id],
-            ['plan_id' => $plan->id]
-        );
-    }
+    
 
     public function associatedMedias(): Collection
     {
