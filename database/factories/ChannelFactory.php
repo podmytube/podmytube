@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Channel;
 use App\Models\Language;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ChannelFactory extends Factory
@@ -52,5 +53,10 @@ EOD,
     public function active(bool $active = true): static
     {
         return $this->state(['active' => $active]);
+    }
+
+    public function createdAt(Carbon $date): static
+    {
+        return $this->state(['channel_createdAt' => $date]);
     }
 }

@@ -10,7 +10,7 @@
                 <div class="mt-2 py-2 px-4 rounded border bg-gray-800 text-gray-100">
                     <h4 class="h4">last channel</h4>
                     <span class="h3 text-center">{{ $lastRegisteredChannel->title() }}</span>
-                    ({{ $lastRegisteredChannel->subscription->plan->name }})
+                    ({{ $lastRegisteredChannel->subscription?->plan?->name ?? '' }})
                     <p class="text-center">
                         <a href="{{ $lastRegisteredChannel->podcastUrl() }}">podcast</a>
                         <a href="{{ $lastRegisteredChannel->youtubeUrl() }}">channel</a>

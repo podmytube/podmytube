@@ -17,4 +17,5 @@ trait HasOneSubscription
     {
         return $this->subscription !== null;
     }
+    
 }
