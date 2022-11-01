@@ -149,13 +149,16 @@ Route::domain('dashboard.' . config('app.domain'))->group(function (): void {
             ->name('verification.notice')
         ;
 
-        // user has verified his/her mail
+        // =======================================
+        // user has clicked to verified his/her mail
         Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
             $request->fulfill();
 
             return redirect()->route('home')->with('success', 'Email has been verified. Thank you. 🙏');
         })->middleware(['signed'])->name('verification.verify');
 
+        // =======================================
+        // user will be send verification email
         Route::post('/email/verification-notification', function (Request $request) {
             SendVerificationEmailJob::dispatch($request->user());
 
