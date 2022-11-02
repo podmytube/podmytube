@@ -41,15 +41,15 @@ use Illuminate\Support\Str;
  * @property string       $authors
  * @property bool         $active
  * @property Category     $category
- * @property Carbon       $channel_createdAt
- * @property Carbon       $channel_updatedAt
+ * @property Carbon       $created_at
+ * @property Carbon       $updated_at
  * @property string       $channel_name
  * @property string       $description
  * @property string       $email
  * @property bool         $explicit
  * @property Language     $language
  * @property string       $link
- * @property Carbon       $podcast_updatedAt
+ * @property Carbon       $podcast_updated_at
  * @property Carbon       $reject_video_too_old
  * @property string       $reject_video_by_keyword
  * @property string       $podcast_copyright
@@ -75,9 +75,6 @@ class Channel extends Model implements Podcastable, Coverable
     public const REMOTE_DISK = 'remote';
     public const DEFAULT_CATEGORY_SLUG = 'society-culture';
 
-    public const CREATED_AT = 'channel_createdAt';
-    public const UPDATED_AT = 'channel_updatedAt';
-
     /** the channel_id is not one auto_increment integer */
     public $incrementing = false;
 
@@ -91,9 +88,7 @@ class Channel extends Model implements Podcastable, Coverable
      * those fields are converted into Carbon mutator.
      */
     protected $dates = [
-        'channel_createdAt',
-        'channel_updatedAt',
-        'podcast_updatedAt',
+        'podcast_updated_at',
         'reject_video_too_old',
     ];
 
@@ -115,16 +110,6 @@ class Channel extends Model implements Podcastable, Coverable
     public function userId()
     {
         return $this->user_id;
-    }
-
-    public function createdAt()
-    {
-        return $this->channel_createdAt;
-    }
-
-    public function podcastUpdatedAt()
-    {
-        return $this->podcast_updatedAt;
     }
 
     public function relativeFeedPath(): string
@@ -477,7 +462,7 @@ class Channel extends Model implements Podcastable, Coverable
 
     public function wasUpdatedOn(Carbon $updatedOnDate): bool
     {
-        return $this->update(['podcast_updatedAt' => $updatedOnDate]);
+        return $this->update(['podcast_updated_at' => $updatedOnDate]);
     }
 
     public function relativeFolderPath(): string

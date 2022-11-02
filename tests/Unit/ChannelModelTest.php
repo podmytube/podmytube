@@ -265,12 +265,12 @@ class ChannelModelTest extends TestCase
     /** @test */
     public function should_update_podcast_updated_at(): void
     {
-        $this->channel->update(['podcast_updatedAt' => null]);
-        $this->assertNull($this->channel->podcast_updatedAt);
+        $this->channel->update(['podcast_updated_at' => null]);
+        $this->assertNull($this->channel->podcast_updated_at);
 
         $now = now();
         $this->channel->wasUpdatedOn($now);
-        $this->assertEquals($now->toDateString(), $this->channel->podcast_updatedAt->toDateString());
+        $this->assertEquals($now->toDateString(), $this->channel->podcast_updated_at->toDateString());
     }
 
     /** @test */

@@ -44,8 +44,8 @@ class StatusChannelCommandTest extends CommandTestCase
         $plan = Plan::factory()->name('starter')->create();
         $channel = $this->createChannelWithPlan($plan);
         $channel->update([
-            'channel_createdAt' => now()->subMonth(),
-            'podcast_updatedAt' => now()->subDay(),
+            'created_at' => now()->subMonth(),
+            'podcast_updated_at' => now()->subDay(),
         ]);
         $playlistId = $this->getPlaylistIdFromChannelId($channel->youtube_id);
         // faking playlist items response
@@ -59,8 +59,8 @@ class StatusChannelCommandTest extends CommandTestCase
                     $channel->youtube_id,
                     $channel->channel_name,
                     $channel->user->email,
-                    $channel->channel_createdAt->toDateString(),
-                    $channel->podcast_updatedAt->toDateString(),
+                    $channel->created_at->toDateString(),
+                    $channel->podcast_updated_at->toDateString(),
                     $plan->name,
                     '✅',
                 ]]
@@ -74,8 +74,8 @@ class StatusChannelCommandTest extends CommandTestCase
         $plan = Plan::factory()->name('starter')->create();
         $channel = $this->createChannelWithPlan($plan);
         $channel->update([
-            'channel_createdAt' => now()->subMonth(),
-            'podcast_updatedAt' => null,
+            'created_at' => now()->subMonth(),
+            'podcast_updated_at' => null,
         ]);
         $playlistId = $this->getPlaylistIdFromChannelId($channel->youtube_id);
         // faking playlist items response
@@ -89,7 +89,7 @@ class StatusChannelCommandTest extends CommandTestCase
                     $channel->youtube_id,
                     $channel->channel_name,
                     $channel->user->email,
-                    $channel->channel_createdAt->toDateString(),
+                    $channel->created_at->toDateString(),
                     '-',
                     $plan->name,
                     '✅',
@@ -104,8 +104,8 @@ class StatusChannelCommandTest extends CommandTestCase
         $plan = Plan::factory()->isFree()->create();
         $channel = $this->createChannelWithPlan($plan);
         $channel->update([
-            'channel_createdAt' => now()->subMonth(),
-            'podcast_updatedAt' => now()->subDay(),
+            'created_at' => now()->subMonth(),
+            'podcast_updated_at' => now()->subDay(),
             'active' => false,
         ]);
 
@@ -123,8 +123,8 @@ class StatusChannelCommandTest extends CommandTestCase
                     $channel->youtube_id,
                     $channel->channel_name,
                     $channel->user->email,
-                    $channel->channel_createdAt->toDateString(),
-                    $channel->podcast_updatedAt->toDateString(),
+                    $channel->created_at->toDateString(),
+                    $channel->podcast_updated_at->toDateString(),
                     $plan->name,
                     '❌',
                 ]]

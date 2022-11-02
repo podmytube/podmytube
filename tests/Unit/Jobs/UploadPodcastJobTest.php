@@ -37,12 +37,12 @@ class UploadPodcastJobTest extends TestCase
 
         Bus::assertDispatched(SendFileByRsync::class, 1);
         Bus::assertDispatched(
-            fn (SendFileByRsync $job) => $job->localFilePath() === $uploadPodcastJob->localFilePath() &&
-            $job->remoteFilePath() === $uploadPodcastJob->remoteFilePath()
+            fn (SendFileByRsync $job) => $job->localFilePath() === $uploadPodcastJob->localFilePath()
+            && $job->remoteFilePath() === $uploadPodcastJob->remoteFilePath()
         );
 
         // should have been update less than 1 min ago
-        $this->assertNotNull($this->channel->podcast_updatedAt);
-        $this->assertTrue(now()->subMinute()->lessThan($this->channel->podcast_updatedAt));
+        $this->assertNotNull($this->channel->podcast_updated_at);
+        $this->assertTrue(now()->subMinute()->lessThan($this->channel->podcast_updated_at));
     }
 }

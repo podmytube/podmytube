@@ -24,7 +24,7 @@ class CockpitController extends Controller
 {
     public function index(): View
     {
-        $lastRegisteredChannel = Channel::orderBy('channel_createdAt', 'desc')->first();
+        $lastRegisteredChannel = Channel::orderBy('created_at', 'desc')->first();
 
         $nbPodcasts = Channel::active()->count();
 

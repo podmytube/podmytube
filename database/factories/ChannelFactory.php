@@ -57,6 +57,6 @@ EOD,
 
     public function createdAt(Carbon $date): static
     {
-        return $this->state(['channel_createdAt' => $date]);
+        return $this->state(['created_at' => $date]);
     }
 }
