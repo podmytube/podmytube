@@ -57,7 +57,7 @@ class CreateChannelCommandTest extends CommandTestCase
         $this->assertNotNull($createdChannel);
         $this->assertEquals(self::PERSONAL_CHANNEL_ID, $createdChannel->channel_id);
         $this->assertEquals($expectedChannelName, $createdChannel->channel_name);
-        $this->assertEquals(self::DEFAULT_USER_ID, $createdChannel->userId());
+        $this->assertEquals(self::DEFAULT_USER_ID, $createdChannel->user->id);
         $this->assertEquals(self::DEFAULT_PLAN_ID, $createdChannel?->subscription?->plan?->id);
         $this->assertTrue($createdChannel->isActive());
     }
@@ -72,7 +72,7 @@ class CreateChannelCommandTest extends CommandTestCase
         // command should run properly
         $this->artisan('create:channel', [
             'channel_id' => self::PERSONAL_CHANNEL_ID,
-            '--userId' => $anotherUser->id(),
+            '--userId' => $anotherUser->id,
         ])
             ->assertExitCode(0)
         ;
@@ -81,7 +81,7 @@ class CreateChannelCommandTest extends CommandTestCase
         $this->assertNotNull($createdChannel);
         $this->assertEquals(self::PERSONAL_CHANNEL_ID, $createdChannel->channel_id);
         $this->assertEquals($expectedChannelName, $createdChannel->channel_name);
-        $this->assertEquals($anotherUser->id(), $createdChannel->userId());
+        $this->assertEquals($anotherUser->id, $createdChannel->user->id);
         $this->assertEquals(self::DEFAULT_PLAN_ID, $createdChannel?->subscription?->plan?->id);
         $this->assertTrue($createdChannel->isActive());
     }
@@ -98,7 +98,7 @@ class CreateChannelCommandTest extends CommandTestCase
         // command should run properly
         $this->artisan('create:channel', [
             'channel_id' => self::PERSONAL_CHANNEL_ID,
-            '--userId' => $anotherUser->id(),
+            '--userId' => $anotherUser->id,
             '--planId' => $anotherPlan->id,
         ])
             ->assertExitCode(0)
@@ -108,7 +108,7 @@ class CreateChannelCommandTest extends CommandTestCase
         $this->assertNotNull($createdChannel);
         $this->assertEquals(self::PERSONAL_CHANNEL_ID, $createdChannel->channel_id);
         $this->assertEquals($expectedChannelName, $createdChannel->channel_name);
-        $this->assertEquals($anotherUser->id(), $createdChannel->userId());
+        $this->assertEquals($anotherUser->id, $createdChannel->user->id);
         $this->assertEquals($anotherPlan->id, $createdChannel?->subscription?->plan?->id);
         $this->assertTrue($createdChannel->isActive());
     }

@@ -38,7 +38,7 @@ class CreateChannelFactoryTest extends TestCase
 
         $this->assertNotNull($channel);
         $this->assertInstanceOf(Channel::class, $channel);
-        $this->assertEquals($this->user->user_id, $channel->user_id);
+        $this->assertEquals($this->user->id, $channel->user_id);
         $this->assertFalse($channel->active);
     }
 
@@ -50,7 +50,7 @@ class CreateChannelFactoryTest extends TestCase
 
         $this->assertNotNull($channel);
         $this->assertInstanceOf(Channel::class, $channel);
-        $this->assertEquals($this->user->user_id, $channel->user_id);
+        $this->assertEquals($this->user->id, $channel->user_id);
         $this->assertTrue($channel->active);
     }
 

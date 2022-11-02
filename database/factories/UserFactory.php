@@ -9,6 +9,9 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
+/**
+ * @extends Factory<\App\Models\User>
+ */
 class UserFactory extends Factory
 {
     public function definition(): array
@@ -36,7 +39,7 @@ class UserFactory extends Factory
     public function withReferrer(User $user): static
     {
         return $this->state([
-            'referrer_id' => $user->id(),
+            'referrer_id' => $user->id,
         ]);
     }
 

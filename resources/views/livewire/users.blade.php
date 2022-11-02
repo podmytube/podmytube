@@ -23,8 +23,8 @@
                                 </ul>
                             </td>
                             <td class="text-center">
-                                @if ($user->id() != auth()->id())
-                                    <a href="{{ route('users.impersonate', $user->id()) }}"
+                                @if ($user->id != auth()->id())
+                                    <a href="{{ route('users.impersonate', $user->id) }}"
                                         class="btn btn-delete">Impersonate</a>
                                 @endif
                             </td>

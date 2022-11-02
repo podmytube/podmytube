@@ -77,7 +77,7 @@ class HandleCheckoutSessionCompletedJob implements ShouldQueue
         $this->channel = $this->getChannelFromJson();
 
         // channel should belongs to the user
-        if ($this->channel->user->id() !== $this->user->id()) {
+        if ($this->channel->user->id !== $this->user->id) {
             throw new ChannelOwnerMismatchingStripeException();
         }
 

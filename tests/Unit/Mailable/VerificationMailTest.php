@@ -31,7 +31,7 @@ class VerificationMailTest extends TestCase
         // creating faked verification url
         // real one will be given by MustVerifyEmail trait
         $expires = now()->addHour()->timestamp;
-        $url = config('app.url') . '/email/verify/' . $user->user_id . 'lorem-ipsum?expires=' .
+        $url = config('app.url') . '/email/verify/' . $user->id . 'lorem-ipsum?expires=' .
             $expires . '&signature=dolore-sit-amet'
         ;
 

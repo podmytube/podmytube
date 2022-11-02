@@ -33,7 +33,7 @@ class CreateChannelFactory
 
             // Creating channel
             return Channel::create([
-                'user_id' => $user->userId(),
+                'user_id' => $user->id,
                 'channel_id' => $channelId,
                 'channel_name' => $youtubeChannel->name(),
                 'category_id' => Category::bySlug(Channel::DEFAULT_CATEGORY_SLUG)->id,

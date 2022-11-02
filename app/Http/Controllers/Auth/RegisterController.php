@@ -91,7 +91,7 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
             'referral_code' => User::createReferralCode(),
-            'referrer_id' => $referrer !== null ? $referrer->user_id : null,
+            'referrer_id' => $referrer !== null ? $referrer->id : null,
         ]);
     }
 

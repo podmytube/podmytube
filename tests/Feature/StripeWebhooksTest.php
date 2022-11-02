@@ -22,6 +22,7 @@ use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class StripeWebhooksTest extends TestCase
@@ -217,7 +218,7 @@ class StripeWebhooksTest extends TestCase
         $this->markTestSkipped('TO BE DONE');
         // creating user that will subscribe
         $user = User::factory()->create(['stripe_id' => self::TEST_STRIPE_CUSTOMER_ID]);
-        $channel = Channel::factory()->create(['user_id' => $user->user_id]);
+        $channel = Channel::factory()->user($user)->create();
 
         $this->postJson(
             self::STRIPE_ROUTE,

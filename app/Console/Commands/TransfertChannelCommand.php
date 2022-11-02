@@ -113,7 +113,7 @@ class TransfertChannelCommand extends Command
     {
         // Creating channel
         $channel = Channel::create([
-            'user_id' => $user->userId(),
+            'user_id' => $user->id,
             'channel_id' => $channelId,
             'category_id' => Category::bySlug(Channel::DEFAULT_CATEGORY_SLUG)->id,
             'active' => true,

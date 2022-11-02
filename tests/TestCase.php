@@ -67,7 +67,7 @@ abstract class TestCase extends BaseTestCase
         // if owner specified
         $userContext = [];
         if ($user !== null) {
-            $userContext = ['user_id' => $user->id()];
+            $userContext = ['user_id' => $user->id];
         }
         $channel = Channel::factory()->create($userContext);
 

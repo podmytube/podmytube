@@ -14,6 +14,7 @@ use Tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class ChannelHasReachedItsLimitsJobTest extends TestCase
@@ -34,7 +35,7 @@ class ChannelHasReachedItsLimitsJobTest extends TestCase
     {
         // user HAS NOT checked it
         $this->user = User::factory()->create(['dont_warn_exceeding_quota' => false]);
-        $this->channel = Channel::factory()->create(['user_id' => $this->user->id()]);
+        $this->channel = Channel::factory()->user($this->user)->create();
 
         $job = new ChannelHasReachedItsLimitsJob($this->channel);
         $job->handle();
@@ -46,7 +47,7 @@ class ChannelHasReachedItsLimitsJobTest extends TestCase
     public function exceeding_quota_mail_should__not_be_sent(): void
     {
         $this->user = User::factory()->create(['dont_warn_exceeding_quota' => true]);
-        $this->channel = Channel::factory()->create(['user_id' => $this->user->id()]);
+        $this->channel = Channel::factory()->user($this->user)->create();
 
         // running podcast deletion
         $job = new ChannelHasReachedItsLimitsJob($this->channel);

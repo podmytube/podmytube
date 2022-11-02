@@ -38,11 +38,6 @@ class User extends Authenticatable implements MustVerifyEmail
     use Notifiable;
     use SoftDeletes;
 
-    /**
-     * the way to specify users.user_id is the key (and not users.id).
-     */
-    protected $primaryKey = 'user_id';
-
     protected $guarded = [];
 
     protected $casts = [
@@ -63,17 +58,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function channels()
     {
-        return $this->HasMany(Channel::class, 'user_id');
-    }
-
-    public function userId()
-    {
-        return $this->id();
-    }
-
-    public function id()
-    {
-        return $this->user_id;
+        return $this->HasMany(Channel::class);
     }
 
     public function isSuperAdmin(): bool

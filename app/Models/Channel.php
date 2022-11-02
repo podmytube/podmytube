@@ -107,11 +107,6 @@ class Channel extends Model implements Podcastable, Coverable
         return $this->channel_id;
     }
 
-    public function userId()
-    {
-        return $this->user_id;
-    }
-
     public function relativeFeedPath(): string
     {
         return $this->channelId() . '/' . config('app.feed_filename');
@@ -254,7 +249,7 @@ class Channel extends Model implements Podcastable, Coverable
 
     public static function byUserId(Authenticatable $user): ?Collection
     {
-        $channelsCollection = self::where('user_id', '=', $user->user_id)->get();
+        $channelsCollection = self::where('user_id', '=', $user->id)->get();
         if ($channelsCollection->count()) {
             return $channelsCollection;
         }
@@ -421,7 +416,7 @@ class Channel extends Model implements Podcastable, Coverable
 
     public static function userChannels(User $user)
     {
-        return self::where('user_id', '=', $user->user_id)->get();
+        return self::where('user_id', '=', $user->id)->get();
     }
 
     /**
@@ -494,7 +489,7 @@ class Channel extends Model implements Podcastable, Coverable
     {
         return Channel::query()
             ->select('user_id', 'channel_id', 'channel_name', 'podcast_title', 'active')
-            ->where('user_id', '=', $user->id())
+            ->where('user_id', '=', $user->id)
             ->with([
                 'playlists:channel_id,active',
                 'subscription:channel_id,plan_id',

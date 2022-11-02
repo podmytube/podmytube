@@ -11,6 +11,9 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @extends Factory<\App\Models\Channel>
+ */
 class ChannelFactory extends Factory
 {
     public $model = Channel::class;
@@ -37,7 +40,7 @@ EOD,
 
     public function user(User $user): static
     {
-        return $this->state(['user_id' => $user->user_id]);
+        return $this->state(['user_id' => $user->id]);
     }
 
     public function category(Category $category): static

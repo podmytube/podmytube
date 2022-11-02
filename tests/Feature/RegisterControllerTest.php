@@ -127,7 +127,7 @@ class RegisterControllerTest extends TestCase
         $this->assertNotNull($user->referral_code, 'User should have one referral code.');
         $this->assertEquals(8, strlen($user->referral_code));
         $this->assertNotNull($user->referrer_id, 'User should have one referrer.');
-        $this->assertEquals($referrer->user_id, $user->referrer_id, 'User should have referrer as referrer_id.');
+        $this->assertEquals($referrer->id, $user->referrer_id, 'User should have referrer as referrer_id.');
 
         Event::assertDispatched(Registered::class);
     }

@@ -84,10 +84,10 @@ class HomeControllerTest extends TestCase
     public function verified_user_should_see_his_channels(): void
     {
         // associating channel to user
-        $this->channel->update(['user_id' => $this->user->id()]);
+        $this->channel->update(['user_id' => $this->user->id]);
 
         /** adding another channel */
-        $anotherChannel = Channel::factory()->create(['user_id' => $this->user->id()]);
+        $anotherChannel = Channel::factory()->user($this->user)->create();
         $anotherChannel->subscribeToPlan(Plan::factory()->create());
 
         $this->user->refresh();

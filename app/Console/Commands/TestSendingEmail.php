@@ -128,7 +128,7 @@ class TestSendingEmail extends Command
         // if this user has no channel
         if (!$this->user->channels->count()) {
             $this->channel = Channel::factory()->create([
-                'user_id' => $this->user->user_id,
+                'user_id' => $this->user->id,
             ]);
 
             return true;

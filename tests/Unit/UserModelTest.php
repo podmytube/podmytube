@@ -38,9 +38,7 @@ class UserModelTest extends TestCase
         /** with users that want newsletter and have active channel*/
         $nbExpectedUsersWhoWantNewsletter = 10;
         User::factory()->count($nbExpectedUsersWhoWantNewsletter)->create(['newsletter' => true])
-            ->each(function (User $user): void {
-                Channel::factory()->create(['user_id' => $user->userId()]);
-            })
+            ->each(fn (User $user) => Channel::factory()->user($user)->create())
         ;
         $result = User::whoWantNewsletter();
         $this->assertNotNull($result);
@@ -58,7 +56,7 @@ class UserModelTest extends TestCase
         // adding user that want newsletter but has inactive channel should not change the result either
         User::factory()->count(1)->create(['newsletter' => true])
             ->each(function (User $user): void {
-                Channel::factory()->create(['user_id' => $user->userId(), 'active' => false]);
+                Channel::factory()->user($user)->create(['active' => false]);
             })
         ;
         $result = User::whoWantNewsletter();

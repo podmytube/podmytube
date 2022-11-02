@@ -108,7 +108,7 @@ class TransfertChannelCommandTest extends CommandTestCase
         $this->artisan('transfert:channel', [
             'from_channel_id' => $this->fromChannel->id(),
             'dest_channel_id' => $this->destChannelId,
-            '--user_id' => $this->user->id(),
+            '--user_id' => $this->user->id,
         ])->assertExitCode(0);
 
         $this->assertDatabaseHas('channels', [

@@ -8,6 +8,7 @@ use App\Models\Channel;
 use App\Models\Media;
 use App\Models\Plan;
 use App\Models\User;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
@@ -81,11 +82,12 @@ class ChannelModelTest extends TestCase
     /** @test */
     public function by_user_id_is_working_fine(): void
     {
+        /** @var Authenticatable $user */
         $user = User::factory()->create();
         $this->assertNull(Channel::byUserId($user));
 
         $expectedChannels = 3;
-        Channel::factory()->count($expectedChannels)->create(['user_id' => $user->user_id]);
+        Channel::factory()->count($expectedChannels)->create(['user_id' => $user->id]);
         $this->assertCount($expectedChannels, Channel::byUserId($user));
     }
 
@@ -138,10 +140,10 @@ class ChannelModelTest extends TestCase
         $user = User::factory()->create();
         $this->assertCount(0, Channel::userChannels($user));
 
-        $this->channel->update(['user_id' => $user->user_id]);
+        $this->channel->update(['user_id' => $user->id]);
         $this->assertCount(1, Channel::userChannels($user));
 
-        Channel::factory()->count(5)->create(['user_id' => $user->user_id]);
+        Channel::factory()->count(5)->create(['user_id' => $user->id]);
         $this->assertCount(6, Channel::userChannels($user));
     }
 
