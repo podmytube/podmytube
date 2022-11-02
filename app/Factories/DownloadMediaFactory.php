@@ -44,26 +44,26 @@ class DownloadMediaFactory
             }
 
             // getting media infos
-            Log::debug("Getting informations for media {$this->media->media_id}");
+            Log::notice("Channel {$this->media->channel->nameWithId()} - Getting informations for media {$this->media->media_id}");
             $youtubeVideo = YoutubeVideo::forMedia($this->media->media_id);
 
             // download, convert and get its path
-            Log::debug("About to download media {$this->media->media_id}.");
+            Log::notice("Channel {$this->media->channel->nameWithId()} - About to download media {$this->media->media_id}.");
             $downloadedFilePath = DownloadYTMedia::init($this->media, '/tmp/', false)
                 ->download()
                 ->downloadedFilePath()
             ;
 
             // if empty will throw exception
-            Log::debug("Media {$this->media->media_id} has been download successfully from youtube. Analyzing.");
+            Log::notice("Channel {$this->media->channel->nameWithId()} - Media {$this->media->media_id} has been download successfully from youtube. Analyzing.");
             $mediaProperties = MediaProperties::analyzeFile($downloadedFilePath);
 
             // checking obtained file duration of result
-            Log::debug("Checking media {$this->media->media_id} duration.");
+            Log::notice("Channel {$this->media->channel->nameWithId()} - Checking media {$this->media->media_id} duration.");
             CheckingGrabbedFile::init($mediaProperties, $youtubeVideo->duration())->check();
 
             // upload it
-            Log::debug("Uploading media {$this->media->media_id} duration.");
+            Log::notice("Channel {$this->media->channel->nameWithId()} - Uploading media {$this->media->media_id} file.");
             SendFileByRsync::dispatchSync($downloadedFilePath, $this->media->remoteFilePath(), $cleanAfter = true);
 
             /**
@@ -83,7 +83,7 @@ class DownloadMediaFactory
         }
 
         // update infos
-        Log::notice('Persisting media infos into DB.');
+        Log::notice("Channel {$this->media->channel->nameWithId()} - Persisting media infos for {$this->media->media_id}.");
 
         $updateParams = [
             'grabbed_at' => $status === Media::STATUS_DOWNLOADED ? Carbon::now() : null,
@@ -106,9 +106,9 @@ class DownloadMediaFactory
         }
         $this->media->update($updateParams);
 
-        Log::debug("Processing media {$this->media->media_id} is finished.");
+        Log::notice("Channel {$this->media->channel->nameWithId()} - Processing media {$this->media->media_id} is finished.");
         if ($status === Media::STATUS_DOWNLOADED) {
-            // media has been dowloaded => update podcast feed
+            // media has been dowloaded => dispatch channel updated
             ChannelUpdatedEvent::dispatch($this->media->channel);
         }
 
