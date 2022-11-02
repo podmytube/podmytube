@@ -146,7 +146,7 @@ class TransfertChannelCommand extends Command
 
     protected function getPlan(): Plan
     {
-        $plan = $this->fromChannel->subscription->plan;
+        $plan = $this->fromChannel->plan;
         if ($this->option('plan_id') !== false) {
             $plan = Plan::find($this->option('plan_id'));
             throw_if($plan === null, new InvalidArgumentException("This plan id {$this->option('plan_id')} is unknown in database."));

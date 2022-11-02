@@ -10,8 +10,8 @@
 
     <h2>Quota exceeded</h2>
     <p>
-        The plan you have chosen ({{ $channel->subscription->plan->name }})) includes
-        {{ $channel->subscription->plan->nb_episodes_per_month }} episodes per month and
+        The plan you have chosen ({{ $channel->plan->name }})) includes
+        {{ $channel->plan->nb_episodes_per_month }} episodes per month and
         per channel and I am sorry to tell that, for this month, you have consumed all the available quota 😞.
     </p>
 

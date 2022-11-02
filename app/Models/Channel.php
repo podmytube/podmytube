@@ -292,7 +292,7 @@ class Channel extends Model implements Podcastable, Coverable
 
     public function isPaying(): bool
     {
-        return $this->subscription->plan->slug !== 'forever_free';
+        return $this->plan->slug !== 'forever_free';
     }
 
     public function slugChannelName(): string
@@ -446,8 +446,6 @@ class Channel extends Model implements Podcastable, Coverable
     {
         return Attribute::get(fn () => $this->channel_id);
     }
-
-    
 
     public function associatedMedias(): Collection
     {

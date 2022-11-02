@@ -59,9 +59,9 @@ class ChannelCreateControllerTest extends TestCase
         // free subscription should have been set
         $this->assertNotNull($channel->subscription);
         $this->assertInstanceOf(Subscription::class, $channel->subscription);
-        $this->assertNotNull($channel->subscription->plan);
-        $this->assertInstanceOf(Plan::class, $channel->subscription->plan);
-        $this->assertEquals($this->freePlan->name, $channel->subscription->plan->name);
+        $this->assertNotNull($channel->plan);
+        $this->assertInstanceOf(Plan::class, $channel->plan);
+        $this->assertEquals($this->freePlan->name, $channel->plan->name);
     }
 
     /** @test */

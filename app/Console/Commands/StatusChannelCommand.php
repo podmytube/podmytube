@@ -84,7 +84,7 @@ class StatusChannelCommand extends Command
                         $channel->user->email,
                         $channel->channel_createdAt->toDateString(),
                         $channel->podcast_updatedAt?->toDateString() ?? '-',
-                        $channel->subscription->plan->name,
+                        $channel->plan->name,
                         $channel->isActive() ? '✅' : '❌',
                     ],
                 ]

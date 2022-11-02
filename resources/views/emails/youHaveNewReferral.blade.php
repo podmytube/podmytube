@@ -11,6 +11,6 @@
         by one of your referral ({{ $channel->user->firstname }}).
     </p>
 
-    <p>The chosen plan was {{ $channel->subscription->plan->name }} at {{ $channel->subscription->plan->price }}</p>
+    <p>The chosen plan was {{ $channel->plan->name }} at {{ $channel->plan->price }}</p>
 
 @endsection

@@ -46,9 +46,9 @@ class HasOneSubscriptionTest extends TestCase
         $this->assertInstanceOf(Subscription::class, $channel->subscription);
 
         // checking plan subscription
-        $this->assertNotNull($channel->subscription->plan);
-        $this->assertInstanceOf(Plan::class, $channel->subscription->plan);
-        $this->assertEquals($this->starterPlan->name, $channel->subscription->plan->name);
+        $this->assertNotNull($channel->plan);
+        $this->assertInstanceOf(Plan::class, $channel->plan);
+        $this->assertEquals($this->starterPlan->name, $channel->plan->name);
     }
 
     /** @test */

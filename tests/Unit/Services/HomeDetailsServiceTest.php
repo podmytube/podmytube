@@ -106,20 +106,20 @@ class HomeDetailsServiceTest extends TestCase
             // subscription and plans
             $this->assertNotNull($result->subscription);
             $this->assertInstanceOf(Subscription::class, $result->subscription);
-            $this->assertNotNull($result->subscription->plan);
-            $this->assertInstanceOf(Plan::class, $result->subscription->plan);
-            $this->assertEquals($channel->subscription->plan->name, $result->subscription->plan->name);
-            if ($channel->subscription->plan->id === $this->freePlan->id) {
+            $this->assertNotNull($result->plan);
+            $this->assertInstanceOf(Plan::class, $result->plan);
+            $this->assertEquals($channel->plan->name, $result->plan->name);
+            if ($channel->plan->id === $this->freePlan->id) {
                 // freePlan
-                $this->assertEquals(0, $result->subscription->plan->price);
+                $this->assertEquals(0, $result->plan->price);
                 $this->assertTrue($result->isFree());
-            } elseif ($channel->subscription->plan->id === $this->earlyPlan->id) {
+            } elseif ($channel->plan->id === $this->earlyPlan->id) {
                 // earlyPlan
-                $this->assertEquals(0, $result->subscription->plan->price);
+                $this->assertEquals(0, $result->plan->price);
                 $this->assertFalse($result->isFree());
             } else {
                 // paying plan
-                $this->assertGreaterThan(0, $result->subscription->plan->price);
+                $this->assertGreaterThan(0, $result->plan->price);
                 $this->assertFalse($result->isFree());
             }
 

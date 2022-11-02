@@ -19,7 +19,7 @@ trait HasLimits
             throw new ChannelHasNoSubscriptionException("Channel {$this->nameWithId()} has no subscription.");
         }
 
-        return $this->subscription->plan->nb_episodes_per_month;
+        return $this->plan->nb_episodes_per_month;
     }
 
     public function numberOfEpisodesGrabbed(
