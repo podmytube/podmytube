@@ -29,9 +29,8 @@ services:
       test: bash -c "[ -f /app/vendor/autoload.php ]"
       timeout: 10s
       retries: 30
-    networks:
-      - nginx-proxy
 
 networks:
-  nginx-proxy:
+  default:
+    name: nginx-proxy
     external: true
